@@ -1,0 +1,36 @@
+##
+## RENSHUU.PAAZMAYA.COM
+##
+
+RewriteEngine on
+RewriteBase /
+
+RewriteRule ^(ajax/.*)$ ajax.php?page=$1 [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
+
+# last|L (last rule)
+# qsappend|QSA (query string append)
+
+# make markup strict
+php_value arg_separator.output "&amp;"
+
+php_flag log_errors 1
+php_flag html_errors 0
+
+# longer session, default 1440 seconds = 24 min, 86400 sec = 24 h
+php_value session.gc_maxlifetime 86400
+# default 180 minutes
+php_value session.cache_expire 1440
+php_value session.cookie_lifetime 86400
+
+php_flag session.use_trans_sid 0
+php_flag session.use_only_cookies 1
+php_value session.name "RE"
+
+php_value date.default_latitude "60.174306261926034"
+php_value date.default_longitude "24.983339309692383"
+php_value date.timezone "Europe/Helsinki"
