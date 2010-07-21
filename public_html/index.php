@@ -3,6 +3,36 @@
 RENSHUU.PAAZMAYA.COM
 *******************/
 
+/*
+Filtering the list of trainings shown on the map can be set by the following:
+- Art
+- Weekday
+- Area, which would be primarily set according to the current map view.
+
+All data fetched from the backend will be cached locally and will expire after two weeks (unless specific "clear" command is made).
+
+By dracking or clicking a marker to a saved list it is possible to export a page of all the 
+selected training times and locations with static maps.
+Perhaps these pages can then be hard linked...
+
+CONTRIBUTOR VIEW
+- Logged in people
+- Insert/modify/delete
+
+Can create the following rows:
+- Location
+- Training
+- Person
+
+User level is defined with a matrix build of the following:
+- ART
+- geographical area
+- insert (with moderation)
+- modify
+- delete
+
+
+*/
 require './config.php';
 session_start();
 header('Content-type: text/html; charset=utf-8');
@@ -32,15 +62,8 @@ $colors = array(
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
-	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
-	<style type="text/css">
-		* { margin:0; padding:0; }
-		body { background-color: #AA0000; color: White; }
-		a { color: White; }
-		#wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid Black; }
-		#map { width: 50%; height: 700px; border: 1px solid Black; float: left; }
-		#list { float: left; }
-	</style>
+	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
+	<link type="text/css" href="/css/main.css" rel="stylesheet" />
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=ja"></script>
 	<script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="/js/jquery-ui-1.8.2.min.js"></script>
@@ -114,6 +137,10 @@ $colors = array(
 					}
 				}
 			});
+			$.goMap.one('click', function(){
+				// Create marker
+				// Consecutive clicks move this marker to a new position
+			});
 		}
 		
 		/**
@@ -175,21 +202,23 @@ while($res = $run->fetch(PDO::FETCH_ASSOC))
 		<p><label>Title: <input type="text" name="title" /></label></p>
 		<p><label>URI: <input type="text" name="uri" /></label></p>
 		<p><label>Info: <input type="text" name="info" /></label></p>
+		<p><label>Address(if any): <input type="text" name="address" /></label></p>
+		<p><label>Auto fill address from map position: <input type="checkbox" name="addr_autofill" /></label></p>
 		<p><label>Latitude: <input type="text" name="latitude" /></label></p>
 		<p><label>Longitude: <input type="text" name="longitude" /></label></p>
-		<p><input type="button" name="" value="Send location" /></p>
+		<p><input type="button" name="send_location" value="Send location" /></p>
 	</form>
 	<form id="person_form" action="/" style="display:none;">
 		<p><label>Name: <input type="text" name="title" /></label></p>
 		<p><label>Art: <select name="art"></select></label></p>
 		<p><label>Contact: <input type="text" name="contact" /></label></p>
 		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><input type="button" name="" value="Send person" /></p>
+		<p><input type="button" name="send_person" value="Send person" /></p>
 	</form>
 	<form id="art_form" action="/" style="display:none;">
 		<p><label>Name: <input type="text" name="title" /></label></p>
 		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><input type="button" name="" value="Send person" /></p>
+		<p><input type="button" name="send_art" value="Send art" /></p>
 	</form>
 	<form id="training_form" action="/" style="display:none;">
 		<p><label>Title: <input type="text" name="title" /></label></p>
@@ -199,7 +228,7 @@ while($res = $run->fetch(PDO::FETCH_ASSOC))
 		<p><label>Start time: <input type="text" name="starttime" /></label></p>
 		<p><label>Duration (minutes): <input type="text" name="duration" /></label></p>
 		<p><label>Art: <select name="art"></select></label></p>
-		<p><input type="button" name="" value="Send location" /></p>
+		<p><input type="button" name="send_training" value="Send training" /></p>
 	</form>
 </body>
 <?php

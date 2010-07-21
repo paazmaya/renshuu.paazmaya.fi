@@ -1,11 +1,11 @@
 /**
 * Juga Paazmaya <olavic@gmail.com>
-* Change the numeric value with a keyboard shortcut and/or mousewheel.
+* Open a hidden form either inline or as modal window, which then is submitted as ajax to the "action" url.
 *
-* $(input).numberadjuster();
+* $(form#id).openForm();
 */
 (function($, undefined){
-	$.fn.numberadjuster = function(params) {
+	$.fn.openForm = function(params) {
 		var settings = $.extend(
 			{},
 			{
@@ -14,7 +14,11 @@
 			},
 			params
 		);
-
+		
+		this.child('input[type=submit]').click(function() {
+			
+			return false;
+		});
 		return $(this);
 	};
 })(jQuery);

@@ -7,22 +7,11 @@
 	<link rel="icon" type="image/ico" href="favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 	<link type="text/css" href="css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
-	<style type="text/css">
-		* { margin:0; padding:0; }
-		body { background-color: #AA0000; color: White; }
-		a { color: White; }
-		#wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid Black; }
-		#map { width: 50%; height: 700px; border: 1px solid Black; float: left; }
-		#list { float: left; }
-		
-		label { text-align: left; float: left; }
-		input, select { width: 200px; margin-left: 160px; float: left; }
-		form p { width: 400px; margin: 2px; }
-		
-	</style>
-	<script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui-1.8.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.gomap-1.0.1.js"></script>
+	<link type="text/css" href="css/main.css" rel="stylesheet" />
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.gomap-1.0.1.js"></script>
 	<script type="text/javascript">
 		var ajaxpoint = { get: '/ajax/get/', set: '/ajax/set/' };
 		var map;
@@ -32,61 +21,40 @@
 		
 		$(document).ready(function() {
 			
-			$('#new_location').click(function() {
-				createLocation();
-				return false;
-			});
 		});
 		
-		function createLocation() {
-			$('<div></div>').html('Select a position from the map by clicking it.').dialog({
-				title: "Create a new location",
-				width: 400,
-				height: 300,
-				buttons: {
-					"Ok": function() {
-						var location = {
-							latitude: lat,
-							longitude: lng
-						};
-						$.post(ajaxpoint.set + 'location', location, function (data, status) {
-							$(this).dialog("close");
-						}, 'json');
-					}
-				}
-			});
-		}
 	</script>
 </head>
 <body>
 	<div id="wrap">
 		<div id="list">
 			<p><a href="#" id="new_location">Create a new location</a></p>
-			<ul>
-			</ul>
 		</div>
 	</div>
-	<form id="location_form" action="/">
-		<p><label>Title: <input type="text" name="title" /></label></p>
-		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><label>Latitude: <input type="text" name="latitude" /></label></p>
-		<p><label>Longitude: <input type="text" name="longitude" /></label></p>
-		<p><input type="button" name="" value="Send location" /></p>
+	
+	<form id="location_form" action="/" method="post">
+		<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+		<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+		<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+		<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
+		<p><label><span>Auto fill address from map position:</span><input type="checkbox" name="addr_autofill" /></label></p>
+		<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
+		<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
+		<p><input type="button" name="send_location" value="Send location" /></p>
 	</form>
-	<form id="person_form" action="/">
+	<form id="person_form" action="/" method="post">
 		<p><label>Name: <input type="text" name="title" /></label></p>
-		<p><label>Art: <select name="art"></select></label></p>
+		<p><label>Art: <input type="text" name="art" /></label></p>
 		<p><label>Contact: <input type="text" name="contact" /></label></p>
 		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><input type="button" name="" value="Send person" /></p>
+		<p><input type="button" name="send_person" value="Send person" /></p>
 	</form>
-	<form id="art_form" action="/">
+	<form id="art_form" action="/" method="post">
 		<p><label>Name: <input type="text" name="title" /></label></p>
 		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><input type="button" name="" value="Send person" /></p>
+		<p><input type="button" name="send_art" value="Send art" /></p>
 	</form>
-	<form id="training_form" action="/">
+	<form id="training_form" action="/" method="post">
 		<p><label>Title: <input type="text" name="title" /></label></p>
 		<p><label>Location: <select name="location"></select></label></p>
 		<p><label>Weekday: <select name="weekday"></select></label></p>
@@ -94,7 +62,7 @@
 		<p><label>Start time: <input type="text" name="starttime" /></label></p>
 		<p><label>Duration (minutes): <input type="text" name="duration" /></label></p>
 		<p><label>Art: <select name="art"></select></label></p>
-		<p><input type="button" name="" value="Send location" /></p>
+		<p><input type="button" name="send_training" value="Send training" /></p>
 	</form>
 </body>
 </html>
