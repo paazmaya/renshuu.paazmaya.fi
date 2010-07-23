@@ -9,5 +9,5 @@ form { border: 2px solid Black; width: 500px; }
 form p { width: 100%; margin: 2px; }
 label { width: 100%; }
 label span { text-align: right; width: 40%; }
-input, select { width: 60%;}
+input, select, form ul { width: 60%;}
 

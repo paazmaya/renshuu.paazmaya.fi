@@ -8,10 +8,19 @@
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 	<link type="text/css" href="css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
 	<link type="text/css" href="css/main.css" rel="stylesheet" />
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<link type="text/css" href="css/autoSuggest.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.2.min.js"></script>
+	
+	<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>	
+	<script type="text/javascript" src="js/jstore/class.js"></script>
+	<script type="text/javascript" src="js/jstore/browser.json.js"></script>
+	<script type="text/javascript" src="js/jstore/jquery.jstore.js"></script>
+	
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="js/jquery.gomap-1.0.1.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
 	<script type="text/javascript">
 		var ajaxpoint = { get: '/ajax/get/', set: '/ajax/set/' };
 		var map;
@@ -19,8 +28,109 @@
 		
 		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
 		
+		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+		var data = {
+			items: [
+				{value: "21", name: "Mick Jagger"},
+				{value: "43", name: "Johnny Storm"},
+				{value: "46", name: "Richard Hatch"},
+				{value: "54", name: "Kelly Slater"},
+				{value: "55", name: "Rudy Hamilton"},
+				{value: "79", name: "Michael Jordan"}
+			],
+			arts: [
+				{id: 1, name: 'Jikishinkage'},
+				{id: 2, name: 'Ryukyu kobujutsu'},
+				{id: 3, name: 'Yuishinkai'}
+			]
+		};
+		
+		// First, we must tell jStore where to find the HTML file which embeds our flash script.  
+		// If you move the jStore.swf or jStore.Flash.html files out of their default directories (document root),  
+		// use this variable to define where to access the .html file. Within the .html file, you can set up the  
+		// path to the .swf file.  
+		// Then, set up the default engine we wish to use.  
+		$.extend($.jStore.defaults, {  
+			project: 'demo-guide',  
+			engine: 'flash',  
+			flash: 'js/jstore/jStore.Flash.html'  
+		}) 
+		 
+		// Next, we need to wait for jStore to prepare the storage engine  
+		$.jStore.ready(function(engine){ 
+			$.jStore.flashReady(function(){ 
+				  // Finally, we need to wait for the storage engine to be ready.  
+				  // Once this function is called, you can use the jStore interface synchronously  
+				  engine.ready(function(){ 
+					  var engine = this,  
+						  counter = (engine.get('counter') || 0)*1, original = counter;  
+					  counter++;      // Incrememnt the counter  
+					  alert('Original Value: ' + original + "\n"  
+						  + 'New Value: ' + counter + "\n"  
+						  + 'Setting Value: ' + engine.set('counter', counter) + "\n"  
+						  + 'Fetching Value: ' + engine.get('counter'));  
+					 
+					  if (counter == 5){  
+						  var lastValue = engine.rem('counter');      // Clear the value  
+						  alert('Resetting Counter at ' + counter);   // Alert the last value of the counter                
+					  }  
+				})  
+			})   
+		});  
+   
+		// Once the engine is prepared, we can do whatever we need with it  
+		$('a').click(function(){  
+			  $.jStore.set('link_title', $(this).attr('title'));  
+	  
+			  // And, if you find it necessary, you can access the storage engine in a jQuery chain.  
+			  // Storing values will allow you to keep chaining, but requesting a variable will return  
+			  //    that value, stopping the chain.  
+			  $(this).css('display', 'block').store('myval', 30).attr('href', '#').store('myval');  
+			   
+			  return false; 
+		});
+		
 		$(document).ready(function() {
+			$("input[name=art]")
+				.autoSuggest(
+					data.arts, {
+						startText: 'Type an art name',
+						selectedItemProp: 'name',
+						selectedValuesProp: 'id',
+						searchObjProps: 'name',
+						queryParam: '',
+						selectionLimit: 2,
+						//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
+						//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
+						//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
+						resultClick: function(data){ 
+							for (var i in data.attributes) {
+								console.log('resultClick - ' + i + ' = ' + data.attributes[i]); 
+							}
+						}
+					}
+				)
+				.change(
+					function() {
+						console.log('change - ' + $(this).attr('name') + ': ' + $(this).val());
+					}
+				);
+			$("#training_form input[name=location]")
+				.autoSuggest(
+					data.items, {
+						startText: 'Type a location name',
+						selectedItemProp: 'name',
+						searchObjProps: 'name'
+					}
+				)
+				.change(
+					function() {
+						console.log($(this).attr('name') + ': ' + $(this).val());
+					}
+				);
+			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
 			
+			$.jStore.load();
 		});
 		
 	</script>
@@ -30,6 +140,7 @@
 		<div id="list">
 			<p><a href="#" id="new_location">Create a new location</a></p>
 		</div>
+		<a title="jstore" href="test.x">Click Me</a>
 	</div>
 	
 	<form id="location_form" action="/" method="post">
@@ -56,7 +167,7 @@
 	</form>
 	<form id="training_form" action="/" method="post">
 		<p><label>Title: <input type="text" name="title" /></label></p>
-		<p><label>Location: <select name="location"></select></label></p>
+		<p><label>Location: <input type="text" name="location" /></label></p>
 		<p><label>Weekday: <select name="weekday"></select></label></p>
 		<p><label>Occurance: <input type="text" name="occurance" /></label></p>
 		<p><label>Start time: <input type="text" name="starttime" /></label></p>
