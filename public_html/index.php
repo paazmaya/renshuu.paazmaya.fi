@@ -2,7 +2,15 @@
 /*******************
 RENSHUU.PAAZMAYA.COM
 *******************/
-
+/*
+Colors at Kuler: http://kuler.adobe.com/#themeID/979806
+red: AA1515
+white: E9FFE8
+light green: B5E3AD
+brown red: 8C635C
+green: 0E3621
+black: 100212
+*/
 /*
 Filtering the list of trainings shown on the map can be set by the following:
 - Art

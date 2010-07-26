@@ -1,15 +1,112 @@
+/*******************
+RENSHUU.PAAZMAYA.COM
+*******************/
+/*
+http://kuler.adobe.com/#themeID/979806
+red: #AA1515
+white: #F1EFFF
+blue: #279BE3
+brown red: #8C635C
+green: #0E3621
+black: #100212
+*/
 * { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif }
-body { background-color: #AA0000; color: White; }
-a { color: White; }
-#wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid Black; }
-#map { width: 50%; height: 700px; border: 1px solid Black; float: left; }
+body { background-color: #AA1515; color: #F1EFFF; }
+a { color: #F1EFFF; }
+#wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid #100212; }
+#map { width: 50%; height: 700px; border: 1px solid #100212; float: left; }
 
-
-form { border: 2px solid Black; width: 500px; }
-form p { width: 100%; margin: 2px; }
-label { width: 100%; }
-label span { text-align: right; width: 40%; }
-input, select, form ul { width: 60%;}
+form { background-color: #AA1515; }
+legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 2px 6px; margin-left: 10%; }
+fieldset { border: 2px solid #100212; width: 40em; }
+fieldset p { width: 100%; padding: 4px; display: block; }
+label { width: 100%; display: block; }
+label span { text-align: right; width: 11em; display: block; float: left; margin-right: 1em; }
+input, select, form ul, form li { width: 28em; background-color: #F1EFFF; height: 1.5em; border: 1px solid #100212; }
+input[type=checkbox] { width: 1em; }
+input[type=button] { width: 12em; margin: 1em; height: 2em; }
+input.numeric { width: 12em; }
 
 .round { border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; }
 
+
+
+#example2 body {
+background:#161712;
+font:100% normal Arial, Helvetica, sans-serif;
+}
+
+
+#example2 .box {
+background:#222222;
+border:1px solid #262626;
+margin:0 auto;
+position:relative;
+top:50px;
+width:500px;
+}
+
+#example2  h1 {
+border-bottom:1px solid #161712;
+border-top:1px solid #161712;
+color:#ffffff;
+font-size:18px;
+padding:5px 0 5px 5px;
+text-transform:uppercase;
+}
+
+#example2  label {
+background:#1C1C1C;
+border-bottom:1px solid #161712;
+border-top:1px solid #262626;
+display:block;
+padding:10px 0;
+width:100%;
+}
+
+#example2  label span {
+color:#bbbbbb;
+display:block;
+float:left;
+font-size:12px;
+padding:5px 20px 0 0;
+text-align:right;
+width:100px;
+}
+
+#example2 .input_text {
+background:#262626;
+border-bottom:1px double #171717;
+border-left:1px double #333333;
+border-right:1px double #333333;
+border-top:1px double #171717;
+padding:10px;
+width:200px;
+}
+
+#example2 .message {
+background:#262626;
+border-bottom:1px double #171717;
+border-left:1px double #333333;
+border-right:1px double #333333;
+border-top:1px double #171717;
+height:150px;
+overflow:hidden;
+padding:7px;
+width:350px;
+}
+
+#example2 .button {
+background:#CC0000;
+border:0;
+border-bottom:1px double #660000;
+border-left:1px double #FF0033;
+border-right:1px double #FF0033;
+border-top:1px double #660000;
+left:382px;
+margin:0 0 10px;
+padding:4px 7px;
+position:relative;
+top:10px;
+width:100px;
+}

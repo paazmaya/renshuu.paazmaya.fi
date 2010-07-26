@@ -6,30 +6,67 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/ico" href="favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-	<link type="text/css" href="css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
+	<link type="text/css" href="css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="css/main.css" rel="stylesheet" />
 	<link type="text/css" href="css/autoSuggest.css" rel="stylesheet" />
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.2.min.js"></script>
-	
-	<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>	
+
+	<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
 	<script type="text/javascript" src="js/jstore/class.js"></script>
 	<script type="text/javascript" src="js/jstore/browser.json.js"></script>
 	<script type="text/javascript" src="js/jstore/jquery.jstore.js"></script>
 	
+	<script type="text/javascript" src="js/jquery.json-2.2.js"></script>
+	<script type="text/javascript" src="js/jstorage.js"></script>
+
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<script type="text/javascript" src="js/jquery.gomap-1.0.1.js"></script>
-	
+
 	<script type="text/javascript" src="js/jquery.curvycorners.js"></script>
 	<script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.simplemodal-1.3.5.js"></script>
+	
 	<script type="text/javascript">
 		var ajaxpoint = { get: '/ajax/get/', set: '/ajax/set/' };
 		var map;
 		var geocoder;
 		var streetview; //StreetViewPanorama
 		
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
 		
+		// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderStatus
+		// http://marcgrabanski.com/articles/jquery-google-maps-tutorial-ajax-php-mysql
+		/*
+		var reasons=[]; 
+		reasons[G_GEO_SUCCESS] = "Success"; 
+		reasons[G_GEO_MISSING_ADDRESS] = "Missing Address"; 
+		reasons[G_GEO_UNKNOWN_ADDRESS] = "Unknown Address."; 
+		reasons[G_GEO_UNAVAILABLE_ADDRESS] = "Unavailable Address"; 
+		reasons[G_GEO_BAD_KEY] = "Bad API Key"; 
+		reasons[G_GEO_TOO_MANY_QUERIES] = "Too Many Queries"; 
+		reasons[G_GEO_SERVER_ERROR] ="Server error";
+*/
+		function geoEncode() { 
+			var address = $("#add-point input[name=address]").val(); 
+			geo.getLocations(address, function (result){ 
+			if (result.Status.code == G_GEO_SUCCESS) { 
+				geocode = result.Placemark[0].Point.coordinates; savePoint(geocode); 
+			} 
+			else { 
+				var reason="Code"+result.Status.code; 
+				if (reasons[result.Status.code]) { 
+				reason = reasons[result.Status.code] 
+			} 
+			$("#add-point .error").html(reason).fadeIn(); 
+				geocode = false; 
+			} 
+			}); 
+		}
+		
+		
+		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
+
 		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 		var data = {
 			items: [
@@ -46,52 +83,52 @@
 				{id: 3, name: 'Yuishinkai'}
 			]
 		};
-		
-		// First, we must tell jStore where to find the HTML file which embeds our flash script.  
-		// If you move the jStore.swf or jStore.Flash.html files out of their default directories (document root),  
-		// use this variable to define where to access the .html file. Within the .html file, you can set up the  
-		// path to the .swf file.  
-		// Then, set up the default engine we wish to use.  
-		$.extend($.jStore.defaults, {  
-			project: 'demo-guide',  
-			engine: 'flash',  
-			flash: 'js/jstore/jStore.Flash.html'  
-		}) 
-		 
-		// Next, we need to wait for jStore to prepare the storage engine  
-		$.jStore.ready(function(engine){ 
-			$.jStore.flashReady(function(){ 
-				  // Finally, we need to wait for the storage engine to be ready.  
-				  // Once this function is called, you can use the jStore interface synchronously  
-				  engine.ready(function(){ 
-					  var engine = this,  
-						  counter = (engine.get('counter') || 0)*1, original = counter;  
-					  counter++;      // Incrememnt the counter  
-					  alert('Original Value: ' + original + "\n"  
-						  + 'New Value: ' + counter + "\n"  
-						  + 'Setting Value: ' + engine.set('counter', counter) + "\n"  
-						  + 'Fetching Value: ' + engine.get('counter'));  
-					 
-					  if (counter == 5){  
-						  var lastValue = engine.rem('counter');      // Clear the value  
-						  alert('Resetting Counter at ' + counter);   // Alert the last value of the counter                
-					  }  
-				})  
-			})   
-		});  
-   
-		// Once the engine is prepared, we can do whatever we need with it  
-		$('a').click(function(){  
-			  $.jStore.set('link_title', $(this).attr('title'));  
-	  
-			  // And, if you find it necessary, you can access the storage engine in a jQuery chain.  
-			  // Storing values will allow you to keep chaining, but requesting a variable will return  
-			  //    that value, stopping the chain.  
-			  $(this).css('display', 'block').store('myval', 30).attr('href', '#').store('myval');  
-			   
-			  return false; 
+
+		// First, we must tell jStore where to find the HTML file which embeds our flash script.
+		// If you move the jStore.swf or jStore.Flash.html files out of their default directories (document root),
+		// use this variable to define where to access the .html file. Within the .html file, you can set up the
+		// path to the .swf file.
+		// Then, set up the default engine we wish to use.
+		$.extend($.jStore.defaults, {
+			project: 'demo-guide',
+			engine: 'flash',
+			flash: 'js/jstore/jStore.Flash.html'
+		})
+
+		// Next, we need to wait for jStore to prepare the storage engine
+		$.jStore.ready(function(engine){
+			$.jStore.flashReady(function(){
+				  // Finally, we need to wait for the storage engine to be ready.
+				  // Once this function is called, you can use the jStore interface synchronously
+				  engine.ready(function(){
+					  var engine = this,
+						  counter = (engine.get('counter') || 0)*1, original = counter;
+					  counter++;      // Incrememnt the counter
+					  alert('Original Value: ' + original + "\n"
+						  + 'New Value: ' + counter + "\n"
+						  + 'Setting Value: ' + engine.set('counter', counter) + "\n"
+						  + 'Fetching Value: ' + engine.get('counter'));
+
+					  if (counter == 5){
+						  var lastValue = engine.rem('counter');      // Clear the value
+						  alert('Resetting Counter at ' + counter);   // Alert the last value of the counter
+					  }
+				})
+			})
 		});
-		
+
+		// Once the engine is prepared, we can do whatever we need with it
+		$('a').click(function(){
+			  $.jStore.set('link_title', $(this).attr('title'));
+
+			  // And, if you find it necessary, you can access the storage engine in a jQuery chain.
+			  // Storing values will allow you to keep chaining, but requesting a variable will return
+			  //    that value, stopping the chain.
+			  $(this).css('display', 'block').store('myval', 30).attr('href', '#').store('myval');
+
+			  return false;
+		});
+
 		$(document).ready(function() {
 			$("input[name=art]")
 				.autoSuggest(
@@ -105,9 +142,9 @@
 						//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
 						//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
 						//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
-						resultClick: function(data){ 
+						resultClick: function(data){
 							for (var i in data.attributes) {
-								console.log('resultClick - ' + i + ' = ' + data.attributes[i]); 
+								console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
 							}
 						}
 					}
@@ -131,10 +168,62 @@
 					}
 				);
 			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
-			
+
 			//$.jStore.load();
+			
+			var roundedCorners = {
+				tl: { radius: 20 },
+				tr: { radius: 20 },
+				bl: { radius: 0 },
+				br: { radius: 0 },
+				antiAlias: true,
+				autoPad: true,
+				validTags: ["fieldset"]
+			};
+			$('fieldset').corner(roundedCorners);
+			
+			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
+			$('span[name=durationslider]').slider({
+				range: 'min',
+				max: 600,
+				step: 5,
+				value: 120,
+				slide: function(event, ui) {
+					$('input[name=duration]').val(ui.value);
+				}
+			});
+			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
+
+			
+			$('#new_location').click(function() {
+				openModal('#location_form');
+				return false;
+			});
+
 		});
-		
+
+		// http://www.ericmmartin.com/projects/simplemodal/
+		var openModal = function (id) {
+			$.modal($(id), {
+				onOpen: function (dialog) {
+					dialog.overlay.fadeIn('slow', function () {
+						dialog.container.slideDown('slow', function () {
+							dialog.data.fadeIn('slow');
+						});
+					});
+				},
+				onClose: function (dialog) {
+					dialog.data.fadeOut('slow', function () {
+						dialog.container.hide('slow', function () {
+							dialog.overlay.slideUp('slow', function () {
+								$.modal.close();
+							});
+						});
+					});
+				},
+				closeClass: 'modal_close'
+			});
+		};
 	</script>
 </head>
 <body>
@@ -144,38 +233,79 @@
 		</div>
 		<a title="jstore" href="test.x">Click Me</a>
 	</div>
-	
+
 	<form id="location_form" action="/" method="post">
-		<p><label><span>Title:</span><input type="text" name="title" /></label></p>
-		<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
-		<p><label><span>Info:</span><input type="text" name="info" /></label></p>
-		<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
-		<p><label><span>Auto fill address from map position:</span><input type="checkbox" name="addr_autofill" /></label></p>
-		<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
-		<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
-		<p><input type="button" name="send_location" value="Send location" /></p>
+		<fieldset>
+			<legend>Location</legend>
+			<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+			<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+			<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+			<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
+			<p><label><span>Auto fill:</span><input type="checkbox" name="addr_autofill" /> (address from map position)</label></p>
+			<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
+			<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
+			<p><label><span>&nbsp;</span>
+				<input type="button" name="send_location" value="Send location" class="button" />
+				<input type="button" name="close" value="Close" class="modal_close" />
+			</label></p>
+		</fieldset>
 	</form>
 	<form id="person_form" action="/" method="post">
-		<p><label>Name: <input type="text" name="title" /></label></p>
-		<p><label>Art: <input type="text" name="art" /></label></p>
-		<p><label>Contact: <input type="text" name="contact" /></label></p>
-		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><input type="button" name="send_person" value="Send person" /></p>
+		<fieldset>
+			<legend>Person</legend>
+			<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+			<p><label><span>Art:</span><input type="text" name="art" /></label></p>
+			<p><label><span>Contact:</span><input type="text" name="contact" /></label></p>
+			<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+			<p><label><span>&nbsp;</span><input type="button" name="send_person" value="Send person" /></label></p>
+		</fieldset>
 	</form>
 	<form id="art_form" action="/" method="post">
-		<p><label>Name: <input type="text" name="title" /></label></p>
-		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><input type="button" name="send_art" value="Send art" /></p>
+		<fieldset>
+			<legend>Art</legend>
+			<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+			<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+			<p><label><span>&nbsp;</span><input type="button" name="send_art" value="Send art" /></label></p>
+		</fieldset>
 	</form>
 	<form id="training_form" action="/" method="post">
-		<p><label>Title: <input type="text" name="title" /></label></p>
-		<p><label>Location: <input type="text" name="location" /></label></p>
-		<p><label>Weekday: <select name="weekday"></select></label></p>
-		<p><label>Occurance: <input type="text" name="occurance" /></label></p>
-		<p><label>Start time: <input type="text" name="starttime" /></label></p>
-		<p><label>Duration (minutes): <input type="text" name="duration" /></label></p>
-		<p><label>Art: <select name="art"></select></label></p>
-		<p><input type="button" name="send_training" value="Send training" /></p>
+		<fieldset>
+			<legend><a href="#">Training</a></legend>
+			<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+			<p><label><span>Location:</span><input type="text" name="location" /></label></p>
+			<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
+			<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
+			<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
+			<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
+			<p><label><span>Art:</span><select name="art"></select></label></p>
+			<p><label><span>&nbsp;</span><input type="button" name="send_training" value="Send training" /></label></p>
+		</fieldset>
 	</form>
+
+<form id="example2">
+	<div class="box">
+		<h1>Contact Form :</h1>
+		<label>
+			<span>Full name</span>
+			<input type="text" class="input_text" name="name" id="name"/>
+		</label>
+		<label>
+			<span>Email</span>
+			<input type="text" class="input_text" name="email" id="email"/>
+		</label>
+		<label>
+			<span>Subject</span>
+			<input type="text" class="input_text" name="subject" id="subject"/>
+		</label>
+		<label>
+			<span>Message</span>
+			<textarea class="message" name="feedback" id="feedback"></textarea>
+			<input type="button" class="button" value="Submit Form" />
+		</label>
+	</div>
+</form>
+
+
+
 </body>
 </html>
