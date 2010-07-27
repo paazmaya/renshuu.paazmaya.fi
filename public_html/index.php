@@ -78,94 +78,7 @@ $colors = array(
 	<script type="text/javascript" src="/js/jquery.clickoutside.js"></script>
 	<script type="text/javascript" src="/js/jquery.gomap-1.0.1.js"></script>
 	<script type="text/javascript">
-		var ajaxpoint = { get: '/ajax/get/', set: '/ajax/set/' };
-		var map;
-		var geocoder;
 		
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
-		
-		$(document).ready(function() {
-			$("#map").goMap({ 
-				scaleControl: true,
-				maptype: 'ROADMAP',
-				mapTypeControl: true, 
-				mapTypeControlOptions: { 
-					position: 'TOP_LEFT', 
-					style: 'DROPDOWN_MENU' 
-				},
-				navigationControl: true, 
-				navigationControlOptions: { 
-					position: 'TOP_LEFT', 
-					style: 'SMALL'
-				} 
-			}).resizable();
-			
-			$('#list li a').click(function() {
-				var attr = { type: $(this).parent().attr('') };
-				$.get(ajaxpoint.get + 'location/' + $(this).attr('rev'), attr, function(data, status) {
-					var len = data.response.length;
-					for (var i = 0; i < len; ++i) {
-						var item = data.response[i];
-						var icon = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + encodeURI(item.name.substr(0, 1)) + '|AA0000|FCFCFC&chof=png';
-						console.log("icon: " + icon);						
-						$.goMap.createMarker({  
-							latitude: item.latitude, 
-							longitude: item.longitude, 
-							draggable: true,
-							title: item.name,
-							icon: icon,
-							html: '<a href="' + item.url + '" title="' + item.name + '">' + item.url + '</a>'
-						});
-						
-					}
-				}, 'json');
-				return false;				
-			});
-			
-			$('#new_location').click(function() {
-				createLocation();
-				return false;
-			});
-		});
-		
-		function createLocation() {
-			$('<div></div>').html('Select a position from the map by clicking it.').dialog({
-				title: "Create a new location",
-				width: 400,
-				height: 300,
-				buttons: {
-					"Ok": function() {
-						var location = {
-							latitude: lat,
-							longitude: lng
-						};
-						$.post(ajaxpoint.set + 'location', location, function (data, status) {
-							$(this).dialog("close");
-						}, 'json');
-					}
-				}
-			});
-			$.goMap.one('click', function(){
-				// Create marker
-				// Consecutive clicks move this marker to a new position
-			});
-		}
-		
-		/**
-		* @param target The select element as jQuery object
-		* @param type String defining the type of the data to be fetched
-		*/
-		function loadOptions(target, type) {
-			var append = '';
-			$.get(ajaxpoint.get + type, {}, function(data, status) {
-				var len = data.response.length;
-				for (var i = 0; i < len; ++i) {
-					var item = data.response[i];
-					append += '<' + 'option value="' + item.id + '">' + item.title + '<' + '/option>';
-				}
-				target.children('option').replace(append);
-			});
-		}
 	</script>
 </head>
 <?php
@@ -206,38 +119,6 @@ while($res = $run->fetch(PDO::FETCH_ASSOC))
 			</ul>
 		</div>
 	</div>
-	<form id="location_form" action="/" style="display:none;">
-		<p><label>Title: <input type="text" name="title" /></label></p>
-		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><label>Address(if any): <input type="text" name="address" /></label></p>
-		<p><label>Auto fill address from map position: <input type="checkbox" name="addr_autofill" /></label></p>
-		<p><label>Latitude: <input type="text" name="latitude" /></label></p>
-		<p><label>Longitude: <input type="text" name="longitude" /></label></p>
-		<p><input type="button" name="send_location" value="Send location" /></p>
-	</form>
-	<form id="person_form" action="/" style="display:none;">
-		<p><label>Name: <input type="text" name="title" /></label></p>
-		<p><label>Art: <select name="art"></select></label></p>
-		<p><label>Contact: <input type="text" name="contact" /></label></p>
-		<p><label>Info: <input type="text" name="info" /></label></p>
-		<p><input type="button" name="send_person" value="Send person" /></p>
-	</form>
-	<form id="art_form" action="/" style="display:none;">
-		<p><label>Name: <input type="text" name="title" /></label></p>
-		<p><label>URI: <input type="text" name="uri" /></label></p>
-		<p><input type="button" name="send_art" value="Send art" /></p>
-	</form>
-	<form id="training_form" action="/" style="display:none;">
-		<p><label>Title: <input type="text" name="title" /></label></p>
-		<p><label>Location: <select name="location"></select></label></p>
-		<p><label>Weekday: <select name="weekday"></select></label></p>
-		<p><label>Occurance: <input type="text" name="occurance" /></label></p>
-		<p><label>Start time: <input type="text" name="starttime" /></label></p>
-		<p><label>Duration (minutes): <input type="text" name="duration" /></label></p>
-		<p><label>Art: <select name="art"></select></label></p>
-		<p><input type="button" name="send_training" value="Send training" /></p>
-	</form>
 </body>
 <?php
 
