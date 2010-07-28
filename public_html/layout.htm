@@ -13,11 +13,6 @@
 	  hr {
 		display: block;
 	}
-  #mapCanvas {
-    width: 500px;
-    height: 400px;
-    float: left;
-  }
   #infoPanel {
     float: left;
     margin-left: 10px;
@@ -26,9 +21,9 @@
     margin-bottom: 5px;
   }
   </style>
-  
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=ja"></script>
-	
+
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja"></script>
+
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.2.min.js"></script>
 
@@ -36,217 +31,86 @@
 	<script type="text/javascript" src="js/jstore/class.js"></script>
 	<script type="text/javascript" src="js/jstore/browser.json.js"></script>
 	<script type="text/javascript" src="js/jstore/jquery.jstore.js"></script>
-	
+
 	<script type="text/javascript" src="js/jquery.json-2.2.js"></script>
 	<script type="text/javascript" src="js/jstorage.js"></script>
 
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-	<script type="text/javascript" src="js/jquery.gomap-1.0.1.js"></script>
-
 	<script type="text/javascript" src="js/jquery.curvycorners.js"></script>
 	<script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
-	
+
 	<script type="text/javascript" src="js/jquery.simplemodal-1.3.5.js"></script>
 	
+	<script type="text/javascript" src="js/renshuusurutoki.js"></script>
+
 	<script type="text/javascript">
-		var ajaxpoint = { get: '/ajax/get/', set: '/ajax/set/' };
-		var map;
-		var geocoder;
-		var streetview; //StreetViewPanorama
-		
-var gYellowIcon = new google.maps.MarkerImage(
-      "http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=FFFF00FF,FFFF00FF,000000FF&ext=.png",
-      new google.maps.Size(32, 32),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(16, 16));
-var gRedIcon = new google.maps.MarkerImage(
-      "http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=FF0000FF,FF0000FF,000000FF&ext=.png",
-      new google.maps.Size(32, 32),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(16, 16));
-	  
+
+
+
 
 function updateMarkerStatus(str) {
-  document.getElementById('markerStatus').innerHTML = str;
+	$('#location_form input[name=info]').val(str);
 }
 
 function updateMarkerPosition(latLng) {
-  document.getElementById('info').innerHTML = [
-    latLng.lat(),
-    latLng.lng()
-  ].join(', ');
+	$('#location_form input[name=latitude]').val(latLng.lat());
+	$('#location_form input[name=longitude]').val(latLng.lng());
 }
 
 function updateMarkerAddress(str) {
-  document.getElementById('address').innerHTML = str;
+	$('#location_form input[name=address]').val(str);
 }
 
-function initialize() {
-
-	latLng = map.getCenter();
-  var marker = new google.maps.Marker({
-    position: latLng,
-    title: 'Point A',
-    map: map,
-    draggable: true
-  });
-  marker.setOptions({icon: gYellowIcon});
-  
-  // Update current position info.
-  updateMarkerPosition(latLng);
-  datacalls.geocodePosition(latLng);
-  
-  // Add dragging event listeners.
-  google.maps.event.addListener(marker, 'dragstart', function() {
-	marker.setOptions({icon: gRedIcon});
-    updateMarkerAddress('Dragging...');
-  });
-  
-  google.maps.event.addListener(marker, 'drag', function() {
-    updateMarkerStatus('Dragging...');
-    updateMarkerPosition(marker.getPosition());
-  });
-  
-  google.maps.event.addListener(marker, 'dragend', function() {
-    marker.setOptions({icon: gYellowIcon});
-    updateMarkerStatus('Drag ended');
-    datacalls.geocodePosition(marker.getPosition());
-  });
-}
-
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
-		/*
-
-*/
-
-var callbacks = {
-	bounds_changed: function () {
-		// This event is fired when the viewport bounds have changed
-	},
-	center_changed: function () {
-		// This event is fired when the map center property changes.
-	},
-	click: function (event) {
-		// This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
-	},
-	dblclick: function (event) {
-		// This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
-	},
-	drag: function () {
-		// This event is repeatedly fired while the user drags the map.
-	},
-	dragend: function () {
-		// This event is fired when the user stops dragging the map.
-	},
-	dragstart: function () {
-		// This event is fired when the user starts dragging the map.
-	},
-	idle: function () {
-		// This event is fired when the map becomes idle after panning or zooming.
-	},
-	maptypeid_changed: function () {
-		// This event is fired when the mapTypeId property changes.
-	},
-	mousemove: function (event) {
-		// This event is fired whenever the user's mouse moves over the map container.
-	},
-	mouseout: function (event) {
-		// This event is fired when the user's mouse exits the map container.
-	},
-	mouseover: function (event) {
-		// This event is fired when the user's mouse enters the map container.
-	},
-	projection_changed: function () {
-		// This event is fired when the projection has changed.
-	},
-	rightclick: function (event) {
-		// This event is fired when the DOM contextmenu event is fired on the map container.
-	},
-	tilesloaded: function () {
-		// This event is fired when the visible tiles have finished loading.
-	},
-	zoom_changed: function () {
-		// This event is fired when the map zoom property changes.
-	}
-};
-
-var datacalls = {
-	getPoints: function(bounds) {
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html#LatLngBounds
-		var ne = bounds.getNorthEast();
-		var sw = bounds.getSouthWest();
-		console.log("bounds: " + bounds.toString());
-		console.log("ne: " + ne.toString());
-		console.log("sw: " + sw.toString());
-	},
-	geocodePosition: function (pos) {
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html#Geocoder
-		geocoder.geocode(
-			{ location: pos, language: 'ja' },
-			function (results, status) {
-				if (results && results.length > 0) {
-					updateMarkerAddress(results[0].formatted_address);
-				}
-				else {
-					updateMarkerAddress('Cannot determine address at this location.');
-				}
-			}
-		);
-	}
-};
 
 		$(document).ready(function() {
-			geocoder = new google.maps.Geocoder();
-			map = new google.maps.Map(document.getElementById('mapCanvas'), {
-				zoom: 8,
-				center: new google.maps.LatLng(35.27655600992416, 136.25263971710206),
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			});
-			initialize();
-		
-			$(window).resize(function() {
-				google.maps.event.trigger(map, 'resize');
-				$('body').prepend('<div>' + $(window).width() + '</div>');
-			});
+			var hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
+			$.reshuuSuruToki.init(
+				$('#map').get(0), 
+				$('#street').get(0),
+				{
+					center: hikone
+				},
+				{
+					enableCloseButton: true,
+					visible: false
+				}
+			);
 			
-			google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
-			google.maps.event.addListener(map, 'center_changed', callbacks.center_changed);
-			google.maps.event.addListener(map, 'click', callbacks.click);
-			google.maps.event.addListener(map, 'dblclick', callbacks.dblclick);
-			google.maps.event.addListener(map, 'drag', callbacks.drag);
-			google.maps.event.addListener(map, 'dragend', callbacks.dragend);
-			google.maps.event.addListener(map, 'dragstart', callbacks.dragstart);
-			google.maps.event.addListener(map, 'idle', callbacks.idle);
-			google.maps.event.addListener(map, 'maptypeid_changed', callbacks.maptypeid_changed);
-			google.maps.event.addListener(map, 'mousemove', callbacks.mousemove);
-			google.maps.event.addListener(map, 'mouseout', callbacks.mouseout);
-			google.maps.event.addListener(map, 'mouseover', callbacks.mouseover);
-			google.maps.event.addListener(map, 'projection_changed', callbacks.projection_changed);
-			google.maps.event.addListener(map, 'rightclick', callbacks.rightclick);
-			google.maps.event.addListener(map, 'tilesloaded', callbacks.tilesloaded);			
-			google.maps.event.addListener(map, 'zoom_changed', callbacks.zoom_changed);
+			var latLng = $.reshuuSuruToki.map.getCenter();
+			var marker = $.reshuuSuruToki.pins.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
+
+			// Update current position info.
+			updateMarkerPosition(latLng);
+			$.reshuuSuruToki.data.geocodePosition(latLng);
+
+			// Add dragging event listeners.
+			google.maps.event.addListener(marker, 'dragstart', function() {
+				marker.setOptions({icon: $.reshuuSuruToki.pins.gRedIcon()});
+				updateMarkerAddress('Dragging...');
+			});
+
+			google.maps.event.addListener(marker, 'drag', function() {
+				updateMarkerStatus('Dragging...');
+				updateMarkerPosition(marker.getPosition());
+			});
+
+			google.maps.event.addListener(marker, 'dragend', function() {
+				marker.setOptions({icon: $.reshuuSuruToki.pins.gYellowIcon()});
+				updateMarkerStatus('Drag ended');
+				$.reshuuSuruToki.data.geocodePosition(marker.getPosition());
+
+				$.reshuuSuruToki.streetview.setPosition(marker.getPosition());
+				$.reshuuSuruToki.streetview.setVisible(true);
+			});
+
 			
+			
+
 			$('#get_bounds').click(function() {
-				var bounds = map.getBounds();
-				datacalls.getPoints(bounds);
+				$.reshuuSuruToki.getViewBounds();
 				return false;
 			});
 
-			$("#map").goMap({ 
-				scaleControl: true,
-				maptype: 'ROADMAP',
-				mapTypeControl: true, 
-				mapTypeControlOptions: { 
-					position: 'TOP_LEFT', 
-					style: 'DROPDOWN_MENU' 
-				},
-				navigationControl: true, 
-				navigationControlOptions: { 
-					position: 'TOP_LEFT', 
-					style: 'SMALL'
-				} 
-			}).resizable();
-			
+
 			$('#list li a').click(function() {
 				var attr = { type: $(this).parent().attr('') };
 				$.get(ajaxpoint.get + 'location/' + $(this).attr('rev'), attr, function(data, status) {
@@ -254,27 +118,19 @@ var datacalls = {
 					for (var i = 0; i < len; ++i) {
 						var item = data.response[i];
 						var icon = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + encodeURI(item.name.substr(0, 1)) + '|AA0000|FCFCFC&chof=png';
-						console.log("icon: " + icon);						
-						$.goMap.createMarker({  
-							latitude: item.latitude, 
-							longitude: item.longitude, 
-							draggable: true,
-							title: item.name,
-							icon: icon,
-							html: '<a href="' + item.url + '" title="' + item.name + '">' + item.url + '</a>'
-						});
+						console.log("icon: " + icon);
 						
 					}
 				}, 'json');
-				return false;				
+				return false;
 			});
-			
+
 			$('#new_location').click(function() {
 				createLocation();
 				return false;
 			});
 		});
-		
+
 		function createLocation() {
 			$('<div></div>').html('Select a position from the map by clicking it.').dialog({
 				title: "Create a new location",
@@ -286,18 +142,14 @@ var datacalls = {
 							latitude: lat,
 							longitude: lng
 						};
-						$.post(ajaxpoint.set + 'location', location, function (data, status) {
+						$.post(ajaxpoint.set + 'location', location, function(data, status) {
 							$(this).dialog("close");
 						}, 'json');
 					}
 				}
 			});
-			$.goMap.one('click', function(){
-				// Create marker
-				// Consecutive clicks move this marker to a new position
-			});
 		}
-		
+
 		/**
 		* @param target The select element as jQuery object
 		* @param type String defining the type of the data to be fetched
@@ -313,30 +165,30 @@ var datacalls = {
 				target.children('option').replace(append);
 			});
 		}
-		
-		
-		
+
+
+
 		// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderStatus
 		// http://marcgrabanski.com/articles/jquery-google-maps-tutorial-ajax-php-mysql
 
-		function geoEncode() { 
-			var address = $("#add-point input[name=address]").val(); 
-			geo.getLocations(address, function (result){ 
-			if (result.Status.code == G_GEO_SUCCESS) { 
-				geocode = result.Placemark[0].Point.coordinates; savePoint(geocode); 
-			} 
-			else { 
-				var reason="Code"+result.Status.code; 
-				if (reasons[result.Status.code]) { 
-				reason = reasons[result.Status.code] 
-			} 
-			$("#add-point .error").html(reason).fadeIn(); 
-				geocode = false; 
-			} 
-			}); 
+		function geoEncode() {
+			var address = $("#add-point input[name=address]").val();
+			geo.getLocations(address, function(result){
+			if (result.Status.code == G_GEO_SUCCESS) {
+				geocode = result.Placemark[0].Point.coordinates; savePoint(geocode);
+			}
+			else {
+				var reason="Code"+result.Status.code;
+				if (reasons[result.Status.code]) {
+				reason = reasons[result.Status.code]
+			}
+			$("#add-point .error").html(reason).fadeIn();
+				geocode = false;
+			}
+			});
 		}
-		
-		
+
+
 		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
 
 		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
@@ -356,50 +208,6 @@ var datacalls = {
 			]
 		};
 
-		// First, we must tell jStore where to find the HTML file which embeds our flash script.
-		// If you move the jStore.swf or jStore.Flash.html files out of their default directories (document root),
-		// use this variable to define where to access the .html file. Within the .html file, you can set up the
-		// path to the .swf file.
-		// Then, set up the default engine we wish to use.
-		$.extend($.jStore.defaults, {
-			project: 'demo-guide',
-			engine: 'flash',
-			flash: 'js/jstore/jStore.Flash.html'
-		})
-
-		// Next, we need to wait for jStore to prepare the storage engine
-		$.jStore.ready(function(engine){
-			$.jStore.flashReady(function(){
-				  // Finally, we need to wait for the storage engine to be ready.
-				  // Once this function is called, you can use the jStore interface synchronously
-				  engine.ready(function(){
-					  var engine = this,
-						  counter = (engine.get('counter') || 0)*1, original = counter;
-					  counter++;      // Incrememnt the counter
-					  alert('Original Value: ' + original + "\n"
-						  + 'New Value: ' + counter + "\n"
-						  + 'Setting Value: ' + engine.set('counter', counter) + "\n"
-						  + 'Fetching Value: ' + engine.get('counter'));
-
-					  if (counter == 5){
-						  var lastValue = engine.rem('counter');      // Clear the value
-						  alert('Resetting Counter at ' + counter);   // Alert the last value of the counter
-					  }
-				})
-			})
-		});
-
-		// Once the engine is prepared, we can do whatever we need with it
-		$('a').click(function(){
-			  $.jStore.set('link_title', $(this).attr('title'));
-
-			  // And, if you find it necessary, you can access the storage engine in a jQuery chain.
-			  // Storing values will allow you to keep chaining, but requesting a variable will return
-			  //    that value, stopping the chain.
-			  $(this).css('display', 'block').store('myval', 30).attr('href', '#').store('myval');
-
-			  return false;
-		});
 
 		$(document).ready(function() {
 			$("input[name=art]")
@@ -442,7 +250,7 @@ var datacalls = {
 			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
 
 			//$.jStore.load();
-			
+
 			var roundedCorners = {
 				tl: { radius: 20 },
 				tr: { radius: 20 },
@@ -453,7 +261,7 @@ var datacalls = {
 				validTags: ["fieldset"]
 			};
 			$('fieldset').corner(roundedCorners);
-			
+
 			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
 			$('span[name=durationslider]').slider({
 				range: 'min',
@@ -466,7 +274,7 @@ var datacalls = {
 			});
 			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
 
-			
+
 			$('#new_location').click(function() {
 				openModal('#location_form');
 				return false;
@@ -475,19 +283,19 @@ var datacalls = {
 		});
 
 		// http://www.ericmmartin.com/projects/simplemodal/
-		var openModal = function (id) {
+		var openModal = function(id) {
 			$.modal($(id), {
-				onOpen: function (dialog) {
-					dialog.overlay.fadeIn('slow', function () {
-						dialog.container.slideDown('slow', function () {
+				onOpen: function(dialog) {
+					dialog.overlay.fadeIn('slow', function() {
+						dialog.container.slideDown('slow', function() {
 							dialog.data.fadeIn('slow');
 						});
 					});
 				},
-				onClose: function (dialog) {
-					dialog.data.fadeOut('slow', function () {
-						dialog.container.hide('slow', function () {
-							dialog.overlay.slideUp('slow', function () {
+				onClose: function(dialog) {
+					dialog.data.fadeOut('slow', function() {
+						dialog.container.hide('slow', function() {
+							dialog.overlay.slideUp('slow', function() {
 								$.modal.close();
 							});
 						});
@@ -503,6 +311,9 @@ var datacalls = {
 2010-07-27
 Disturbed: Another way to die
 
+28
+Rammstein: ich tu dir weh
+Bullet for my valentine: the last fight
 */
 	</script>
 </head>
@@ -513,11 +324,22 @@ Disturbed: Another way to die
 		</div>
 		<a title="jstore" href="test.x">Click Me</a>
 	</div>
-	
+
 	<hr />
-	
+
 	<div id="map" class="ui-widget-content">Google Maps V3</div>
-	
+	<div id="street">Google Maps Street View</div>
+
+	<div id="infoPanel">
+		<b>Marker status:</b>
+		<div id="markerStatus"><i>Click and drag the marker.</i></div>
+		<b>Current position:</b>
+		<div id="info"></div>
+		<b>Closest matching address:</b>
+		<div id="address"></div>
+		<a href="#" id="get_bounds">get bounds</a>
+	</div>
+
 	<hr />
 <div>
 	<form id="location_form" action="/" method="post">
@@ -578,7 +400,7 @@ Disturbed: Another way to die
 		</fieldset>
 	</form>
 </div>
-	
+
 	<hr />
 
 <form id="example2">
@@ -604,19 +426,8 @@ Disturbed: Another way to die
 	</div>
 </form>
 
-	
-	<hr />
 
-  <div id="mapCanvas"></div>
-  <div id="infoPanel">
-    <b>Marker status:</b>
-    <div id="markerStatus"><i>Click and drag the marker.</i></div>
-    <b>Current position:</b>
-    <div id="info"></div>
-    <b>Closest matching address:</b>
-    <div id="address"></div>
-	<a href="#" id="get_bounds">get bounds</a>
-  </div>
+	<hr />
 
 </body>
 </html>

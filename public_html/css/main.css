@@ -15,6 +15,7 @@ body { background-color: #AA1515; color: #F1EFFF; }
 a { color: #F1EFFF; }
 #wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid #100212; }
 #map { width: 50%; height: 700px; border: 1px solid #100212; float: left; }
+#street { width: 50%; height: 300px; border: 1px solid #100212; display: none; /*float: left; */}
 
 form { background-color: #AA1515; }
 legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 2px 6px; margin-left: 10%; }
