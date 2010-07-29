@@ -13,69 +13,76 @@
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
 		streetview: null, //StreetViewPanorama
 		
+		// Default filter settings
+		filterSettings: {
+			arts: [],
+			weekdays: []
+		},
+		
+		geocodeMarkers: [],
+		trainingMarkers: [],
+		
 		getViewBounds: function() {
 			var bounds = $.reshuuSuruToki.map.getBounds();
 			$.reshuuSuruToki.data.getPoints(bounds);
 			return bounds;
+		},
+		
+		init: function(map_element, street_element, map_options, street_options) {
+			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
+			
+			var hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
+			var zoom = 8;
+			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
+			var opts = {
+				center: hikone,
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: true,
+				mapTypeControlOptions: {
+					position: google.maps.ControlPosition.TOP_LEFT,
+					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+				},
+				navigationControl: true,
+				navigationControlOptions: {
+					position: google.maps.ControlPosition.TOP_LEFT,
+					style: google.maps.NavigationControlStyle.SMALL
+				},
+				scaleControl: true,
+				scaleControlOptions: {
+					position: google.maps.ControlPosition.BOTTOM,
+					style: google.maps.ScaleControlStyle.DEFAULT
+				},
+				zoom: zoom
+			};
+			
+			opts = $.extend(true, {}, opts, map_options);
+			$.reshuuSuruToki.map = new google.maps.Map(map_element, opts);
+		
+			$.reshuuSuruToki.streetview = new google.maps.StreetViewPanorama(street_element, street_options);
+			
+			
+			google.maps.event.addListener($.reshuuSuruToki.streetview, 'closeclick', function(event) {
+			});
+			google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
+				if ($.reshuuSuruToki.streetview.getVisible()) {
+					$(street_element).slideDown();
+				}
+				else {
+					$(street_element).slideUp();
+				}
+			});
+			
+			$.reshuuSuruToki.callbacks.initiate();
+		
+			$(window).resize(function() {
+				google.maps.event.trigger($.reshuuSuruToki.map, 'resize');
+				google.maps.event.trigger($.reshuuSuruToki.streetview, 'resize');
+			});
 		}
-	};
 		
-	$.reshuuSuruToki.init = function(map_element, street_element, map_options, street_options) {
-		$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
-		
-		var hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
-		var zoom = 8;
-		// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
-		var opts = {
-			center: hikone,
-			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			mapTypeControl: true,
-			mapTypeControlOptions: {
-				position: google.maps.ControlPosition.TOP_LEFT,
-				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-			},
-			navigationControl: true,
-			navigationControlOptions: {
-				position: google.maps.ControlPosition.TOP_LEFT,
-				style: google.maps.NavigationControlStyle.SMALL
-			},
-			scaleControl: true,
-			scaleControlOptions: {
-				position: google.maps.ControlPosition.BOTTOM,
-				style: google.maps.ScaleControlStyle.DEFAULT
-			},
-			zoom: zoom
-		};
-		
-		opts = $.extend(true, {}, opts, map_options);
-		$.reshuuSuruToki.map = new google.maps.Map(map_element, opts);
-		
-		
-		$.reshuuSuruToki.streetview = new google.maps.StreetViewPanorama(street_element, street_options);
-		
-		
-		google.maps.event.addListener($.reshuuSuruToki.streetview, 'closeclick', function(event) {
-		});
-		google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
-			if ($.reshuuSuruToki.streetview.getVisible()) {
-				$(street_element).slideDown();
-			}
-			else {
-				$(street_element).slideUp();
-			}
-		});
-		
-		$.reshuuSuruToki.callbacks.initiate();
-	
-		$(window).resize(function() {
-			google.maps.event.trigger($.reshuuSuruToki.map, 'resize');
-			google.maps.event.trigger($.reshuuSuruToki.streetview, 'resize');
-		});
-
 	};
 	
 	$.reshuuSuruToki.data = {
-		geocodeMarkers: [],
 		
 		getPoints: function(bounds) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLngBounds
@@ -84,15 +91,48 @@
 			//console.log("bounds: " + bounds.toString());
 			console.log("ne: " + ne.toString());
 			console.log("sw: " + sw.toString());
+			
+			var para = {
+				area: {
+					northeast: [ne.lat(), ne.lng()],
+					southwest: [sw.lat(), sw.lng()]
+				},
+				filter: $.reshuuSuruToki.filterSettings
+			};
 
-			$.post($.reshuuSuruToki.ajaxpoint.get, {}, function(data, status) {
+			$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
+				var len = data.results.length;
+				for (var i = 0; i < len; ++i) {
+					createTrainingMarker(data.results[i]);
+				}				
 			}, 'json');
+		},
+		
+		/*
+		data: {
+			training: {
+				art: '',
+				weekday: 0,
+				starttime: 0,
+				endtime: 0
+			}
+			location: {
+				latitude: 0.0,
+				longitude: 0.0,
+				title: '',
+				url: '',
+				address: ''
+			}
+			
+		*/
+		createTrainingMarker: function(data) {
+			
 		},
 			
 		geocodePosition: function(pos) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 			// Clear earlier geocode markers
-			$.reshuuSuruToki.data.geocodeMarkers = [];
+			$.reshuuSuruToki.geocodeMarkers = [];
 			$.reshuuSuruToki.geocoder.geocode(
 				{ location: pos, language: 'ja' },
 				function(results, status) {
@@ -102,7 +142,7 @@
 							// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html#GeocoderResult
 							var res = results[i];
 							var marker = $.reshuuSuruToki.pins.createMarker(res.geometry.location, res.formatted_address, $.reshuuSuruToki.pins.getLetter(i + 1), false);
-							$.reshuuSuruToki.data.geocodeMarkers.push(marker);
+							$.reshuuSuruToki.geocodeMarkers.push(marker);
 							
 							console.log('---- result ' + i);
 							for (var j in res) {
@@ -207,7 +247,6 @@
 	};
 	
 	$.reshuuSuruToki.pins = {
-		hoplaa: '',
 		getMarkerImage: function(image) {
 			return new google.maps.MarkerImage(image);
 		},

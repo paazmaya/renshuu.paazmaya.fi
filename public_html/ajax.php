@@ -3,16 +3,22 @@
 RENSHUU.PAAZMAYA.COM
 *******************/
 /**
-* Possible commands:
+* Possible commands as the first part of the url after "ajax":
 * - get
 * - set.
 *
-* Possible parametres:
+* Possible GET parametres:
 * - location
 * - art
 * - training
 * - person
 * - ...
+*
+* Possible POST parametres, arrays contain numerical data:
+* - area { northeast [], southwest [] }
+* - filter { arts [], weekdays [] }
+*
+* Weekdays zero indexed, starting from Sunday.
 *
 * Output should always be of the following form:
 *	response: [
