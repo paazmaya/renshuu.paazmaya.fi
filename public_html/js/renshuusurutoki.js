@@ -82,6 +82,140 @@
 		
 	};
 	
+	/*
+	Marker data from the backend.
+	data: {
+		training: {
+			id: 0,
+			art: {
+				id: 0,
+				title: ''
+			},
+			weekday: 0,
+			starttime: 0,
+			endtime: 0
+		},
+		location: {
+			id: 0,
+			latitude: 0.0,
+			longitude: 0.0,
+			title: '',
+			url: '',
+			address: ''
+		},
+		person: {}
+	}
+	*/
+	$.reshuuSuruToki.markers = {
+	
+		clearMarkers: function(list) {
+			var len = list.length;
+			for (var i = 0; i < len; ++i) {
+				var marker = list[i];
+				marker.setMap(null);
+			}
+			list = [];
+		},
+		
+		createMarker: function(pos, title, icon, drag) {
+			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
+			if (!icon) {
+				icon = $.reshuuSuruToki.pins.getIcon();
+			}
+			var marker = new google.maps.Marker({
+				position: pos,
+				title: title,
+				map: $.reshuuSuruToki.map,
+				draggable: drag,
+				icon: icon
+			});
+			
+			
+			google.maps.event.addListener(marker, 'drag', function() {
+				updateMarkerStatus('Dragging...');
+				updateMarkerPosition(marker.getPosition());
+			});
+			google.maps.event.addListener(marker, 'dragend', function() {
+				marker.setOptions({icon: $.reshuuSuruToki.pins.gYellowIcon()});
+				updateMarkerStatus('Drag ended');
+				$.reshuuSuruToki.data.geocodePosition(marker.getPosition());
+
+				$.reshuuSuruToki.streetview.setPosition(marker.getPosition());
+				$.reshuuSuruToki.streetview.setVisible(true);
+			});
+			
+			google.maps.event.addListener(marker, 'click', function(event) {
+				// This event is fired when the marker icon was clicked.
+			});
+			google.maps.event.addListener(marker, 'clickable_changed', function() {
+				// This event is fired when the marker's clickable property changes.
+			});
+			google.maps.event.addListener(marker, 'cursor_changed', function() {
+				// This event is fired when the marker's cursor property changes.
+			});
+			google.maps.event.addListener(marker, 'dblclick', function(event) {
+				// This event is fired when the marker icon was double clicked.
+			});
+			google.maps.event.addListener(marker, 'drag', function(event) {
+				// This event is repeatedly fired while the user drags the marker.
+			});
+			google.maps.event.addListener(marker, 'dragend', function(event) {
+				// This event is fired when the user stops dragging the marker.
+			});
+			google.maps.event.addListener(marker, 'draggable_changed', function() {
+				// This event is fired when the marker's draggable property changes.
+			});
+			google.maps.event.addListener(marker, 'dragstart', function(event) {
+				// This event is fired when the user starts dragging the marker.
+			});
+			google.maps.event.addListener(marker, 'flat_changed', function() {
+				// This event is fired when the marker's flat property changes.
+			});
+			google.maps.event.addListener(marker, 'icon_changed', function() {
+				// This event is fired when the marker icon property changes.
+			});
+			google.maps.event.addListener(marker, 'mousedown', function(event) {
+				// This event is fired when the DOM mousedown event is fired on the marker icon.
+			});
+			google.maps.event.addListener(marker, 'mouseout', function(event) {
+				// This event is fired when the mouse leaves the area of the marker icon.
+			});
+			google.maps.event.addListener(marker, 'mouseover', function(event) {
+				// This event is fired when the mouse enters the area of the marker icon.
+			});
+			google.maps.event.addListener(marker, 'mouseup', function(event) {
+				// This event is fired for the DOM mouseup on the marker.
+			});
+			google.maps.event.addListener(marker, 'position_changed', function() {
+				// This event is fired when the marker position property changes.
+			});
+			google.maps.event.addListener(marker, 'rightclick', function(event) {
+				// This event is fired when the marker is right clicked on.
+			});
+			google.maps.event.addListener(marker, 'shadow_changed', function() {
+				// This event is fired when the marker's shadow property changes.
+			});
+			google.maps.event.addListener(marker, 'shape_changed', function() {
+				// This event is fired when the marker's shape property changes.
+			});
+			google.maps.event.addListener(marker, 'title_changed', function() {
+				// This event is fired when the marker title property changes.
+			});
+			google.maps.event.addListener(marker, 'visible_changed', function() {
+				// This event is fired when the marker's visible property changes.
+			});
+			google.maps.event.addListener(marker, 'zindex_changed', function() {
+				// This event is fired when the marker's zIndex property changes.
+			});
+			
+			return marker;
+		},
+		
+		createTrainingMarker: function(data) {
+			
+		}
+	};
+	
 	$.reshuuSuruToki.data = {
 		
 		getPoints: function(bounds) {
@@ -107,27 +241,6 @@
 				}				
 			}, 'json');
 		},
-		
-		/*
-		data: {
-			training: {
-				art: '',
-				weekday: 0,
-				starttime: 0,
-				endtime: 0
-			}
-			location: {
-				latitude: 0.0,
-				longitude: 0.0,
-				title: '',
-				url: '',
-				address: ''
-			}
-			
-		*/
-		createTrainingMarker: function(data) {
-			
-		},
 			
 		geocodePosition: function(pos) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
@@ -141,7 +254,7 @@
 						for (var i = 0; i < len; ++i) {
 							// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html#GeocoderResult
 							var res = results[i];
-							var marker = $.reshuuSuruToki.pins.createMarker(res.geometry.location, res.formatted_address, $.reshuuSuruToki.pins.getLetter(i + 1), false);
+							var marker = $.reshuuSuruToki.markers.createMarker(res.geometry.location, res.formatted_address, $.reshuuSuruToki.pins.getLetter(i + 1), false);
 							$.reshuuSuruToki.geocodeMarkers.push(marker);
 							
 							console.log('---- result ' + i);
@@ -271,19 +384,6 @@
 				color = '000000';
 			}
 			return $.reshuuSuruToki.pins.getMarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color + '&ext=.png');
-		},
-		createMarker: function(pos, title, icon, drag) {
-			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
-			if (!icon) {
-				icon = $.reshuuSuruToki.pins.getIcon();
-			}
-			return new google.maps.Marker({
-				position: pos,
-				title: title,
-				map: $.reshuuSuruToki.map,
-				draggable: drag,
-				icon: icon
-			});
 		},
 		
 		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'FF00CC'); },

@@ -80,31 +80,12 @@ function updateMarkerAddress(str) {
 			);
 			
 			var latLng = $.reshuuSuruToki.map.getCenter();
-			var marker = $.reshuuSuruToki.pins.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
+			var marker = $.reshuuSuruToki.markers.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
 
 			// Update current position info.
 			updateMarkerPosition(latLng);
 			$.reshuuSuruToki.data.geocodePosition(latLng);
 
-			// Add dragging event listeners.
-			google.maps.event.addListener(marker, 'dragstart', function() {
-				marker.setOptions({icon: $.reshuuSuruToki.pins.gRedIcon()});
-				updateMarkerAddress('Dragging...');
-			});
-
-			google.maps.event.addListener(marker, 'drag', function() {
-				updateMarkerStatus('Dragging...');
-				updateMarkerPosition(marker.getPosition());
-			});
-
-			google.maps.event.addListener(marker, 'dragend', function() {
-				marker.setOptions({icon: $.reshuuSuruToki.pins.gYellowIcon()});
-				updateMarkerStatus('Drag ended');
-				$.reshuuSuruToki.data.geocodePosition(marker.getPosition());
-
-				$.reshuuSuruToki.streetview.setPosition(marker.getPosition());
-				$.reshuuSuruToki.streetview.setVisible(true);
-			});
 
 			
 			
@@ -260,7 +241,6 @@ function updateMarkerAddress(str) {
 				);
 			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
 
-			//$.jStore.load();
 
 			var roundedCorners = {
 				tl: { radius: 20 },
@@ -317,6 +297,7 @@ function updateMarkerAddress(str) {
 					text: 'Yes, that\'s a valid email address!' 
 				}
 			});
+			/*
 			$('input[name=password]').inputNotes({
 				minlength: {
 					pattern: /^(.){0,5}$/i,
@@ -339,7 +320,29 @@ function updateMarkerAddress(str) {
 					text: 'Please use both, small and capitalized letters.' 
 				}
 			});
-
+*/
+			
+			$('#post_data').click(function() {
+				var bounds = $.reshuuSuruToki.map.getBounds();
+				var ne = bounds.getNorthEast();
+				var sw = bounds.getSouthWest();
+				var para = {
+					area: {
+						northeast: [ne.lat(), ne.lng()],
+						southwest: [sw.lat(), sw.lng()]
+					},
+					filter: { 
+						arts: [1, 2],
+						weekdays: [0, 1, 2, 3, 4, 5, 6]
+					}
+				};
+				
+				$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
+					console.log('posted');
+				}, 'json');
+				
+				return false;
+			});
 
 		});
 
@@ -384,7 +387,7 @@ Bullet for my valentine: the last fight
 		<div id="list">
 			<p><a href="#" id="new_location">Create a new location</a></p>
 		</div>
-		<a title="jstore" href="test.x">Click Me</a>
+		<a id="post_data" href="#">Post data test</a>
 	</div>
 
 	<hr />

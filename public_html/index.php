@@ -59,6 +59,38 @@ $colors = array(
 );
 
 
+function scriptElement($src)
+{
+	if (substr($src, 0, 4) != 'http')
+	{
+		$src = '/js/' . $src;
+	}
+	return '<script type="text/javascript" src="' . $src . '"></script>';
+}
+function linkElement($href, $rel)
+{
+	if (substr($href, -3) == 'css')
+	{
+		$rel = '/js/' . $src;
+	}
+	return '<link ';
+}
+
+$linkfiles = array(
+);
+$javascript = array(
+	'http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja',
+	'jquery-1.4.2.min.js',
+	'jquery.timepicker.js',
+	'jquery.clockpick.1.2.7.js',
+	'jquery.inputnotes-0.6.js',
+	'jquery.json-2.2.js',
+	'jstorage.js',
+	'jquery.curvycorners.js',
+	'jquery.autoSuggest.js',
+	'jquery.simplemodal-1.3.5.js',
+	'renshuusurutoki.js',
+);
 
 
 ?>
@@ -72,11 +104,18 @@ $colors = array(
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/main.css" rel="stylesheet" />
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=ja"></script>
-	<script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery-ui-1.8.2.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.clickoutside.js"></script>
-	<script type="text/javascript" src="/js/jquery.gomap-1.0.1.js"></script>
+	<link type="text/css" href="/css/autoSuggest.css" rel="stylesheet" />
+	<link type="text/css" href="/css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
+	<?php
+	foreach($css as $cs)
+	{
+		echo linkElement($cs);
+	}
+	foreach($javascript as $js)
+	{
+		echo scriptElement($js);
+	}
+	?>
 	<script type="text/javascript">
 		
 	</script>
