@@ -46,7 +46,8 @@ RENSHUU.PAAZMAYA.COM
 *	error: string, if any
 */
 
-require_once './config.php';
+require './config.php';
+require './functions.php';
 session_start();
 // http://marcgrabanski.com/articles/jquery-ajax-content-type
 header('Content-type: application/json; charset=utf-8');

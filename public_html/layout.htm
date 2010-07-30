@@ -47,6 +47,8 @@
 
 	<script type="text/javascript" src="js/jquery.simplemodal-1.3.5.js"></script>
 	
+	<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
+	
 	<script type="text/javascript" src="js/renshuusurutoki.js"></script>
 
 	<script type="text/javascript">
@@ -343,6 +345,12 @@ function updateMarkerAddress(str) {
 				
 				return false;
 			});
+			
+			// http://benalman.com/projects/jquery-hashchange-plugin/
+			$(window).hashchange( function() {
+				// Alerts every time the hash changes!
+				console.log( location.hash );
+			});
 
 		});
 
@@ -383,6 +391,7 @@ Bullet for my valentine: the last fight
 	</script>
 </head>
 <body>
+
 	<div id="wrap">
 		<div id="list">
 			<p><a href="#" id="new_location">Create a new location</a></p>

@@ -40,9 +40,25 @@ User level is defined with a matrix build of the following:
 - delete
 
 
+Access to any non / url will be checked against a weekday or an art string,
+and in case matched, redirected to that prepended with a hash (#).
+
 */
 require './config.php';
+require './functions.php';
 session_start();
+
+// As per .htaccess, all requests are redirected to index.php with one GET variable.
+if (isset($_GET['page']) && strlen($_GET['page']) > 0)
+{
+	$uri = '/#' . urize($_GET['page']);
+	
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
+	exit();
+}
+
+
 header('Content-type: text/html; charset=utf-8');
 
 // white: 2.5% gray
@@ -59,25 +75,6 @@ $colors = array(
 );
 
 
-function scriptElement($src)
-{
-	if (substr($src, 0, 4) != 'http')
-	{
-		$src = '/js/' . $src;
-	}
-	return '<script type="text/javascript" src="' . $src . '"></script>';
-}
-function linkElement($href, $rel)
-{
-	if (substr($href, -3) == 'css')
-	{
-		$rel = '/js/' . $src;
-	}
-	return '<link ';
-}
-
-$linkfiles = array(
-);
 $javascript = array(
 	'http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja',
 	'jquery-1.4.2.min.js',
@@ -89,7 +86,8 @@ $javascript = array(
 	'jquery.curvycorners.js',
 	'jquery.autoSuggest.js',
 	'jquery.simplemodal-1.3.5.js',
-	'renshuusurutoki.js',
+	'jquery.ba-hashchange.js',
+	'renshuusurutoki.js'
 );
 
 
@@ -102,80 +100,106 @@ $javascript = array(
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
-	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/main.css" rel="stylesheet" />
 	<link type="text/css" href="/css/autoSuggest.css" rel="stylesheet" />
+	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
-	<?php
-	foreach($css as $cs)
-	{
-		echo linkElement($cs);
-	}
-	foreach($javascript as $js)
-	{
-		echo scriptElement($js);
-	}
-	?>
-	<script type="text/javascript">
-		
-	</script>
 </head>
 <?php
-// Fetch all data to be used in the forms.
-$arts = $persons = array();
-$art_options = $person_options = '';
 
-$sql = 'SELECT id, name FROM ren_art ORDER BY name';
-$run =  $link->query($sql);
-while($res = $run->fetch(PDO::FETCH_ASSOC)) 
-{	
-	$arts[$res['id']] = $res['name'];
-	$art_options .= '<option value="' . $res['id'] . '">' . $res['name'] . '</option>';
-}
-
-$sql = 'SELECT id, name FROM ren_person ORDER BY name';
-$run =  $link->query($sql);
-while($res = $run->fetch(PDO::FETCH_ASSOC)) 
-{	
-	$persons[$res['id']] = $res['name'];
-	$person_options .= '<option value="' . $res['id'] . '">' . $res['name'] . '</option>';
-}
 ?>
 <body>
 	<div id="wrap">
-		<div id="map" class="ui-widget-content">Google Maps V3</div>
-		<div id="list">
+		<div id="map">Google Maps V3</div>
+		<div id="street">Google Maps Street View</div>
+		
+		<div id="tools">
 			<p><a href="#" id="new_location">Create a new location</a></p>
-			<ul>
+		</div>
+		<div id="filters">
+			<p rel="arts"><a href="#" rel="all" title="Select all">Select all</a> <a href="#" rel="none" title="Select none">Select none</a> <a href="#" rel="inverse" title="Inverse selection">Inverse selection</a></p>
+			<ul id="arts">
 			<?php
-			$sql = 'SELECT id, name FROM ren_area ORDER BY name';
+			$sql = 'SELECT id, name FROM ren_art ORDER BY name';
 			$run =  $link->query($sql);
 			while($res = $run->fetch(PDO::FETCH_ASSOC)) 
 			{	
-				echo '<li><a href="#" title="' . $res['name'] . '" rev="' . $res['id'] . '">' . $res['name'] . '</a></li>';
+				echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
+			}
+			?>
+			</ul>
+			<p rel="weekdays"><a href="#" rel="all" title="Select all">Select all</a> <a href="#" rel="none" title="Select none">Select none</a> <a href="#" rel="inverse" title="Inverse selection">Inverse selection</a></p>
+			<ul id="weekdays">
+			<?php
+			// Zero index Sunday.
+			$weekdays = array('日', '月', '火', '水', '木', '金', '土'); // 曜日
+			foreach($weekdays as $key => $val)
+			{
+				echo '<li><label><input type="checkbox" name="day_' . $key . '" /> ' . $val . '</label></li>';
 			}
 			?>
 			</ul>
 		</div>
 	</div>
 </body>
+
+<?php
+foreach($javascript as $js)
+{
+	echo scriptElement($js);
+}
+?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#filters input:checkbox').change(function () {
+			// update selection
+		});
+		$('#filters p[rel] a').click(function () {
+			var action = $(this).attr('rel');
+			var target = $(this).parent('p').attr('rel');
+			
+			console.log('action: ' + action + ', target: ' + target);
+			
+			$('#' + target + ' input:checkbox').each(function(i, elem) {
+				console.log('i: ' + i + ', value: ' + $(this).val() + ', checked: ' + $(this).is(':checked'));
+				
+				switch(action) {
+					case 'all' : $(this).attr('checked', 'checked'); break;
+					case 'none' : $(this).removeAttr('checked'); break;
+					case 'inverse' : 
+						if ($(this).is(':checked')) {
+							$(this).removeAttr('checked');
+						}
+						else {
+							$(this).attr('checked', 'checked'); 
+						}
+						break;
+				}
+			});
+			return false;
+		});
+	});
+</script>
 <?php
 
 // Close the SQLite connection
 $link = null;
 
-?>
-<script type="text/javascript">
-/*
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-2643697-11']);
-	_gaq.push(['_trackPageview']);
+if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+{
+	?>
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-2643697-11']);
+		_gaq.push(['_trackPageview']);
 
-	(function() {
-	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
-*/
-</script>
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+	<?php
+}
+?>
 </html>
