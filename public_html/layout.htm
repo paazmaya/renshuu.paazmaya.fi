@@ -12,9 +12,6 @@
 	<link type="text/css" href="css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
 	
 	  <style>
-	  hr {
-		display: block;
-	}
   #infoPanel {
     float: left;
     margin-left: 10px;
@@ -68,18 +65,6 @@ function updateMarkerAddress(str) {
 
 
 		$(document).ready(function() {
-			var hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
-			$.reshuuSuruToki.init(
-				$('#map').get(0), 
-				$('#street').get(0),
-				{
-					center: hikone
-				},
-				{
-					enableCloseButton: true,
-					visible: false
-				}
-			);
 			
 			var latLng = $.reshuuSuruToki.map.getCenter();
 			var marker = $.reshuuSuruToki.markers.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
@@ -198,11 +183,6 @@ function updateMarkerAddress(str) {
 
 		$(document).ready(function() {
 		
-			// http://code.google.com/p/jquerytimepicker/
-			$('input[name=starttime]').timePicker();
-		
-			// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
-			$('input[name=endtime]').clockpick();
 		
 			$("input[name=art]")
 				.autoSuggest(
@@ -244,16 +224,7 @@ function updateMarkerAddress(str) {
 			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
 
 
-			var roundedCorners = {
-				tl: { radius: 20 },
-				tr: { radius: 20 },
-				bl: { radius: 0 },
-				br: { radius: 0 },
-				antiAlias: true,
-				autoPad: true,
-				validTags: ["fieldset"]
-			};
-			$('fieldset').corner(roundedCorners);
+			
 /*
 			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
 			$('span[name=durationslider]').slider({
@@ -325,32 +296,12 @@ function updateMarkerAddress(str) {
 */
 			
 			$('#post_data').click(function() {
-				var bounds = $.reshuuSuruToki.map.getBounds();
-				var ne = bounds.getNorthEast();
-				var sw = bounds.getSouthWest();
-				var para = {
-					area: {
-						northeast: [ne.lat(), ne.lng()],
-						southwest: [sw.lat(), sw.lng()]
-					},
-					filter: { 
-						arts: [1, 2],
-						weekdays: [0, 1, 2, 3, 4, 5, 6]
-					}
-				};
-				
-				$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
-					console.log('posted');
-				}, 'json');
+				$.reshuuSuruToki.updateLocations();
 				
 				return false;
 			});
 			
-			// http://benalman.com/projects/jquery-hashchange-plugin/
-			$(window).hashchange( function() {
-				// Alerts every time the hash changes!
-				console.log( location.hash );
-			});
+			
 
 		});
 
@@ -391,89 +342,154 @@ Bullet for my valentine: the last fight
 	</script>
 </head>
 <body>
-
-	<div id="wrap">
-		<div id="list">
-			<p><a href="#" id="new_location">Create a new location</a></p>
+	<div id="wrap" class="round">
+		<div id="left">
+			<div id="mapping">
+				<div class="header qr_training">
+					<p rel="map">Training locations</p>
+				</div>
+				<div class="content">
+					<div id="map" class="stuff">Google Maps V3</div>
+				</div>
+				<div class="header qr_street">
+					<p rel="street">Street View</p>
+				</div>
+				<div class="content">
+					<div id="street" class="stuff">Google Maps Street View</div>
+				</div>
+			</div>
 		</div>
-		<a id="post_data" href="#">Post data test</a>
+		
+		<div id="right">
+			<div id="tools">
+				<div class="header qr_tools">
+					<p rel="tools">Tools</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p><a href="#" id="new_location">Create a new location</a></p>
+						<p><a href="#" id="post_data">Post data test</a></p>
+					</div>
+				</div>
+			</div>
+			
+			<div id="filters">
+				<div class="header qr_arts">
+					<p rel="arts">Martial Arts</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p rel="arts">
+							<a href="#" rel="all" title="Select all">Select all</a>
+							<a href="#" rel="none" title="Select none">Select none</a>
+							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+						</p>
+						<ul id="arts">
+							<li><label><input type="checkbox" name="art_2" /> 琉球古武術保存振興会</label></li>
+							<li><label><input type="checkbox" name="art_1" /> 直心影流薙刀術</label></li>			
+						</ul>
+					</div>
+				</div>
+				
+				<div class="header qr_weekdays">
+					<p rel="weekdays">Weekdays</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p rel="weekdays">
+							<a href="#" rel="all" title="Select all">Select all</a>
+							<a href="#" rel="none" title="Select none">Select none</a>
+							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+						</p>
+						<ul id="weekdays">
+							<li><label><input type="checkbox" name="day_0" /> 日</label></li>
+							<li><label><input type="checkbox" name="day_1" /> 月</label></li>
+							<li><label><input type="checkbox" name="day_2" /> 火</label></li>
+							<li><label><input type="checkbox" name="day_3" /> 水</label></li>
+							<li><label><input type="checkbox" name="day_4" /> 木</label></li>
+							<li><label><input type="checkbox" name="day_5" /> 金</label></li>
+							<li><label><input type="checkbox" name="day_6" /> 土</label></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
 	</div>
 
-	<hr />
+	<div id="bottom" class="round">
 
-	<div id="map" class="ui-widget-content">Google Maps V3</div>
-	<div id="street">Google Maps Street View</div>
+		<div id="infoPanel">
+			<b>Marker status:</b>
+			<div id="markerStatus"><i>Click and drag the marker.</i></div>
+			<b>Current position:</b>
+			<div id="info"></div>
+			<b>Closest matching address:</b>
+			<div id="address"></div>
+			<a href="#" id="get_bounds">get bounds</a>
+		</div>
 
-	<div id="infoPanel">
-		<b>Marker status:</b>
-		<div id="markerStatus"><i>Click and drag the marker.</i></div>
-		<b>Current position:</b>
-		<div id="info"></div>
-		<b>Closest matching address:</b>
-		<div id="address"></div>
-		<a href="#" id="get_bounds">get bounds</a>
+		<div>
+			<form id="location_form" action="/" method="post">
+				<fieldset>
+					<legend>Location</legend>
+					<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+					<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+					<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+					<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
+					<p><label><span>Auto fill:</span><input type="checkbox" name="addr_autofill" /> (address from map position)</label></p>
+					<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
+					<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
+					<p><label><span>&nbsp;</span>
+						<input type="button" name="send" value="Send location" class="button" />
+						<input type="button" name="close" value="Close" class="modal_close" />
+					</label></p>
+				</fieldset>
+			</form>
+			<form id="person_form" action="/" method="post">
+				<fieldset>
+					<legend>Person</legend>
+					<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+					<p><label><span>Art:</span><input type="text" name="art" /></label></p>
+					<p><label><span>Contact:</span><input type="text" name="contact" /></label></p>
+					<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+					<p><label><span>&nbsp;</span>
+						<input type="button" name="send" value="Send person" />
+						<input type="button" name="close" value="Close" class="modal_close" />
+					</label></p>
+				</fieldset>
+			</form>
+			<form id="art_form" action="/" method="post">
+				<fieldset>
+					<legend>Art</legend>
+					<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+					<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+					<p><label><span>&nbsp;</span>
+						<input type="button" name="send" value="Send art" />
+						<input type="button" name="close" value="Close" class="modal_close" />
+					</label></p>
+				</fieldset>
+			</form>
+			<form id="training_form" action="/" method="post">
+				<fieldset>
+					<legend>Training</legend>
+					<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+					<p><label><span>Location:</span><input type="text" name="location" /></label></p>
+					<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
+					<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
+					<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
+					<p><label><span>End time:</span><input type="text" name="endtime" class="numeric" /></label></p>
+					<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
+					<p><label><span>Art:</span><select name="art"></select></label></p>
+					<p><label><span>&nbsp;</span>
+						<input type="button" name="send" value="Send training" />
+						<input type="button" name="close" value="Close" class="modal_close" />
+					</label></p>
+				</fieldset>
+			</form>
+		</div>
 	</div>
-	
-	<hr />
-<div>
-	<form id="location_form" action="/" method="post">
-		<fieldset>
-			<legend>Location</legend>
-			<p><label><span>Title:</span><input type="text" name="title" /></label></p>
-			<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
-			<p><label><span>Info:</span><input type="text" name="info" /></label></p>
-			<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
-			<p><label><span>Auto fill:</span><input type="checkbox" name="addr_autofill" /> (address from map position)</label></p>
-			<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
-			<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
-			<p><label><span>&nbsp;</span>
-				<input type="button" name="send" value="Send location" class="button" />
-				<input type="button" name="close" value="Close" class="modal_close" />
-			</label></p>
-		</fieldset>
-	</form>
-	<form id="person_form" action="/" method="post">
-		<fieldset>
-			<legend>Person</legend>
-			<p><label><span>Name:</span><input type="text" name="title" /></label></p>
-			<p><label><span>Art:</span><input type="text" name="art" /></label></p>
-			<p><label><span>Contact:</span><input type="text" name="contact" /></label></p>
-			<p><label><span>Info:</span><input type="text" name="info" /></label></p>
-			<p><label><span>&nbsp;</span>
-				<input type="button" name="send" value="Send person" />
-				<input type="button" name="close" value="Close" class="modal_close" />
-			</label></p>
-		</fieldset>
-	</form>
-	<form id="art_form" action="/" method="post">
-		<fieldset>
-			<legend>Art</legend>
-			<p><label><span>Name:</span><input type="text" name="title" /></label></p>
-			<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
-			<p><label><span>&nbsp;</span>
-				<input type="button" name="send" value="Send art" />
-				<input type="button" name="close" value="Close" class="modal_close" />
-			</label></p>
-		</fieldset>
-	</form>
-	<form id="training_form" action="/" method="post">
-		<fieldset>
-			<legend>Training</legend>
-			<p><label><span>Title:</span><input type="text" name="title" /></label></p>
-			<p><label><span>Location:</span><input type="text" name="location" /></label></p>
-			<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
-			<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
-			<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
-			<p><label><span>End time:</span><input type="text" name="endtime" class="numeric" /></label></p>
-			<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
-			<p><label><span>Art:</span><select name="art"></select></label></p>
-			<p><label><span>&nbsp;</span>
-				<input type="button" name="send" value="Send training" />
-				<input type="button" name="close" value="Close" class="modal_close" />
-			</label></p>
-		</fieldset>
-	</form>
-</div>
 
 </body>
 </html>

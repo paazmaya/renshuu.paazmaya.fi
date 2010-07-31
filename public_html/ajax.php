@@ -84,40 +84,73 @@ if (isset($_GET['page']))
 }
 
 if ($page == 'get' && isset($_POST['area']) && is_array($_POST['area']) && isset($_POST['filter']) && is_array($_POST['filter']))
-{
-	$ne_lat = $_POST['area']['northeast']['0'];
-	$ne_lng = $_POST['area']['northeast']['1'];
-	$sw_lat = $_POST['area']['southwest']['0'];
-	$sw_lng = $_POST['area']['southwest']['1'];
+{	
+	$ne_lat = 0;
+	if (isset($_POST['area']['northeast']['0']) && is_numeric($_POST['area']['northeast']['0'])) 
+	{
+		$ne_lat = floatval($_POST['area']['northeast']['0']);
+	}
+	$ne_lng = 0;
+	if (isset($_POST['area']['northeast']['1']) && is_numeric($_POST['area']['northeast']['1'])) 
+	{
+		$ne_lng = floatval($_POST['area']['northeast']['1']);
+	}
+	$sw_lat = 0;
+	if (isset($_POST['area']['southwest']['0']) && is_numeric($_POST['area']['southwest']['0'])) 
+	{
+		$sw_lat = floatval($_POST['area']['southwest']['0']);
+	}
+	$sw_lng = 0;
+	if (isset($_POST['area']['southwest']['1']) && is_numeric($_POST['area']['southwest']['1'])) 
+	{
+		$sw_lng = floatval($_POST['area']['southwest']['1']);
+	}
 	
-	$arts = $_POST['filter']['arts'];
-	$weekdays = $_POST['filter']['weekdays'];
+	$arts = array();
+	if (isset($_POST['filter']['arts']) && is_array($_POST['filter']['arts'])) 
+	{
+		$arts = $_POST['filter']['arts'];
+	}
+	
+	$weekdays = array();
+	if (isset($_POST['filter']['weekdays']) && is_array($_POST['filter']['weekdays'])) 
+	{
+		$weekdays = $_POST['filter']['weekdays'];
+	}
 	
 	$at = array();
-	foreach($arts as $a) 
+	$art = '';
+	if (count($arts) > 0)
 	{
-		$at[] = 'A.art = ' . $a;
+		foreach($arts as $a) 
+		{
+			$at[] = 'A.art = ' . intval($a);
+		}
+		$art = ' AND (' . implode(' OR ', $at) . ')';
 	}
-	$art = '(' . implode(' OR ', $at) . ')';
 	
 	$wk = array();
-	foreach($weekdays as $day) 
+	$weekday = '';
+	if (count($weekdays) > 0)
 	{
-		$wk[] = 'A.weekday = ' . $day;
+		foreach($weekdays as $day) 
+		{
+			$wk[] = 'A.weekday = ' . intval($day);
+		}
+		$weekday = ' AND (' . implode(' OR ', $wk) . ')';
 	}
-	$weekday = '(' . implode(' OR ', $wk) . ')';
 	
 	$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
 	$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id LEFT JOIN ren_art C ON A.art = C.id';
 
-	$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address ' . $from . ' WHERE ' . $position . ' AND ' . $art . ' AND ' . $weekday;
-	$response = array();
+	$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address ' . $from . ' WHERE ' . $position . $art . $weekday;
+	$results = array();
 	$run =  $link->query($sql);
 	if ($run) 
 	{
 		while($res = $run->fetch(PDO::FETCH_ASSOC)) 
 		{	
-			$response[] = array(
+			$results[] = array(
 				'training' => array(
 					'id' => $res['trainingid'],
 					'art' => array(
@@ -139,7 +172,7 @@ if ($page == 'get' && isset($_POST['area']) && is_array($_POST['area']) && isset
 			);
 		}
 		unset($out['error']);
-		$out['response'] = $response;
+		$out['result'] = $results;
 	}
 	else
 	{
@@ -181,15 +214,15 @@ if ($page != '')
 	
 	if ($sql != '')
 	{
-		$response = array();
+		$results = array();
 		$run =  $link->query($sql . $where . $order);
 		while($res = $run->fetch(PDO::FETCH_ASSOC)) 
 		{	
-			$response[] = $res;
+			$results[] = $res;
 		}
-		$out['response'] = $response;
+		$out['result'] = $results;
 	}
 }
 */
 //print_r($out);
-echo json_encode($out);
+echo json_encode(array('response' => $out));

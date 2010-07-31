@@ -109,37 +109,90 @@ $javascript = array(
 
 ?>
 <body>
-	<div id="wrap">
-		<div id="map">Google Maps V3</div>
-		<div id="street">Google Maps Street View</div>
+	<div id="wrap" class="round">
+		<div id="left">
+			<div id="mapping">
+				<div class="header qr_training">
+					<p rel="map">Training locations</p>
+				</div>
+				<div class="content">
+					<div id="map" class="stuff">Google Maps V3</div>
+				</div>
+				<div class="header qr_street">
+					<p rel="street">Street View</p>
+				</div>
+				<div class="content">
+					<div id="street" class="stuff">Google Maps Street View</div>
+				</div>
+			</div>
+		</div>
 		
-		<div id="tools">
-			<p><a href="#" id="new_location">Create a new location</a></p>
+		<div id="right">
+			<div id="tools">
+				<div class="header qr_tools">
+					<p rel="tools">Tools</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p><a href="#" id="new_location">Create a new location</a></p>
+						<p><a href="#" id="post_data">Post data test</a></p>
+					</div>
+				</div>
+			</div>			
+			<div id="filters">
+				<div class="header qr_arts">
+					<p rel="arts">Martial Arts</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p rel="arts">
+							<a href="#" rel="all" title="Select all">Select all</a>
+							<a href="#" rel="none" title="Select none">Select none</a>
+							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+						</p>	
+						<ul id="arts">
+						<?php
+						$sql = 'SELECT id, name FROM ren_art ORDER BY name';
+						$run =  $link->query($sql);
+						while($res = $run->fetch(PDO::FETCH_ASSOC)) 
+						{	
+							echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
+						}
+						?>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="header qr_weekdays">
+					<p rel="weekdays">Weekdays</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<p rel="weekdays">
+							<a href="#" rel="all" title="Select all">Select all</a>
+							<a href="#" rel="none" title="Select none">Select none</a>
+							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+						</p>
+						<ul id="weekdays">
+							<?php
+							// Zero index Sunday.
+							$weekdays = array('日', '月', '火', '水', '木', '金', '土'); // 曜日
+							foreach($weekdays as $key => $val)
+							{
+								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+							}
+							?>
+						</ul>
+					</div>
+				</div>
+
+			</div>
 		</div>
-		<div id="filters">
-			<p rel="arts"><a href="#" rel="all" title="Select all">Select all</a> <a href="#" rel="none" title="Select none">Select none</a> <a href="#" rel="inverse" title="Inverse selection">Inverse selection</a></p>
-			<ul id="arts">
-			<?php
-			$sql = 'SELECT id, name FROM ren_art ORDER BY name';
-			$run =  $link->query($sql);
-			while($res = $run->fetch(PDO::FETCH_ASSOC)) 
-			{	
-				echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
-			}
-			?>
-			</ul>
-			<p rel="weekdays"><a href="#" rel="all" title="Select all">Select all</a> <a href="#" rel="none" title="Select none">Select none</a> <a href="#" rel="inverse" title="Inverse selection">Inverse selection</a></p>
-			<ul id="weekdays">
-			<?php
-			// Zero index Sunday.
-			$weekdays = array('日', '月', '火', '水', '木', '金', '土'); // 曜日
-			foreach($weekdays as $key => $val)
-			{
-				echo '<li><label><input type="checkbox" name="day_' . $key . '" /> ' . $val . '</label></li>';
-			}
-			?>
-			</ul>
-		</div>
+		
+	</div>
+
+	<div id="bottom" class="round">
+		
 	</div>
 </body>
 
@@ -148,39 +201,6 @@ foreach($javascript as $js)
 {
 	echo scriptElement($js);
 }
-?>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('#filters input:checkbox').change(function () {
-			// update selection
-		});
-		$('#filters p[rel] a').click(function () {
-			var action = $(this).attr('rel');
-			var target = $(this).parent('p').attr('rel');
-			
-			console.log('action: ' + action + ', target: ' + target);
-			
-			$('#' + target + ' input:checkbox').each(function(i, elem) {
-				console.log('i: ' + i + ', value: ' + $(this).val() + ', checked: ' + $(this).is(':checked'));
-				
-				switch(action) {
-					case 'all' : $(this).attr('checked', 'checked'); break;
-					case 'none' : $(this).removeAttr('checked'); break;
-					case 'inverse' : 
-						if ($(this).is(':checked')) {
-							$(this).removeAttr('checked');
-						}
-						else {
-							$(this).attr('checked', 'checked'); 
-						}
-						break;
-				}
-			});
-			return false;
-		});
-	});
-</script>
-<?php
 
 // Close the SQLite connection
 $link = null;

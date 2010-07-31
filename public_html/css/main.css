@@ -10,15 +10,13 @@ brown red: #8C635C
 green: #0E3621
 black: #100212
 */
-* { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif }
-body { background-color: #AA1515; color: #F1EFFF; }
-a { color: #F1EFFF; }
-#wrap { width: 90%; margin: 10px; padding: 10px; border: 2px solid #100212; }
-#map { width: 50%; height: 700px; border: 1px solid #100212; float: left; }
-#street { width: 50%; height: 300px; border: 1px solid #100212; display: none; /*float: left; */}
+* { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; }
+body { background-color: #AA1515; color: #100212; }
+a { color: #100212; }
+div { display: block; }
 
 form { background-color: #AA1515; }
-legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 2px 6px; margin-left: 10%; }
+legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 0.2em 1em; margin-left: 10%; }
 fieldset { border: 2px solid #100212; width: 40em; }
 fieldset p { width: 100%; padding: 4px; display: block; }
 label { width: 100%; display: block; }
@@ -28,11 +26,69 @@ input[type=checkbox] { width: 1em; }
 input[type=button] { width: 12em; margin: 1em; height: 2em; }
 input.numeric { width: 12em; }
 
-.round { border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; }
+#wrap, #bottom  { width: 90%; margin: 1em; clear: both; border: 2px solid #100212; float: left; padding: 1em; }
+#left { width: 60%; float: left; }
+#right { width: 40%;  float: left; left: 60%; }
+#right > div { padding-left: 1em; }
+#map { 
+	height: 30em; 
+	border: 1px solid #100212;
+	/*
+	border-radius: 1em; 
+	-webkit-border-radius: 1em; 
+	-moz-border-radius: 1em; 
+	*/
+}
+#street { height: 10em; border: 1px solid #100212; display: none; }
+#tools {
+
+}
+#filters {
+
+}
+.header {
+	background-color: #0E3621; 
+	color: #F1EFFF;
+	border-radius: 0 0 1em 1em;
+	-webkit-border-radius: 0 0 1em 1em;
+	-moz-border-radius: 1em 1em 0 0;
+}
+.content {
+	background-color: #F1EFFF; 
+	color: #100212; 
+	padding-bottom: 0.5em;
+	margin-bottom: 1em;
+	border-radius: 0 0 1em 1em;
+	-webkit-border-radius: 0 0 1em 1em;
+	-moz-border-radius: 0 0 1em 1em;
+}
+.header p, .content p { padding: 0.5em; }
+.header p { font-weight: bold; }
+.content ul { list-style: none; margin: 1em; }
+.content input { margin: 0.5em 1em; }
+.content a[rel] { font-size: smaller; }
+
+.round { border-radius: 0.5em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; }
 
 .jquery-timepicker-mouseover { background-color: #279BE3; color: #F1EFFF; }
 
+.qr_tools, .qr_arts, .qr_weekdays, .qr_training , .qr_street{
+	background-repeat: no-repeat;
+	background-position: 0.5em center; 
+	padding-left: 2em;
+}
+.qr_tools { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Tools'); }
+.qr_arts { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Martial+Arts'); }
+.qr_weekdays { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Weekdays'); }
+.qr_training { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Training+Locations'); }
+.qr_street { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Street+View'); }
+/*
+http://chart.apis.google.com/chart?cht=p&chs=50x50&chco=279BE3|8C635C|0E3621&chd=t:15,30,20&chf=bg,s,0E3621|c,s,F1EFFF
 
+http://chart.apis.google.com/chart?chst=d_bubble_text_small&chld=bbT|曜|0E3621|F1EFFF
+ 	
+http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_todo|bbT|曜|F1EFFF|0E3621
+*/
 
 div.inputnotes div {
 	font-size: 11px;
