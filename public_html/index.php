@@ -109,17 +109,17 @@ $javascript = array(
 
 ?>
 <body>
-	<div id="wrap" class="round">
+	<div id="wrap">
 		<div id="left">
 			<div id="mapping">
 				<div class="header qr_training">
-					<p rel="map">Training locations</p>
+					<p><a href="#" rel="map">Training locations</a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
 				<div class="header qr_street">
-					<p rel="street">Street View</p>
+					<p><a href="#" rel="street">Street View</a><span><input type="checkbox" name="markerstreet" /> toggle SV</span></p>
 				</div>
 				<div class="content">
 					<div id="street" class="stuff">Google Maps Street View</div>
@@ -130,7 +130,7 @@ $javascript = array(
 		<div id="right">
 			<div id="tools">
 				<div class="header qr_tools">
-					<p rel="tools">Tools</p>
+					<p><a href="#" rel="tools">Tools</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">
@@ -141,11 +141,11 @@ $javascript = array(
 			</div>			
 			<div id="filters">
 				<div class="header qr_arts">
-					<p rel="arts">Martial Arts</p>
+					<p><a href="#" rel="arts">Martial Arts</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">
-						<p rel="arts">
+						<p class="rel_arts">
 							<a href="#" rel="all" title="Select all">Select all</a>
 							<a href="#" rel="none" title="Select none">Select none</a>
 							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
@@ -164,11 +164,11 @@ $javascript = array(
 				</div>
 				
 				<div class="header qr_weekdays">
-					<p rel="weekdays">Weekdays</p>
+					<p><a href="#" rel="weekdays">Weekdays</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">
-						<p rel="weekdays">
+						<p class="rel_weekdays">
 							<a href="#" rel="all" title="Select all">Select all</a>
 							<a href="#" rel="none" title="Select none">Select none</a>
 							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
@@ -179,7 +179,7 @@ $javascript = array(
 							$weekdays = array('日', '月', '火', '水', '木', '金', '土'); // 曜日
 							foreach($weekdays as $key => $val)
 							{
-								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '曜日</label></li>';
 							}
 							?>
 						</ul>
@@ -191,10 +191,9 @@ $javascript = array(
 		
 	</div>
 
-	<div id="bottom" class="round">
+	<div id="bottom">
 		
 	</div>
-</body>
 
 <?php
 foreach($javascript as $js)
@@ -222,4 +221,5 @@ if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
 	<?php
 }
 ?>
+</body>
 </html>

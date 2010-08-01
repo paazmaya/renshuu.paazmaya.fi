@@ -11,8 +11,9 @@ green: #0E3621
 black: #100212
 */
 * { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; }
-body { background-color: #AA1515; color: #100212; }
-a { color: #100212; }
+body { background-color: #AA1515; color: #100212; padding: 1em; }
+a { color: #100212; text-decoration: none; }
+a:hover { text-decoration: underline; }
 div { display: block; }
 
 form { background-color: #AA1515; }
@@ -26,20 +27,26 @@ input[type=checkbox] { width: 1em; }
 input[type=button] { width: 12em; margin: 1em; height: 2em; }
 input.numeric { width: 12em; }
 
-#wrap, #bottom  { width: 90%; margin: 1em; clear: both; border: 2px solid #100212; float: left; padding: 1em; }
+#wrap, #bottom  { 
+	width: 100%; 
+	margin-bottom: 1em; 
+	clear: both; 
+	/*border: 2px solid #100212;*/
+	float: left; 
+ }
 #left { width: 60%; float: left; }
 #right { width: 40%;  float: left; left: 60%; }
 #right > div { padding-left: 1em; }
 #map { 
 	height: 30em; 
-	border: 1px solid #100212;
 	/*
+	border: 1px solid #100212;
 	border-radius: 1em; 
 	-webkit-border-radius: 1em; 
 	-moz-border-radius: 1em; 
 	*/
 }
-#street { height: 10em; border: 1px solid #100212; display: none; }
+#street { height: 15em; border: 1px solid #100212; display: none; }
 #tools {
 
 }
@@ -63,8 +70,14 @@ input.numeric { width: 12em; }
 	-moz-border-radius: 0 0 1em 1em;
 }
 .header p, .content p { padding: 0.5em; }
-.header p { font-weight: bold; }
+.header p { font-weight: bold; width: 100%; }
+.header a { width: 65%; color: #F1EFFF; }
+.header span { width: 35%; float: right; text-align: right; font-size: smaller; }
 .content ul { list-style: none; margin: 1em; }
+/*
+.content ul:nth-child(odd) li { background-color: #AA1515; }
+.content ul:nth-child(even) li { background-color: #8C635C; }
+*/
 .content input { margin: 0.5em 1em; }
 .content a[rel] { font-size: smaller; }
 
@@ -72,7 +85,7 @@ input.numeric { width: 12em; }
 
 .jquery-timepicker-mouseover { background-color: #279BE3; color: #F1EFFF; }
 
-.qr_tools, .qr_arts, .qr_weekdays, .qr_training , .qr_street{
+.qr_tools, .qr_arts, .qr_weekdays, .qr_training , .qr_street {
 	background-repeat: no-repeat;
 	background-position: 0.5em center; 
 	padding-left: 2em;
