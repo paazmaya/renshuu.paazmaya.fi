@@ -14,7 +14,7 @@ RENSHUU.PAAZMAYA.COM
 * - person
 * - ...
 *
-* Possible POST parametres, arrays contain numerical data:
+* Possible POST parametres in get mode, where arrays contain numerical data:
 * - area { northeast [], southwest [] }
 * - filter { arts [], weekdays [] }
 *

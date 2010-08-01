@@ -70,7 +70,7 @@ input.numeric { width: 12em; }
 	-moz-border-radius: 0 0 1em 1em;
 }
 .header p, .content p { padding: 0.5em; }
-.header p { font-weight: bold; width: 100%; }
+.header p { font-weight: bold; }
 .header a { width: 65%; color: #F1EFFF; }
 .header span { width: 35%; float: right; text-align: right; font-size: smaller; }
 .content ul { list-style: none; margin: 1em; }

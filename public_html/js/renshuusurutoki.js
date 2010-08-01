@@ -32,7 +32,7 @@ $(document).ready(function() {
 		
 		geocodeMarkers: [],
 		trainingMarkers: [],
-		streetMarker: null,
+		streetMarker: null, // The actual position where current Street View is at.
 		
 		ready: function() {
 		
@@ -56,12 +56,9 @@ $(document).ready(function() {
 				},
 				{
 					enableCloseButton: true,
-					visible: false
+					visible: true
 				}
 			);
-			
-			// The marker which can be dragged on a spot which is should be revealed in Street View
-			//$.reshuuSuruToki.streetMarker = $.reshuuSuruToki.markers.createMarker();
 			
 			// Handler for the ability to toggle streetview viewing while marker click.
 			$('input:checkbox[name=markerstreet]').change(function() {
@@ -224,15 +221,32 @@ $(document).ready(function() {
 			$.reshuuSuruToki.streetview = new google.maps.StreetViewPanorama(street_element, street_options);
 			
 			
+			// The marker which can be dragged on a spot which is should be revealed in Street View
+			$.reshuuSuruToki.streetMarker = $.reshuuSuruToki.markers.createMarker(
+				$.reshuuSuruToki.map.getCenter(), 'Street View', $.reshuuSuruToki.pins.getPinStar('glyphish_eye'), true
+			);
+			google.maps.event.addListener($.reshuuSuruToki.streetMarker, 'dragend', function() {
+				$.reshuuSuruToki.streetview.setPosition($.reshuuSuruToki.streetMarker.getPosition());
+			});
+			
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'closeclick', function(event) {
 			});
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
+				var posS = $.reshuuSuruToki.streetview.getPosition();
+				var posM = $.reshuuSuruToki.streetMarker.getPosition();
+				var bounds = $.reshuuSuruToki.streetview.map.getBounds();
+				
 				if ($.reshuuSuruToki.streetview.getVisible()) {
 					$(street_element).slideDown();
 				}
 				else {
 					$(street_element).slideUp();
 				}
+				if (!bounds.contains(posM)) {
+					posM = $.reshuuSuruToki.streetview.map.getCenter();
+				}
+				$.reshuuSuruToki.streetMarker.setPosition(posM);
+				$.reshuuSuruToki.streetMarker.setVisible($.reshuuSuruToki.streetview.getVisible());
 			});
 			
 			$.reshuuSuruToki.callbacks.initiate();
@@ -531,8 +545,9 @@ $(document).ready(function() {
 	
 	$.reshuuSuruToki.pins = {
 		getMarkerImage: function(image) {
-			return new google.maps.MarkerImage(image);
+			return new google.maps.MarkerImage('http://chart.apis.google.com/chart?' + image);
 		},
+		
 		getIcon: function(icon, color) { // 21, 34
 			// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 			if (!icon) {
@@ -541,8 +556,9 @@ $(document).ready(function() {
 			if (!color) {
 				color = 'ADDE63';
 			}
-			return $.reshuuSuruToki.pins.getMarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=' + icon + '|' + color + '&ext=.png');
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_icon&chld=' + icon + '|' + color + '&ext=.png');
 		},
+		
 		getLetter: function(letter, fill, color) {
 			if (!letter) {
 				letter = '場';
@@ -553,10 +569,25 @@ $(document).ready(function() {
 			if (!color) {
 				color = '000000';
 			}
-			return $.reshuuSuruToki.pins.getMarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color + '&ext=.png');
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color + '&ext=.png');
 		},
 		
-		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'FF00CC'); },
+		getPinStar: function(icon, fill, star) {
+			if (!icon) {
+				icon = 'glyphish_compass';
+			}
+			if (!fill) {
+				fill = 'F1EFFF';
+			}
+			if (!star) {
+				star = '279BE3';
+			}
+			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F1EFFF|ADDE63
+			// http://chart.apis.google.com/chart?||
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_xpin_icon&chld=pin_star|' + icon + '|' + fill + '|' + star);
+		},
+		
+		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F1EFFF'); },
 		gRedIcon: function() { return $.reshuuSuruToki.pins.getIcon('star', 'CC2233'); },
 		gBlueIcon: function() { return $.reshuuSuruToki.pins.getIcon('snow', '2233CC'); }
 	};
