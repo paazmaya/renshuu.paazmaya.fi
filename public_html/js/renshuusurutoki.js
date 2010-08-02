@@ -14,11 +14,10 @@ $(document).ready(function() {
 
 (function($) {
 
-	var hoplaa = new Date();
-
 	$.reshuuSuruToki = {
 		animSpeed: 200,
-		ajaxpoint: { get: '/ajax/get/', set: '/ajax/set/' },
+		zoom: 8,
+		ajaxpoint: { get: '/ajax/get/', set: '/ajax/set/', form: '/ajax/form/' },
 		geocoder: null,
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
 		streetview: null, //StreetViewPanorama
@@ -46,6 +45,18 @@ $(document).ready(function() {
 				con.toggle($.reshuuSuruToki.animSpeed);
 				return false;
 			});
+			
+			// Tools tabs, used when logged in, forms and such..
+			$('#example').bind('tabsselect', function(event, ui) {
+
+				// Objects available in the function context:
+				ui.tab     // anchor element of the selected (clicked) tab
+				ui.panel   // element, that contains the selected/clicked tab contents
+				ui.index   // zero-based index of the selected (clicked) tab
+
+			});
+			var $tabs = $('#example').tabs();
+			var selected = $tabs.tabs('option', 'selected'); // => 0
 	
 			// Set up the Google Map v3 and the Street View
 			$.reshuuSuruToki.init(
@@ -135,6 +146,7 @@ $(document).ready(function() {
 		// Update filters according to current checkbox selection.
 		updateFilters: function() {
 			var sets = ['arts', 'weekdays'];
+			var lens = [];
 			for (var inx in sets) {
 				var target = sets[inx];
 				var list = [];
@@ -145,10 +157,15 @@ $(document).ready(function() {
 						list.push(id);
 					}
 				});
+				lens.push(list.length);
 				$.reshuuSuruToki.filterSettings[target] = list;
 				console.log(target + ' = ' + list);
 			}
-			$.reshuuSuruToki.updateLocations();
+			
+			// Make sure any of the selections was not empty
+			if (lens.indexOf(0) == -1) {
+				$.reshuuSuruToki.updateLocations();
+			}
 		},
 		
 		updateLocations: function() {
@@ -177,22 +194,16 @@ $(document).ready(function() {
 			}, 'json');
 		},
 		
-		getViewBounds: function() {
-			var bounds = $.reshuuSuruToki.map.getBounds();
-			$.reshuuSuruToki.data.getPoints(bounds);
-			return bounds;
-		},
-		
+		// Show the given position in the Street View. Once visibility set, the opening is taken care of by its event handler.
 		showStreetView: function(position) {
 			$.reshuuSuruToki.streetview.setPosition(position);
 			$.reshuuSuruToki.streetview.setVisible(true);
-			$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
+			//$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
 		},
 		
 		init: function(map_element, street_element, map_options, street_options) {
 			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
 			
-			var zoom = 8;
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 			var opts = {
 				center: $.reshuuSuruToki.hikone,
@@ -212,7 +223,7 @@ $(document).ready(function() {
 					position: google.maps.ControlPosition.BOTTOM,
 					style: google.maps.ScaleControlStyle.DEFAULT
 				},
-				zoom: zoom
+				zoom: $.reshuuSuruToki.zoom
 			};
 			
 			opts = $.extend(true, {}, opts, map_options);
@@ -223,14 +234,22 @@ $(document).ready(function() {
 			
 			// The marker which can be dragged on a spot which is should be revealed in Street View
 			$.reshuuSuruToki.streetMarker = $.reshuuSuruToki.markers.createMarker(
-				$.reshuuSuruToki.map.getCenter(), 'Street View', $.reshuuSuruToki.pins.getPinStar('glyphish_eye'), true
+				$.reshuuSuruToki.map.getCenter(), 'Street View', $.reshuuSuruToki.pins.getPinStar('glyphish_eye'), true, false
 			);
+			
+			// Markerdraggin overrides the Street View position and makes it visible if hidden.
 			google.maps.event.addListener($.reshuuSuruToki.streetMarker, 'dragend', function() {
 				$.reshuuSuruToki.streetview.setPosition($.reshuuSuruToki.streetMarker.getPosition());
+				if (!$.reshuuSuruToki.streetview.getVisible()) {
+					$.reshuuSuruToki.streetview.setVisible(true);
+				}
 			});
 			
-			google.maps.event.addListener($.reshuuSuruToki.streetview, 'closeclick', function(event) {
+			google.maps.event.addListener($.reshuuSuruToki.streetview, 'position_changed', function() {
+				$.reshuuSuruToki.streetMarker.setPosition($.reshuuSuruToki.streetview.getPosition());
 			});
+			
+			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
 				var posS = $.reshuuSuruToki.streetview.getPosition();
 				var posM = $.reshuuSuruToki.streetMarker.getPosition();
@@ -242,10 +261,10 @@ $(document).ready(function() {
 				else {
 					$(street_element).slideUp();
 				}
-				if (!bounds.contains(posM)) {
-					posM = $.reshuuSuruToki.streetview.map.getCenter();
+				if (!bounds.contains(posS)) {
+					posS = $.reshuuSuruToki.map.getCenter();
 				}
-				$.reshuuSuruToki.streetMarker.setPosition(posM);
+				$.reshuuSuruToki.streetMarker.setPosition(posS);
 				$.reshuuSuruToki.streetMarker.setVisible($.reshuuSuruToki.streetview.getVisible());
 			});
 			
@@ -305,13 +324,16 @@ $(document).ready(function() {
 			$.reshuuSuruToki.trainingMarkers.push(marker);
 		},
 		
-		createMarker: function(pos, title, icon, drag) {
+		createMarker: function(pos, title, icon, drag, click) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 			if (!icon) {
 				icon = $.reshuuSuruToki.pins.getIcon();
 			}
 			if (drag == null) {
 				drag = false;
+			}
+			if (click == null) {
+				click = true;
 			}
 			var marker = new google.maps.Marker({
 				position: pos,
@@ -321,6 +343,7 @@ $(document).ready(function() {
 				icon: icon
 			});
 			
+			/*
 			if (drag) {
 				google.maps.event.addListener(marker, 'drag', function() {
 					updateMarkerStatus('Dragging...');
@@ -335,15 +358,18 @@ $(document).ready(function() {
 					$.reshuuSuruToki.streetview.setVisible(true);
 				});
 			}
+			*/
 			
-			google.maps.event.addListener(marker, 'click', function(event) {
-				// This event is fired when the marker icon was clicked.
-				console.log('marker. click - ' + marker.title);
-				console.log('showInStreetView: ' + $.reshuuSuruToki.markers.showInStreetView);
-				if ($.reshuuSuruToki.markers.showInStreetView) {
-					$.reshuuSuruToki.showStreetView(marker.getPosition());
-				}
-			});
+			if (click) {
+				google.maps.event.addListener(marker, 'click', function(event) {
+					// This event is fired when the marker icon was clicked.
+					console.log('marker. click - ' + marker.title);
+					console.log('showInStreetView: ' + $.reshuuSuruToki.markers.showInStreetView);
+					if ($.reshuuSuruToki.markers.showInStreetView) {
+						$.reshuuSuruToki.showStreetView(marker.getPosition());
+					}
+				});
+			}
 			google.maps.event.addListener(marker, 'clickable_changed', function() {
 				// This event is fired when the marker's clickable property changes.
 			});
@@ -365,6 +391,7 @@ $(document).ready(function() {
 					// This event is fired when the user starts dragging the marker.
 				});
 			}
+			/*
 			google.maps.event.addListener(marker, 'draggable_changed', function() {
 				// This event is fired when the marker's draggable property changes.
 			});
@@ -377,12 +404,14 @@ $(document).ready(function() {
 			google.maps.event.addListener(marker, 'mousedown', function(event) {
 				// This event is fired when the DOM mousedown event is fired on the marker icon.
 			});
+			*/
 			google.maps.event.addListener(marker, 'mouseout', function(event) {
 				// This event is fired when the mouse leaves the area of the marker icon.
 			});
 			google.maps.event.addListener(marker, 'mouseover', function(event) {
 				// This event is fired when the mouse enters the area of the marker icon.
 			});
+			/*
 			google.maps.event.addListener(marker, 'mouseup', function(event) {
 				// This event is fired for the DOM mouseup on the marker.
 			});
@@ -390,9 +419,11 @@ $(document).ready(function() {
 				// This event is fired when the marker position property changes.
 				console.log('marker. position_changed - ' + marker.title);
 			});
+			*/
 			google.maps.event.addListener(marker, 'rightclick', function(event) {
 				// This event is fired when the marker is right clicked on.
 			});
+			/*
 			google.maps.event.addListener(marker, 'shadow_changed', function() {
 				// This event is fired when the marker's shadow property changes.
 			});
@@ -402,13 +433,16 @@ $(document).ready(function() {
 			google.maps.event.addListener(marker, 'title_changed', function() {
 				// This event is fired when the marker title property changes.
 			});
+			*/
 			google.maps.event.addListener(marker, 'visible_changed', function() {
 				// This event is fired when the marker's visible property changes.
 				console.log('marker. visible_changed - ' + marker.title);
 			});
+			/*
 			google.maps.event.addListener(marker, 'zindex_changed', function() {
 				// This event is fired when the marker's zIndex property changes.
 			});
+			*/
 			
 			return marker;
 		}
@@ -499,7 +533,7 @@ $(document).ready(function() {
 		},
 		click: function(event) {
 			// This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
-			console.log('click. ' + event.latLng);
+			console.log('map click. ' + event.latLng);
 		},
 		dblclick: function(event) {
 			// This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
@@ -590,6 +624,127 @@ $(document).ready(function() {
 		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F1EFFF'); },
 		gRedIcon: function() { return $.reshuuSuruToki.pins.getIcon('star', 'CC2233'); },
 		gBlueIcon: function() { return $.reshuuSuruToki.pins.getIcon('snow', '2233CC'); }
+	};
+	
+	
+	$.reshuuSuruToki.forms = {
+	
+		showForm: function() {
+		
+			$("input[name=art]")
+				.autoSuggest(
+					data.arts, {
+						startText: 'Type an art name',
+						selectedItemProp: 'name',
+						selectedValuesProp: 'id',
+						searchObjProps: 'name',
+						queryParam: '',
+						selectionLimit: 2,
+						//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
+						//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
+						//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
+						resultClick: function(data){
+							for (var i in data.attributes) {
+								console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
+							}
+						}
+					}
+				)
+				.change(
+					function() {
+						console.log('change - ' + $(this).attr('name') + ': ' + $(this).val());
+					}
+				);
+			$("#training_form input[name=location]")
+				.autoSuggest(
+					data.items, {
+						startText: 'Type a location name',
+						selectedItemProp: 'name',
+						searchObjProps: 'name'
+					}
+				)
+				.change(
+					function() {
+						console.log($(this).attr('name') + ': ' + $(this).val());
+					}
+				);
+			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
+
+
+			
+/*
+			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
+			$('span[name=durationslider]').slider({
+				range: 'min',
+				max: 600,
+				step: 5,
+				value: 120,
+				slide: function(event, ui) {
+					$('input[name=duration]').val(ui.value);
+				}
+			});
+			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
+*/
+
+			$('#new_location').click(function() {
+				openModal('#location_form');
+				return false;
+			});
+			
+			
+			// http://fredibach.ch/jquery-plugins/inputnotes.php
+			$('input[name=title]').inputNotes({
+				config: {
+					containerTag: 'ul',
+					noteTag: 'li'
+				},
+				minlength: {
+					pattern: /^(.){0,5}$/i,
+					type: 'info',
+					text: 'Minimum password length is 6 characters.' 
+				},
+
+
+				requiredfield: {
+					pattern: /(^(\s)+$)|(^$)/,
+					type: 'warning',
+					text: 'This field is required!' 
+				},
+
+				email: {
+					pattern: /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+$/,
+					type: 'info',
+					text: 'Yes, that\'s a valid email address!' 
+				}
+			});
+		},
+		
+		// http://www.ericmmartin.com/projects/simplemodal/
+		openModal: function(id) {
+			$.modal($(id), {
+				onOpen: function(dialog) {
+					dialog.overlay.fadeIn('slow', function() {
+						dialog.container.slideDown('slow', function() {
+							dialog.data.fadeIn('slow');
+						});
+					});
+				},
+				onClose: function(dialog) {
+					dialog.data.fadeOut('slow', function() {
+						dialog.container.hide('slow', function() {
+							dialog.overlay.slideUp('slow', function() {
+								$.modal.close();
+							});
+						});
+					});
+				},
+				closeClass: 'modal_close',
+				modal: false
+			});
+			$(id).children('input[type=button][name=send]').click(function() {
+			});
+			
+		}
 	};
 	
 	

@@ -78,6 +78,7 @@ $colors = array(
 $javascript = array(
 	'http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja',
 	'jquery-1.4.2.min.js',
+	'jquery-ui-1.8.2.min.js',
 	'jquery.timepicker.js',
 	'jquery.clockpick.1.2.7.js',
 	'jquery.inputnotes-0.6.js',

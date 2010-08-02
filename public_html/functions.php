@@ -64,3 +64,68 @@ function scriptElement($src)
 	return '<script type="text/javascript" src="' . $src . '"></script>';
 }
 
+/**
+ * A form which is then send via AJAX back and forth between client and server.
+ *
+ * @param string $id
+ * @param array $data 
+ * @return string form element containing the requested inputs
+ */
+function createForm($id, $data)
+{
+	$out = '<form id="' . $id . '_form" action="/' . $id . '" method="post">';
+	$out .= '<fieldset><legend>' . $data['legend']. '</legend>';
+	$len = count($data['items']);
+	for ($i = 0; $i < $len; $i++)
+	{
+		$item = $data['items'][$i];
+		$out .= '<p><label><span>' . $item['label'] . ':</span>';
+		
+		if ($item['type'] == 'select')
+		{
+			$out .= '<select ';
+		}
+		else 
+		{
+			$out .= '<input type="' . $item['type'] . '" ';
+		}
+		$out .= 'name="' . $item['name'] . '"';
+		
+		if (isset($item['class']) && $item['class'] != '')
+		{
+			$out .= ' class="' . $item['class'] . '"';
+		}
+		
+		if ($item['type'] == 'select')
+		{
+			$out .= '>';
+			if (isset($item['options']) && is_array($item['options']) && count($item['options']) > 0)
+			{
+				foreach($item['options'] as $k => $v)
+				{
+					$out .= '<option value="' . $k . '">' . $v . '</option>';
+				}
+			}
+		}
+		else 
+		{
+			if (isset($item['disabled']) && $item['disabled'])
+			{
+				$out .= ' disabled="disabled"';
+			}
+			$out .= ' />';
+		}
+		
+		if (isset($item['after']) && $item['after'] != '')
+		{
+			$out .= $item['after'];
+		}
+		
+		$out .= '</label></p>';
+	}
+	$out .= '<p><label><span>&nbsp;</span><input type="button" name="send" value="Send ' . $data['legend'] . '" />';
+	$out .= '<input type="button" name="close" value="Close" class="modal_close" /></label></p>';
+	$out .= '</fieldset></form>';
+	
+	return $out;
+}

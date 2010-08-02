@@ -74,15 +74,6 @@ function updateMarkerAddress(str) {
 			$.reshuuSuruToki.data.geocodePosition(latLng);
 
 
-			
-			
-
-			$('#get_bounds').click(function() {
-				$.reshuuSuruToki.getViewBounds();
-				return false;
-			});
-
-
 			$('#list li a').click(function() {
 				var attr = { type: $(this).parent().attr('') };
 				$.get(ajaxpoint.get + 'location/' + $(this).attr('rev'), attr, function(data, status) {
@@ -184,92 +175,6 @@ function updateMarkerAddress(str) {
 		$(document).ready(function() {
 		
 		
-			$("input[name=art]")
-				.autoSuggest(
-					data.arts, {
-						startText: 'Type an art name',
-						selectedItemProp: 'name',
-						selectedValuesProp: 'id',
-						searchObjProps: 'name',
-						queryParam: '',
-						selectionLimit: 2,
-						//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
-						//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
-						//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
-						resultClick: function(data){
-							for (var i in data.attributes) {
-								console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
-							}
-						}
-					}
-				)
-				.change(
-					function() {
-						console.log('change - ' + $(this).attr('name') + ': ' + $(this).val());
-					}
-				);
-			$("#training_form input[name=location]")
-				.autoSuggest(
-					data.items, {
-						startText: 'Type a location name',
-						selectedItemProp: 'name',
-						searchObjProps: 'name'
-					}
-				)
-				.change(
-					function() {
-						console.log($(this).attr('name') + ': ' + $(this).val());
-					}
-				);
-			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
-
-
-			
-/*
-			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
-			$('span[name=durationslider]').slider({
-				range: 'min',
-				max: 600,
-				step: 5,
-				value: 120,
-				slide: function(event, ui) {
-					$('input[name=duration]').val(ui.value);
-				}
-			});
-			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
-*/
-
-			$('#new_location').click(function() {
-				openModal('#location_form');
-				return false;
-			});
-			
-			
-			// http://fredibach.ch/jquery-plugins/inputnotes.php
-			$('input[name=title]').inputNotes({
-				config: {
-					containerTag: 'ul',
-					noteTag: 'li'
-				},
-				minlength: {
-					pattern: /^(.){0,5}$/i,
-					type: 'info',
-					text: 'Minimum password length is 6 characters.' 
-				},
-
-
-				requiredfield: {
-					pattern: /(^(\s)+$)|(^$)/,
-					type: 'warning',
-					text: 'This field is required!' 
-				},
-
-				email: {
-					pattern: /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+$/,
-					type: 'info',
-					text: 'Yes, that\'s a valid email address!' 
-				}
-			});
 			/*
 			$('input[name=password]').inputNotes({
 				minlength: {
@@ -305,32 +210,6 @@ function updateMarkerAddress(str) {
 
 		});
 
-		// http://www.ericmmartin.com/projects/simplemodal/
-		var openModal = function(id) {
-			$.modal($(id), {
-				onOpen: function(dialog) {
-					dialog.overlay.fadeIn('slow', function() {
-						dialog.container.slideDown('slow', function() {
-							dialog.data.fadeIn('slow');
-						});
-					});
-				},
-				onClose: function(dialog) {
-					dialog.data.fadeOut('slow', function() {
-						dialog.container.hide('slow', function() {
-							dialog.overlay.slideUp('slow', function() {
-								$.modal.close();
-							});
-						});
-					});
-				},
-				closeClass: 'modal_close',
-				modal: false
-			});
-			$(id).children('input[type=button][name=send]').click(function() {
-			});
-			
-		};
 /*
 2010-07-27
 Disturbed: Another way to die
@@ -361,6 +240,53 @@ Bullet for my valentine: the last fight
 		</div>
 		
 		<div id="right">
+		
+		
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$("#tabs").tabs({
+			cookie: {
+				// store cookie for a day, without, it would be a session cookie
+				expires: 1
+			},
+			collapsible: true,
+			ajaxOptions: {
+				error: function(xhr, status, index, anchor) {
+					$(anchor.hash).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo.");
+				}
+			}
+
+
+		});
+
+	});
+</script>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#fragment-1"><span>One</span></a></li>
+        <li><a href="#fragment-2"><span>Two</span></a></li>
+        <li><a href="#fragment-3"><span>Three</span></a></li>
+        <li><a href="ajax/form"><span>Three</span></a></li>
+    </ul>
+    <div id="fragment-1">
+        <p>First tab is active by default:</p>
+        <pre><code>$('#example').tabs();</code></pre>
+    </div>
+    <div id="fragment-2">
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+    </div>
+    <div id="fragment-3">
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+    </div>
+</div>
+
+		
+		
 			<div id="tools">
 				<div class="header qr_tools">
 					<p rel="tools">Tools</p>
