@@ -55,6 +55,9 @@ input.numeric { width: 12em; }
 }
 .header {
 	background-color: #0E3621; 
+	background-repeat: no-repeat;
+	background-position: 0.5em center; 
+	padding-left: 2em;
 	color: #F1EFFF;
 	border-radius: 0 0 1em 1em;
 	-webkit-border-radius: 0 0 1em 1em;
@@ -85,16 +88,13 @@ input.numeric { width: 12em; }
 
 .jquery-timepicker-mouseover { background-color: #279BE3; color: #F1EFFF; }
 
-.qr_tools, .qr_arts, .qr_weekdays, .qr_training , .qr_street {
-	background-repeat: no-repeat;
-	background-position: 0.5em center; 
-	padding-left: 2em;
-}
 .qr_tools { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Tools'); }
 .qr_arts { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Martial+Arts'); }
 .qr_weekdays { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Weekdays'); }
-.qr_training { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Training+Locations'); }
+.qr_training { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Training+Map'); }
 .qr_street { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Street+View'); }
+.qr_forms { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Forms'); }
+.qr_profile { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Profile'); }
 /*
 http://chart.apis.google.com/chart?cht=p&chs=50x50&chco=279BE3|8C635C|0E3621&chd=t:15,30,20&chf=bg,s,0E3621|c,s,F1EFFF
 
@@ -138,4 +138,38 @@ ul.inputnotes li.note {
 	padding-left: 6px;
 	border-left: 1px #999 dotted;
 	list-style: none;
+}
+
+#tabs {
+	clear: both;
+	margin-bottom: 2em;
+}
+
+#tabs ul {
+	width: 100%;
+	float: left;
+	font-size: small; /* could be specified at a higher level */
+	border-bottom: 1px solid #333;
+}
+
+#tabs li {
+	float: left;
+	display: inline;
+	list-style: none;
+}
+	
+#tabs ul a:link, #tabs ul a:visited {
+	float: left;
+	font-size: 85%;
+	line-height: 2em;
+	font-weight: bold;
+	margin: 0 1em 0 1em;
+	text-decoration: none;
+	color: #999;
+}
+
+#tabs ul a.active:link, #tabs ul a.active:visited, #tabs ul a:hover {
+	border-bottom: 4px solid #333;
+	padding-bottom: 0.3em;
+	color: #333;
 }

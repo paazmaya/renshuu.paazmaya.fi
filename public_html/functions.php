@@ -201,12 +201,13 @@ function minify($type, $files)
 					$des = realpath('./' . $type) . '/' . implode('.', $p);
 				}
 				
-				echo "\n" . '<!-- src: ' . $src . ', des: ' . $des . ', minify: ' . $minify . ' -->' . "\n";
+				//echo "\n" . '<!-- src: ' . $src . ', des: ' . $des . ' -->' . "\n";
 				
 				$min = '';
 				if (file_exists($des))
 				{
 					$mtime_des = filemtime($des);
+					//echo '<!-- mtime_src: ' . $mtime_src . ', mtime_des: ' . $mtime_des . ' -->' . "\n";
 					if ($mtime_src <= $mtime_des)
 					{
 						$minify = false;
@@ -214,6 +215,7 @@ function minify($type, $files)
 						$mtime_newest = max($mtime_des, $mtime_newest);
 					}
 				}
+				//echo '<!-- minify: ' . $minify . ' -->' . "\n";
 				
 				if ($minify)
 				{

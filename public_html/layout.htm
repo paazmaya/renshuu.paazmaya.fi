@@ -23,19 +23,16 @@
 
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja"></script>
 
-	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.8.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.2.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.timepicker.js"></script>
 	<script type="text/javascript" src="js/jquery.clockpick.1.2.7.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.inputnotes-0.6.js"></script>
 
-	<script type="text/javascript" src="http://code.google.com/apis/gears/gears_init.js"></script>
-	<script type="text/javascript" src="js/jstore/class.js"></script>
-	<script type="text/javascript" src="js/jstore/browser.json.js"></script>
-	<script type="text/javascript" src="js/jstore/jquery.jstore.js"></script>
-
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	
 	<script type="text/javascript" src="js/jquery.json-2.2.js"></script>
 	<script type="text/javascript" src="js/jstorage.js"></script>
 
@@ -225,12 +222,14 @@ Bullet for my valentine: the last fight
 		<div id="left">
 			<div id="mapping">
 				<div class="header qr_training">
+					<p><a href="#" rel="tools">Tools</a><span></span></p>
 					<p rel="map">Training locations</p>
 				</div>
 				<div class="content">
 					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
 				<div class="header qr_street">
+					<p><a href="#" rel="tools">Tools</a><span></span></p>
 					<p rel="street">Street View</p>
 				</div>
 				<div class="content">
@@ -242,54 +241,37 @@ Bullet for my valentine: the last fight
 		<div id="right">
 		
 		
-<script type="text/javascript">
-	$(document).ready(function() {
-		
-		$("#tabs").tabs({
-			cookie: {
-				// store cookie for a day, without, it would be a session cookie
-				expires: 1
-			},
-			collapsible: true,
-			ajaxOptions: {
-				error: function(xhr, status, index, anchor) {
-					$(anchor.hash).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo.");
-				}
-			}
+			<script type="text/javascript">
+				$(document).ready(function() {
+					/*
+					$("#tabs").tabs({
+						cookie: {
+							// store cookie for a day, without, it would be a session cookie
+							expires: 1
+						},
+						collapsible: true,
+						ajaxOptions: {
+							error: function(xhr, status, index, anchor) {
+								$(anchor.hash).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo.");
+							}
+						}
 
+					});
+			*/
 
-		});
-
-	});
-</script>
-
-<div id="tabs">
-    <ul>
-        <li><a href="#fragment-1"><span>One</span></a></li>
-        <li><a href="#fragment-2"><span>Two</span></a></li>
-        <li><a href="#fragment-3"><span>Three</span></a></li>
-        <li><a href="ajax/form"><span>Three</span></a></li>
-    </ul>
-    <div id="fragment-1">
-        <p>First tab is active by default:</p>
-        <pre><code>$('#example').tabs();</code></pre>
-    </div>
-    <div id="fragment-2">
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-    </div>
-    <div id="fragment-3">
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-    </div>
-</div>
-
-		
+				});
+			</script>
+			<div id="tabs">
+				<ul>
+					<li><a href="#filters" class="active">filters</a></li>
+					<li><a href="#forms">forms</a></li>
+					<li><a href="#profile">profile</a></li>
+				</ul>
+			</div>
 		
 			<div id="tools">
 				<div class="header qr_tools">
-					<p rel="tools">Tools</p>
+					<p><a href="#" rel="tools">Tools</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">
@@ -299,9 +281,30 @@ Bullet for my valentine: the last fight
 				</div>
 			</div>
 			
+			<div id="forms">
+				<div class="header qr_forms">
+					<p><a href="#" rel="forms">Forms</a><span></span></p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+					</div>
+				</div>
+			</div>
+			
+			<div id="profile">
+				<div class="header qr_profile">
+					<p><a href="#" rel="tools">Tools</a><span></span></p>
+					<p rel="profile">Profile</p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+					</div>
+				</div>
+			</div>
+			
 			<div id="filters">
 				<div class="header qr_arts">
-					<p rel="arts">Martial Arts</p>
+					<p><a href="#" rel="arts">Martial Arts</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">
@@ -318,7 +321,7 @@ Bullet for my valentine: the last fight
 				</div>
 				
 				<div class="header qr_weekdays">
-					<p rel="weekdays">Weekdays</p>
+					<p><a href="#" rel="weekdays">Weekdays</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">

@@ -19,7 +19,7 @@ Filtering the list of trainings shown on the map can be set by the following:
 
 All data fetched from the backend will be cached locally and will expire after two weeks (unless specific "clear" command is made).
 
-By dracking or clicking a marker to a saved list it is possible to export a page of all the 
+By dracking or clicking a marker to a saved list it is possible to export a page of all the
 selected training times and locations with static maps.
 Perhaps these pages can then be hard linked...
 
@@ -52,7 +52,7 @@ session_start();
 if (isset($_GET['page']) && strlen($_GET['page']) > 0)
 {
 	$uri = '/#' . urize($_GET['page']);
-	
+
 	header('HTTP/1.1 301 Moved Permanently');
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
 	exit();
@@ -76,10 +76,10 @@ $colors = array(
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja',
-	'jquery-1.4.2.min.js',
-	'jquery-ui-1.8.2.min.js',
+	'jquery-1.4.2.js',
+	'jquery-ui-1.8.2.js',
 	'jquery.timepicker.js',
+	'jquery.cookie.js',
 	'jquery.clockpick.1.2.7.js',
 	'jquery.inputnotes-0.6.js',
 	'jquery.json-2.2.js',
@@ -145,7 +145,7 @@ $gzipped = ''; //'.gz';
 				</div>
 			</div>
 		</div>
-		
+
 		<div id="right">
 			<div id="tools">
 				<div class="header qr_tools">
@@ -157,7 +157,27 @@ $gzipped = ''; //'.gz';
 						<p><a href="#" id="post_data">Post data test</a></p>
 					</div>
 				</div>
-			</div>			
+			</div>
+
+			<div id="forms">
+				<div class="header qr_forms">
+					<p><a href="#" rel="forms">Forms</a><span></span></p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+					</div>
+				</div>
+			</div>
+
+			<div id="profile">
+				<div class="header qr_profile">
+					<p><a href="#" rel="profile">Profile</a><span></span></p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+					</div>
+				</div>
+			</div>
 			<div id="filters">
 				<div class="header qr_arts">
 					<p><a href="#" rel="arts">Martial Arts</a><span></span></p>
@@ -168,20 +188,20 @@ $gzipped = ''; //'.gz';
 							<a href="#" rel="all" title="Select all">Select all</a>
 							<a href="#" rel="none" title="Select none">Select none</a>
 							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
-						</p>	
+						</p>
 						<ul id="arts">
 						<?php
 						$sql = 'SELECT id, name FROM ren_art ORDER BY name';
 						$run =  $link->query($sql);
-						while($res = $run->fetch(PDO::FETCH_ASSOC)) 
-						{	
+						while($res = $run->fetch(PDO::FETCH_ASSOC))
+						{
 							echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
 						}
 						?>
 						</ul>
 					</div>
 				</div>
-				
+
 				<div class="header qr_weekdays">
 					<p><a href="#" rel="weekdays">Weekdays</a><span></span></p>
 				</div>
@@ -207,21 +227,22 @@ $gzipped = ''; //'.gz';
 
 			</div>
 		</div>
-		
+
 	</div>
 
 	<div id="bottom">
-		
+
 	</div>
 
 <?php
-echo scriptElement($cf['minified'] . $gzipped . '.js');
-/*
+echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja');
+//echo scriptElement($cf['minified'] . $gzipped . '.js');
+
 foreach($javascript as $js)
 {
 	echo scriptElement($js);
 }
-*/
+
 
 // Close the SQLite connection
 $link = null;
