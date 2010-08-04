@@ -4,25 +4,27 @@ RENSHUU.PAAZMAYA.COM
 *******************/
 /**
 * Possible commands as the first part of the url after "ajax":
-* - get
-* - set
-* - form.
+* - get		Get public data while not logged in
+* - set		Accessable only when logged in
+* - form	Can be accessed anytime but useless if not logged in.
 *
-* Possible GET parametres:
-* - location
-* - art
-* - training
-* - person
-* - ...
+* In the case of two latter options, 
+* the keyword followed must be one of the following:
+* - art			A martial art
+* - location	A location where martial arts can be practisted
+* - training	A training time with a location and an art
+* - person		A person who might be leading some martial art trainings.
 *
-* Possible POST parametres in get mode, where arrays contain numerical data:
+* In the case of the first, "get", the POST POST parametres, 
+* where arrays contain numerical data, must be the following:
 * - area { northeast [], southwest [] }
 * - filter { arts [], weekdays [] }
 *
-* Weekdays zero indexed, starting from Sunday.
+* Output JSON is always contained in a "response" array,
+* which will contain "error" item in case such should have occurred.
 *
-* Output should always be of the following form:
-*	response: [
+* While responding to "get" mode request, the output is build as such:
+*	result: [
 *		{
 *			training: {
 *				id: 0,
@@ -44,7 +46,20 @@ RENSHUU.PAAZMAYA.COM
 *			}
 *		}
 *	]
-*	error: string, if any
+*
+* While in "form" mode, the output is a html string containing <form> 
+* with all the requested components, in a "form" key.
+*
+* As for the "set" mode, the output is simply to return the id and the title
+* for the data which was successfuly inserted. In any other case "error" will be present.
+*	result: { id: 0, title: '' }
+*
+* In the case of an update, the "set" mode is used, where a post parametre will reveal
+* the need for an update. 
+*	'update' => existing_id
+* 
+*
+* Weekdays are zero indexed, starting from Sunday as in the Japanese calendar.
 */
 
 require './config.php';
@@ -67,6 +82,7 @@ $pagetypes = array('art', 'location', 'training', 'person');
 
 $id = 0;
 $passcheck = false;
+$loggedin = false;
 
 if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
 {
@@ -82,7 +98,7 @@ if (isset($_GET['page']))
 	if ($count > 1 && $parts['0'] = 'ajax' && in_array($parts['1'], $pages))
 	{
 		$page = $parts['1'];
-		
+
 		if ($page == 'get')
 		{
 			$passcheck = true;
@@ -93,9 +109,9 @@ if (isset($_GET['page']))
 			$passcheck = true;
 		}
 	}
-	else 
+	else
 	{
-		// We are in the harms way...		
+		// We are in the harms way...
 	}
 }
 
@@ -205,20 +221,51 @@ if ($passcheck)
 			$out['sql'] = $sql;
 		}
 	}
-	else if ($page == 'set')
+	else if ($page == 'set' && $loggedin)
 	{
 		// Data availalable is dependant of the form used
+		// key in the form matches the value of the table row name
 		$map = array(
 			'art' => array(
+				'title' => '',
+				'uri' => ''
 			),
 			'location' => array(
+				'title' => '',
+				'uri' => '',
+				'info' => '',
+				'address' => '',
+				//'addr_autofill' => '',
+				'latitude' => '',
+				'longitude' => ''
 			),
 			'training' => array(
+				'title' => '',
+				'location' => '',
+				'weekday' => '',
+				'occurance' => '',
+				'starttime' => '',
+				'endtime' => '',
+				//'duration' => '',
+				'art' => ''
 			),
 			'person' => array(
+				'title' => '',
+				'art' => '',
+				'contact' => '',
+				'info' => '',
 			)
-		);
+		);		
+		// Each of the given tables have a field for modified time
 		
+		if (isset($_POST['update']) && is_numeric($_POST['update']))
+		{
+		}
+
+		$out['result'] = array(
+			'id' => $id,
+			'title' => $title
+		);
 		unset($out['error']);
 	}
 	else if ($page == 'form')
@@ -395,12 +442,12 @@ if ($passcheck)
 				)
 			)
 		);
-		
+
 		$out['form'] = createForm($pagetype, $forms[$pagetype]);
 		unset($out['error']);
 	}
 }
-else 
+else
 {
 	// Failed to pass the checks
 	$out['errorInfo'] = 'Wrong line at the passport control';
@@ -439,6 +486,8 @@ if ($page != '')
 	}
 }
 */
+
+$out['created'] = date($cf['datetime']);
 
 //print_r($out);
 echo json_encode(array('response' => $out));

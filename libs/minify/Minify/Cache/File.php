@@ -190,7 +190,7 @@ class Minify_Cache_File {
      */
     protected function _log($msg)
     {
-        require_once 'Minify/Logger.php';
+        require_once 'minify/Minify/Logger.php';
         Minify_Logger::log($msg);
     }
     

@@ -74,7 +74,7 @@ $colors = array(
 	'dark_green' => '#29411B'
 );
 
-
+// Local javascript files should reside in public_html/js/..
 $javascript = array(
 	'http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja',
 	'jquery-1.4.2.min.js',
@@ -91,6 +91,19 @@ $javascript = array(
 	'renshuusurutoki.js'
 );
 
+// What should be done is to create one javascript file of the local files and minify it followed by gzipping.
+minify('js', $javascript);
+
+// Same thing for cascaded style sheet, in public_html/css/..
+minify('css', array(
+	'main.css',
+	'autoSuggest.css',
+	'renshuu/jquery-ui-1.8.2.custom.css',
+	'jquery.clockpick.1.2.7.css'
+));
+
+// Append with gzip if supported.
+$gzipped = ''; //'.gz';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -101,10 +114,15 @@ $javascript = array(
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
+	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
+	<?php
+	/*
 	<link type="text/css" href="/css/main.css" rel="stylesheet" />
 	<link type="text/css" href="/css/autoSuggest.css" rel="stylesheet" />
 	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
+	*/
+	?>
 </head>
 <?php
 
@@ -197,10 +215,13 @@ $javascript = array(
 	</div>
 
 <?php
+echo scriptElement($cf['minified'] . $gzipped . '.js');
+/*
 foreach($javascript as $js)
 {
 	echo scriptElement($js);
 }
+*/
 
 // Close the SQLite connection
 $link = null;
