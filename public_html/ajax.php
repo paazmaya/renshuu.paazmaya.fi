@@ -8,17 +8,18 @@ RENSHUU.PAAZMAYA.COM
 * - set		Accessable only when logged in
 * - form	Can be accessed anytime but useless if not logged in.
 *
-* In the case of two latter options, 
-* the keyword followed must be one of the following:
+* In all of the cases, the keyword followed must be one of the following,
+* if not "get" option:
 * - art			A martial art
 * - location	A location where martial arts can be practisted
 * - training	A training time with a location and an art
 * - person		A person who might be leading some martial art trainings.
 *
-* In the case of the first, "get", the POST POST parametres, 
+* In the case of the first, "get", the POST parametres, 
 * where arrays contain numerical data, must be the following:
 * - area { northeast [], southwest [] }
 * - filter { arts [], weekdays [] }
+* This is when there is no additional keywork in the url.
 *
 * Output JSON is always contained in a "response" array,
 * which will contain "error" item in case such should have occurred.
@@ -46,6 +47,12 @@ RENSHUU.PAAZMAYA.COM
 *			}
 *		}
 *	]
+*
+* In the other use cases of "get", when a keywork is used, the return value will be of 
+* the following format:
+*	[keyword, one of four]: [
+*		{ id: 0, title: '' }
+* 	]
 *
 * While in "form" mode, the output is a html string containing <form> 
 * with all the requested components, in a "form" key.
@@ -103,7 +110,8 @@ if (isset($_GET['page']))
 		{
 			$passcheck = true;
 		}
-		else if ($count > 2 && in_array($parts['2'], $pagetypes))
+		
+		if ($count > 2 && in_array($parts['2'], $pagetypes))
 		{
 			$pagetype = $parts['2'];
 			$passcheck = true;
@@ -118,7 +126,7 @@ if (isset($_GET['page']))
 if ($passcheck)
 {
 	// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
-	if ($page == 'get' && isset($_POST['area']) && is_array($_POST['area']) && isset($_POST['filter']) && is_array($_POST['filter']))
+	if ($page == 'get' && $pagetype == '' && isset($_POST['area']) && is_array($_POST['area']) && isset($_POST['filter']) && is_array($_POST['filter']))
 	{
 		$ne_lat = 0;
 		if (isset($_POST['area']['northeast']['0']) && is_numeric($_POST['area']['northeast']['0']))
@@ -208,6 +216,48 @@ if ($passcheck)
 			}
 			unset($out['error']);
 			$out['result'] = $results;
+		}
+		else
+		{
+			if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+			{
+				$out['errorInfo'] = $link->errorInfo();
+			}
+		}
+		if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+		{
+			$out['sql'] = $sql;
+		}
+	}
+	else if ($page == 'get' && $pagetype != '')
+	{
+		// If art id is not set, then fetch all the trainings...
+		$where_art = '';
+		if (isset($_POST['art']) && is_numeric($_POST['art']))
+		{
+			$where_art = ' WHERE art = ' . intval($_POST['art']);
+		}
+		$queries = array(
+			'art' => 'SELECT id, name FROM ren_art ORDER BY name',
+			'location' => 'SELECT id, name FROM ren_location ORDER BY name',
+			'training' => 'SELECT id, name FROM ren_training ORDER BY name' . $where_art,
+			'person' => 'SELECT id, name FROM ren_art ORDER BY name'
+		);
+		
+		$sql = $queries[$pagetype];
+		$results = array();
+		$run =  $link->query($sql);
+		if ($run)
+		{
+			while($res = $run->fetch(PDO::FETCH_ASSOC))
+			{
+				$results[] = array(
+					'id' => $res['id'],
+					'title' => $res['name']
+				);
+			}
+			unset($out['error']);
+			$out[$pagetype] = $results;
 		}
 		else
 		{

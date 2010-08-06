@@ -6,10 +6,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="icon" type="image/ico" href="favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-	<link type="text/css" href="css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
 	<link type="text/css" href="css/main.css" rel="stylesheet" />
 	<link type="text/css" href="css/autoSuggest.css" rel="stylesheet" />
 	<link type="text/css" href="css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
+	<link type="text/css" href="css/ui.timepickr.css" rel="stylesheet" />
 	
 	  <style>
   #infoPanel {
@@ -23,11 +23,15 @@
 
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja"></script>
 
-	<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.8.2.js"></script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.tabs.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.timepicker.js"></script>
 	<script type="text/javascript" src="js/jquery.clockpick.1.2.7.js"></script>
+	
+	<script type="text/javascript" src="js/ui.timepickr.js"></script>
 	
 	<script type="text/javascript" src="js/jquery.inputnotes-0.6.js"></script>
 
@@ -222,15 +226,13 @@ Bullet for my valentine: the last fight
 		<div id="left">
 			<div id="mapping">
 				<div class="header qr_training">
-					<p><a href="#" rel="tools">Tools</a><span></span></p>
-					<p rel="map">Training locations</p>
+					<p><a href="#" rel="map">Training locations</a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
 				<div class="header qr_street">
-					<p><a href="#" rel="tools">Tools</a><span></span></p>
-					<p rel="street">Street View</p>
+					<p><a href="#" rel="street">Street View</a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="street" class="stuff">Google Maps Street View</div>
@@ -243,30 +245,50 @@ Bullet for my valentine: the last fight
 		
 			<script type="text/javascript">
 				$(document).ready(function() {
-					/*
-					$("#tabs").tabs({
-						cookie: {
-							// store cookie for a day, without, it would be a session cookie
-							expires: 1
-						},
-						collapsible: true,
+					$('#tabs > div:first').tabs({
+						add: null,
 						ajaxOptions: {
 							error: function(xhr, status, index, anchor) {
 								$(anchor.hash).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo.");
 							}
-						}
-
+						},
+						cache: false,
+						cookie: {
+							// store cookie for a day, without, it would be a session cookie
+							expires: 1
+						}, // e.g. { expires: 7, path: '/', domain: 'jquery.com', secure: true }
+						collapsible: false,
+						disable: null,
+						disabled: [],
+						enable: null,
+						event: 'click',
+						fx: null, // e.g. { height: 'toggle', opacity: 'toggle', duration: 200 }
+						idPrefix: 'ui-tabs-',
+						load: null,
+						panelTemplate: '<div></div>',
+						remove: null,
+						select: null,
+						show: null,
+						spinner: '<em>Loading&#8230;</em>',
+						tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a></li>'
 					});
-			*/
 
 				});
 			</script>
 			<div id="tabs">
-				<ul>
-					<li><a href="#filters" class="active">filters</a></li>
-					<li><a href="#forms">forms</a></li>
-					<li><a href="#profile">profile</a></li>
-				</ul>
+				<div class="header qr_tools">
+					<ul>
+						<li><a href="#filters" class="active">filters</a></li>
+						<li><a href="#forms">forms</a></li>
+						<li><a href="#profile">profile</a></li>
+					</ul>
+					<span></span>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<!-- -->
+					</div>
+				</div>
 			</div>
 		
 			<div id="tools">
@@ -293,8 +315,7 @@ Bullet for my valentine: the last fight
 			
 			<div id="profile">
 				<div class="header qr_profile">
-					<p><a href="#" rel="tools">Tools</a><span></span></p>
-					<p rel="profile">Profile</p>
+					<p><a href="#" rel="profile">Profile</a><span></span></p>
 				</div>
 				<div class="content">
 					<div class="stuff">

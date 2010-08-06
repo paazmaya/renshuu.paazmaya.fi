@@ -39,12 +39,6 @@ input.numeric { width: 12em; }
 #right > div { padding-left: 1em; }
 #map { 
 	height: 30em; 
-	/*
-	border: 1px solid #100212;
-	border-radius: 1em; 
-	-webkit-border-radius: 1em; 
-	-moz-border-radius: 1em; 
-	*/
 }
 #street { height: 15em; border: 1px solid #100212; display: none; }
 #tools {
@@ -72,10 +66,40 @@ input.numeric { width: 12em; }
 	-webkit-border-radius: 0 0 1em 1em;
 	-moz-border-radius: 0 0 1em 1em;
 }
-.header p, .content p { padding: 0.5em; }
-.header p { font-weight: bold; }
-.header a { width: 65%; color: #F1EFFF; }
+.header p, .content p, .header ul { padding: 0.5em; }
+.header p, .header ul { font-weight: bold; }
+.header a, .header ul { width: 65%; color: #F1EFFF; }
 .header span { width: 35%; float: right; text-align: right; font-size: smaller; }
+
+
+#tabs ul {
+	font-size: small; /* could be specified at a higher level */
+	border-bottom: 1px solid #333;
+	display: list-item
+}
+
+#tabs li {
+	float: left;
+	display: inline;
+	list-style: none;
+}
+
+#tabs ul a:link, #tabs ul a:visited {
+	float: left;
+	font-size: 85%;
+	line-height: 2em;
+	font-weight: bold;
+	margin: 0 1em 0 1em;
+	text-decoration: none;
+}
+
+#tabs ul a.active:link, #tabs ul a.active:visited, #tabs ul a:hover {
+	border-bottom: 4px solid #333;
+	padding-bottom: 0.3em;
+	color: #333;
+}
+
+
 .content ul { list-style: none; margin: 1em; }
 /*
 .content ul:nth-child(odd) li { background-color: #AA1515; }
@@ -101,6 +125,10 @@ http://chart.apis.google.com/chart?cht=p&chs=50x50&chco=279BE3|8C635C|0E3621&chd
 http://chart.apis.google.com/chart?chst=d_bubble_text_small&chld=bbT|曜|0E3621|F1EFFF
  	
 http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_todo|bbT|曜|F1EFFF|0E3621
+
+http://chart.apis.google.com/chart?chst=d_text_outline&chld=F1EFFF|12|h|0E3621|b|曜
+
+http://chart.apis.google.com/chart?chst=d_simple_text_icon_left&chld=曜|16|0E3621|glyphish_target|16|0E3621|121212
 */
 
 div.inputnotes div {
@@ -140,36 +168,9 @@ ul.inputnotes li.note {
 	list-style: none;
 }
 
-#tabs {
-	clear: both;
-	margin-bottom: 2em;
-}
 
-#tabs ul {
-	width: 100%;
-	float: left;
-	font-size: small; /* could be specified at a higher level */
-	border-bottom: 1px solid #333;
-}
 
-#tabs li {
-	float: left;
-	display: inline;
-	list-style: none;
-}
-	
-#tabs ul a:link, #tabs ul a:visited {
-	float: left;
-	font-size: 85%;
-	line-height: 2em;
-	font-weight: bold;
-	margin: 0 1em 0 1em;
-	text-decoration: none;
-	color: #999;
-}
 
-#tabs ul a.active:link, #tabs ul a.active:visited, #tabs ul a:hover {
-	border-bottom: 4px solid #333;
-	padding-bottom: 0.3em;
-	color: #333;
+.ui-tabs-hide {
+	display: none;
 }

@@ -76,8 +76,11 @@ $colors = array(
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery-1.4.2.js',
-	'jquery-ui-1.8.2.js',
+	'jquery.js', // 1.4.2
+	'jquery.ui.core.js', // 1.8.2
+	'jquery.ui.widget.js',
+	'jquery.ui.tabs.js', // depends ui.core and ui.widget
+	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	'jquery.timepicker.js',
 	'jquery.cookie.js',
 	'jquery.clockpick.1.2.7.js',
@@ -92,14 +95,14 @@ $javascript = array(
 );
 
 // What should be done is to create one javascript file of the local files and minify it followed by gzipping.
-minify('js', $javascript);
+//minify('js', $javascript);
 
 // Same thing for cascaded style sheet, in public_html/css/..
 minify('css', array(
 	'main.css',
 	'autoSuggest.css',
-	'renshuu/jquery-ui-1.8.2.custom.css',
-	'jquery.clockpick.1.2.7.css'
+	'jquery.clockpick.1.2.7.css',
+	'ui.timepickr.css'
 ));
 
 // Append with gzip if supported.
@@ -147,6 +150,21 @@ $gzipped = ''; //'.gz';
 		</div>
 
 		<div id="right">
+			<div id="tabs">
+				<div class="header qr_tools">
+					<ul>
+						<li><a href="#filters" class="active">filters</a></li>
+						<li><a href="#forms">forms</a></li>
+						<li><a href="#profile">profile</a></li>
+					</ul>
+				</div>
+				<div class="content">
+					<div class="stuff">
+						<!-- -->
+					</div>
+				</div>
+			</div>
+			
 			<div id="tools">
 				<div class="header qr_tools">
 					<p><a href="#" rel="tools">Tools</a><span></span></p>

@@ -629,9 +629,23 @@ $(document).ready(function() {
 	
 	$.reshuuSuruToki.forms = {
 	
-		showForm: function() {
+		// Save the earlierly fetched form elements with callbacks once set.
+		cache: {},
+	
+		// Four types available: art, location, training, person
+		getForm: function(type) {
+			$.post($.reshuuSuruToki.ajaxpoint.form + type, function(data, status) {
+				if (data.response && data.response.form)
+				{
+					$.reshuuSuruToki.forms.showForm(data.response.form, type);
+				}
+			}, 'json');
+		},
 		
-			$("input[name=art]")
+		// form contains the form element with the requested input fields.
+		showForm: function(form, type) {
+		
+			$(form).children('input[name=art]')
 				.autoSuggest(
 					data.arts, {
 						startText: 'Type an art name',
