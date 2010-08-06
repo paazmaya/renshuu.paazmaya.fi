@@ -16,16 +16,16 @@ a { color: #100212; text-decoration: none; }
 a:hover { text-decoration: underline; }
 div { display: block; }
 
-form { background-color: #AA1515; }
 legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 0.2em 1em; margin-left: 10%; }
-fieldset { border: 2px solid #100212; width: 40em; }
-fieldset p { width: 100%; padding: 4px; display: block; }
+fieldset { border: 1px solid #100212; }
 label { width: 100%; display: block; }
-label span { text-align: right; width: 11em; display: block; float: left; margin-right: 1em; }
-input, select, form ul, form li { width: 28em; background-color: #F1EFFF; border: 1px solid #100212; }
+label span { text-align: right; width: 35%; display: block; float: left; margin-right: 2%; }
+input, select, form ul, form li { width: 60%; background-color: #F4F4F4; border: 1px solid #100212; height: 1.4em; margin: 1px; }
 input[type=checkbox] { width: 1em; }
-input[type=button] { width: 12em; margin: 1em; height: 2em; }
+input[type=button] { width: 40%; margin: 1em; height: 2em; background-color: #0E3621; color: #F1EFFF; font-weight: bold; }
+input[disabled] { background-color: #8C635C; }
 input.numeric { width: 12em; }
+input:focus, select:focus, form li:focus { border: 2px solid #0E3621; background-color: #AA1515; margin: 0; }
 
 #wrap, #bottom  { 
 	width: 100%; 
@@ -53,8 +53,8 @@ input.numeric { width: 12em; }
 	background-position: 0.5em center; 
 	padding-left: 2em;
 	color: #F1EFFF;
-	border-radius: 0 0 1em 1em;
-	-webkit-border-radius: 0 0 1em 1em;
+	border-radius: 1em 1em 0 0;
+	-webkit-border-radius: 1em 1em 0 0;
 	-moz-border-radius: 1em 1em 0 0;
 }
 .content {
@@ -69,12 +69,14 @@ input.numeric { width: 12em; }
 .header p, .content p, .header ul { padding: 0.5em; }
 .header p, .header ul { font-weight: bold; }
 .header a, .header ul { width: 65%; color: #F1EFFF; }
-.header span { width: 35%; float: right; text-align: right; font-size: smaller; }
+.header span { width: 35%; float: right; text-align: right; font-size: 90%; }
 
+.form-info {
+	font-size: 90%;
+}
 
 #tabs ul {
-	font-size: small; /* could be specified at a higher level */
-	border-bottom: 1px solid #333;
+	border-bottom: 1px solid #279BE3;
 	display: list-item
 }
 
@@ -94,9 +96,9 @@ input.numeric { width: 12em; }
 }
 
 #tabs ul a.active:link, #tabs ul a.active:visited, #tabs ul a:hover {
-	border-bottom: 4px solid #333;
+	border-bottom: 4px solid #279BE3;
 	padding-bottom: 0.3em;
-	color: #333;
+	color: #279BE3;
 }
 
 
@@ -105,7 +107,7 @@ input.numeric { width: 12em; }
 .content ul:nth-child(odd) li { background-color: #AA1515; }
 .content ul:nth-child(even) li { background-color: #8C635C; }
 */
-.content input { margin: 0.5em 1em; }
+/*.content input { margin: 0.5em 1em; }*/
 .content a[rel] { font-size: smaller; }
 
 .round { border-radius: 0.5em; -webkit-border-radius: 0.5em; -moz-border-radius: 0.5em; }
@@ -130,41 +132,37 @@ http://chart.apis.google.com/chart?chst=d_text_outline&chld=F1EFFF|12|h|0E3621|b
 
 http://chart.apis.google.com/chart?chst=d_simple_text_icon_left&chld=曜|16|0E3621|glyphish_target|16|0E3621|121212
 */
-
+.inputnotes, .inputnotes * {
+	margin: 0;
+	padding: 0;
+	color: #F1EFFF;
+}
 div.inputnotes div {
-	font-size: 11px;
-	padding: 3px;
-	padding-left: 4px;
-	padding-top: 4px;
-	margin-top: 2px;
+	font-size: 90%;
+	padding: 0.3em;
+	padding-left: 0.4em;
+	padding-top: 0.4em;
+	margin-top: 0.2em;
 }
 
 div.inputnotes div.note {
-	color: #fff;
-	background: #333;
+	background: #279BE3;
 }
 
 div.inputnotes div.warning {
-	color: #fff;
-	background: #f03;
+	background: #AA1515;
 }
 
 div.inputnotes div.info {
-	color: #333;
+	color: #279BE3;
 	background: #c4ea74;
 }
 
-ul.inputnotes {
-	margin: 0px;
-}
-
 ul.inputnotes li.note {
-	color: #aaa;
-	margin: 0px;
-	margin-top: 2px;
-	padding: 2px;
-	padding-left: 6px;
-	border-left: 1px #999 dotted;
+	margin-top: 0.2em;
+	padding: 0.2em;
+	padding-left: 0.6em;
+	border-left: 1px #8C635C dotted;
 	list-style: none;
 }
 

@@ -51,19 +51,6 @@
 
 	<script type="text/javascript">
 
-function updateMarkerStatus(str) {
-	$('#location_form input[name=info]').val(str);
-}
-
-function updateMarkerPosition(latLng) {
-	$('#location_form input[name=latitude]').val(latLng.lat());
-	$('#location_form input[name=longitude]').val(latLng.lng());
-}
-
-function updateMarkerAddress(str) {
-	$('#location_form input[name=address]').val(str);
-}
-
 
 		$(document).ready(function() {
 			
@@ -153,54 +140,8 @@ function updateMarkerAddress(str) {
 		}
 
 
-		// http://code.google.com/apis/maps/documentation/javascript/3.0/reference.html
-
-		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
-		var data = {
-			items: [
-				{value: "21", name: "Mick Jagger"},
-				{value: "43", name: "Johnny Storm"},
-				{value: "46", name: "Richard Hatch"},
-				{value: "54", name: "Kelly Slater"},
-				{value: "55", name: "Rudy Hamilton"},
-				{value: "79", name: "Michael Jordan"}
-			],
-			arts: [
-				{id: 1, name: 'Jikishinkage'},
-				{id: 2, name: 'Ryukyu kobujutsu'},
-				{id: 3, name: 'Yuishinkai'}
-			]
-		};
-
-
 		$(document).ready(function() {
 		
-		
-			/*
-			$('input[name=password]').inputNotes({
-				minlength: {
-					pattern: /^(.){0,5}$/i,
-					type: 'info',
-					text: 'Minimum password length is 6 characters.' 
-				},
-				characters: {
-					pattern: /[^a-z0-9]/i,
-					type: 'warning',
-					text: 'Please only alphanumeric characters.' 
-				},
-				alphaandnum: {
-					pattern: /(^[a-z]+$)|(^[0-9]+$)/i,
-					type: 'warning',
-					text: 'Please use both, letters and numbers.' 
-				},
-				bigandsmall: {
-					pattern: /(^[a-z0-9]{2,}$)|(^[A-Z0-9]{2,}$)/,
-					type: 'warning',
-					text: 'Please use both, small and capitalized letters.' 
-				}
-			});
-*/
-			
 			$('#post_data').click(function() {
 				$.reshuuSuruToki.updateLocations();
 				
@@ -380,65 +321,6 @@ Bullet for my valentine: the last fight
 			<a href="#" id="get_bounds">get bounds</a>
 		</div>
 
-		<div>
-			<form id="location_form" action="/" method="post">
-				<fieldset>
-					<legend>Location</legend>
-					<p><label><span>Title:</span><input type="text" name="title" /></label></p>
-					<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
-					<p><label><span>Info:</span><input type="text" name="info" /></label></p>
-					<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
-					<p><label><span>Auto fill:</span><input type="checkbox" name="addr_autofill" /> (address from map position)</label></p>
-					<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
-					<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
-					<p><label><span>&nbsp;</span>
-						<input type="button" name="send" value="Send location" class="button" />
-						<input type="button" name="close" value="Close" class="modal_close" />
-					</label></p>
-				</fieldset>
-			</form>
-			<form id="person_form" action="/" method="post">
-				<fieldset>
-					<legend>Person</legend>
-					<p><label><span>Name:</span><input type="text" name="title" /></label></p>
-					<p><label><span>Art:</span><input type="text" name="art" /></label></p>
-					<p><label><span>Contact:</span><input type="text" name="contact" /></label></p>
-					<p><label><span>Info:</span><input type="text" name="info" /></label></p>
-					<p><label><span>&nbsp;</span>
-						<input type="button" name="send" value="Send person" />
-						<input type="button" name="close" value="Close" class="modal_close" />
-					</label></p>
-				</fieldset>
-			</form>
-			<form id="art_form" action="/" method="post">
-				<fieldset>
-					<legend>Art</legend>
-					<p><label><span>Name:</span><input type="text" name="title" /></label></p>
-					<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
-					<p><label><span>&nbsp;</span>
-						<input type="button" name="send" value="Send art" />
-						<input type="button" name="close" value="Close" class="modal_close" />
-					</label></p>
-				</fieldset>
-			</form>
-			<form id="training_form" action="/" method="post">
-				<fieldset>
-					<legend>Training</legend>
-					<p><label><span>Title:</span><input type="text" name="title" /></label></p>
-					<p><label><span>Location:</span><input type="text" name="location" /></label></p>
-					<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
-					<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
-					<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
-					<p><label><span>End time:</span><input type="text" name="endtime" class="numeric" /></label></p>
-					<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
-					<p><label><span>Art:</span><select name="art"></select></label></p>
-					<p><label><span>&nbsp;</span>
-						<input type="button" name="send" value="Send training" />
-						<input type="button" name="close" value="Close" class="modal_close" />
-					</label></p>
-				</fieldset>
-			</form>
-		</div>
 	</div>
 
 </body>

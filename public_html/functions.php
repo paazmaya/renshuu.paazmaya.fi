@@ -74,7 +74,16 @@ function scriptElement($src)
 function createForm($id, $data)
 {
 	$out = '<form id="' . $id . '_form" action="/' . $id . '" method="post">';
-	$out .= '<fieldset><legend>' . $data['legend']. '</legend>';
+	$out .= '<fieldset>';
+	if (isset($data['legend']) && $data['legend'] != '')
+	{
+		$out .= '<legend>' . $data['legend'] . '</legend>';
+	}
+	if (isset($data['info']) && $data['info'] != '')
+	{
+		$out .= '<p class="form-info">' . $data['info'] . '</p>';
+	}
+	
 	$len = count($data['items']);
 	for ($i = 0; $i < $len; $i++)
 	{
@@ -123,8 +132,19 @@ function createForm($id, $data)
 		
 		$out .= '</label></p>';
 	}
-	$out .= '<p><label><span>&nbsp;</span><input type="button" name="send" value="Send ' . $data['legend'] . '" />';
-	$out .= '<input type="button" name="close" value="Close" class="modal_close" /></label></p>';
+	if (isset($data['buttons']) && is_array($data['buttons']))
+	{
+		$out .= '<p>';
+		if (isset($data['buttons']['send']) && $data['buttons']['send'] != '')
+		{
+			out .= '<input type="button" name="send" value="' . $data['buttons']['send'] . '" />';
+		}
+		if (isset($data['buttons']['close']) && $data['buttons']['close'] != '')
+		{
+			$out .= '<input type="button" name="close" value="' . $data['buttons']['close'] . '" class="modal_close" />';
+		}
+		$out .= '</p>';
+	}
 	$out .= '</fieldset></form>';
 	
 	return $out;
@@ -223,7 +243,14 @@ function minify($type, $files)
 					if ($type == 'js')
 					{
 						//$min = JSMin::minify($cont);
-						$min = Minify_JS_ClosureCompiler::minify($cont); 
+						try
+						{
+							$min = Minify_JS_ClosureCompiler::minify($cont); 
+						}
+						catch (Exception $error)
+						{
+							echo $error->getMessage() . ' while src: ' . $src;
+						}
 					}
 					else if ($type == 'css')
 					{

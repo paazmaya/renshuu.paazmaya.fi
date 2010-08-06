@@ -15,7 +15,7 @@ RENSHUU.PAAZMAYA.COM
 * - training	A training time with a location and an art
 * - person		A person who might be leading some martial art trainings.
 *
-* In the case of the first, "get", the POST parametres, 
+* In the case of the first, "get", the POST parametres,
 * where arrays contain numerical data, must be the following:
 * - area { northeast [], southwest [] }
 * - filter { arts [], weekdays [] }
@@ -48,23 +48,27 @@ RENSHUU.PAAZMAYA.COM
 *		}
 *	]
 *
-* In the other use cases of "get", when a keywork is used, the return value will be of 
+* In the other use cases of "get", when a keywork is used, the return value will be of
 * the following format:
 *	[keyword, one of four]: [
 *		{ id: 0, title: '' }
 * 	]
 *
-* While in "form" mode, the output is a html string containing <form> 
+* While in "form" mode, the output is a html string containing <form>
 * with all the requested components, in a "form" key.
+*
+* Additional "form" options are: login and profile.
+* Those two will use index.php directly as their counter parts, so there is no need 
+* to set up an "set" options for them.
 *
 * As for the "set" mode, the output is simply to return the id and the title
 * for the data which was successfuly inserted. In any other case "error" will be present.
 *	result: { id: 0, title: '' }
 *
 * In the case of an update, the "set" mode is used, where a post parametre will reveal
-* the need for an update. 
+* the need for an update.
 *	'update' => existing_id
-* 
+*
 *
 * Weekdays are zero indexed, starting from Sunday as in the Japanese calendar.
 */
@@ -72,6 +76,11 @@ RENSHUU.PAAZMAYA.COM
 require './config.php';
 require './functions.php';
 session_start();
+
+// require 'translations_' . $_SESSION['lang'] . '.php';
+require './translations_en.php';
+
+
 // http://marcgrabanski.com/articles/jquery-ajax-content-type
 header('Content-type: application/json; charset=utf-8');
 
@@ -84,8 +93,8 @@ $out = array(
 $page = ''; // get/set/form
 $pages = array('get', 'set', 'form');
 
-$pagetype = ''; // art/location/training/person
-$pagetypes = array('art', 'location', 'training', 'person');
+$pagetype = ''; // art/location/training/person + profile/login
+$pagetypes = array('art', 'location', 'training', 'person', 'profile', 'login');
 
 $id = 0;
 $passcheck = false;
@@ -111,6 +120,12 @@ if (isset($_GET['page']))
 			$passcheck = true;
 		}
 		
+		if ($page != 'form')
+		{
+			// Remove "profile" and "login" options.
+			array_splice($pagetypes, -2);
+		}
+
 		if ($count > 2 && in_array($parts['2'], $pagetypes))
 		{
 			$pagetype = $parts['2'];
@@ -243,7 +258,7 @@ if ($passcheck)
 			'training' => 'SELECT id, name FROM ren_training ORDER BY name' . $where_art,
 			'person' => 'SELECT id, name FROM ren_art ORDER BY name'
 		);
-		
+
 		$sql = $queries[$pagetype];
 		$results = array();
 		$run =  $link->query($sql);
@@ -274,7 +289,9 @@ if ($passcheck)
 	else if ($page == 'set' && $loggedin)
 	{
 		// Data availalable is dependant of the form used
-		// key in the form matches the value of the table row name
+		// Key in the form matches the value of the table row name.
+		// The object named after the $pagetype should include the data that is to be updated.
+		// Keys should match the ones used in $map below.
 		$map = array(
 			'art' => array(
 				'title' => '',
@@ -305,11 +322,22 @@ if ($passcheck)
 				'contact' => '',
 				'info' => '',
 			)
-		);		
+		);
 		// Each of the given tables have a field for modified time
-		
+
+		// This should include the id of that item which is currently being updated.
 		if (isset($_POST['update']) && is_numeric($_POST['update']))
 		{
+			$id = intval($_POST['update']);
+			$sql = 'UPDATE ren_' . $pagetype . ' SET ';
+		}
+		else if (isset($_POST['insert']) && is_numeric($_POST['insert']))
+		{
+			$sql = 'INSERT INTO ren_' . $pagetype . ' VALUES ';
+		}
+		else
+		{
+			// Harms way...
 		}
 
 		$out['result'] = array(
@@ -320,179 +348,8 @@ if ($passcheck)
 	}
 	else if ($page == 'form')
 	{
-		$forms = array(
-			'art' => array(
-				'legend' => 'Art',
-				'items' => array(
-					array(
-						'label' => 'Name',
-						'type' => 'text',
-						'name' => 'title',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'URI',
-						'type' => 'text',
-						'name' => 'uri',
-						'class' => '',
-						'disabled' => false
-					)
-				)
-			),
-			'location' => array(
-				'legend' => 'Location',
-				'items' => array(
-					array(
-						'label' => 'Title',
-						'type' => 'text',
-						'name' => 'title',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'URI',
-						'type' => 'text',
-						'name' => 'uri',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Info',
-						'type' => 'text',
-						'name' => 'info',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Address(if any)',
-						'type' => 'text',
-						'name' => 'address',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Auto fill',
-						'type' => 'checkbox',
-						'name' => 'addr_autofill',
-						'class' => '',
-						'disabled' => false,
-						'after' => ' (address from map position)'
-					),
-					array(
-						'label' => 'Latitude',
-						'type' => 'text',
-						'name' => 'latitude',
-						'class' => '',
-						'disabled' => true
-					),
-					array(
-						'label' => 'Longitude',
-						'type' => 'text',
-						'name' => 'longitude',
-						'class' => '',
-						'disabled' => true
-					)
-				)
-			),
-			'training' => array(
-				'legend' => 'Training',
-				'items' => array(
-					array(
-						'label' => 'Title',
-						'type' => 'text',
-						'name' => 'title',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Location',
-						'type' => 'text',
-						'name' => 'location',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Weekday',
-						'type' => 'select',
-						'name' => 'weekday',
-						'class' => '',
-						'disabled' => false,
-						'options' => array()
-					),
-					array(
-						'label' => 'Occurance',
-						'type' => 'text',
-						'name' => 'occurance',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Start time',
-						'type' => 'text',
-						'name' => 'starttime',
-						'class' => 'numeric',
-						'disabled' => false
-					),
-					array(
-						'label' => 'End time',
-						'type' => 'text',
-						'name' => 'endtime',
-						'class' => 'numeric',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Duration (minutes)',
-						'type' => 'text',
-						'name' => 'duration',
-						'class' => 'numeric',
-						'disabled' => true
-					),
-					array(
-						'label' => 'Art',
-						'type' => 'select',
-						'name' => 'art',
-						'class' => '',
-						'disabled' => false,
-						'options' => array()
-					)
-				)
-			),
-			'person' => array(
-				'legend' => 'Person',
-				'items' => array(
-					array(
-						'label' => 'Name',
-						'type' => 'text',
-						'name' => 'title',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Art',
-						'type' => 'text',
-						'name' => 'art',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Contact',
-						'type' => 'text',
-						'name' => 'contact',
-						'class' => '',
-						'disabled' => false
-					),
-					array(
-						'label' => 'Info',
-						'type' => 'text',
-						'name' => 'info',
-						'class' => '',
-						'disabled' => false
-					)
-				)
-			)
-		);
-
+		// $forms variable available in the translations_xx.php,
+		// $weekdays too..
 		$out['form'] = createForm($pagetype, $forms[$pagetype]);
 		unset($out['error']);
 	}

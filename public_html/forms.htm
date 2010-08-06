@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>renshuu forms</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="icon" type="image/ico" href="favicon.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link type="text/css" href="css/main.css" rel="stylesheet" />
+	<link type="text/css" href="css/autoSuggest.css" rel="stylesheet" />
+	<link type="text/css" href="css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
+	<link type="text/css" href="css/ui.timepickr.css" rel="stylesheet" />
+
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja"></script>
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.core.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.tabs.js"></script>
+
+	<script type="text/javascript" src="js/jquery.timepicker.js"></script>
+	<script type="text/javascript" src="js/jquery.clockpick.1.2.7.js"></script>
+
+	<script type="text/javascript" src="js/ui.timepickr.js"></script>
+
+	<script type="text/javascript" src="js/jquery.inputnotes-0.6.js"></script>
+
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+
+	<script type="text/javascript" src="js/jquery.json-2.2.js"></script>
+	<script type="text/javascript" src="js/jstorage.js"></script>
+
+	<script type="text/javascript" src="js/jquery.curvycorners.js"></script>
+	<script type="text/javascript" src="js/jquery.autoSuggest.js"></script>
+
+	<script type="text/javascript" src="js/jquery.simplemodal-1.3.5.js"></script>
+
+	<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
+
+	<script type="text/javascript" src="js/renshuusurutoki.js"></script>
+
+	<script type="text/javascript">
+
+function updateMarkerStatus(str) {
+	$('#location_form input[name=info]').val(str);
+}
+
+function updateMarkerPosition(latLng) {
+	$('#location_form input[name=latitude]').val(latLng.lat());
+	$('#location_form input[name=longitude]').val(latLng.lng());
+}
+
+function updateMarkerAddress(str) {
+	$('#location_form input[name=address]').val(str);
+}
+/*
+
+		$(document).ready(function() {
+
+			var latLng = $.reshuuSuruToki.map.getCenter();
+			var marker = $.reshuuSuruToki.markers.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
+
+			// Update current position info.
+			updateMarkerPosition(latLng);
+			$.reshuuSuruToki.data.geocodePosition(latLng);
+
+		});
+*/
+		function createLocation() {
+			$('<div></div>').html('Select a position from the map by clicking it.').dialog({
+				title: "Create a new location",
+				width: 400,
+				height: 300,
+				buttons: {
+					"Ok": function() {
+						var location = {
+							latitude: lat,
+							longitude: lng
+						};
+						$.post(ajaxpoint.set + 'location', location, function(data, status) {
+							$(this).dialog("close");
+						}, 'json');
+					}
+				}
+			});
+		}
+
+		/**
+		* @param target The select element as jQuery object
+		* @param type String defining the type of the data to be fetched
+		*/
+		function loadOptions(target, type) {
+			var append = '';
+			$.get(ajaxpoint.get + type, {}, function(data, status) {
+				var len = data.response.length;
+				for (var i = 0; i < len; ++i) {
+					var item = data.response[i];
+					append += '<' + 'option value="' + item.id + '">' + item.title + '<' + '/option>';
+				}
+				target.children('option').replace(append);
+			});
+		}
+
+
+
+		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+		var data = {
+			items: [
+				{value: "21", name: "Mick Jagger"},
+				{value: "43", name: "Johnny Storm"},
+				{value: "46", name: "Richard Hatch"},
+				{value: "54", name: "Kelly Slater"},
+				{value: "55", name: "Rudy Hamilton"},
+				{value: "79", name: "Michael Jordan"}
+			],
+			arts: [
+				{id: 1, name: 'Jikishinkage'},
+				{id: 2, name: 'Ryukyu kobujutsu'},
+				{id: 3, name: 'Yuishinkai'}
+			]
+		};
+
+
+		$(document).ready(function() {
+
+
+			$('input[name=password]').inputNotes({
+				minlength: {
+					pattern: /^(.){0,5}$/i,
+					type: 'info',
+					text: 'Minimum password length is 6 characters.'
+				},
+				characters: {
+					pattern: /[^a-z0-9]/i,
+					type: 'warning',
+					text: 'Please only alphanumeric characters.'
+				},
+				alphaandnum: {
+					pattern: /(^[a-z]+$)|(^[0-9]+$)/i,
+					type: 'warning',
+					text: 'Please use both, letters and numbers.'
+				},
+				bigandsmall: {
+					pattern: /(^[a-z0-9]{2,}$)|(^[A-Z0-9]{2,}$)/,
+					type: 'warning',
+					text: 'Please use both, small and capitalized letters.'
+				}
+			});
+
+		});
+	</script>
+</head>
+<body>
+	<div id="wrap" class="round">
+
+		<div id="right">
+
+			<div id="forms">
+				<div class="header qr_forms">
+					<p><a href="#" rel="forms">Forms</a><span></span></p>
+				</div>
+				<div class="content">
+					<div class="stuff">
+
+						<form id="location_form" action="/" method="post">
+							<fieldset>
+								<legend>Location</legend>
+								<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+								<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+								<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+								<p><label><span>Address(if any):</span><input type="text" name="address" /></label></p>
+								<p><label><span>Auto fill:</span><input type="checkbox" name="addr_autofill" /> (address from map position)</label></p>
+								<p><label><span>Latitude:</span><input type="text" name="latitude" disabled="disabled" /></label></p>
+								<p><label><span>Longitude:</span><input type="text" name="longitude" disabled="disabled" /></label></p>
+								<p>
+									<input type="button" name="send" value="Send location" class="button" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+						<form id="person_form" action="/" method="post">
+							<fieldset>
+								<legend>Person</legend>
+								<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+								<p><label><span>Art:</span><input type="text" name="art" /></label></p>
+								<p><label><span>Contact:</span><input type="text" name="contact" /></label></p>
+								<p><label><span>Info:</span><input type="text" name="info" /></label></p>
+								<p>
+									<input type="button" name="send" value="Send person" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+						<form id="art_form" action="/" method="post">
+							<fieldset>
+								<legend>Art</legend>
+								<p><label><span>Name:</span><input type="text" name="title" /></label></p>
+								<p><label><span>URI:</span><input type="text" name="uri" /></label></p>
+								<p>
+									<input type="button" name="send" value="Send art" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+						<form id="training_form" action="/" method="post">
+							<fieldset>
+								<legend>Training</legend>
+								<p><label><span>Title:</span><input type="text" name="title" /></label></p>
+								<p><label><span>Location:</span><input type="text" name="location" /></label></p>
+								<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
+								<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
+								<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
+								<p><label><span>End time:</span><input type="text" name="endtime" class="numeric" /></label></p>
+								<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
+								<p><label><span>Art:</span><select name="art"></select></label></p>
+								<p>
+									<input type="button" name="send" value="Send training" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+						<form id="login_form" action="/" method="post">
+							<fieldset>
+								<legend>Login</legend>
+								<p><label><span>E-mail:</span><input type="text" name="email" /></label></p>
+								<p><label><span>Password:</span><input type="text" name="password" /></label></p>
+								<p><label><span>How much is 2 + 3:</span><input type="text" name="answer" class="numeric" /> (making sure you are a real person)</label></p>
+								<p>
+									<input type="button" name="send" value="Send login" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+						<form id="profile_form" action="/" method="post">
+							<fieldset>
+								<legend>Profile</legend>
+								<p>E-mail address will be used as your login id.<p>
+								<p><label><span>E-mail:</span><input type="text" name="email" /></label></p>
+								<p><label><span>Full name:</span><input type="text" name="title" /></label></p>
+								<p><label><span>Password:</span><input type="text" name="password" /></label></p>
+								<p><label><span>How much is 5 - 3:</span><input type="text" name="answer" class="numeric" /> (making sure you are a real person)</label></p>
+								<p>
+									<input type="button" name="send" value="Send login" />
+									<input type="button" name="close" value="Close" class="modal_close" />
+								</p>
+							</fieldset>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+</html>
