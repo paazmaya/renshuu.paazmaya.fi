@@ -166,6 +166,17 @@ ul.inputnotes li.note {
 	list-style: none;
 }
 
+#simplemodal-container a.modalCloseImg {
+	background:url(/img/x.png) no-repeat; /* adjust url as required */
+	width:25px;
+	height:29px;
+	display:inline;
+	z-index:3200;
+	position:absolute;
+	top:-15px;
+	right:-18px;
+	cursor:pointer;
+}
 
 
 

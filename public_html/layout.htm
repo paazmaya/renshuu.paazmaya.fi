@@ -51,6 +51,17 @@
 
 	<script type="text/javascript">
 
+function updateMarkerStatus(str) {
+	$('#markerStatus').html(str);
+}
+
+function updateMarkerPosition(latLng) {
+	$('#info').html('lat: ' + latLng.lat() + ', lng: ' + latLng.lng());
+}
+
+function updateMarkerAddress(str) {
+	$('#address').html(str);
+}
 
 		$(document).ready(function() {
 			
@@ -61,6 +72,18 @@
 			updateMarkerPosition(latLng);
 			$.reshuuSuruToki.data.geocodePosition(latLng);
 
+			google.maps.event.addListener(marker, 'drag', function() {
+				updateMarkerStatus('Dragging...');
+				updateMarkerPosition(marker.getPosition());
+			});
+			google.maps.event.addListener(marker, 'dragend', function() {
+				marker.setOptions({icon: $.reshuuSuruToki.pins.gYellowIcon()});
+				updateMarkerStatus('Drag ended');
+				$.reshuuSuruToki.data.geocodePosition(marker.getPosition());
+
+				$.reshuuSuruToki.streetview.setPosition(marker.getPosition());
+				$.reshuuSuruToki.streetview.setVisible(true);
+			});
 
 			$('#list li a').click(function() {
 				var attr = { type: $(this).parent().attr('') };

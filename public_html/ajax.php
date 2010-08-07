@@ -350,7 +350,7 @@ if ($passcheck)
 	{
 		// $forms variable available in the translations_xx.php,
 		// $weekdays too..
-		$out['form'] = createForm($pagetype, $forms[$pagetype]);
+		$out['form'] = createForm($pagetype, $lang['forms'][$pagetype]);
 		unset($out['error']);
 	}
 }

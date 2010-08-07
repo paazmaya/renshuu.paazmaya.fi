@@ -48,6 +48,9 @@ require './config.php';
 require './functions.php';
 session_start();
 
+// require 'translations_' . $_SESSION['lang'] . '.php';
+require './translations_en.php';
+
 // As per .htaccess, all requests are redirected to index.php with one GET variable.
 if (isset($_GET['page']) && strlen($_GET['page']) > 0)
 {
@@ -233,10 +236,9 @@ $gzipped = ''; //'.gz';
 						<ul id="weekdays">
 							<?php
 							// Zero index Sunday.
-							$weekdays = array('日', '月', '火', '水', '木', '金', '土'); // 曜日
-							foreach($weekdays as $key => $val)
+							foreach($lang['weekdays'] as $key => $val)
 							{
-								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '曜日</label></li>';
+								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
 							}
 							?>
 						</ul>

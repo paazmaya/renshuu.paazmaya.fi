@@ -41,31 +41,7 @@
 
 	<script type="text/javascript">
 
-function updateMarkerStatus(str) {
-	$('#location_form input[name=info]').val(str);
-}
 
-function updateMarkerPosition(latLng) {
-	$('#location_form input[name=latitude]').val(latLng.lat());
-	$('#location_form input[name=longitude]').val(latLng.lng());
-}
-
-function updateMarkerAddress(str) {
-	$('#location_form input[name=address]').val(str);
-}
-/*
-
-		$(document).ready(function() {
-
-			var latLng = $.reshuuSuruToki.map.getCenter();
-			var marker = $.reshuuSuruToki.markers.createMarker(latLng, 'Point A', $.reshuuSuruToki.pins.gYellowIcon(), true);
-
-			// Update current position info.
-			updateMarkerPosition(latLng);
-			$.reshuuSuruToki.data.geocodePosition(latLng);
-
-		});
-*/
 		function createLocation() {
 			$('<div></div>').html('Select a position from the map by clicking it.').dialog({
 				title: "Create a new location",
@@ -253,6 +229,36 @@ function updateMarkerAddress(str) {
 		</div>
 
 	</div>
-
+<!--
+	training: {
+*				id: 0,
+*				art: {
+*					id: 0,
+*					title: ''
+*				},
+*				weekday: 0,
+*				starttime: 0,
+*				endtime: 0
+*			}
+*			location: {
+*				id: 0,
+*				latitude: 0.0,
+*				longitude: 0.0,
+*				title: '',
+*				url: '',
+*				address: ''
+*			}
+-->
+	<div class="modal-info vevent">
+		<h2 class="modal-art-name summary" rel="art-0">琉球古武術保存振興会</h2>
+		<a href="" class="uid"></a>
+		<p class="modal-time" rel="training-0">Wednesday <span class="dtstart">19:30</span> - <span class="dtend">21:00</span></p>dtstamp
+		<address class="modal-location geo" rel="location-0">
+			<a class="" href=""></a>
+			<span class="latitude"></span>
+			<span class="longitude"></span>
+		</address>
+		<p class="modal-contact" rel="person-0">Inoue Kisho</p>
+	</div>
 </body>
 </html>

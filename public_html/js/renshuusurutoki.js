@@ -30,7 +30,10 @@ $(document).ready(function() {
 		},
 		
 		geocodeMarkers: [],
-		trainingMarkers: [],
+		
+		trainingMarkers: [], // These two should share a same index for dta
+		trainingMarkersData: [], // related to the other
+		
 		streetMarker: null, // The actual position where current Street View is at.
 		
 		ready: function() {
@@ -180,6 +183,9 @@ $(document).ready(function() {
 				filter: $.reshuuSuruToki.filterSettings
 			};
 			
+			$.reshuuSuruToki.markers.clearMarkers($.reshuuSuruToki.trainingMarkers);
+			$.reshuuSuruToki.trainingMarkersData = [];
+			
 			$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
 				if (data.response && data.response.result) {
 					var res = data.response.result;
@@ -198,7 +204,6 @@ $(document).ready(function() {
 		showStreetView: function(position) {
 			$.reshuuSuruToki.streetview.setPosition(position);
 			$.reshuuSuruToki.streetview.setVisible(true);
-			//$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
 		},
 		
 		init: function(map_element, street_element, map_options, street_options) {
@@ -253,7 +258,7 @@ $(document).ready(function() {
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
 				var posS = $.reshuuSuruToki.streetview.getPosition();
 				var posM = $.reshuuSuruToki.streetMarker.getPosition();
-				var bounds = $.reshuuSuruToki.streetview.map.getBounds();
+				var bounds = $.reshuuSuruToki.map.getBounds();
 				
 				if ($.reshuuSuruToki.streetview.getVisible()) {
 					$(street_element).slideDown();
@@ -261,11 +266,14 @@ $(document).ready(function() {
 				else {
 					$(street_element).slideUp();
 				}
+				/*
 				if (!bounds.contains(posS)) {
 					posS = $.reshuuSuruToki.map.getCenter();
 				}
+				*/
 				$.reshuuSuruToki.streetMarker.setPosition(posS);
 				$.reshuuSuruToki.streetMarker.setVisible($.reshuuSuruToki.streetview.getVisible());
+				//$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
 			});
 			
 			$.reshuuSuruToki.callbacks.initiate();
@@ -304,7 +312,7 @@ $(document).ready(function() {
 	*/
 	$.reshuuSuruToki.markers = {
 		
-		// As per marker click, show its position in Street View
+		// As per marker double click, show its position in Street View
 		showInStreetView: false,
 		
 		clearMarkers: function(list) {
@@ -319,9 +327,10 @@ $(document).ready(function() {
 		createTrainingMarker: function(data) {
 			var icon = $.reshuuSuruToki.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '100212');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
-			var marker = $.reshuuSuruToki.markers.createMarker(pos, data.location.title, icon, false);
+			var marker = $.reshuuSuruToki.markers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false, true);
 			
 			$.reshuuSuruToki.trainingMarkers.push(marker);
+			$.reshuuSuruToki.trainingMarkersData.push(data);
 		},
 		
 		createMarker: function(pos, title, icon, drag, click) {
@@ -335,6 +344,7 @@ $(document).ready(function() {
 			if (click == null) {
 				click = true;
 			}
+			console.log('createMarker. title: ' + title + ', drag: ' + drag + ', click: ' + click);
 			var marker = new google.maps.Marker({
 				position: pos,
 				title: title,
@@ -364,21 +374,25 @@ $(document).ready(function() {
 				google.maps.event.addListener(marker, 'click', function(event) {
 					// This event is fired when the marker icon was clicked.
 					console.log('marker. click - ' + marker.title);
-					console.log('showInStreetView: ' + $.reshuuSuruToki.markers.showInStreetView);
-					if ($.reshuuSuruToki.markers.showInStreetView) {
-						$.reshuuSuruToki.showStreetView(marker.getPosition());
-					}
+					// Open a modal window with the details
+					$.reshuuSuruToki.markers.openModal(marker);
 				});
 			}
+			/*
 			google.maps.event.addListener(marker, 'clickable_changed', function() {
 				// This event is fired when the marker's clickable property changes.
 			});
 			google.maps.event.addListener(marker, 'cursor_changed', function() {
 				// This event is fired when the marker's cursor property changes.
 			});
+			*/
 			google.maps.event.addListener(marker, 'dblclick', function(event) {
 				// This event is fired when the marker icon was double clicked.
 				console.log('marker. dblclick - ' + marker.title);
+				console.log('showInStreetView: ' + $.reshuuSuruToki.markers.showInStreetView);
+				if ($.reshuuSuruToki.markers.showInStreetView) {
+					$.reshuuSuruToki.showStreetView(marker.getPosition());
+				}
 			});
 			if (drag) {
 				google.maps.event.addListener(marker, 'drag', function(event) {
@@ -445,6 +459,42 @@ $(document).ready(function() {
 			*/
 			
 			return marker;
+		},
+		
+		// http://www.ericmmartin.com/projects/simplemodal/
+		openModal: function(marker) {
+			var inx = $.reshuuSuruToki.trainingMarkers.indexOf(marker);
+			console.log('openModal. marker.title: '+ marker.title + ', inx: ' + inx);
+			var data;
+			if (inx != -1) {
+				data = $.reshuuSuruToki.trainingMarkersData[inx];
+			}
+			
+			if (data) {
+				console.log('openModal. data. ' + data);
+				var info = $('<div><p></p></div>');
+				$.modal(info, {
+					onOpen: function(dialog) {
+						dialog.overlay.fadeIn('slow', function() {
+							dialog.container.slideDown('slow', function() {
+								dialog.data.fadeIn('slow');
+							});
+						});
+					},
+					onClose: function(dialog) {
+						dialog.data.fadeOut('slow', function() {
+							dialog.container.hide('slow', function() {
+								dialog.overlay.slideUp('slow', function() {
+									$.modal.close();
+								});
+							});
+						});
+					},
+					closeClass: 'modal_close',
+					modal: false
+				});
+				
+			}
 		}
 	};
 	
@@ -501,7 +551,7 @@ $(document).ready(function() {
 			var center = $.reshuuSuruToki.map.getCenter();
 			var zoom = $.reshuuSuruToki.map.getZoom();
 			console.log('center / zoom changed. zoom: ' + zoom + ', center: ' + center);
-			document.location = '/#/zoom/' + zoom + '/lat/' + center.lat() + '/lng/' + center.lng();
+			//document.location = '/#/zoom/' + zoom + '/lat/' + center.lat() + '/lng/' + center.lng();
 		},
 			
 		initiate: function() {
@@ -634,16 +684,24 @@ $(document).ready(function() {
 	
 		// Four types available: art, location, training, person
 		getForm: function(type) {
-			$.post($.reshuuSuruToki.ajaxpoint.form + type, function(data, status) {
-				if (data.response && data.response.form)
-				{
-					$.reshuuSuruToki.forms.showForm(data.response.form, type);
-				}
-			}, 'json');
+			if ($.reshuuSuruToki.forms[type])
+			{
+				$.reshuuSuruToki.forms.showForm(type);
+			}
+			else
+			{
+				$.post($.reshuuSuruToki.ajaxpoint.form + type, function(data, status) {
+					if (data.response && data.response.form)
+					{
+						$.reshuuSuruToki.forms.setForm(data.response.form, type);
+						$.reshuuSuruToki.forms.showForm(type);
+					}
+				}, 'json');
+			}
 		},
 		
 		// form contains the form element with the requested input fields.
-		showForm: function(form, type) {
+		setForm: function(form, type) {
 		
 			$(form).children('input[name=art]')
 				.autoSuggest(
@@ -731,32 +789,16 @@ $(document).ready(function() {
 					text: 'Yes, that\'s a valid email address!' 
 				}
 			});
+			
+			$(form).children('input[type=button][name=send]').click(function() {
+			});
+			
+			$.reshuuSuruToki.forms.cache[type] = form;
 		},
 		
-		// http://www.ericmmartin.com/projects/simplemodal/
-		openModal: function(id) {
-			$.modal($(id), {
-				onOpen: function(dialog) {
-					dialog.overlay.fadeIn('slow', function() {
-						dialog.container.slideDown('slow', function() {
-							dialog.data.fadeIn('slow');
-						});
-					});
-				},
-				onClose: function(dialog) {
-					dialog.data.fadeOut('slow', function() {
-						dialog.container.hide('slow', function() {
-							dialog.overlay.slideUp('slow', function() {
-								$.modal.close();
-							});
-						});
-					});
-				},
-				closeClass: 'modal_close',
-				modal: false
-			});
-			$(id).children('input[type=button][name=send]').click(function() {
-			});
+		showForm: function(type) {
+			var form = $.reshuuSuruToki.forms.cache[type];
+			
 			
 		}
 	};

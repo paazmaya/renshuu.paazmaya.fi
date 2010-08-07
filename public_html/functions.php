@@ -73,6 +73,11 @@ function scriptElement($src)
  */
 function createForm($id, $data)
 {
+	if (!isset($id) || $id == '' || !isset($data) || !is_array(data))
+	{
+		return null;
+	}
+	
 	$out = '<form id="' . $id . '_form" action="/' . $id . '" method="post">';
 	$out .= '<fieldset>';
 	if (isset($data['legend']) && $data['legend'] != '')
@@ -137,7 +142,7 @@ function createForm($id, $data)
 		$out .= '<p>';
 		if (isset($data['buttons']['send']) && $data['buttons']['send'] != '')
 		{
-			out .= '<input type="button" name="send" value="' . $data['buttons']['send'] . '" />';
+			$out .= '<input type="button" name="send" value="' . $data['buttons']['send'] . '" />';
 		}
 		if (isset($data['buttons']['close']) && $data['buttons']['close'] != '')
 		{

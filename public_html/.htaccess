@@ -31,6 +31,7 @@ php_flag session.use_trans_sid 0
 php_flag session.use_only_cookies 1
 php_value session.name "RE"
 
-php_value date.default_latitude "60.174306261926034"
-php_value date.default_longitude "24.983339309692383"
-php_value date.timezone "Europe/Helsinki"
+# 日本標準時
+php_value date.timezone "Asia/Tokyo"
+php_value date.default_latitude "35.700556"
+php_value date.default_longitude "139.715"
