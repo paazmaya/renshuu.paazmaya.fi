@@ -153,52 +153,23 @@ $gzipped = ''; //'.gz';
 		</div>
 
 		<div id="right">
-			<div id="tabs">
+			<div>
 				<div class="header qr_tools">
-					<ul>
-						<li><a href="#filters" class="active">filters</a></li>
-						<li><a href="#forms">forms</a></li>
-						<li><a href="#profile">profile</a></li>
+					<ul id="tabs">
+						<li><a href="#filters" title="">filters</a></li>
+						<li><a href="#location" title="">location</a></li>
+						<li><a href="#art" title="">art</a></li>
+						<li><a href="#profile" title="">profile</a></li>
+						<li><a href="#login" title="">login</a></li>
 					</ul>
 				</div>
 				<div class="content">
-					<div class="stuff">
+					<div class="stuff" id="tabcontent">
 						<!-- -->
 					</div>
 				</div>
 			</div>
 			
-			<div id="tools">
-				<div class="header qr_tools">
-					<p><a href="#" rel="tools">Tools</a><span></span></p>
-				</div>
-				<div class="content">
-					<div class="stuff">
-						<p><a href="#" id="new_location">Create a new location</a></p>
-						<p><a href="#" id="post_data">Post data test</a></p>
-					</div>
-				</div>
-			</div>
-
-			<div id="forms">
-				<div class="header qr_forms">
-					<p><a href="#" rel="forms">Forms</a><span></span></p>
-				</div>
-				<div class="content">
-					<div class="stuff">
-					</div>
-				</div>
-			</div>
-
-			<div id="profile">
-				<div class="header qr_profile">
-					<p><a href="#" rel="profile">Profile</a><span></span></p>
-				</div>
-				<div class="content">
-					<div class="stuff">
-					</div>
-				</div>
-			</div>
 			<div id="filters">
 				<div class="header qr_arts">
 					<p><a href="#" rel="arts">Martial Arts</a><span></span></p>
@@ -238,7 +209,7 @@ $gzipped = ''; //'.gz';
 							// Zero index Sunday.
 							foreach($lang['weekdays'] as $key => $val)
 							{
-								echo '<li><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+								echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
 							}
 							?>
 						</ul>

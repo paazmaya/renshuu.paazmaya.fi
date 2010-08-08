@@ -44,12 +44,17 @@ RENSHUU.PAAZMAYA.COM
 *				title: '',
 *				url: '',
 *				address: ''
+*			},
+*			person: {
+*				id: 0,
+*				title: '',
+*				contact: ''
 *			}
 *		}
 *	]
 *
 * In the other use cases of "get", when a keywork is used, the return value will be of
-* the following format:
+* the following format. The results are filtered by a keyword as a last parametre in the url.
 *	[keyword, one of four]: [
 *		{ id: 0, title: '' }
 * 	]
@@ -82,7 +87,8 @@ require './translations_en.php';
 
 
 // http://marcgrabanski.com/articles/jquery-ajax-content-type
-header('Content-type: application/json; charset=utf-8');
+//header('Content-type: application/json; charset=utf-8');
+header('Content-type: text/plain; charset=utf-8');
 
 
 // Default output
@@ -95,6 +101,8 @@ $pages = array('get', 'set', 'form');
 
 $pagetype = ''; // art/location/training/person + profile/login
 $pagetypes = array('art', 'location', 'training', 'person', 'profile', 'login');
+
+$getfilter = '';
 
 $id = 0;
 $passcheck = false;
@@ -130,6 +138,11 @@ if (isset($_GET['page']))
 		{
 			$pagetype = $parts['2'];
 			$passcheck = true;
+			
+			// Since here, should there be a keyword for filtering the results available?
+			if ($page == 'get' && $count > 3) {
+				$getfilter = trim($parts['3']);
+			}
 		}
 	}
 	else
@@ -199,9 +212,9 @@ if ($passcheck)
 		}
 
 		$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
-		$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id LEFT JOIN ren_art C ON A.art = C.id';
+		$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id LEFT JOIN ren_art C ON A.art = C.id LEFT JOIN ren_person D ON D.id = A.person';
 
-		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address ' . $from . ' WHERE ' . $position . $art . $weekday;
+		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address, D.id AS personid, D.name AS personname, D.contact ' . $from . ' WHERE ' . $position . $art . $weekday;
 		$results = array();
 		$run =  $link->query($sql);
 		if ($run)
@@ -226,6 +239,11 @@ if ($passcheck)
 						'title' => $res['locationname'],
 						'url' => $res['url'],
 						'address' => $res['address'],
+					),
+					'person' => array(
+						'id' => $res['personid'],
+						'title' => $res['personname'],
+						'contact' => $res['contact']
 					)
 				);
 			}
@@ -252,11 +270,16 @@ if ($passcheck)
 		{
 			$where_art = ' WHERE art = ' . intval($_POST['art']);
 		}
+		$where_filter = '';
+		if ($getfilter != '')
+		{	
+			$where_filter = 'name LIKE \'%' . $getfilter . '%\'';
+		}
 		$queries = array(
 			'art' => 'SELECT id, name FROM ren_art ORDER BY name',
 			'location' => 'SELECT id, name FROM ren_location ORDER BY name',
 			'training' => 'SELECT id, name FROM ren_training ORDER BY name' . $where_art,
-			'person' => 'SELECT id, name FROM ren_art ORDER BY name'
+			'person' => 'SELECT id, name FROM ren_person ORDER BY name'
 		);
 
 		$sql = $queries[$pagetype];
@@ -348,9 +371,13 @@ if ($passcheck)
 	}
 	else if ($page == 'form')
 	{
-		// $forms variable available in the translations_xx.php,
-		// $weekdays too..
-		$out['form'] = createForm($pagetype, $lang['forms'][$pagetype]);
+		// $lang['forms'] variable available in the translations_xx.php,
+		// $lang['weekdays'] too..
+		
+		$data = $lang['forms'][$pagetype];
+		// $lang['weekdays']
+		
+		$out['form'] = createForm($pagetype, $data);
 		unset($out['error']);
 	}
 }

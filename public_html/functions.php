@@ -73,7 +73,7 @@ function scriptElement($src)
  */
 function createForm($id, $data)
 {
-	if (!isset($id) || $id == '' || !isset($data) || !is_array(data))
+	if (!isset($id) || $id == '' || !isset($data) || !is_array($data))
 	{
 		return null;
 	}

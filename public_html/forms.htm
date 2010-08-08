@@ -37,7 +37,9 @@
 
 	<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
 
+	<!--
 	<script type="text/javascript" src="js/renshuusurutoki.js"></script>
+	-->
 
 	<script type="text/javascript">
 
@@ -79,28 +81,62 @@
 
 
 
-		// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
-		var data = {
-			items: [
-				{value: "21", name: "Mick Jagger"},
-				{value: "43", name: "Johnny Storm"},
-				{value: "46", name: "Richard Hatch"},
-				{value: "54", name: "Kelly Slater"},
-				{value: "55", name: "Rudy Hamilton"},
-				{value: "79", name: "Michael Jordan"}
-			],
-			arts: [
-				{id: 1, name: 'Jikishinkage'},
-				{id: 2, name: 'Ryukyu kobujutsu'},
-				{id: 3, name: 'Yuishinkai'}
-			]
-		};
-
 
 		$(document).ready(function() {
 
+			$('input[name=location]').autoSuggest(
+				'http://192.168.1.37:7781/ajax/get/location', {
+					startText: 'Type a location name',
+					selectedItemProp: 'id',
+					searchObjProps: 'title'
+				}
+			);
+			$('input[name=art]').autoSuggest(
+				'http://192.168.1.37:7781/ajax/get/art', {
+					minChars: 2, 
+					matchCase: false,
+					startText: 'Type an art name',
+					selectedItemProp: 'title',
+					
+					selectedValuesProp: 'id',
+					searchObjProps: 'title',
+					queryParam: '/',
+					selectionLimit: 2,
+					//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
+					//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
+					//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
+					resultClick: function(data){
+						for (var i in data.attributes) {
+							console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
+						}
+					},
+					retrieveComplete: function(data){
+						for (var i in data.attributes) {
+							console.log('retrieveComplete - ' + i + ' = ' + data.attributes[i]);
+						}
+					}
+				}
+			);
 
-			$('input[name=password]').inputNotes({
+			$('input[name=title]').inputNotes({
+				minlength: {
+					pattern: /^(.){0,3}$/i,
+					type: 'warning',
+					text: 'Minimum title length is 4 characters.'
+				}
+			});
+			$('input[name=uri]').inputNotes({
+				minlength: {
+					pattern: /^(.){0,3}$/i,
+					type: 'warning',
+					text: 'Minimum URL length is 4 characters.'
+				}
+			});
+			$('#profile_form input[name=password]').inputNotes({
+				config: {
+					notePosition: 'before'
+				},
+
 				minlength: {
 					pattern: /^(.){0,5}$/i,
 					type: 'info',
@@ -122,6 +158,7 @@
 					text: 'Please use both, small and capitalized letters.'
 				}
 			});
+
 
 		});
 	</script>
@@ -185,9 +222,9 @@
 								<p><label><span>Location:</span><input type="text" name="location" /></label></p>
 								<p><label><span>Weekday:</span><select name="weekday"></select></label></p>
 								<p><label><span>Occurance:</span><input type="text" name="occurance" /></label></p>
-								<p><label><span>Start time:</span><input type="text" name="starttime" class="numeric" /></label></p>
-								<p><label><span>End time:</span><input type="text" name="endtime" class="numeric" /></label></p>
-								<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="numeric" /></label></p>
+								<p><label><span>Start time:</span><input type="text" name="starttime" class="short" /></label></p>
+								<p><label><span>End time:</span><input type="text" name="endtime" class="short" /></label></p>
+								<p><label><span>Duration (minutes):</span><input type="text" name="duration" class="short" /></label></p>
 								<p><label><span>Art:</span><select name="art"></select></label></p>
 								<p>
 									<input type="button" name="send" value="Send training" />
@@ -200,7 +237,7 @@
 								<legend>Login</legend>
 								<p><label><span>E-mail:</span><input type="text" name="email" /></label></p>
 								<p><label><span>Password:</span><input type="text" name="password" /></label></p>
-								<p><label><span>How much is 2 + 3:</span><input type="text" name="answer" class="numeric" /> (making sure you are a real person)</label></p>
+								<p><label><span>How much is 2 + 3:</span><input type="text" name="answer" class="short" /> (making sure you are a real person)</label></p>
 								<p>
 									<input type="button" name="send" value="Send login" />
 									<input type="button" name="close" value="Close" class="modal_close" />
@@ -210,11 +247,11 @@
 						<form id="profile_form" action="/" method="post">
 							<fieldset>
 								<legend>Profile</legend>
-								<p>E-mail address will be used as your login id.<p>
+								<p>E-mail address will be used as your login id.</p>
 								<p><label><span>E-mail:</span><input type="text" name="email" /></label></p>
 								<p><label><span>Full name:</span><input type="text" name="title" /></label></p>
 								<p><label><span>Password:</span><input type="text" name="password" /></label></p>
-								<p><label><span>How much is 5 - 3:</span><input type="text" name="answer" class="numeric" /> (making sure you are a real person)</label></p>
+								<p><label><span>How much is 5 - 3:</span><input type="text" name="answer" class="short" /> (making sure you are a real person)</label></p>
 								<p>
 									<input type="button" name="send" value="Send login" />
 									<input type="button" name="close" value="Close" class="modal_close" />
@@ -229,36 +266,22 @@
 		</div>
 
 	</div>
-<!--
-	training: {
-*				id: 0,
-*				art: {
-*					id: 0,
-*					title: ''
-*				},
-*				weekday: 0,
-*				starttime: 0,
-*				endtime: 0
-*			}
-*			location: {
-*				id: 0,
-*				latitude: 0.0,
-*				longitude: 0.0,
-*				title: '',
-*				url: '',
-*				address: ''
-*			}
--->
+
+
 	<div class="modal-info vevent">
-		<h2 class="modal-art-name summary" rel="art-0">琉球古武術保存振興会</h2>
-		<a href="" class="uid"></a>
-		<p class="modal-time" rel="training-0">Wednesday <span class="dtstart">19:30</span> - <span class="dtend">21:00</span></p>dtstamp
-		<address class="modal-location geo" rel="location-0">
-			<a class="" href=""></a>
-			<span class="latitude"></span>
-			<span class="longitude"></span>
-		</address>
+		<h2 class="summary" rel="art-0"><a href="#training-0" class="modal-close uid">琉球古武術保存振興会</a></h2>
+		<p class="modal-time" rel="training-0">Wednesday<span class="dtstart">19:30</span>-<span class="dtend">21:00</span></p>
 		<p class="modal-contact" rel="person-0">Inoue Kisho</p>
+		<p class="modal-location" rel="location-0">姫路武道館
+			<a href="http://elsewhere.com" title="姫路武道館">http://elsewhere.com</a>
+		</p>
+		<address class="geo">兵庫県姫路市田寺1-1-15
+			<span>
+				<abbr class="latitude" title="34.854153"></abbr>
+				<abbr class="longitude" title="134.671639"></abbr>
+			</span>
+		</address>
+		<p class="modal-tools"><a href="#" title="Save to list">Save to list</a></p>
 	</div>
 </body>
 </html>

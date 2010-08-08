@@ -15,18 +15,43 @@ body { background-color: #AA1515; color: #100212; padding: 1em; }
 a { color: #100212; text-decoration: none; }
 a:hover { text-decoration: underline; }
 div { display: block; }
-
+form { padding: 0.2em; }
 legend { color: #100212; background-color: #F1EFFF; border: 1px solid #100212; padding: 0.2em 1em; margin-left: 10%; }
 fieldset { border: 1px solid #100212; }
 label { width: 100%; display: block; }
-label span { text-align: right; width: 35%; display: block; float: left; margin-right: 2%; }
-input, select, form ul, form li { width: 60%; background-color: #F4F4F4; border: 1px solid #100212; height: 1.4em; margin: 1px; }
-input[type=checkbox] { width: 1em; }
+label span { text-align: right; width: 35%; display: block; float: left; margin-right: 2%; font-size: 85%; }
+input, select, form ul, form li { width: 60%; background-color: #F4F4F4; border: 1px solid #100212; height: 1.5em; }
+input:hover, select:hover { background-color: #AA1515; }
+input[type=text], select { margin: 1px; }
+input[type=text]:focus, select:focus { border: 2px solid #0E3621; background-color: #279BE3; margin: 0; }
+input[type=checkbox] { width: 1em; vertical-align: middle; }
 input[type=button] { width: 40%; margin: 1em; height: 2em; background-color: #0E3621; color: #F1EFFF; font-weight: bold; }
+input[type=button]:focus { margin: 1em; border-width: 1px; background-color: #279BE3; }
+input[type=button]:hover { background-color: #AA1515; }
 input[disabled] { background-color: #8C635C; }
-input.numeric { width: 12em; }
-input:focus, select:focus, form li:focus { border: 2px solid #0E3621; background-color: #AA1515; margin: 0; }
-
+input.short { width: 20%; }
+li { padding: 0.3em; }
+address {
+	font-size: 85%;
+	font-style: normal;
+}
+h1, h2, h3, h4, h5 {
+	color: #279BE3;
+	padding: 0.5em;
+	border-bottom: 2px solid #279BE3;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a {
+	color: #279BE3;
+}
+h1 {
+	font-size: 130%;
+}
+h2 {
+	font-size: 115%;
+}
+h3 {
+	font-size: 105%;
+}
 #wrap, #bottom  { 
 	width: 100%; 
 	margin-bottom: 1em; 
@@ -66,43 +91,16 @@ input:focus, select:focus, form li:focus { border: 2px solid #0E3621; background
 	-webkit-border-radius: 0 0 1em 1em;
 	-moz-border-radius: 0 0 1em 1em;
 }
-.header p, .content p, .header ul { padding: 0.5em; }
-.header p, .header ul { font-weight: bold; }
-.header a, .header ul { width: 65%; color: #F1EFFF; }
+.header p, .content p { padding: 0.5em; }
+.header p { font-weight: bold; }
+.header a { width: 65%; color: #F1EFFF; }
 .header span { width: 35%; float: right; text-align: right; font-size: 90%; }
 
 .form-info {
 	font-size: 90%;
 }
 
-#tabs ul {
-	border-bottom: 1px solid #279BE3;
-	display: list-item
-}
-
-#tabs li {
-	float: left;
-	display: inline;
-	list-style: none;
-}
-
-#tabs ul a:link, #tabs ul a:visited {
-	float: left;
-	font-size: 85%;
-	line-height: 2em;
-	font-weight: bold;
-	margin: 0 1em 0 1em;
-	text-decoration: none;
-}
-
-#tabs ul a.active:link, #tabs ul a.active:visited, #tabs ul a:hover {
-	border-bottom: 4px solid #279BE3;
-	padding-bottom: 0.3em;
-	color: #279BE3;
-}
-
-
-.content ul { list-style: none; margin: 1em; }
+.content ul { list-style: none; margin-left: 1em; }
 /*
 .content ul:nth-child(odd) li { background-color: #AA1515; }
 .content ul:nth-child(even) li { background-color: #8C635C; }
@@ -178,8 +176,78 @@ ul.inputnotes li.note {
 	cursor:pointer;
 }
 
+.modal-info {
+	display: block;
+	background-color: #F1EFFF;
+	width: 30em;
+	float: left;
+	clear: both;
+	border-radius: 1em;
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
+}
+.modal-info * {
+	padding: 0.5em;
+}
+.modal-time {
+	font-weight: bold;
+}
+.modal-location a {
+	color: #279BE3;
+}
+address.geo {
+	font-size: 70%;
+}
+address.geo span {
+	text-align: right;
+	display: block;
+}
+address.geo abbr {
+	padding: 0.2em;
+	color: #0E3621;
+}
+.modal-contact {
+}
+.modal-tools {
+	border-top: 2px solid #279BE3;
+}
+.modal-tools a {
+	color: #0E3621;
+	font-weight: bold;
+}
 
 
 .ui-tabs-hide {
 	display: none;
+}
+
+.ui-tabs-selected a {
+	border-bottom: 4px solid #279BE3;
+	padding-bottom: 0.3em;
+	color: #279BE3;
+}
+
+#tabs {
+	display: inline-block;
+	width: 90%;
+	padding: 0.5em;
+	font-weight: bold;
+	color: #F1EFFF; 
+}
+
+#tabs li {
+	float: left;
+	display: inline;
+	list-style: none;
+}
+
+#tabs a {
+	font-size: 85%;
+	padding-bottom: 0.3em;
+}
+
+#tabs a:hover {
+	border-bottom: 0.3em solid #AA1515;
+	color: #AA1515;
+	text-decoration: none;
 }

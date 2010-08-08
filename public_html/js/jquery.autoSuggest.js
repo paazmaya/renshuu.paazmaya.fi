@@ -229,12 +229,22 @@
 						if(d_type == "string"){
 							var limit = "";
 							if(opts.retrieveLimit){
-								limit = "&limit="+encodeURIComponent(opts.retrieveLimit);
+								if (opts.queryParam == "/") {
+									limit = "/limit/"+encodeURIComponent(opts.retrieveLimit);
+								} else {
+									limit = "&limit="+encodeURIComponent(opts.retrieveLimit);
+								}
 							}
 							if(opts.beforeRetrieve){
 								string = opts.beforeRetrieve.call(this, string);
 							}
-							$.getJSON(req_string+"?"+opts.queryParam+"="+encodeURIComponent(string)+limit+opts.extraParams, function(data){ 
+							var url = req_string;
+							if (opts.queryParam == "/") {
+								url += "/"+encodeURIComponent(string)+limit+opts.extraParams;
+							} else {
+								url += "?"+opts.queryParam+"="+encodeURIComponent(string)+limit+opts.extraParams;
+							}
+							$.getJSON(url, function(data){ 
 								d_count = 0;
 								var new_data = opts.retrieveComplete.call(this, data);
 								for (k in new_data) if (new_data.hasOwnProperty(k)) d_count++;

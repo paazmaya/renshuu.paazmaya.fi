@@ -22,6 +22,7 @@ $(document).ready(function() {
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
 		streetview: null, //StreetViewPanorama
 		hikone: null,
+		tabContentElement: '#tabcontent',
 		
 		// Default filter settings
 		filterSettings: {
@@ -40,29 +41,11 @@ $(document).ready(function() {
 		
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 			
-			// Toggle the visibility of each box
-			$('.header a').click(function() {
-				var rel = $(this).attr('rel');
-				var con = $(this).parent('p').parent('div').next('.content').children('.stuff');
-				console.log('rel: ' + rel + ', con.length: ' + con.length);
-				con.toggle($.reshuuSuruToki.animSpeed);
-				return false;
-			});
-			
-			// Tools tabs, used when logged in, forms and such..
-			$('#example').bind('tabsselect', function(event, ui) {
-
-				// Objects available in the function context:
-				ui.tab     // anchor element of the selected (clicked) tab
-				ui.panel   // element, that contains the selected/clicked tab contents
-				ui.index   // zero-based index of the selected (clicked) tab
-
-			});
-			var $tabs = $('#example').tabs();
-			var selected = $tabs.tabs('option', 'selected'); // => 0
-	
+			// Fill the array with current language weekday names.
+			$.reshuuSuruToki.data.getWeekdays();
+				
 			// Set up the Google Map v3 and the Street View
-			$.reshuuSuruToki.init(
+			$.reshuuSuruToki.mapinit(
 				$('#map').get(0), 
 				$('#street').get(0),
 				{
@@ -126,24 +109,44 @@ $(document).ready(function() {
 			});
 	
 	
-			var roundedCorners = {
-				tl: { radius: 20 },
-				tr: { radius: 20 },
-				bl: { radius: 0 },
-				br: { radius: 0 },
-				antiAlias: true,
-				autoPad: true,
-				validTags: ["fieldset"]
-			};
-			$('fieldset').corner(roundedCorners);
 			
+			// Toggle the visibility of each box
+			/*
+			$('.header a').click(function() {
+				var rel = $(this).attr('rel');
+				var con = $(this).parent('p').parent('div').next('.content').children('.stuff');
+				console.log('rel: ' + rel + ', con.length: ' + con.length);
+				con.toggle($.reshuuSuruToki.animSpeed);
+				return false;
+			});
+			*/
 			
-			// http://code.google.com/p/jquerytimepicker/
-			$('input[name=starttime]').timePicker();
-		
-			// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
-			$('input[name=endtime]').clockpick();
+			// Navigation to forms is done via tabs at the right
+			$('#tabs a').live('click', function () {
+				var href = $(this).attr('href');
+				var key = href.substr(href.indexOf('#') + 1);
+				console.log('key: ' + key);
+				document.location = '#' + key;
+				
+				//$('#tabcontent').slideUp($.reshuuSuruToki.animSpeed);
+				
+				if ($.reshuuSuruToki.forms.types.indexOf(key) != -1) {
+					$.reshuuSuruToki.forms.getForm(key);
+				}
+				return false;
+			});
 			
+			$('#mapping .header a').click(function() {
+				return false;
+			});
+			/*
+			$('').click(function() {
+				return false;
+			});
+			$('').click(function() {
+				return false;
+			});
+			*/
 		},
 		
 		// Update filters according to current checkbox selection.
@@ -206,7 +209,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.streetview.setVisible(true);
 		},
 		
-		init: function(map_element, street_element, map_options, street_options) {
+		mapinit: function(map_element, street_element, map_options, street_options) {
 			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
 			
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
@@ -472,8 +475,9 @@ $(document).ready(function() {
 			
 			if (data) {
 				console.log('openModal. data. ' + data);
-				var info = $('<div><p></p></div>');
+				var info = $.reshuuSuruToki.markers.buildInfoWindow(data);
 				$.modal(info, {
+					/*
 					onOpen: function(dialog) {
 						dialog.overlay.fadeIn('slow', function() {
 							dialog.container.slideDown('slow', function() {
@@ -490,16 +494,142 @@ $(document).ready(function() {
 							});
 						});
 					},
-					closeClass: 'modal_close',
+					*/
+					closeClass: 'modal-close',
 					modal: false
 				});
 				
 			}
+		},
+		
+		buildInfoWindow: function(data) {
+			/*
+			Marker data from the backend.
+			data: {
+				training: {
+					id: 0,
+					art: {
+						id: 0,
+						title: ''
+					},
+					weekday: 0,
+					starttime: 0,
+					endtime: 0
+				},
+				location: {
+					id: 0,
+					latitude: 0.0,
+					longitude: 0.0,
+					title: '',
+					url: '',
+					address: ''
+				},
+				person: {}
+			}
+			*/
+			var info = '<div class="modal-info vevent">';
+			if (data.training && data.training.art && data.training.art.id && data.training.art.title) {
+				info += '<h2 class="summary" rel="art-' + data.training.art.id + '">'
+					+ '<a href="#training-' + data.training.id + '" class="modal-close uid" title="' + data.training.art.title + '">'
+					+ data.training.art.title + '</a></h2>';
+			}
+			if (data.training && data.training.id && data.training.weekday) {
+				info += '<p class="modal-time" rel="training-' + data.training.id + '">';
+				if ($.reshuuSuruToki.data.weekdays.length > data.training.weekday) {
+					info += $.reshuuSuruToki.data.weekdays[data.training.weekday];
+				}
+				if (data.training.starttime && data.training.endtime) {
+					info += '<span class="dtstart">' + data.training.starttime + '</span>-<span class="dtend">'
+						+ data.training.endtime + '</span>';
+				}
+				info += '</p>';
+			}
+			
+			if (data.person && data.person.id && data.person.title) {
+				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' + data.person.title + '</p>';
+			}
+			if (data.location && data.location.id && data.location.title) {
+				info += '<p class="modal-location" rel="location-' + data.location.id + '">' + data.location.title;
+				if (data.location.url) {
+					info += '<a href="' + data.location.url + '" title="' + data.location.title + '">' + data.location.url + '</a>';
+				}
+				info += '</p>';
+			}
+			if (data.location && data.location.latitude && data.location.longitude) {
+				info += '<address class="geo">';
+				if (data.location.address) {
+					info += data.location.address;
+				}
+				info += '<span><abbr class="latitude" title="' + data.location.latitude + '">'
+					+ $.reshuuSuruToki.data.deg2dms(data.location.latitude, true) + '</abbr>'
+					+ '<abbr class="longitude" title="' + data.location.longitude + '">'
+					+ $.reshuuSuruToki.data.deg2dms(data.location.longitude, false) + '</abbr></span>'
+					+ '</address>';
+			}
+			if (data.training && data.training.id) {
+				info += '<p class="modal-tools"><a href="#training-' + data.training.id + '" title="Save to list">Save to list</a></p>'
+			}
+			info += '</div>';
+				
+			console.log('buildInfoWindow. info. ' + info);
+			//$(info).appendTo('body');
+			return info;
 		}
 	};
 	
 	$.reshuuSuruToki.data = {
-					
+		// http://en.wikipedia.org/wiki/Geographic_coordinate_conversion
+		deg2dms: function(degfloat, isLatitude) {
+			var letter = '';
+			if (isLatitude) {
+				letter = 'NS';
+			}
+			else {
+				letter = 'EW';
+			}
+			if (degfloat < 0) {
+				degfloat = Math.abs(degfloat);
+				letter = letter.substr(1, 1);
+			}
+			else {
+				letter = letter.substr(0, 1);
+			}
+
+			//console.log('deg_to_dms. degfloat: ' + degfloat);
+			
+			var deg = parseInt( degfloat );
+			//console.log('deg_to_dms. deg: ' + deg);
+			var minfloat = 60 * ( degfloat - deg );
+			//console.log('deg_to_dms. minfloat: ' + minfloat);
+			var min = parseInt( minfloat );
+			//console.log('deg_to_dms. min: ' + min);
+			var secfloat = 60 * ( minfloat - min );
+			//console.log('deg_to_dms. secfloat: ' + secfloat);
+			secfloat = Math.round( secfloat );
+			
+			if (secfloat == 60) {
+				min = min + 1;
+				secfloat = 0;
+			}
+			if (min == 60) {
+				deg = deg + 1;
+				min = 0;
+			}
+			//W 87°43'41"
+
+			return ( deg + '° ' + min + "' " + secfloat + '" ' + letter);
+		},
+		
+		weekdays: [],
+		
+		// Ran when dom is ready. Fetches the weekdays from the list in filters for current language.
+		getWeekdays: function() {
+			$('#weekdays li').each(function(index) {
+				$.reshuuSuruToki.data.weekdays[index] = $(this).attr('title');
+			});
+			console.log('$.reshuuSuruToki.data.weekdays: ' + $.reshuuSuruToki.data.weekdays);
+		},
+		
 		geocodePosition: function(pos) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 			// Clear earlier geocode markers
@@ -681,8 +811,10 @@ $(document).ready(function() {
 	
 		// Save the earlierly fetched form elements with callbacks once set.
 		cache: {},
-	
-		// Four types available: art, location, training, person
+		
+		types: ['art', 'location', 'training', 'person', 'profile', 'login'],
+			
+		// Six types available: art, location, training, person, profile, login
 		getForm: function(type) {
 			if ($.reshuuSuruToki.forms[type])
 			{
@@ -703,44 +835,34 @@ $(document).ready(function() {
 		// form contains the form element with the requested input fields.
 		setForm: function(form, type) {
 		
-			$(form).children('input[name=art]')
-				.autoSuggest(
-					data.arts, {
-						startText: 'Type an art name',
-						selectedItemProp: 'name',
-						selectedValuesProp: 'id',
-						searchObjProps: 'name',
-						queryParam: '',
-						selectionLimit: 2,
-						//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
-						//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
-						//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
-						resultClick: function(data){
-							for (var i in data.attributes) {
-								console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
-							}
+			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+			$(form + ' input[name=location]').autoSuggest(
+				$.reshuuSuruToki.ajaxpoint.get + 'location', {
+					startText: 'Type a location name',
+					selectedItemProp: 'id',
+					searchObjProps: 'title'
+				}
+			);
+			$(form + ' input[name=art]').autoSuggest(
+				$.reshuuSuruToki.ajaxpoint.get + 'art', {
+					minChars: 2, 
+					matchCase: false,
+					startText: 'Type an art name',
+					selectedItemProp: 'name',
+					selectedValuesProp: 'id',
+					searchObjProps: 'name',
+					queryParam: '/',
+					selectionLimit: 2,
+					//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
+					//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
+					//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
+					resultClick: function(data){
+						for (var i in data.attributes) {
+							console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
 						}
 					}
-				)
-				.change(
-					function() {
-						console.log('change - ' + $(this).attr('name') + ': ' + $(this).val());
-					}
-				);
-			$("#training_form input[name=location]")
-				.autoSuggest(
-					data.items, {
-						startText: 'Type a location name',
-						selectedItemProp: 'name',
-						searchObjProps: 'name'
-					}
-				)
-				.change(
-					function() {
-						console.log($(this).attr('name') + ': ' + $(this).val());
-					}
-				);
-			//$("input[name=art]").autoSuggest(ajaxpoint.get + $(this).attr('name'), {minChars: 2, matchCase: true});
+				}
+			);
 
 
 			
@@ -757,15 +879,11 @@ $(document).ready(function() {
 			});
 			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
 */
-
-			$('#new_location').click(function() {
-				openModal('#location_form');
-				return false;
-			});
 			
 			
 			// http://fredibach.ch/jquery-plugins/inputnotes.php
-			$('input[name=title]').inputNotes({
+			/*
+			$(form + ' input[name=title]').inputNotes({
 				config: {
 					containerTag: 'ul',
 					noteTag: 'li'
@@ -790,16 +908,42 @@ $(document).ready(function() {
 				}
 			});
 			
-			$(form).children('input[type=button][name=send]').click(function() {
+			$(form + ' input[type=button][name=send]').click(function() {
+				if ( $(this).parents('form').hasInputNotes() ){
+					// don't send form
+				}
+				else {
+					// Send
+					var data = {};
+					$.post($.reshuuSuruToki.ajaxpoint.set + type, data, function() {});
+				}
 			});
+			*/
+			
+			// http://code.google.com/p/jquerytimepicker/
+			$(form + ' input[name=starttime]').timePicker();
+		
+			// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
+			$(form + ' input[name=endtime]').clockpick();
+			
+			var roundedCorners = {
+				tl: { radius: 20 },
+				tr: { radius: 20 },
+				bl: { radius: 0 },
+				br: { radius: 0 },
+				antiAlias: true,
+				autoPad: true,
+				validTags: ["fieldset"]
+			};
+			$(form + ' fieldset').corner(roundedCorners);
+			
 			
 			$.reshuuSuruToki.forms.cache[type] = form;
 		},
 		
 		showForm: function(type) {
 			var form = $.reshuuSuruToki.forms.cache[type];
-			
-			
+			$($.reshuuSuruToki.tabContentElement).html(form);
 		}
 	};
 	

@@ -2,13 +2,15 @@
 /*******************
 RENSHUU.PAAZMAYA.COM
 *******************/
-$lang = array();
+$lang = array(
+	'language' => 'en'
+);
 
 
 /*
 zero indexed, starting from sunday
 */
-$lang['weekdays'] = array('日曜日', '月?曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日');
+$lang['weekdays'] = array('日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日');
 
 /*
 FORMS
@@ -139,19 +141,19 @@ $lang['forms'] = array(
 				'label' => 'Start time',
 				'type' => 'text',
 				'name' => 'starttime',
-				'class' => 'numeric'
+				'class' => 'short'
 			),
 			array(
 				'label' => 'End time',
 				'type' => 'text',
 				'name' => 'endtime',
-				'class' => 'numeric'
+				'class' => 'short'
 			),
 			array(
 				'label' => 'Duration (minutes)',
 				'type' => 'text',
 				'name' => 'duration',
-				'class' => 'numeric',
+				'class' => 'short',
 				'disabled' => true
 			),
 			array(
@@ -196,7 +198,7 @@ $lang['forms'] = array(
 		'legend' => 'Login',
 		'info' => '',
 		'buttons' => array(
-			'send' => 'Send Martial art',
+			'send' => 'Login',
 			'close' => 'Close'
 		),
 		'items' => array(
@@ -214,7 +216,6 @@ $lang['forms'] = array(
 				'label' => 'How much is 2 + 3',
 				'type' => 'checkbox',
 				'name' => 'answer',
-				'class' => 'numeric',
 				'after' => ' (making sure you are a real person)'
 			)
 		)
@@ -246,7 +247,6 @@ $lang['forms'] = array(
 				'label' => 'How much is 5 - 3',
 				'type' => 'checkbox',
 				'name' => 'answer',
-				'class' => 'numeric',
 				'after' => ' (making sure you are a real person)'
 			)
 		)
