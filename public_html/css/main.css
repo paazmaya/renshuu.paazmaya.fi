@@ -3,6 +3,17 @@ RENSHUU.PAAZMAYA.COM
 *******************/
 /*
 http://kuler.adobe.com/#themeID/979806
+
+Light blue: 129EF7
+Dark red: 5E0202
+Yellow: B7B529
+Blue: 034A77
+Red: AA1515
+White: F9FBF7
+Black: 05050D
+Grey: 67828A
+
+
 red: #AA1515
 white: #F1EFFF
 blue: #279BE3
@@ -11,7 +22,7 @@ green: #0E3621
 black: #100212
 */
 * { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; }
-body { background-color: #AA1515; color: #100212; padding: 1em; }
+body { background-color: #034A77; color: #100212; padding: 1em; }
 a { color: #100212; text-decoration: none; }
 a:hover { text-decoration: underline; }
 div { display: block; }
@@ -69,7 +80,7 @@ h3 {
 #tools {
 
 }
-#filters {
+#filtering {
 
 }
 .header {

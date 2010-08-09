@@ -7,6 +7,21 @@ if (!("console" in window) || !("firebug" in console)) {
 	}
 }
 
+/**
+ * Get the inner and outer html data, that is the selected element itself including.
+ */
+$.fn.outerHtml = function() {
+	var outer = null;
+	if (this.length) {
+		var div = $('<div style="display:none"></div>');
+		var clone = $(this[0].cloneNode(false)).html(this.html()).appendTo(div);
+		outer = div.html();
+		div.remove();
+	}
+	return outer;
+};
+
+
 
 $(document).ready(function() {
 	$.reshuuSuruToki.ready();
@@ -23,6 +38,7 @@ $(document).ready(function() {
 		streetview: null, //StreetViewPanorama
 		hikone: null,
 		tabContentElement: '#tabcontent',
+		filtersHtml: null,
 		
 		// Default filter settings
 		filterSettings: {
@@ -64,7 +80,7 @@ $(document).ready(function() {
 			});
 			
 			// Triggers on individual change of the checkboxes
-			$('#filters input:checkbox').change(function () {
+			$('#filtering input:checkbox').live('change', function () {
 				/*
 				var name = $(this).attr('name');
 				var check = $(this).is(':checked');
@@ -74,22 +90,25 @@ $(document).ready(function() {
 			});
 	
 			// Triggers on a click to any of the shortcuts for selection manipulation
-			$('#filters .stuff p[class^=rel_] a').click(function () {
+			$('#filtering p[class^=rel_] a').live('click', function () {
 				var action = $(this).attr('rel');
-				console.log('action: ' + action);
-				//var target = $(this).parent('p').attr('class');
-				var target = $(this).parent('p').next('ul').attr('id');
+				var target = $(this).parent('p').attr('rel');
+				target = target.substr(target.indexOf('_') + 1);
 				
 				console.log('action: ' + action + ', target: ' + target);
 				
+				// Only update filters if anything changed.
+				//var changed = false;
+				
 				$('#' + target + ' input:checkbox').each(function(i, elem) {
 					//console.log('each. i: ' + i + ', name: ' + $(this).attr('name') + ', checked: ' + $(this).is(':checked'));
-					
+					var checked = $(this).is(':checked');
+					var tobecheck = false;
 					switch(action) {
 						case 'all' : $(this).attr('checked', 'checked'); break;
 						case 'none' : $(this).removeAttr('checked'); break;
 						case 'inverse' : 
-							if ($(this).is(':checked')) {
+							if (checked) {
 								$(this).removeAttr('checked');
 							}
 							else {
@@ -98,14 +117,15 @@ $(document).ready(function() {
 							break;
 					}
 				});
-				
-				$.reshuuSuruToki.updateFilters();
+				//if (changed) {
+					$.reshuuSuruToki.updateFilters();
+				//}
 				return false;
 			});
 			
 			// http://benalman.com/projects/jquery-hashchange-plugin/
 			$(window).hashchange(function() {
-				// console.log( location.hash );
+				console.log( location.hash );
 			});
 	
 	
@@ -120,6 +140,11 @@ $(document).ready(function() {
 				return false;
 			});
 			*/
+			// If the current hash is something that woudl make filters invisible, store them now
+			if (location.hash != '' && location.hash != '#filters') {
+				$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
+				console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+			}
 			
 			// Navigation to forms is done via tabs at the right
 			$('#tabs a').live('click', function () {
@@ -128,8 +153,17 @@ $(document).ready(function() {
 				console.log('key: ' + key);
 				document.location = '#' + key;
 				
-				//$('#tabcontent').slideUp($.reshuuSuruToki.animSpeed);
-				
+				if (key == 'filters') {
+					//console.log('$.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+					$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
+				}
+				else {
+					console.log('$(#tabcontent #filtering).length: ' + $('tabcontent #filtering').length);
+					if ($('#tabcontent #filtering').length) {
+						$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
+						$('#filtering').detach();
+					}
+				}
 				if ($.reshuuSuruToki.forms.types.indexOf(key) != -1) {
 					$.reshuuSuruToki.forms.getForm(key);
 				}
@@ -816,12 +850,14 @@ $(document).ready(function() {
 			
 		// Six types available: art, location, training, person, profile, login
 		getForm: function(type) {
+			/*
 			if ($.reshuuSuruToki.forms[type])
 			{
 				$.reshuuSuruToki.forms.showForm(type);
 			}
 			else
 			{
+			*/
 				$.post($.reshuuSuruToki.ajaxpoint.form + type, function(data, status) {
 					if (data.response && data.response.form)
 					{
@@ -829,7 +865,7 @@ $(document).ready(function() {
 						$.reshuuSuruToki.forms.showForm(type);
 					}
 				}, 'json');
-			}
+			//}
 		},
 		
 		// form contains the form element with the requested input fields.

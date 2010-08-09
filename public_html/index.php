@@ -4,12 +4,15 @@ RENSHUU.PAAZMAYA.COM
 *******************/
 /*
 Colors at Kuler: http://kuler.adobe.com/#themeID/979806
-red: AA1515
-white: E9FFE8
-light green: B5E3AD
-brown red: 8C635C
-green: 0E3621
-black: 100212
+
+Light blue: 129EF7
+Dark red: 5E0202
+Yellow: B7B529
+Blue: 034A77
+Red: AA1515
+White: F9FBF7
+Black: 05050D
+Grey: 67828A
 */
 /*
 Filtering the list of trainings shown on the map can be set by the following:
@@ -63,19 +66,6 @@ if (isset($_GET['page']) && strlen($_GET['page']) > 0)
 
 
 header('Content-type: text/html; charset=utf-8');
-
-// white: 2.5% gray
-// red: AA0000
-
-/**
- * Colors are got from the image "juga-in-midair.png"
- */
-$colors = array(
-	'white' => '#FFFFFF',
-	'grey' => '#9C9BA1',
-	'light_green' => '#95AB60',
-	'dark_green' => '#29411B'
-);
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
@@ -165,57 +155,39 @@ $gzipped = ''; //'.gz';
 				</div>
 				<div class="content">
 					<div class="stuff" id="tabcontent">
-						<!-- -->
-					</div>
-				</div>
-			</div>
-			
-			<div id="filters">
-				<div class="header qr_arts">
-					<p><a href="#" rel="arts">Martial Arts</a><span></span></p>
-				</div>
-				<div class="content">
-					<div class="stuff">
-						<p class="rel_arts">
-							<a href="#" rel="all" title="Select all">Select all</a>
-							<a href="#" rel="none" title="Select none">Select none</a>
-							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
-						</p>
-						<ul id="arts">
-						<?php
-						$sql = 'SELECT id, name FROM ren_art ORDER BY name';
-						$run =  $link->query($sql);
-						while($res = $run->fetch(PDO::FETCH_ASSOC))
-						{
-							echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
-						}
-						?>
-						</ul>
-					</div>
-				</div>
-
-				<div class="header qr_weekdays">
-					<p><a href="#" rel="weekdays">Weekdays</a><span></span></p>
-				</div>
-				<div class="content">
-					<div class="stuff">
-						<p class="rel_weekdays">
-							<a href="#" rel="all" title="Select all">Select all</a>
-							<a href="#" rel="none" title="Select none">Select none</a>
-							<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
-						</p>
-						<ul id="weekdays">
+						<div id="filtering">
+							<p class="rel_arts">
+								<a href="#" rel="all" title="Select all">Select all</a>
+								<a href="#" rel="none" title="Select none">Select none</a>
+								<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+							</p>
+							<ul id="arts">
 							<?php
-							// Zero index Sunday.
-							foreach($lang['weekdays'] as $key => $val)
+							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
+							$run =  $link->query($sql);
+							while($res = $run->fetch(PDO::FETCH_ASSOC))
 							{
-								echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+								echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
 							}
 							?>
-						</ul>
+							</ul>
+							<p class="rel_weekdays">
+								<a href="#" rel="all" title="Select all">Select all</a>
+								<a href="#" rel="none" title="Select none">Select none</a>
+								<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+							</p>
+							<ul id="weekdays">
+								<?php
+								// Zero index Sunday.
+								foreach($lang['weekdays'] as $key => $val)
+								{
+									echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+								}
+								?>
+							</ul>
+						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 
