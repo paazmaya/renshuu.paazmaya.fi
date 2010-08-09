@@ -22,7 +22,6 @@ $.fn.outerHtml = function() {
 };
 
 
-
 $(document).ready(function() {
 	$.reshuuSuruToki.ready();
 });
@@ -32,6 +31,7 @@ $(document).ready(function() {
 	$.reshuuSuruToki = {
 		animSpeed: 200,
 		zoom: 8,
+		cookieLifeTime: 3, // days
 		ajaxpoint: { get: '/ajax/get/', set: '/ajax/set/', form: '/ajax/form/' },
 		geocoder: null,
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
@@ -52,6 +52,7 @@ $(document).ready(function() {
 		trainingMarkersData: [], // related to the other
 		
 		streetMarker: null, // The actual position where current Street View is at.
+		locationMarker: null, // Marker for positioning location while in location form filling.
 		
 		ready: function() {
 		
@@ -74,9 +75,13 @@ $(document).ready(function() {
 			);
 			
 			// Handler for the ability to toggle streetview viewing while marker click.
+			if ($.cookie('showInStreetView')) {
+				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
+			}
 			$('input:checkbox[name=markerstreet]').change(function() {
 				$.reshuuSuruToki.markers.showInStreetView = $(this).is(':checked');
 				console.log('markerstreet change. ' + $.reshuuSuruToki.markers.showInStreetView);
+				$.cookie('showInStreetView', $.reshuuSuruToki.markers.showInStreetView, { expires: $.reshuuSuruToki.cookieLifeTime, path: '/' });
 			});
 			
 			// Triggers on individual change of the checkboxes
@@ -793,18 +798,19 @@ $(document).ready(function() {
 	
 	$.reshuuSuruToki.pins = {
 		getMarkerImage: function(image) {
+			// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 			return new google.maps.MarkerImage('http://chart.apis.google.com/chart?' + image);
 		},
 		
 		getIcon: function(icon, color) { // 21, 34
-			// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 			if (!icon) {
 				icon = 'fire';
 			}
 			if (!color) {
 				color = 'ADDE63';
 			}
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_icon&chld=' + icon + '|' + color + '&ext=.png');
+			// http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_icon&chld=' + icon + '|' + color);
 		},
 		
 		getLetter: function(letter, fill, color) {
@@ -815,9 +821,10 @@ $(document).ready(function() {
 				fill = 'ADDE63';
 			}
 			if (!color) {
-				color = '000000';
+				color = '05050D';
 			}
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color + '&ext=.png');
+			// http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color);
 		},
 		
 		getPinStar: function(icon, fill, star) {
@@ -831,8 +838,28 @@ $(document).ready(function() {
 				star = '279BE3';
 			}
 			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F1EFFF|ADDE63
-			// http://chart.apis.google.com/chart?||
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_xpin_icon&chld=pin_star|' + icon + '|' + fill + '|' + star);
+			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_compass|F1EFFF|ADDE63
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_xpin_icon&chld=pin_sright|' + icon + '|' + fill + '|' + star);
+		},
+		
+		getBubble: function(icon, text, fill, color, type) {
+			if (!icon) {
+				icon = 'glyphish_paperclip';
+			}
+			if (!text) {
+				text = 'Select+position';
+			}
+			if (!fill) {
+				fill = 'B7B529';
+			}
+			if (!color) {
+				color = '05050D';
+			}
+			if (!type) {
+				type = 'bbtr';
+			}
+			// http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtr||B7B529|05050D
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' + type + '|' + fill + '|' + color);			
 		},
 		
 		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F1EFFF'); },
@@ -870,6 +897,31 @@ $(document).ready(function() {
 		
 		// form contains the form element with the requested input fields.
 		setForm: function(form, type) {
+		
+			// Initial view of this form
+			if (type == 'location' && $.reshuuSuruToki.locationMarker == null) {
+				var pos = $.reshuuSuruToki.map.getCenter();
+				var icon = $.reshuuSuruToki.pins.getBubble();
+				$.reshuuSuruToki.locationMarker = $.reshuuSuruToki.markers.createMarker(pos, 'Choose position', icon, true, false);
+				
+				google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'drag', function(event) {
+					// update position info in the form
+					var pos = $.reshuuSuruToki.locationMarker.getPosition();
+					$('input[name=latitude]').val(pos.lat());
+					$('input[name=longitude]').val(pos.lng());
+				});
+				
+				google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'dragend', function(event) {
+					// geocode current position if the form setting allows.
+					// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
+					if ($('input[name=addr_autofill]:checkbox').is(':checked')) {
+						var pos = $.reshuuSuruToki.locationMarker.getPosition();
+						$.reshuuSuruToki.data.geocodePosition(pos);
+					}
+				});
+				
+				$.reshuuSuruToki.locationMarker.setVisible(false);
+			}
 		
 			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 			$(form + ' input[name=location]').autoSuggest(
@@ -980,6 +1032,19 @@ $(document).ready(function() {
 		showForm: function(type) {
 			var form = $.reshuuSuruToki.forms.cache[type];
 			$($.reshuuSuruToki.tabContentElement).html(form);
+			
+			
+			// Location positioning marker
+			if ($.reshuuSuruToki.locationMarker != null) {
+				if (type == 'location') {
+					var pos = $.reshuuSuruToki.map.getCenter();				
+					$.reshuuSuruToki.locationMarker.setPosition(pos);	
+					$.reshuuSuruToki.locationMarker.setVisible(true);
+				}
+				else {	
+					$.reshuuSuruToki.locationMarker.setVisible(false);
+				}
+			}
 		}
 	};
 	

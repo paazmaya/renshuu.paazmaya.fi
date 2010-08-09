@@ -14,6 +14,8 @@ Black: 05050D
 Grey: 67828A
 
 
+http://code.google.com/apis/webfonts/
+
 red: #AA1515
 white: #F1EFFF
 blue: #279BE3
@@ -21,7 +23,7 @@ brown red: #8C635C
 green: #0E3621
 black: #100212
 */
-* { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; }
+* { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; font-size: 100%; }
 body { background-color: #034A77; color: #100212; padding: 1em; }
 a { color: #100212; text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -62,6 +64,10 @@ h2 {
 }
 h3 {
 	font-size: 105%;
+}
+/* IE will not show scrollbar */
+textarea{
+	overflow: auto;
 }
 #wrap, #bottom  { 
 	width: 100%; 
@@ -261,4 +267,12 @@ address.geo abbr {
 	border-bottom: 0.3em solid #AA1515;
 	color: #AA1515;
 	text-decoration: none;
+}
+
+/* http://www.1stwebdesigner.com/development/useful-css-snippets */
+.transparent {
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
 }

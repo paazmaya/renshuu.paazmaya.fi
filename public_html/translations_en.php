@@ -214,7 +214,8 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => 'How much is 2 + 3',
-				'type' => 'checkbox',
+				'type' => 'text',
+				'class' => 'numeric',
 				'name' => 'answer',
 				'after' => ' (making sure you are a real person)'
 			)
@@ -245,7 +246,8 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => 'How much is 5 - 3',
-				'type' => 'checkbox',
+				'type' => 'text',
+				'class' => 'numeric',
 				'name' => 'answer',
 				'after' => ' (making sure you are a real person)'
 			)
