@@ -82,7 +82,7 @@ $javascript = array(
 	'jstorage.js',
 	'jquery.curvycorners.js',
 	'jquery.autoSuggest.js',
-	'jquery.simplemodal-1.3.5.js',
+	'jquery.simplemodal.js', // 1.3.5
 	'jquery.ba-hashchange.js',
 	'renshuusurutoki.js'
 );

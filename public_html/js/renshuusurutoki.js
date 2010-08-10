@@ -163,14 +163,25 @@ $(document).ready(function() {
 					$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
 				}
 				else {
-					console.log('$(#tabcontent #filtering).length: ' + $('tabcontent #filtering').length);
-					if ($('#tabcontent #filtering').length) {
+					console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
+					if ($('#filtering:visible').length) {
 						$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
 						$('#filtering').detach();
 					}
 				}
 				if ($.reshuuSuruToki.forms.types.indexOf(key) != -1) {
 					$.reshuuSuruToki.forms.getForm(key);
+				}
+				
+				console.log('$.reshuuSuruToki.locationMarker: ' + $.reshuuSuruToki.locationMarker);
+				if ($.reshuuSuruToki.locationMarker != null) {
+					if (key == 'location') {
+						$.reshuuSuruToki.locationMarker.setPosition($.reshuuSuruToki.map.getCenter());
+						$.reshuuSuruToki.locationMarker.setVisible(true);
+					}
+					else {
+						$.reshuuSuruToki.locationMarker.setVisible(false);
+					}
 				}
 				return false;
 			});
@@ -902,6 +913,7 @@ $(document).ready(function() {
 			if (type == 'location' && $.reshuuSuruToki.locationMarker == null) {
 				var pos = $.reshuuSuruToki.map.getCenter();
 				var icon = $.reshuuSuruToki.pins.getBubble();
+				console.log('Setting up locationMarker with pos: ' + pos.toString());
 				$.reshuuSuruToki.locationMarker = $.reshuuSuruToki.markers.createMarker(pos, 'Choose position', icon, true, false);
 				
 				google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'drag', function(event) {
@@ -920,7 +932,6 @@ $(document).ready(function() {
 					}
 				});
 				
-				$.reshuuSuruToki.locationMarker.setVisible(false);
 			}
 		
 			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
