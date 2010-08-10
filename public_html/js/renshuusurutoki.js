@@ -367,7 +367,7 @@ $(document).ready(function() {
 		},
 		
 		createTrainingMarker: function(data) {
-			var icon = $.reshuuSuruToki.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '100212');
+			var icon = $.reshuuSuruToki.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.reshuuSuruToki.markers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false, true);
 			
@@ -832,13 +832,13 @@ $(document).ready(function() {
 				icon = 'glyphish_compass';
 			}
 			if (!fill) {
-				fill = 'F1EFFF';
+				fill = 'F9FBF7';
 			}
 			if (!star) {
-				star = '279BE3';
+				star = '5E0202';
 			}
-			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F1EFFF|ADDE63
-			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_compass|F1EFFF|ADDE63
+			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F9FBF7|ADDE63
+			// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_compass|F9FBF7|ADDE63
 			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_xpin_icon&chld=pin_sright|' + icon + '|' + fill + '|' + star);
 		},
 		
@@ -862,7 +862,7 @@ $(document).ready(function() {
 			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' + type + '|' + fill + '|' + color);			
 		},
 		
-		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F1EFFF'); },
+		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F9FBF7'); },
 		gRedIcon: function() { return $.reshuuSuruToki.pins.getIcon('star', 'CC2233'); },
 		gBlueIcon: function() { return $.reshuuSuruToki.pins.getIcon('snow', '2233CC'); }
 	};

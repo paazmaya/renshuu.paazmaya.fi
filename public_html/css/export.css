@@ -1,0 +1,85 @@
+/*******************
+RENSHUU.PAAZMAYA.COM
+*******************/
+/*
+http://kuler.adobe.com/#themeID/979806
+
+Light blue: 129EF7
+Dark red: 5E0202
+Yellow: B7B529
+Blue: 034A77
+Red: AA1515
+White: F9FBF7
+Black: 05050D
+Grey: 67828A
+
+
+http://code.google.com/apis/webfonts/
+
+*/
+* { margin:0; padding:0; font-family: Verdana, Geneva, sans-serif; font-size: 100%; }
+body { background-color: #F9FBF7; color: #05050D; padding: 1em; }
+a { color: #05050D; text-decoration: none; }
+a:hover { text-decoration: underline; }
+div { display: block; }
+form { padding: 0.2em; }
+legend { color: #05050D; background-color: #F9FBF7; border: 1px solid #05050D; padding: 0.2em 1em; margin-left: 10%; }
+fieldset { border: 1px solid #05050D; }
+label { width: 100%; display: block; }
+label span { text-align: right; width: 35%; display: block; float: left; margin-right: 2%; font-size: 85%; }
+input, select, form ul, form li { width: 60%; background-color: #F4F4F4; border: 1px solid #05050D; height: 1.5em; }
+input:hover, select:hover { background-color: #AA1515; }
+input[type=text], select { margin: 1px; }
+input[type=text]:focus, select:focus { border: 2px solid #0E3621; background-color: #5E0202; margin: 0; }
+input[type=checkbox] { width: 1em; vertical-align: middle; }
+input[type=button] { width: 40%; margin: 1em; height: 2em; background-color: #0E3621; color: #F9FBF7; font-weight: bold; }
+input[type=button]:focus { margin: 1em; border-width: 1px; background-color: #5E0202; }
+input[type=button]:hover { background-color: #AA1515; }
+input[disabled] { background-color: #5E0202; }
+input.short { width: 20%; }
+li { padding: 0.3em; }
+address {
+	font-size: 85%;
+	font-style: normal;
+}
+h1, h2, h3, h4, h5 {
+	color: #5E0202;
+	padding: 0.5em;
+	border-bottom: 2px solid #5E0202;
+}
+h1 a, h2 a, h3 a, h4 a, h5 a {
+	color: #5E0202;
+}
+h1 {
+	font-size: 130%;
+}
+h2 {
+	font-size: 115%;
+}
+h3 {
+	font-size: 105%;
+}
+/* IE will not show scrollbar */
+textarea{
+	overflow: auto;
+}
+
+address.geo {
+	font-size: 70%;
+}
+address.geo span {
+	text-align: right;
+	display: block;
+}
+address.geo abbr {
+	padding: 0.2em;
+	color: #0E3621;
+}
+
+/* http://www.1stwebdesigner.com/development/useful-css-snippets */
+.transparent {
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
+}
