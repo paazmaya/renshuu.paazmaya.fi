@@ -36,6 +36,7 @@ $(document).ready(function() {
 		geocoder: null,
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
 		streetview: null, //StreetViewPanorama
+		streetService: null,
 		hikone: null,
 		tabContentElement: '#tabcontent',
 		filtersHtml: null,
@@ -51,8 +52,11 @@ $(document).ready(function() {
 		trainingMarkers: [], // These two should share a same index for dta
 		trainingMarkersData: [], // related to the other
 		
-		streetMarker: null, // The actual position where current Street View is at.
-		locationMarker: null, // Marker for positioning location while in location form filling.
+		// The actual position where current Street View is at. Shown only when Street View is.
+		streetMarker: null, 
+		
+		// Marker for positioning location while in location form filling.
+		locationMarker: null, 
 		
 		ready: function() {
 		
@@ -186,7 +190,9 @@ $(document).ready(function() {
 				return false;
 			});
 			
-			$('#mapping .header a').click(function() {
+			$('#mapping .header a[rel=street]').click(function() {
+				var visible = $.reshuuSuruToki.streetview.getVisible();
+				$.reshuuSuruToki.streetview.setVisible(!visible);
 				return false;
 			});
 			/*
@@ -261,6 +267,7 @@ $(document).ready(function() {
 		
 		mapinit: function(map_element, street_element, map_options, street_options) {
 			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
+			$.reshuuSuruToki.streetService = new google.maps.StreetViewService();
 			
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 			var opts = {
@@ -295,8 +302,9 @@ $(document).ready(function() {
 				$.reshuuSuruToki.map.getCenter(), 'Street View', $.reshuuSuruToki.pins.getPinStar('glyphish_eye'), true, false
 			);
 			
-			// Markerdraggin overrides the Street View position and makes it visible if hidden.
+			// Marker draggin overrides the Street View position and makes it visible if hidden.
 			google.maps.event.addListener($.reshuuSuruToki.streetMarker, 'dragend', function() {
+				console.log('streetMarker dragend');
 				$.reshuuSuruToki.streetview.setPosition($.reshuuSuruToki.streetMarker.getPosition());
 				if (!$.reshuuSuruToki.streetview.getVisible()) {
 					$.reshuuSuruToki.streetview.setVisible(true);
@@ -304,7 +312,9 @@ $(document).ready(function() {
 			});
 			
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'position_changed', function() {
-				$.reshuuSuruToki.streetMarker.setPosition($.reshuuSuruToki.streetview.getPosition());
+				var pos = $.reshuuSuruToki.streetview.getPosition();
+				console.log('streetview position_changed. pos: ' + pos);
+				//$.reshuuSuruToki.streetMarker.setPosition(pos);
 			});
 			
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
@@ -312,8 +322,11 @@ $(document).ready(function() {
 				var posS = $.reshuuSuruToki.streetview.getPosition();
 				var posM = $.reshuuSuruToki.streetMarker.getPosition();
 				var bounds = $.reshuuSuruToki.map.getBounds();
+				var visible = $.reshuuSuruToki.streetview.getVisible();
 				
-				if ($.reshuuSuruToki.streetview.getVisible()) {
+				console.log('streetview visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
+				
+				if (visible) {
 					$(street_element).slideDown();
 				}
 				else {
@@ -325,7 +338,7 @@ $(document).ready(function() {
 				}
 				*/
 				$.reshuuSuruToki.streetMarker.setPosition(posS);
-				$.reshuuSuruToki.streetMarker.setVisible($.reshuuSuruToki.streetview.getVisible());
+				$.reshuuSuruToki.streetMarker.setVisible(visible);
 				//$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
 			});
 			
@@ -334,6 +347,17 @@ $(document).ready(function() {
 			$(window).resize(function() {
 				google.maps.event.trigger($.reshuuSuruToki.map, 'resize');
 				google.maps.event.trigger($.reshuuSuruToki.streetview, 'resize');
+			});
+		},
+		
+		// http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
+		// getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
+		getPanorama: function(pos, radius) {
+			if (!radius) {
+				radius = 100; // Metres
+			}
+			$.reshuuSuruToki.streetService.getPanoramaByLocation(pos, radius, function(data, status) {
+				console.log('getPanorama. status: ' + status);
 			});
 		}
 		
@@ -503,7 +527,7 @@ $(document).ready(function() {
 			*/
 			google.maps.event.addListener(marker, 'visible_changed', function() {
 				// This event is fired when the marker's visible property changes.
-				console.log('marker. visible_changed - ' + marker.title);
+				console.log('marker. visible_changed - ' + marker.title + ', visibility: ' + marker.getVisible());
 			});
 			/*
 			google.maps.event.addListener(marker, 'zindex_changed', function() {
@@ -730,28 +754,28 @@ $(document).ready(function() {
 	
 			var center = $.reshuuSuruToki.map.getCenter();
 			var zoom = $.reshuuSuruToki.map.getZoom();
-			console.log('center / zoom changed. zoom: ' + zoom + ', center: ' + center);
+			//console.log('center / zoom changed. zoom: ' + zoom + ', center: ' + center);
 			//document.location = '/#/zoom/' + zoom + '/lat/' + center.lat() + '/lng/' + center.lng();
 		},
 			
 		initiate: function() {
 			var callbacks = $.reshuuSuruToki.callbacks;
 			var map = $.reshuuSuruToki.map;
-			google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
+			//google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
 			google.maps.event.addListener(map, 'center_changed', callbacks.center_changed);
-			google.maps.event.addListener(map, 'click', callbacks.click);
-			google.maps.event.addListener(map, 'dblclick', callbacks.dblclick);
-			google.maps.event.addListener(map, 'drag', callbacks.drag);
-			google.maps.event.addListener(map, 'dragend', callbacks.dragend);
-			google.maps.event.addListener(map, 'dragstart', callbacks.dragstart);
-			google.maps.event.addListener(map, 'idle', callbacks.idle);
-			google.maps.event.addListener(map, 'maptypeid_changed', callbacks.maptypeid_changed);
-			google.maps.event.addListener(map, 'mousemove', callbacks.mousemove);
-			google.maps.event.addListener(map, 'mouseout', callbacks.mouseout);
-			google.maps.event.addListener(map, 'mouseover', callbacks.mouseover);
-			google.maps.event.addListener(map, 'projection_changed', callbacks.projection_changed);
-			google.maps.event.addListener(map, 'rightclick', callbacks.rightclick);
-			google.maps.event.addListener(map, 'tilesloaded', callbacks.tilesloaded);
+			//google.maps.event.addListener(map, 'click', callbacks.click);
+			//google.maps.event.addListener(map, 'dblclick', callbacks.dblclick);
+			//google.maps.event.addListener(map, 'drag', callbacks.drag);
+			//google.maps.event.addListener(map, 'dragend', callbacks.dragend);
+			//google.maps.event.addListener(map, 'dragstart', callbacks.dragstart);
+			//google.maps.event.addListener(map, 'idle', callbacks.idle);
+			//google.maps.event.addListener(map, 'maptypeid_changed', callbacks.maptypeid_changed);
+			//google.maps.event.addListener(map, 'mousemove', callbacks.mousemove);
+			//google.maps.event.addListener(map, 'mouseout', callbacks.mouseout);
+			//google.maps.event.addListener(map, 'mouseover', callbacks.mouseover);
+			//google.maps.event.addListener(map, 'projection_changed', callbacks.projection_changed);
+			//google.maps.event.addListener(map, 'rightclick', callbacks.rightclick);
+			//google.maps.event.addListener(map, 'tilesloaded', callbacks.tilesloaded);
 			google.maps.event.addListener(map, 'zoom_changed', callbacks.zoom_changed);
 		},
 		bounds_changed: function() {
@@ -808,9 +832,10 @@ $(document).ready(function() {
 	};
 	
 	$.reshuuSuruToki.pins = {
-		getMarkerImage: function(image) {
+		// MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
+		getMarkerImage: function(image, anchor) {
 			// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
-			return new google.maps.MarkerImage('http://chart.apis.google.com/chart?' + image);
+			return new google.maps.MarkerImage('http://chart.apis.google.com/chart?' + image, null, null, anchor);
 		},
 		
 		getIcon: function(icon, color) { // 21, 34
@@ -869,8 +894,9 @@ $(document).ready(function() {
 			if (!type) {
 				type = 'bbtr';
 			}
+			var anchor = new google.maps.Point(0, 0);
 			// http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtr||B7B529|05050D
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' + type + '|' + fill + '|' + color);			
+			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' + type + '|' + fill + '|' + color, anchor);			
 		},
 		
 		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F9FBF7'); },
