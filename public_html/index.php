@@ -80,7 +80,8 @@ $javascript = array(
 	'jquery.inputnotes-0.6.js',
 	'jquery.json-2.2.js',
 	'jstorage.js',
-	'jquery.curvycorners.js',
+	'jquery.corner.js', // 2.11 (15-JUN-2010)
+	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
 	'jquery.simplemodal.js', // 1.3.5
 	'jquery.ba-hashchange.js',

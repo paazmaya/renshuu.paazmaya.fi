@@ -64,7 +64,7 @@ $lang['forms'] = array(
 		'legend' => 'Location',
 		'info' => '',
 		'buttons' => array(
-			'send' => 'Send Martial art',
+			'send' => 'Send Location',
 			'close' => 'Close'
 		),
 		'items' => array(
@@ -215,7 +215,7 @@ $lang['forms'] = array(
 			array(
 				'label' => 'How much is 2 + 3',
 				'type' => 'text',
-				'class' => 'numeric',
+				'class' => 'short',
 				'name' => 'answer',
 				'after' => ' (making sure you are a real person)'
 			)
@@ -247,7 +247,7 @@ $lang['forms'] = array(
 			array(
 				'label' => 'How much is 5 - 3',
 				'type' => 'text',
-				'class' => 'numeric',
+				'class' => 'short',
 				'name' => 'answer',
 				'after' => ' (making sure you are a real person)'
 			)

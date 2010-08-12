@@ -314,7 +314,7 @@ if ($passcheck)
 		// Data availalable is dependant of the form used
 		// Key in the form matches the value of the table row name.
 		// The object named after the $pagetype should include the data that is to be updated.
-		// Keys should match the ones used in $map below.
+		// Keys should match the ones used in $map below, available in $_POST['items'] as an array.
 		$map = array(
 			'art' => array(
 				'title' => '',
@@ -347,27 +347,68 @@ if ($passcheck)
 			)
 		);
 		// Each of the given tables have a field for modified time
+		
+		// Are all the posted keys set which are needed for that type?
+		$trimmed = array();
+		$missing = array();
+		foreach($map[$pagetype] as $key => $value)
+		{
+			if (isset($_POST['items'][$key]))
+			{
+				$trimmed[$key] = htmlenc($_POST['items'][$key]);
+			}
+			else {
+				$missing[] = $key;
+			}
+		}
+		if (!isset($_POST['update']) && !isset($_POST['insert']))
+		{
+			$missing[] = 'main parametre';
+		}
 
-		// This should include the id of that item which is currently being updated.
-		if (isset($_POST['update']) && is_numeric($_POST['update']))
+		if (count($missing) == 0)
 		{
-			$id = intval($_POST['update']);
-			$sql = 'UPDATE ren_' . $pagetype . ' SET ';
-		}
-		else if (isset($_POST['insert']) && is_numeric($_POST['insert']))
-		{
-			$sql = 'INSERT INTO ren_' . $pagetype . ' VALUES ';
-		}
-		else
-		{
-			// Harms way...
-		}
+			$sql = '';
+			// This should include the id of that item which is currently being updated.
+			if (isset($_POST['update']) && is_numeric($_POST['update']))
+			{
+				$id = intval($_POST['update']);
+				$sql = 'UPDATE ren_' . $pagetype . ' SET ';
+			}
+			else if (isset($_POST['insert']) && $_POST['insert'] == '0')
+			{
+				// Value of "insert" should be 0
+				$sql = 'INSERT INTO ren_' . $pagetype . ' VALUES ';
+				
+				/*
+				Return Values
+					If a sequence name was not specified for the name parameter, 
+					PDO::lastInsertId() returns a string representing the row ID of 
+					the last row that was inserted into the database. 
+					
+					If a sequence name was specified for the name parameter, PDO::lastInsertId() 
+					returns a string representing the last value retrieved from the specified sequence object. 
+					
+					If the PDO driver does not support this capability, 
+					PDO::lastInsertId() triggers an IM001 SQLSTATE. 
+				*/
+				$id = $link->lastInsertId('id');
+			}
+			else
+			{
+				// Harms way...
+			}
 
-		$out['result'] = array(
-			'id' => $id,
-			'title' => $title
-		);
-		unset($out['error']);
+			$out['result'] = array(
+				'id' => $id,
+				'title' => $title
+			);
+			unset($out['error']);
+		}
+		else 
+		{
+			$out['error'] = 'Missing: ' . implode(', ', $missing);
+		}
 	}
 	else if ($page == 'form')
 	{
@@ -375,7 +416,30 @@ if ($passcheck)
 		// $lang['weekdays'] too..
 		
 		$data = $lang['forms'][$pagetype];
-		// $lang['weekdays']
+		foreach($data['items'] as $item)
+		{
+			if ($item['type'] == 'select')
+			{
+				if ($item['name'] == 'weekday')
+				{
+					$item['options'] = $lang['weekdays'];
+				}
+				else if ($item['name'] == 'art')
+				{
+					$results = array();
+					$sql = 'SELECT id, name FROM ren_art ORDER BY name ASC';
+					$run =  $link->query($sql);
+					if ($run)
+					{
+						while($res = $run->fetch(PDO::FETCH_ASSOC))
+						{
+							$results[$res['id']] = $res['name'];
+						}
+					}
+					$item['options'] = $results;
+				}
+			}
+		}
 		
 		$out['form'] = createForm($pagetype, $data);
 		unset($out['error']);
@@ -387,39 +451,6 @@ else
 	$out['errorInfo'] = 'Wrong line at the passport control';
 }
 
-/*
-if ($page != '')
-{
-	$sql = '';
-	$where = '';
-	$order = '';
-	unset($out['error']);
-	if ($page == 'art')
-	{
-		$sql = 'SELECT * FROM ren_art';
-		$order = ' ORDER BY name';
-	}
-	else if ($page = 'location')
-	{
-		$sql = 'SELECT * FROM ren_location';
-		if ($id != 0)
-		{
-			$where = ' WHERE area = ' . $id;
-		}
-	}
-
-	if ($sql != '')
-	{
-		$results = array();
-		$run =  $link->query($sql . $where . $order);
-		while($res = $run->fetch(PDO::FETCH_ASSOC))
-		{
-			$results[] = $res;
-		}
-		$out['result'] = $results;
-	}
-}
-*/
 
 $out['created'] = date($cf['datetime']);
 

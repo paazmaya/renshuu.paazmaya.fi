@@ -78,7 +78,7 @@ function createForm($id, $data)
 		return null;
 	}
 	
-	$out = '<form id="' . $id . '_form" action="/' . $id . '" method="post">';
+	$out = '<form id="' . $id . '_form" action="/ajax/set/' . $id . '" method="post">';
 	$out .= '<fieldset>';
 	if (isset($data['legend']) && $data['legend'] != '')
 	{
