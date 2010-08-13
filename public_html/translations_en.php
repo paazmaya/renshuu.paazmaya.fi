@@ -256,3 +256,19 @@ $lang['forms'] = array(
 );
 
 
+/**
+ * Bottom area table for saved items which then can be exported as a list with static maps.
+ */
+$lang['savedtable'] = array(
+	'summary' => '',
+	'caption' => '',
+	'thead' => array (
+		'art' => '',
+		'weekday' => '',
+		'time' => ''
+	)
+);
+ 
+ 
+ 
+ 

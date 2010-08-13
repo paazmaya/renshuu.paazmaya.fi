@@ -195,7 +195,24 @@ $gzipped = ''; //'.gz';
 	</div>
 
 	<div id="bottom">
-
+		<?php
+			// $lang['savedtable']['summary']
+		?>
+		<table summary="">
+			<caption></caption>
+			<thead>
+				<tr>
+					<th>Art</th>
+					<th>Weekday</th>
+					<th>Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+				</td>
+			</tbody>
+		</table>
 	</div>
 
 <?php

@@ -3,7 +3,7 @@
 /** Firebug console functions if they do not exist **/
 (function(window) {
 	if (!("console" in window) || !("firebug" in console)) {
-		var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml", 
+		var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
 			"group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
 		var len = names.length;
 		window.console = {};
@@ -13,20 +13,22 @@
 	}
 })(window);
 
-/**
- * Get the inner and outer html data, that is the selected element itself including.
- */
-$.fn.outerHtml = function() {
-	var outer = null;
-	if (this.length) {
-		var div = $('<div style="display:none"></div>');
-		var clone = $(this[0].cloneNode(false)).html(this.html()).appendTo(div);
-		outer = div.html();
-		div.remove();
-	}
-	return outer;
-};
-
+(function($) {
+	/**
+	 * Get the inner and outer html data,
+	 * that is the selected element itself including.
+	 */
+	$.fn.outerHtml = function() {
+		var outer = null;
+		if (this.length) {
+			var div = $('<div style="display:none"></div>');
+			var clone = $(this[0].cloneNode(false)).html(this.html()).appendTo(div);
+			outer = div.html();
+			div.remove();
+		}
+		return outer;
+	};
+})(jQuery);
 
 $(document).ready(function() {
 	$.reshuuSuruToki.ready();
@@ -46,40 +48,40 @@ $(document).ready(function() {
 		hikone: null,
 		tabContentElement: '#tabcontent',
 		filtersHtml: null,
-		
+
 		// Default filter settings
 		filterSettings: {
 			arts: [],
 			weekdays: []
 		},
-		
+
 		geocodeMarkers: [],
-		
+
 		trainingMarkers: [], // These two should share a same index for dta
 		trainingMarkersData: [], // related to the other
-		
+
 		// The actual position where current Street View is at. Shown only when Street View is.
-		streetMarker: null, 
-		
+		streetMarker: null,
+
 		// Marker for positioning location while in location form filling.
-		locationMarker: null, 
-		
+		locationMarker: null,
+
 		// List of trainings which are saved for the purpose of exporting them as a list later on.
 		// Only the id of the training is saved, rest of the data is available in trainingMarkersData...
 		// and is copied to savedListData.
 		savedList: [],
 		savedListData: [],
-				
+
 		ready: function() {
-		
+
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
-			
+
 			// Fill the array with current language weekday names.
 			$.reshuuSuruToki.data.getWeekdays();
-				
+
 			// Set up the Google Map v3 and the Street View
 			$.reshuuSuruToki.mapinit(
-				$('#map').get(0), 
+				$('#map').get(0),
 				$('#street').get(0),
 				{
 					center: $.reshuuSuruToki.hikone
@@ -89,7 +91,7 @@ $(document).ready(function() {
 					visible: true
 				}
 			);
-			
+
 			// Handler for the ability to toggle streetview viewing while marker click.
 			if ($.cookie('showInStreetView')) {
 				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
@@ -98,33 +100,33 @@ $(document).ready(function() {
 				$.reshuuSuruToki.markers.showInStreetView = $(this).is(':checked');
 				console.log('markerstreet change. ' + $.reshuuSuruToki.markers.showInStreetView);
 				$.cookie(
-					'showInStreetView', 
-					$.reshuuSuruToki.markers.showInStreetView, 
+					'showInStreetView',
+					$.reshuuSuruToki.markers.showInStreetView,
 					{ expires: $.reshuuSuruToki.cookieLifeTime, path: '/' }
 				);
 			});
-			
+
 			// Triggers on individual change of the checkboxes
 			$('#filtering input:checkbox').live('change', function () {
 				/*
 				var name = $(this).attr('name');
 				var check = $(this).is(':checked');
 				console.log('change. name: ' + name + ', check: ' + check);
-				*/				
+				*/
 				$.reshuuSuruToki.updateFilters();
 			});
-	
+
 			// Triggers on a click to any of the shortcuts for selection manipulation
 			$('#filtering p[class^=rel_] a').live('click', function () {
 				var action = $(this).attr('rel');
 				var target = $(this).parent('p').attr('rel');
 				target = target.substr(target.indexOf('_') + 1);
-				
+
 				console.log('action: ' + action + ', target: ' + target);
-				
+
 				// Only update filters if anything changed.
 				//var changed = false;
-				
+
 				$('#' + target + ' input:checkbox').each(function(i, elem) {
 					//console.log('each. i: ' + i + ', name: ' + $(this).attr('name') + ', checked: ' + $(this).is(':checked'));
 					var checked = $(this).is(':checked');
@@ -132,12 +134,12 @@ $(document).ready(function() {
 					switch(action) {
 						case 'all' : $(this).attr('checked', 'checked'); break;
 						case 'none' : $(this).removeAttr('checked'); break;
-						case 'inverse' : 
+						case 'inverse' :
 							if (checked) {
 								$(this).removeAttr('checked');
 							}
 							else {
-								$(this).attr('checked', 'checked'); 
+								$(this).attr('checked', 'checked');
 							}
 							break;
 					}
@@ -147,14 +149,14 @@ $(document).ready(function() {
 				//}
 				return false;
 			});
-			
+
 			// http://benalman.com/projects/jquery-hashchange-plugin/
 			$(window).hashchange(function() {
 				console.log( location.hash );
 			});
-	
-	
-			
+
+
+
 			// Toggle the visibility of each box
 			/*
 			$('.header a').click(function() {
@@ -170,48 +172,16 @@ $(document).ready(function() {
 				$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
 				console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
 			}
-			
+
 			// Navigation to forms is done via tabs at the right
 			$('#tabs a').live('click', function () {
 				var href = $(this).attr('href');
 				var key = href.substr(href.indexOf('#') + 1);
-				console.log('key: ' + key);
-				document.location = '#' + key;
-				
-				if (key == 'filters') {
-					//console.log('$.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
-					$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
-				}
-				else {
-					console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
-					if ($('#filtering:visible').length) {
-						$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
-						$('#filtering').detach();
-					}
-				}
-				if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
-					$.reshuuSuruToki.forms.getForm(key);
-				}
-				
-				// Location positioning marker
-				console.log('$.reshuuSuruToki.locationMarker: ' + $.reshuuSuruToki.locationMarker);
-				
-				if ($.reshuuSuruToki.locationMarker !== null) {
-					if (key == 'location') {
-						var pos = $.reshuuSuruToki.map.getCenter();				
-						$.reshuuSuruToki.locationMarker.setPosition(pos);	
-						$.reshuuSuruToki.locationMarker.setVisible(true);
-						console.log('locationMarker set visible and to pos: ' + pos);
-					}
-					else {	
-						$.reshuuSuruToki.locationMarker.setVisible(false);
-					}
-					console.log('locationMarker is now visible: ' + $.reshuuSuruToki.locationMarker.getVisible());
-				}
-			
+				console.log('#tabs a -- live click. key: ' + key);
+				$.reshuuSuruToki.showTabContent(key);
 				return false;
 			});
-			
+
 			$('#mapping .header a[rel=street]').click(function() {
 				var visible = $.reshuuSuruToki.streetview.getVisible();
 				$.reshuuSuruToki.streetview.setVisible(!visible);
@@ -225,26 +195,62 @@ $(document).ready(function() {
 				return false;
 			});
 			*/
-			
+
 			$('.modal-tools a[rel=savetolist]').live('click', function() {
 				var href = $(this).attr('href');
 				var id = href.split('-').pop();
 				console.log('savetolist click. href: ' + href + ', id: ' + id);
-				
+				$.reshuuSuruToki.addSavedList(id);
 				return false;
 			});
 		},
 		
+		showTabContent: function (key) {
+			document.location = '#' + key;
+
+			if (key == 'filters') {
+				//console.log('$.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+				$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
+			}
+			else {
+				console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
+				if ($('#filtering:visible').length) {
+					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
+					$('#filtering').detach();
+				}
+			}
+			if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
+				$.reshuuSuruToki.forms.getForm(key);
+			}
+
+			// Location positioning marker
+			console.log('$.reshuuSuruToki.locationMarker: ' + $.reshuuSuruToki.locationMarker);
+
+			if ($.reshuuSuruToki.locationMarker !== null) {
+				if (key == 'location') {
+					var pos = $.reshuuSuruToki.map.getCenter();
+					$.reshuuSuruToki.locationMarker.setPosition(pos);
+					$.reshuuSuruToki.locationMarker.setVisible(true);
+					console.log('locationMarker set visible and to pos: ' + pos);
+				}
+				else {
+					$.reshuuSuruToki.locationMarker.setVisible(false);
+				}
+				console.log('locationMarker is now visible: ' + $.reshuuSuruToki.locationMarker.getVisible());
+			}
+		},
+
 		// Add a training to the list of saved trainings if it is not there yet.
 		addSavedList: function (id) {
 			var inx = $.reshuuSuruToki.savedList.indexOf(id);
+			var data = null;
 			console.log('addSavedList. id: ' + id + ', inx: ' + inx);
 			if (inx === -1) {
 				$.reshuuSuruToki.savedList.push(id);
 				var len = $.reshuuSuruToki.trainingMarkersData.length;
 				var savedlen = $.reshuuSuruToki.savedListData.length; // only for debugging
 				for (var i = 0; i < len; ++i) {
-					var data = $.reshuuSuruToki.trainingMarkersData[i];
+					data = $.reshuuSuruToki.trainingMarkersData[i];
 					if (data.training.id == id) {
 						console.log('addSavedList. found matching data for addition, i: ' + i);
 						$.reshuuSuruToki.savedListData.push(data);
@@ -252,11 +258,18 @@ $(document).ready(function() {
 					}
 				}
 				console.log('addSavedList. savedListData length before and after adding try: ' + savedlen + ' > ' + $.reshuuSuruToki.savedListData.length);
-				
-				// Now add it to DOM...
+
+				// Now add it to DOM... Should this be made as a table or a list? table.
+				if (data !== null) {
+					var tr = '<tr rel="' + id + '"><td>' + data.training.art.title + '</td><td>' + 
+						data.training.weekday + '</td><td>' + data.training.starttime + ' - ' + 
+						data.training.endtime + '</td></tr>';
+					console.log('inserting tr: ' + tr);
+					$('#bottom tbody').prepend(tr);
+				}
 			}
 		},
-		
+
 		// Remove from list, as a counter part of adding.
 		removeSavedList: function (id) {
 			var inx = $.reshuuSuruToki.savedList.indexOf(id);
@@ -273,11 +286,12 @@ $(document).ready(function() {
 					}
 				}
 				console.log('removeSavedList. savedListData length before and after removal try: ' + len + ' > ' + $.reshuuSuruToki.savedListData.length);
-				
+
 				// Now remove it from DOM
+				$('#bottom tbody tr[rel=' + id + ']').remove();
 			}
 		},
-		
+
 		// Update filters according to current checkbox selection.
 		updateFilters: function() {
 			var sets = ['arts', 'weekdays'];
@@ -297,13 +311,13 @@ $(document).ready(function() {
 				$.reshuuSuruToki.filterSettings[target] = list;
 				console.log(target + ' = ' + list);
 			}
-			
+
 			// Make sure any of the selections was not empty
 			if (lens.indexOf(0) == -1) {
 				$.reshuuSuruToki.updateLocations();
 			}
 		},
-		
+
 		updateLocations: function() {
 			var bounds = $.reshuuSuruToki.map.getBounds();
 			var ne = bounds.getNorthEast();
@@ -315,10 +329,10 @@ $(document).ready(function() {
 				},
 				filter: $.reshuuSuruToki.filterSettings
 			};
-			
+
 			$.reshuuSuruToki.markers.clearMarkers($.reshuuSuruToki.trainingMarkers);
 			$.reshuuSuruToki.trainingMarkersData = [];
-			
+
 			$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
 				if (data.response && data.response.result) {
 					var res = data.response.result;
@@ -332,17 +346,17 @@ $(document).ready(function() {
 				}
 			}, 'json');
 		},
-		
+
 		// Show the given position in the Street View. Once visibility set, the opening is taken care of by its event handler.
 		showStreetView: function(position) {
 			$.reshuuSuruToki.streetview.setPosition(position);
 			$.reshuuSuruToki.streetview.setVisible(true);
 		},
-		
+
 		mapinit: function(map_element, street_element, map_options, street_options) {
 			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
 			$.reshuuSuruToki.streetService = new google.maps.StreetViewService();
-			
+
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 			var opts = {
 				center: $.reshuuSuruToki.hikone,
@@ -364,18 +378,18 @@ $(document).ready(function() {
 				},
 				zoom: $.reshuuSuruToki.zoom
 			};
-			
+
 			opts = $.extend(true, {}, opts, map_options);
 			$.reshuuSuruToki.map = new google.maps.Map(map_element, opts);
-		
+
 			$.reshuuSuruToki.streetview = new google.maps.StreetViewPanorama(street_element, street_options);
-			
-			
+
+
 			// The marker which can be dragged on a spot which is should be revealed in Street View
 			$.reshuuSuruToki.streetMarker = $.reshuuSuruToki.markers.createMarker(
 				$.reshuuSuruToki.map.getCenter(), 'Street View', $.reshuuSuruToki.pins.getPinStar('glyphish_eye'), true
 			);
-			
+
 			// Marker draggin overrides the Street View position and makes it visible if hidden.
 			google.maps.event.addListener($.reshuuSuruToki.streetMarker, 'dragend', function() {
 				var pos = $.reshuuSuruToki.streetMarker.getPosition();
@@ -385,22 +399,22 @@ $(document).ready(function() {
 					$.reshuuSuruToki.streetview.setVisible(true);
 				}
 			});
-			
+
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'position_changed', function() {
 				var pos = $.reshuuSuruToki.streetview.getPosition();
 				console.log('streetview position_changed. pos: ' + pos);
 				//$.reshuuSuruToki.streetMarker.setPosition(pos);
 			});
-			
+
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'visible_changed', function() {
 				var posS = $.reshuuSuruToki.streetview.getPosition();
 				var posM = $.reshuuSuruToki.streetMarker.getPosition();
 				var bounds = $.reshuuSuruToki.map.getBounds();
 				var visible = $.reshuuSuruToki.streetview.getVisible();
-				
+
 				console.log('streetview visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
-				
+
 				if (visible) {
 					$(street_element).slideDown();
 				}
@@ -419,9 +433,9 @@ $(document).ready(function() {
 				$.reshuuSuruToki.streetMarker.setVisible(visible);
 				//$('#street:hidden').slideDown($.reshuuSuruToki.animSpeed);
 			});
-			
+
 			$.reshuuSuruToki.map.setStreetView($.reshuuSuruToki.streetview);
-			
+
 			//var icon = $.reshuuSuruToki.pins.getBubble('glyphish_paperclip', 'Select+position');
 			var icon = $.reshuuSuruToki.pins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sright');
 			//var icon = 'http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D';
@@ -429,7 +443,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.locationMarker = $.reshuuSuruToki.markers.createMarker(
 				opts.center, 'Choose position', icon, true
 			);
-			
+
 			google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'drag', function(event) {
 				// update position info in the form
 				var pos = $.reshuuSuruToki.locationMarker.getPosition();
@@ -438,7 +452,7 @@ $(document).ready(function() {
 			});
 			google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'dragstart', function(event) {
 				// This event is fired when the user starts dragging the marker.
-			});				
+			});
 			google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'dragend', function(event) {
 				// geocode current position if the form setting allows.
 				// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
@@ -448,15 +462,15 @@ $(document).ready(function() {
 				}
 			});
 			$.reshuuSuruToki.locationMarker.setVisible(false);
-			
+
 			$.reshuuSuruToki.callbacks.initiate();
-		
+
 			$(window).resize(function() {
 				google.maps.event.trigger($.reshuuSuruToki.map, 'resize');
 				google.maps.event.trigger($.reshuuSuruToki.streetview, 'resize');
 			});
 		},
-		
+
 		// http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
 		// getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
 		getPanorama: function(pos, radius) {
@@ -467,9 +481,9 @@ $(document).ready(function() {
 				console.log('getPanorama. status: ' + status);
 			});
 		}
-		
+
 	};
-	
+
 	/*
 	Marker data from the backend.
 	data: {
@@ -495,10 +509,10 @@ $(document).ready(function() {
 	}
 	*/
 	$.reshuuSuruToki.markers = {
-		
+
 		// As per marker double click, show its position in Street View
 		showInStreetView: false,
-		
+
 		clearMarkers: function(list) {
 			var len = list.length;
 			for (var i = 0; i < len; ++i) {
@@ -507,12 +521,12 @@ $(document).ready(function() {
 			}
 			list = [];
 		},
-		
+
 		createTrainingMarker: function(data) {
 			var icon = $.reshuuSuruToki.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.reshuuSuruToki.markers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
-			
+
 			google.maps.event.addListener(marker, 'click', function(event) {
 				// This event is fired when the marker icon was clicked.
 				var pos = marker.getPosition();
@@ -520,11 +534,11 @@ $(document).ready(function() {
 				// Open a modal window with the details
 				$.reshuuSuruToki.markers.openModal(marker);
 			});
-			
+
 			$.reshuuSuruToki.trainingMarkers.push(marker);
 			$.reshuuSuruToki.trainingMarkersData.push(data);
 		},
-		
+
 		createMarker: function(pos, title, icon, drag) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 			if (!icon) {
@@ -541,7 +555,7 @@ $(document).ready(function() {
 				draggable: drag,
 				icon: icon
 			});
-			
+
 			/*
 			if (drag) {
 				google.maps.event.addListener(marker, 'drag', function() {
@@ -558,7 +572,7 @@ $(document).ready(function() {
 				});
 			}
 			*/
-		
+
 			/*
 			google.maps.event.addListener(marker, 'clickable_changed', function() {
 				// This event is fired when the marker's clickable property changes.
@@ -594,10 +608,10 @@ $(document).ready(function() {
 				// This event is fired when the marker's visible property changes.
 				console.log('marker. visible_changed - ' + marker.title + ', visibility: ' + marker.getVisible());
 			});
-			
+
 			return marker;
 		},
-		
+
 		// http://www.ericmmartin.com/projects/simplemodal/
 		openModal: function(marker) {
 			var inx = $.reshuuSuruToki.trainingMarkers.indexOf(marker);
@@ -606,7 +620,7 @@ $(document).ready(function() {
 			if (inx != -1) {
 				data = $.reshuuSuruToki.trainingMarkersData[inx];
 			}
-			
+
 			if (data) {
 				console.log('openModal. data. ' + data);
 				var info = $.reshuuSuruToki.markers.buildInfoWindow(data);
@@ -632,10 +646,10 @@ $(document).ready(function() {
 					closeClass: 'modal-close',
 					modal: false
 				});
-				
+
 			}
 		},
-		
+
 		buildInfoWindow: function(data) {
 			/*
 			Marker data from the backend.
@@ -664,7 +678,7 @@ $(document).ready(function() {
 			var info = '<div class="modal-info vevent">';
 			if (data.training && data.training.art && data.training.art.id && data.training.art.title) {
 				info += '<h2 class="summary" rel="art-' + data.training.art.id + '">' +
-					'<a href="#training-' + data.training.id + '" class="modal-close uid" title="' + 
+					'<a href="#training-' + data.training.id + '" class="modal-close uid" title="' +
 					data.training.art.title + '">' + data.training.art.title + '</a></h2>';
 			}
 			if (data.training && data.training.id && data.training.weekday) {
@@ -678,9 +692,9 @@ $(document).ready(function() {
 				}
 				info += '</p>';
 			}
-			
+
 			if (data.person && data.person.id && data.person.title) {
-				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' + 
+				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' +
 					data.person.title + '</p>';
 			}
 			if (data.location && data.location.id && data.location.title) {
@@ -703,17 +717,17 @@ $(document).ready(function() {
 					'</address>';
 			}
 			if (data.training && data.training.id) {
-				info += '<p class="modal-tools"><a href="#training-' + 
+				info += '<p class="modal-tools"><a href="#training-' +
 					data.training.id + '" title="Save to list" rel="savetolist">Save to list</a></p>';
 			}
 			info += '</div>';
-				
+
 			console.log('buildInfoWindow. info. ' + info);
 			//$(info).appendTo('body');
 			return info;
 		}
 	};
-	
+
 	$.reshuuSuruToki.data = {
 		// http://en.wikipedia.org/wiki/Geographic_coordinate_conversion
 		deg2dms: function(degfloat, isLatitude) {
@@ -733,7 +747,7 @@ $(document).ready(function() {
 			}
 
 			//console.log('deg_to_dms. degfloat: ' + degfloat);
-			
+
 			var deg = parseInt( degfloat, 10 );
 			//console.log('deg_to_dms. deg: ' + deg);
 			var minfloat = 60 * ( degfloat - deg );
@@ -743,7 +757,7 @@ $(document).ready(function() {
 			var secfloat = 60 * ( minfloat - min );
 			//console.log('deg_to_dms. secfloat: ' + secfloat);
 			secfloat = Math.round( secfloat );
-			
+
 			if (secfloat == 60) {
 				min = min + 1;
 				secfloat = 0;
@@ -756,9 +770,9 @@ $(document).ready(function() {
 
 			return ( deg + '° ' + min + "' " + secfloat + '" ' + letter);
 		},
-		
+
 		weekdays: [],
-		
+
 		// Ran when dom is ready. Fetches the weekdays from the list in filters for current language.
 		getWeekdays: function() {
 			$('#weekdays li').each(function(index) {
@@ -766,7 +780,7 @@ $(document).ready(function() {
 			});
 			console.log('$.reshuuSuruToki.data.weekdays: ' + $.reshuuSuruToki.data.weekdays);
 		},
-		
+
 		geocodePosition: function(pos) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 			// Clear earlier geocode markers
@@ -781,7 +795,7 @@ $(document).ready(function() {
 							// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
 							var res = results[i];
 							var marker = $.reshuuSuruToki.markers.createMarker(
-								res.geometry.location, res.formatted_address, 
+								res.geometry.location, res.formatted_address,
 								$.reshuuSuruToki.pins.getLetter(i + 1), false);
 							// Right click will be used for deleting...
 							google.maps.event.addListener(marker, 'rightclick', function(event) {
@@ -799,9 +813,9 @@ $(document).ready(function() {
 								console.log('clicking thus adding address of marker with title: ' + title);
 								$('input[name=address]').val(title);
 							});
-							
+
 							$.reshuuSuruToki.geocodeMarkers.push(marker);
-							
+
 							console.log('---- result ' + i);
 							for (var j in res) {
 								if (res.hasOwnProperty(j)) {
@@ -832,23 +846,23 @@ $(document).ready(function() {
 				}
 			);
 		},
-		
+
 		geoPosClick: function(event) {
 		},
-		
+
 		geoPosDblClick: function(event) {
 		}
 	};
-		
+
 	$.reshuuSuruToki.callbacks = {
 		updateHashUrl: function() {
-	
+
 			var center = $.reshuuSuruToki.map.getCenter();
 			var zoom = $.reshuuSuruToki.map.getZoom();
 			//console.log('center / zoom changed. zoom: ' + zoom + ', center: ' + center);
 			//document.location = '/#/zoom/' + zoom + '/lat/' + center.lat() + '/lng/' + center.lng();
 		},
-			
+
 		initiate: function() {
 			var callbacks = $.reshuuSuruToki.callbacks;
 			var map = $.reshuuSuruToki.map;
@@ -921,15 +935,17 @@ $(document).ready(function() {
 			$.reshuuSuruToki.callbacks.updateHashUrl();
 		}
 	};
-	
+
 	// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 	$.reshuuSuruToki.pins = {
 		// MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
 		getMarkerImage: function(image, size, origin, anchor) {
 			console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
-			return new google.maps.MarkerImage('http://chart.apis.google.com/chart?' + image, size, origin, anchor, size);
+			return new google.maps.MarkerImage(
+				'http://chart.apis.google.com/chart?' + image, size, origin, anchor, size
+			);
 		},
-		
+
 		getIcon: function(icon, color) { // 21, 34
 			if (!icon) {
 				icon = 'fire';
@@ -938,9 +954,11 @@ $(document).ready(function() {
 				color = 'ADDE63';
 			}
 			// http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_icon&chld=' + icon + '|' + color);
+			return $.reshuuSuruToki.pins.getMarkerImage(
+				'chst=d_map_pin_icon&chld=' + icon + '|' + color
+			);
 		},
-		
+
 		getLetter: function(letter, fill, color) {
 			if (!letter) {
 				letter = '場';
@@ -952,9 +970,11 @@ $(document).ready(function() {
 				color = '05050D';
 			}
 			// http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color);
+			return $.reshuuSuruToki.pins.getMarkerImage(
+				'chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color
+			);
 		},
-		
+
 		// type can be only one of the two [pin_sright, pin_sleft], othervise size mismatches.
 		getPinStar: function(icon, fill, star, type) {
 			if (!icon) {
@@ -981,7 +1001,7 @@ $(document).ready(function() {
 				'chst=d_map_xpin_icon&chld=' + type + '|' + icon + '|' + fill + '|' + star, size, origin, anchor
 			);
 		},
-		
+
 		getBubble: function(icon, text, fill, color, type) {
 			if (!icon) {
 				icon = 'glyphish_paperclip';
@@ -1002,22 +1022,25 @@ $(document).ready(function() {
 			var origin = new google.maps.Point(0, 0);
 			var anchor = new google.maps.Point(0, 0);
 			// http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D
-			return $.reshuuSuruToki.pins.getMarkerImage('chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' + type + '|' + fill + '|' + color, size, origin, anchor);			
+			return $.reshuuSuruToki.pins.getMarkerImage(
+				'chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' +
+				type + '|' + fill + '|' + color, size, origin, anchor
+			);
 		},
-		
+
 		gYellowIcon: function() { return $.reshuuSuruToki.pins.getIcon('glyphish_target', 'F9FBF7'); },
 		gRedIcon: function() { return $.reshuuSuruToki.pins.getIcon('star', 'CC2233'); },
 		gBlueIcon: function() { return $.reshuuSuruToki.pins.getIcon('snow', '2233CC'); }
 	};
-	
-	
+
+
 	$.reshuuSuruToki.forms = {
-	
+
 		// Save the earlierly fetched form elements with callbacks once set.
 		cache: {},
-		
+
 		types: ['art', 'location', 'training', 'person', 'profile', 'login'],
-			
+
 		// Six types available: art, location, training, person, profile, login
 		getForm: function(type) {
 			if ($.reshuuSuruToki.forms[type])
@@ -1035,10 +1058,10 @@ $(document).ready(function() {
 				}, 'json');
 			}
 		},
-		
+
 		// form contains the form element with the requested input fields.
 		setForm: function(form, type) {
-		
+
 			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 			$(form + ' input[name=location]').autoSuggest(
 				$.reshuuSuruToki.ajaxpoint.get + 'location', {
@@ -1049,7 +1072,7 @@ $(document).ready(function() {
 			);
 			$(form + ' input[name=art]').autoSuggest(
 				$.reshuuSuruToki.ajaxpoint.get + 'art', {
-					minChars: 2, 
+					minChars: 2,
 					matchCase: false,
 					startText: 'Type an art name',
 					selectedItemProp: 'name',
@@ -1069,7 +1092,7 @@ $(document).ready(function() {
 			);
 
 
-			
+
 /*
 			$('input[name=duration]').after($('<span>', {name: 'durationslider'}));
 			$('span[name=durationslider]').slider({
@@ -1083,8 +1106,8 @@ $(document).ready(function() {
 			});
 			$('input[name=duration]').val($('span[name=durationslider]').slider('value'));
 */
-			
-			
+
+
 			// http://fredibach.ch/jquery-plugins/inputnotes.php
 			/*
 			$(form + ' input[name=title]').inputNotes({
@@ -1095,23 +1118,23 @@ $(document).ready(function() {
 				minlength: {
 					pattern: /^(.){0,5}$/i,
 					type: 'info',
-					text: 'Minimum password length is 6 characters.' 
+					text: 'Minimum password length is 6 characters.'
 				},
 
 
 				requiredfield: {
 					pattern: /(^(\s)+$)|(^$)/,
 					type: 'warning',
-					text: 'This field is required!' 
+					text: 'This field is required!'
 				},
 
 				email: {
 					pattern: /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+$/,
 					type: 'info',
-					text: 'Yes, that\'s a valid email address!' 
+					text: 'Yes, that\'s a valid email address!'
 				}
 			});
-			
+
 			$(form + ' input[type=button][name=send]').click(function() {
 				if ( $(this).parents('form').hasInputNotes() ){
 					// don't send form
@@ -1121,36 +1144,36 @@ $(document).ready(function() {
 				}
 			});
 			*/
-			
+
 			// Note that either "insert" = 0 or "update" = id must be set in the root data...
 			$('form').submit(function() {
 				var data = { items: $(this).serializeArray() };
 				console.log('form submit. data.items: ' + data.items);
-				
+
 				$.post($(this).attr('action'), data, function(data, status) {
 					console.log('form submit. status: ' + status);
 				}, 'json');
 				return false;
 			});
-			
+
 			// http://code.google.com/p/jquerytimepicker/
 			$(form + ' input[name=starttime]').timePicker();
-		
+
 			// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 			$(form + ' input[name=endtime]').clockpick();
-			
+
 			$(form + ' fieldset').corner();
-			
-			
+
+
 			$.reshuuSuruToki.forms.cache[type] = form;
 		},
-		
+
 		showForm: function(type) {
 			var form = $.reshuuSuruToki.forms.cache[type];
 			$($.reshuuSuruToki.tabContentElement).contents().detach(); // clean but save
 			$($.reshuuSuruToki.tabContentElement).html(form);
 		}
 	};
-	
-	
+
+
 })(jQuery);
