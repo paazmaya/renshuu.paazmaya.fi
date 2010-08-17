@@ -73,7 +73,7 @@ $(document).ready(function() {
 		savedListData: [],
 
 		ready: function() {
-
+			// Default centre
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 
 			// Fill the array with current language weekday names.
@@ -119,7 +119,7 @@ $(document).ready(function() {
 			// Triggers on a click to any of the shortcuts for selection manipulation
 			$('#filtering p[class^=rel_] a').live('click', function () {
 				var action = $(this).attr('rel');
-				var target = $(this).parent('p').attr('rel');
+				var target = $(this).parent('p').attr('class');
 				target = target.substr(target.indexOf('_') + 1);
 
 				console.log('action: ' + action + ', target: ' + target);
@@ -261,11 +261,15 @@ $(document).ready(function() {
 
 				// Now add it to DOM... Should this be made as a table or a list? table.
 				if (data !== null) {
-					var tr = '<tr rel="' + id + '"><td>' + data.training.art.title + '</td><td>' + 
-						data.training.weekday + '</td><td>' + data.training.starttime + ' - ' + 
-						data.training.endtime + '</td></tr>';
+					var tr = '<tr rel="' + id + '"><td>' + data.training.art.title + '</td><td>';
+					if ($.reshuuSuruToki.data.weekdays.length > data.training.weekday) {
+						tr += $.reshuuSuruToki.data.weekdays[data.training.weekday];
+					}					
+					tr += '</td><td>' + data.training.starttime + ' - ' + 
+						data.training.endtime + '</td><td><a href="#remove-' + id + '" title="' +
+						data.training.weekday + '"><img src="/img/" alt="" /></tr>';
 					console.log('inserting tr: ' + tr);
-					$('#bottom tbody').prepend(tr);
+					$('#savedlist tbody').prepend(tr);
 				}
 			}
 		},
@@ -295,8 +299,9 @@ $(document).ready(function() {
 		// Update filters according to current checkbox selection.
 		updateFilters: function() {
 			var sets = ['arts', 'weekdays'];
-			var len = 0;
+			var len = sets.length;
 			var lens = [];
+			console.log('updateFilters. len: ' + len + ', sets: ' + sets);
 			for (var i = 0; i < len; ++i) {
 				var target = sets[i];
 				var list = [];
@@ -309,7 +314,7 @@ $(document).ready(function() {
 				});
 				lens.push(list.length);
 				$.reshuuSuruToki.filterSettings[target] = list;
-				console.log(target + ' = ' + list);
+				console.log('updateFilters. target: ' + target + ' = ' + list);
 			}
 
 			// Make sure any of the selections was not empty
@@ -784,7 +789,7 @@ $(document).ready(function() {
 		geocodePosition: function(pos) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 			// Clear earlier geocode markers
-			$.reshuuSuruToki.geocodeMarkers = [];
+			$.reshuuSuruToki.data.removeAllGeoMarkers();
 			$.reshuuSuruToki.geocoder.geocode(
 				{ location: pos, language: 'ja' },
 				function(results, status) {
@@ -793,50 +798,11 @@ $(document).ready(function() {
 						// Max three results
 						for (var i = 0; i < len; ++i) {
 							// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
-							var res = results[i];
-							var marker = $.reshuuSuruToki.markers.createMarker(
-								res.geometry.location, res.formatted_address,
-								$.reshuuSuruToki.pins.getLetter(i + 1), false);
-							// Right click will be used for deleting...
-							google.maps.event.addListener(marker, 'rightclick', function(event) {
-								// This event is fired when the marker is right clicked on.
-								var inx = $.reshuuSuruToki.geocodeMarkers.indexOf(marker);
-								console.log('rightclicking thus removing marker with title: ' + marker.getTitle() + ', inx: ' + inx);
-								if (inx !== -1) {
-									$.reshuuSuruToki.geocodeMarkers.splice(inx, 1);
-								}
-								marker.setMap(null);
-							});
-							google.maps.event.addListener(marker, 'click', function(event) {
-								// This event is fired when the marker is right clicked on.
-								var title = marker.getTitle();
-								console.log('clicking thus adding address of marker with title: ' + title);
-								$('input[name=address]').val(title);
-							});
-
+							var marker = $.reshuuSuruToki.data.createGeoMarker(results[i], i);
 							$.reshuuSuruToki.geocodeMarkers.push(marker);
 
 							console.log('---- result ' + i);
-							for (var j in res) {
-								if (res.hasOwnProperty(j)) {
-									console.log(j + ' = ' + res[j]);
-								}
-							}
-							/*
-							for (var s in res.address_components) {
-								var a = res.address_components[s];
-								for (var c in a) {
-									console.log('address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
-								}
-							}
-							for (var g in res.geometry) {
-								console.log('geometry: ' + g + ' = ' + res.geometry[g]);
-							}
-							*/
-							//address_components
-							//geometry
-							//types
-							// formatted_address - not documented
+						
 						}
 						$('input[name=address]').val(results[0].formatted_address);
 					}
@@ -845,6 +811,65 @@ $(document).ready(function() {
 					}
 				}
 			);
+		},
+		
+		createGeoMarker: function (res, i) {
+			/*
+			for (var j in res) {
+				if (res.hasOwnProperty(j)) {
+					console.log(j + ' = ' + res[j]);
+				}
+			}
+			/*
+			for (var s in res.address_components) {
+				var a = res.address_components[s];
+				for (var c in a) {
+					console.log('address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
+				}
+			}
+			for (var g in res.geometry) {
+				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
+			}
+			*/
+			//address_components
+			//geometry
+			//types
+			// formatted_address - not documented
+			var marker = $.reshuuSuruToki.markers.createMarker(
+				res.geometry.location, res.formatted_address,
+				$.reshuuSuruToki.pins.getLetter(i + 1), false);
+			// Right click will be used for deleting...
+			google.maps.event.addListener(marker, 'rightclick', function(event) {
+				$.reshuuSuruToki.data.removeGeoMarker(marker);
+			});
+			google.maps.event.addListener(marker, 'click', function(event) {
+				// This event is fired when the marker is right clicked on.
+				var title = marker.getTitle();
+				console.log('clicking thus setting address of marker with title: ' + title);
+				$('input[name=address]').val(title);
+			});
+			
+			return marker;
+		},
+		
+		removeGeoMarker: function(marker) {
+			var inx = $.reshuuSuruToki.geocodeMarkers.indexOf(marker);
+			console.log('rightclicking thus removing marker with title: ' + marker.getTitle() + ', inx: ' + inx);
+			if (inx !== -1) {
+				$.reshuuSuruToki.geocodeMarkers.splice(inx, 1);
+			}
+			marker.setMap(null);
+		},
+		
+		removeAllGeoMarkers: function() {
+			var len = $.reshuuSuruToki.geocodeMarkers.length;
+			while (len > 0) {
+				len--;
+				var marker = $.reshuuSuruToki.geocodeMarkers[len];
+				$.reshuuSuruToki.geocodeMarkers.splice(len, 1);
+				marker.setMap(null);
+			}
+			$.reshuuSuruToki.geocodeMarkers = [];
 		},
 
 		geoPosClick: function(event) {

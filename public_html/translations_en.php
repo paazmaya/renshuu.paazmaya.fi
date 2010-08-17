@@ -260,15 +260,26 @@ $lang['forms'] = array(
  * Bottom area table for saved items which then can be exported as a list with static maps.
  */
 $lang['savedtable'] = array(
-	'summary' => '',
-	'caption' => '',
+	'summary' => 'A list of saved trainings',
+	'caption' => 'A list of saved trainings',
 	'thead' => array (
-		'art' => '',
-		'weekday' => '',
-		'time' => ''
-	)
+		'art' => 'Martial art',
+		'weekday' => 'Weekday',
+		'time' => 'Time',
+		'remove' => 'Remove'
+	),
+	'tbody' => array()
 );
  
  
+ 
+/**
+ * Shortcut links for selecting inverse, all or nothing of the checkboxes.
+ */
+$lang['selectionshortcuts'] = array(
+	'all' => 'Select all',
+	'none' => 'Select none',
+	'inverse' => 'Inverse selection'
+);
  
  

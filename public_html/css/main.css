@@ -79,7 +79,7 @@ input[type=text], select {
 }
 input[type=text]:focus, select:focus {
 	border: 2px solid #0E3621;
-	background-color: #5E0202;
+	background-color: #67828A;
 	margin: 0;
 }
 input[type=checkbox] {
@@ -132,6 +132,30 @@ h2 {
 h3 {
 	font-size: 105%;
 }
+table {
+	width: 100%;
+	padding: 0.5em;
+	border: 1px solid Black;
+	background-color: #F9FBF7;
+}
+caption {
+	padding: 0.5em;
+	text-align: left;
+}
+th {
+	text-align: left;
+	padding: 0.5em;
+}
+td {
+	padding: 0.5em;
+}
+td.odd, tbody tr:nth-child(odd) {
+	background-color: #129EF7;
+}
+td.even, tbody tr:nth-child(even) {
+	background-color: #0E3621;
+}
+
 /* IE will not show scrollbar */
 textarea{
 	overflow: auto;
@@ -188,7 +212,7 @@ textarea{
 	-webkit-border-radius: 0 0 1em 1em;
 	-moz-border-radius: 0 0 1em 1em;
 }
-.header p, .content p { 
+.header p, .content p, #savedlist { 
 	padding: 0.5em; 
 }
 .header p { 
@@ -232,6 +256,8 @@ textarea{
 .qr_street { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Street+View'); }
 .qr_forms { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Forms'); }
 .qr_profile { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Profile'); }
+.qr_saved { background-image: url('http://chart.apis.google.com/chart?cht=qr&chs=21x21&chld=L|0&chl=Saved+list'); }
+
 /*
 http://chart.apis.google.com/chart?cht=p&chs=50x50&chco=5E0202|5E0202|0E3621&chd=t:15,30,20&chf=bg,s,0E3621|c,s,F9FBF7
 
@@ -295,6 +321,7 @@ ul.inputnotes li.note {
 	width: 30em;
 	float: left;
 	clear: both;
+	border: 2px solid Black;
 	border-radius: 1em;
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;

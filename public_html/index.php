@@ -84,7 +84,7 @@ $javascript = array(
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
 	'jquery.simplemodal.js', // 1.3.5
-	'jquery.ba-hashchange.js',
+	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
 );
 
@@ -112,14 +112,6 @@ $gzipped = ''; //'.gz';
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
-	<?php
-	/*
-	<link type="text/css" href="/css/main.css" rel="stylesheet" />
-	<link type="text/css" href="/css/autoSuggest.css" rel="stylesheet" />
-	<link type="text/css" href="/css/renshuu/jquery-ui-1.8.2.custom.css" rel="stylesheet" />
-	<link type="text/css" href="/css/jquery.clockpick.1.2.7.css" rel="stylesheet" />
-	*/
-	?>
 </head>
 <?php
 
@@ -157,35 +149,28 @@ $gzipped = ''; //'.gz';
 				<div class="content">
 					<div class="stuff" id="tabcontent">
 						<div id="filtering">
-							<p class="rel_arts">
-								<a href="#" rel="all" title="Select all">Select all</a>
-								<a href="#" rel="none" title="Select none">Select none</a>
-								<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
-							</p>
-							<ul id="arts">
 							<?php
+							echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
+							echo '<ul id="arts">';
+							// Filter based on the user access if any...
 							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
 							$run =  $link->query($sql);
 							while($res = $run->fetch(PDO::FETCH_ASSOC))
 							{
 								echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
 							}
+							
+							echo '</ul>';
+							
+							echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
+							echo '<ul id="weekdays">';
+							// Zero index Sunday.
+							foreach($lang['weekdays'] as $key => $val)
+							{
+								echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+							}
+							echo '</ul>';
 							?>
-							</ul>
-							<p class="rel_weekdays">
-								<a href="#" rel="all" title="Select all">Select all</a>
-								<a href="#" rel="none" title="Select none">Select none</a>
-								<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
-							</p>
-							<ul id="weekdays">
-								<?php
-								// Zero index Sunday.
-								foreach($lang['weekdays'] as $key => $val)
-								{
-									echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
-								}
-								?>
-							</ul>
 						</div>
 					</div>
 				</div>
@@ -195,24 +180,16 @@ $gzipped = ''; //'.gz';
 	</div>
 
 	<div id="bottom">
-		<?php
-			// $lang['savedtable']['summary']
-		?>
-		<table summary="">
-			<caption></caption>
-			<thead>
-				<tr>
-					<th>Art</th>
-					<th>Weekday</th>
-					<th>Time</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td></td>
-				</td>
-			</tbody>
-		</table>
+		<div class="header qr_saved">
+			<p><a href="#" rel="savedlist">Saved list</a><span></span></p>
+		</div>
+		<div class="content">
+			<div id="savedlist" class="stuff">
+				<?php
+				echo createTable($lang['savedtable']);
+				?>
+			</div>
+		</div>
 	</div>
 
 <?php

@@ -188,7 +188,7 @@ if ($passcheck)
 		{
 			$weekdays = $_POST['filter']['weekdays'];
 		}
-
+		
 		$at = array();
 		$art = '';
 		if (count($arts) > 0)
@@ -346,7 +346,6 @@ if ($passcheck)
 				'info' => '',
 			)
 		);
-		// Each of the given tables have a field for modified time
 		
 		// Are all the posted keys set which are needed for that type?
 		$trimmed = array();
@@ -357,7 +356,8 @@ if ($passcheck)
 			{
 				$trimmed[$key] = htmlenc($_POST['items'][$key]);
 			}
-			else {
+			else
+			{
 				$missing[] = $key;
 			}
 		}
@@ -369,6 +369,10 @@ if ($passcheck)
 		if (count($missing) == 0)
 		{
 			$sql = '';
+			
+			// Each of the given tables have a field for modified time
+			$trimmed['modified'] = time();
+			
 			// This should include the id of that item which is currently being updated.
 			if (isset($_POST['update']) && is_numeric($_POST['update']))
 			{

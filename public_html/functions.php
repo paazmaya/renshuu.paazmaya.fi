@@ -9,7 +9,7 @@ RENSHUU.PAAZMAYA.COM
  * @param	string	$str
  * @return	string
  */
-function htmlent($str)
+function htmlenc($str)
 {
 	return htmlentities(trim($str), ENT_QUOTES, 'UTF-8');
 }
@@ -44,6 +44,7 @@ function urize($str)
 	$str = str_replace(array('ć', 'č'), 'c', $str);
 	$str = str_replace(array('ž'), 'z', $str);
 	$str = str_replace(array('--', '---', '----'), '-', $str);
+	$str = trim($str, ' -');
 	return $str;
 }
 
@@ -152,6 +153,109 @@ function createForm($id, $data)
 	}
 	$out .= '</fieldset></form>';
 	
+	return $out;
+}
+
+/**
+ * Create a table structure to be used for saving items from the map for later printing.
+ *
+ * <table summary="">
+ * 	<caption></caption>
+ * 	<thead>
+ * 		<tr>
+ * 			<th>Art</th>
+ * 			<th>Weekday</th>
+ * 			<th>Time</th>
+ * 		</tr>
+ * 	</thead>
+ * 	<tbody>
+ * 		<tr>
+ * 			<td></td>
+ * 		</td>
+ * 	</tbody>
+ * </table>
+ * 
+ * 
+ * @param array $data = array(
+ * 	'summary' => '',
+ * 	'caption' => '',
+ * 	'thead' => array (
+ * 		'art' => '',
+ * 		'weekday' => '',
+ * 		'time' => ''
+ * 	),
+ * 	'tfoot' => array(
+ * 	),
+ * 	'tbody' => array(
+ * 	)
+ * );
+ */
+function createTable($data)
+{
+	$out = '<table';
+	if (isset($data['summary']) && $data['summary'] != '')
+	{
+		$out .= ' summary="' . $data['summary'] . '"';
+	}
+	$out .= '>';
+	if (isset($data['caption']) && $data['caption'] != '')
+	{
+		$out .= '<caption>' . $data['caption'] . '</caption>';
+	}
+	if (isset($data['thead']) && is_array($data['thead']))
+	{
+		$out .= '<thead><tr>';
+		foreach ($data['thead'] as $td)
+		{
+			$out .= '<th>' . $td . '</th>';
+		}
+		$out .= '</tr></thead>';
+	}
+	if (isset($data['tfoot']) && is_array($data['tfoot']))
+	{
+		$out .= '<tfoot><tr>';
+		foreach ($data['tfoot'] as $td)
+		{
+			$out .= '<td>' . $td . '</td>';
+		}
+		$out .= '</tr></tfoot>';
+	}
+	if (isset($data['tbody']) && is_array($data['tbody']))
+	{
+		$out .= '<tbody><tr>';
+		foreach ($data['tbody'] as $td)
+		{
+			$out .= '<td>' . $td . '</td>';
+		}
+		$out .= '</tr></tbody>';
+	}
+	$out .= '</table>';
+		
+	return $out;
+}
+
+
+/**
+ * <p class="rel_weekdays">
+ * 	<a href="#" rel="all" title="Select all">Select all</a>
+ * 	<a href="#" rel="none" title="Select none">Select none</a>
+ * 	<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+ * </p>
+ * @param string $class rel_weekdays
+ * @param array $data = array(
+		'all' => 'Select all'
+		'none' => 'Select none'
+		'inverse' => 'Inverse selection'
+	)
+ */
+function createSelectionShortcuts($class, $data)
+{
+	$out = '<p class="' . $class . '">';
+	foreach ($data as $key => $val)
+	{
+		$out .= '<a href="#" rel="' . $key . '" title="' . $val . '">' . $val . '</a>';
+	}	
+	$out .= '</p>';
 	return $out;
 }
 
