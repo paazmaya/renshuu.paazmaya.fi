@@ -29,6 +29,7 @@ function htmldec($str)
  * Converts a block of text to be suitable for the use in URI.
  *
  * @param	string	$str
+ * @return string
  */
 function urize($str)
 {
@@ -79,7 +80,8 @@ function createForm($id, $data)
 		return null;
 	}
 	
-	$out = '<form id="' . $id . '_form" action="/ajax/set/' . $id . '" method="post">';
+	// rel=insert-0 makes it possible to use ajax on this.
+	$out = '<form id="' . $id . '_form" action="/ajax/set/' . $id . '" method="post" rel="insert-0">';
 	$out .= '<fieldset>';
 	if (isset($data['legend']) && $data['legend'] != '')
 	{
@@ -189,6 +191,7 @@ function createForm($id, $data)
  * 	'tbody' => array(
  * 	)
  * );
+ * @return string
  */
 function createTable($data)
 {
@@ -243,10 +246,11 @@ function createTable($data)
  * </p>
  * @param string $class rel_weekdays
  * @param array $data = array(
-		'all' => 'Select all'
-		'none' => 'Select none'
-		'inverse' => 'Inverse selection'
-	)
+ * 		'all' => 'Select all'
+ * 		'none' => 'Select none'
+ * 		'inverse' => 'Inverse selection'
+ * 	)
+ * @return string
  */
 function createSelectionShortcuts($class, $data)
 {
@@ -256,6 +260,39 @@ function createSelectionShortcuts($class, $data)
 		$out .= '<a href="#" rel="' . $key . '" title="' . $val . '">' . $val . '</a>';
 	}	
 	$out .= '</p>';
+	return $out;
+}
+
+/**
+ * <ul id="navigation">
+ *   <li><a href="#filters" title="">filters</a></li>
+ *   <li><a href="#location" title="">location</a></li>
+ *   <li><a href="#art" title="">art</a></li>
+ *   <li><a href="#profile" title="">profile</a></li>
+ *   <li><a href="#login" title="">login</a></li>
+ * </ul>
+ *
+ * @param array $data = 'filters' => array(
+ * 		'title' => '',
+ * 		'text' => '',
+ * 		'access' => 0
+ * 	)
+ * @param int Current access level of the user
+ * @return string As shown above
+ */
+function createNavigation($data, $access = 1)
+{
+	// $access shall be now hard coded...
+	
+	$out = '<ul id="navigation">';
+	foreach($data as $key => $val)
+	{
+		if ($val['access'] <= $access)
+		{
+			$out .= '<li><a href="#' . $key . '" title="' . $val['title'] . '">' . $val['text'] . '</a></li>';
+		}
+	}
+	$out .= '</ul>';
 	return $out;
 }
 

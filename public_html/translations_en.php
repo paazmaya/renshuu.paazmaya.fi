@@ -268,7 +268,7 @@ $lang['savedtable'] = array(
 		'time' => 'Time',
 		'remove' => 'Remove'
 	),
-	'tbody' => array()
+	'tbody' => array() // needed for creating an empty tbody where items are filled
 );
  
  
@@ -282,4 +282,34 @@ $lang['selectionshortcuts'] = array(
 	'inverse' => 'Inverse selection'
 );
  
- 
+/**
+ * Links for navigation at the right side of the page.
+ */
+$lang['navigation'] = array(
+	'filters' => array(
+		'title' => '',
+		'text' => 'filters',
+		'access' => 0
+	),
+	'location' => array(
+		'title' => '',
+		'text' => 'location',
+		'access' => 0
+	),
+	'art' => array(
+		'title' => '',
+		'text' => 'art',
+		'access' => 0
+	),
+	'profile' => array(
+		'title' => '',
+		'text' => 'profile',
+		'access' => 0
+	),
+	'login' => array(
+		'title' => '',
+		'text' => 'login',
+		'access' => 0
+	)
+);
+

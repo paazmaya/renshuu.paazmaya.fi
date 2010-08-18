@@ -106,7 +106,7 @@ $getfilter = '';
 
 $id = 0;
 $passcheck = false;
-$loggedin = false;
+$loggedin = true; // for testing...
 
 if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
 {
@@ -309,7 +309,7 @@ if ($passcheck)
 			$out['sql'] = $sql;
 		}
 	}
-	else if ($page == 'set' && $loggedin)
+	else if ($page == 'set' && $loggedin) // login should not require to be logged in...
 	{
 		// Data availalable is dependant of the form used
 		// Key in the form matches the value of the table row name.
@@ -317,8 +317,8 @@ if ($passcheck)
 		// Keys should match the ones used in $map below, available in $_POST['items'] as an array.
 		$map = array(
 			'art' => array(
-				'title' => '',
-				'uri' => ''
+				'title' => 'A.name',
+				'uri' => 'A.uri'
 			),
 			'location' => array(
 				'title' => '',
@@ -346,7 +346,6 @@ if ($passcheck)
 				'info' => '',
 			)
 		);
-		
 		// Are all the posted keys set which are needed for that type?
 		$trimmed = array();
 		$missing = array();
@@ -372,17 +371,35 @@ if ($passcheck)
 			
 			// Each of the given tables have a field for modified time
 			$trimmed['modified'] = time();
+			$keys = implode(', ', array_keys($trimmed));
+			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
+			
+			// For testing only...
+			$out['sql_build'] = array(
+				'keys' => $keys,
+				'values' => $values
+			);
 			
 			// This should include the id of that item which is currently being updated.
 			if (isset($_POST['update']) && is_numeric($_POST['update']))
 			{
 				$id = intval($_POST['update']);
-				$sql = 'UPDATE ren_' . $pagetype . ' SET ';
+				
+				$sets = array();
+				foreach($trimmed as $key => $val)
+				{
+					$sets[] = $key . ' = \'' . $val . '\'';
+				}
+				
+				// http://sqlite.org/lang_update.html
+				$sql = 'UPDATE ren_' . $pagetype . ' SET ' . implode(', ', $sets) . ' WHERE id = ' . $id;
 			}
 			else if (isset($_POST['insert']) && $_POST['insert'] == '0')
 			{
 				// Value of "insert" should be 0
-				$sql = 'INSERT INTO ren_' . $pagetype . ' VALUES ';
+				
+				// http://sqlite.org/lang_insert.html
+				$sql = 'INSERT INTO ren_' . $pagetype . ' (' . $keys . ') VALUES (' . $values . ')';
 				
 				/*
 				Return Values
@@ -405,7 +422,7 @@ if ($passcheck)
 
 			$out['result'] = array(
 				'id' => $id,
-				'title' => $title
+				'title' => $trimmed['title']
 			);
 			unset($out['error']);
 		}

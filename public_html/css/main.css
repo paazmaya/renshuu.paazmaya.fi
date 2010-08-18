@@ -367,7 +367,7 @@ address.geo abbr {
 	color: #5E0202;
 }
 
-#tabs {
+#navigation {
 	display: inline-block;
 	width: 90%;
 	padding: 0.5em;
@@ -375,19 +375,19 @@ address.geo abbr {
 	color: #F9FBF7;
 }
 
-#tabs li {
+#navigation li {
 	float: left;
 	display: inline;
 	list-style: none;
 	padding: 0 0.4em;
 }
 
-#tabs a {
+#navigation a {
 	font-size: 85%;
 	padding-bottom: 0.3em;
 }
 
-#tabs a:hover {
+#navigation a:hover {
 	border-bottom: 0.3em solid #AA1515;
 	color: #AA1515;
 	text-decoration: none;

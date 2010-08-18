@@ -95,7 +95,9 @@ $(document).ready(function() {
 			// Handler for the ability to toggle streetview viewing while marker click.
 			if ($.cookie('showInStreetView')) {
 				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
+				$.reshuuSuruToki.markers.showInStreetView = true;
 			}
+			
 			$('input:checkbox[name=markerstreet]').change(function() {
 				$.reshuuSuruToki.markers.showInStreetView = $(this).is(':checked');
 				console.log('markerstreet change. ' + $.reshuuSuruToki.markers.showInStreetView);
@@ -174,10 +176,10 @@ $(document).ready(function() {
 			}
 
 			// Navigation to forms is done via tabs at the right
-			$('#tabs a').live('click', function () {
+			$('#navigation a').live('click', function () {
 				var href = $(this).attr('href');
 				var key = href.substr(href.indexOf('#') + 1);
-				console.log('#tabs a -- live click. key: ' + key);
+				console.log('#navigation a -- live click. key: ' + key);
 				$.reshuuSuruToki.showTabContent(key);
 				return false;
 			});
@@ -201,7 +203,48 @@ $(document).ready(function() {
 				var id = href.split('-').pop();
 				console.log('savetolist click. href: ' + href + ', id: ' + id);
 				$.reshuuSuruToki.addSavedList(id);
+				$('.modal-tools a[rel=removefromlist][href=' + href + ']').show();
+				$(this).hide();
 				return false;
+			});
+			$('.modal-tools a[rel=removefromlist]').live('click', function() {
+				var href = $(this).attr('href');
+				var id = href.split('-').pop();
+				console.log('removefromlist click. href: ' + href + ', id: ' + id);
+				$.reshuuSuruToki.removeSavedList(id);
+				$('.modal-tools a[rel=savetolist][href=' + href + ']').show();
+				$(this).hide();
+				return false;
+			});
+			$('#savedlist a[rel=remove]').live('click', function() {
+				var href = $(this).attr('href');
+				var id = href.split('-').pop();
+				console.log('#savedlist a[remove] click. href: ' + href + ', id: ' + id);
+				$.reshuuSuruToki.removeSavedList(id);
+				return false;
+			});
+			
+			// Note that either "insert" = 0 or "update" = id must be set in the root data...
+			$('form').live('submit', function() {
+				// http://api.jquery.com/serializeArray/
+				var serialized = $(this).serializeArray();
+				var items = {};
+				for (var i in serialized) {
+					items[serialized[i].name] = serialized[i].value;
+				}
+				var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
+				var data = { items: items };
+				data[rel[0]] = rel[1];
+				console.log('form submit. data: ' + data);
+
+				$.post($(this).attr('action'), data, function(data, status) {
+					console.log('form submit. status: ' + status);
+				}, 'json');
+				return false;
+			});
+			
+			$('form input[type=button][name=send]').live('click', function() {
+				$(this).parents('form').submit();
 			});
 		},
 		
@@ -209,12 +252,13 @@ $(document).ready(function() {
 			document.location = '#' + key;
 
 			if (key == 'filters') {
-				//console.log('$.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
 				$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
+				$.reshuuSuruToki.applyFilters();
 			}
 			else {
 				console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
 				if ($('#filtering:visible').length) {
+					// Seems this is rather useless as the actual DOM does not apparently update itself
 					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
 					$('#filtering').detach();
 				}
@@ -222,9 +266,6 @@ $(document).ready(function() {
 			if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
 				$.reshuuSuruToki.forms.getForm(key);
 			}
-
-			// Location positioning marker
-			console.log('$.reshuuSuruToki.locationMarker: ' + $.reshuuSuruToki.locationMarker);
 
 			if ($.reshuuSuruToki.locationMarker !== null) {
 				if (key == 'location') {
@@ -266,8 +307,8 @@ $(document).ready(function() {
 						tr += $.reshuuSuruToki.data.weekdays[data.training.weekday];
 					}					
 					tr += '</td><td>' + data.training.starttime + ' - ' + 
-						data.training.endtime + '</td><td><a href="#remove-' + id + '" title="' +
-						data.training.weekday + '"><img src="/img/" alt="" /></tr>';
+						data.training.endtime + '</td><td><a href="#remove-' + id + '" rel="remove" title="' +
+						data.training.weekday + '"><img src="/img/sanscons/png/green/32x32/close.png" alt="" /></tr>';
 					console.log('inserting tr: ' + tr);
 					$('#savedlist tbody').prepend(tr);
 				}
@@ -296,7 +337,7 @@ $(document).ready(function() {
 			}
 		},
 
-		// Update filters according to current checkbox selection.
+		// Update filters data according to current checkbox selection.
 		updateFilters: function() {
 			var sets = ['arts', 'weekdays'];
 			var len = sets.length;
@@ -320,6 +361,27 @@ $(document).ready(function() {
 			// Make sure any of the selections was not empty
 			if (lens.indexOf(0) == -1) {
 				$.reshuuSuruToki.updateLocations();
+			}
+		},
+		
+		// This applies the current filter settings to the html in the dom
+		applyFilters: function() {
+			var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
+			var len = sets.length; // Should be 2
+			for (var i = 0; i < len; ++i) {
+				var target = sets[i];
+				var list = $.reshuuSuruToki.filterSettings[target];
+				console.log('applyFilters. target: ' + target + ', list: ' + list);
+				$('#' + target + ' input:checkbox').each(function(i, elem) {
+					var rel = $(this).attr('name').split('_').pop();
+					console.log('applyFilters. i: ' + i + ', rel: ' + rel);
+					if (list.indexOf(rel) === -1) {
+						$(this).removeAttr('checked');
+					}
+					else {
+						$(this).attr('checked', 'checked');
+					}
+				});
 			}
 		},
 
@@ -510,7 +572,11 @@ $(document).ready(function() {
 			url: '',
 			address: ''
 		},
-		person: {}
+		person: {
+			id: 0,
+			title: '',
+			contact: ''
+		}
 	}
 	*/
 	$.reshuuSuruToki.markers = {
@@ -677,7 +743,11 @@ $(document).ready(function() {
 					url: '',
 					address: ''
 				},
-				person: {}
+				person: {
+					id: 0,
+					title: '',
+					contact: ''
+				}
 			}
 			*/
 			var info = '<div class="modal-info vevent">';
@@ -699,8 +769,11 @@ $(document).ready(function() {
 			}
 
 			if (data.person && data.person.id && data.person.title) {
-				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' +
-					data.person.title + '</p>';
+				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' + data.person.title;
+				if (data.person.contact) {
+					info += ' (' + data.person.contact + ')';
+				}
+				info += '</p>';
 			}
 			if (data.location && data.location.id && data.location.title) {
 				info += '<p class="modal-location" rel="location-' + data.location.id + '">' + data.location.title;
@@ -722,8 +795,12 @@ $(document).ready(function() {
 					'</address>';
 			}
 			if (data.training && data.training.id) {
-				info += '<p class="modal-tools"><a href="#training-' +
-					data.training.id + '" title="Save to list" rel="savetolist">Save to list</a></p>';
+				info += '<p class="modal-tools">';
+				info += '<a href="#training-' + data.training.id + 
+					'" title="Save to list" rel="savetolist">Save to list</a>';
+				info += '<a href="#training-' + data.training.id + '" title="Remove from list" ' +
+					'rel="removefromlist" style="display:none;">Remove from list</a>';
+				info += '</p>';
 			}
 			info += '</div>';
 
@@ -753,13 +830,12 @@ $(document).ready(function() {
 
 			//console.log('deg_to_dms. degfloat: ' + degfloat);
 
-			var deg = parseInt( degfloat, 10 );
-			//console.log('deg_to_dms. deg: ' + deg);
-			var minfloat = 60 * ( degfloat - deg );
+			var deg = Math.floor(degfloat);			
+			var minfloat = 60 * (degfloat - deg);
 			//console.log('deg_to_dms. minfloat: ' + minfloat);
-			var min = parseInt( minfloat, 10 );
+			var min = Math.floor(minfloat);
 			//console.log('deg_to_dms. min: ' + min);
-			var secfloat = 60 * ( minfloat - min );
+			var secfloat = 60 * (minfloat - min);
 			//console.log('deg_to_dms. secfloat: ' + secfloat);
 			secfloat = Math.round( secfloat );
 
@@ -773,7 +849,7 @@ $(document).ready(function() {
 			}
 			//W 87°43'41"
 
-			return ( deg + '° ' + min + "' " + secfloat + '" ' + letter);
+			return (deg + '° ' + min + "' " + secfloat + '" ' + letter);
 		},
 
 		weekdays: [],
@@ -870,12 +946,6 @@ $(document).ready(function() {
 				marker.setMap(null);
 			}
 			$.reshuuSuruToki.geocodeMarkers = [];
-		},
-
-		geoPosClick: function(event) {
-		},
-
-		geoPosDblClick: function(event) {
 		}
 	};
 
@@ -1068,7 +1138,7 @@ $(document).ready(function() {
 
 		// Six types available: art, location, training, person, profile, login
 		getForm: function(type) {
-			if ($.reshuuSuruToki.forms[type])
+			if ($.reshuuSuruToki.forms.cache[type])
 			{
 				$.reshuuSuruToki.forms.showForm(type);
 			}
@@ -1160,26 +1230,8 @@ $(document).ready(function() {
 				}
 			});
 
-			$(form + ' input[type=button][name=send]').click(function() {
-				if ( $(this).parents('form').hasInputNotes() ){
-					// don't send form
-				}
-				else {
-					// Send
-				}
-			});
 			*/
 
-			// Note that either "insert" = 0 or "update" = id must be set in the root data...
-			$('form').submit(function() {
-				var data = { items: $(this).serializeArray() };
-				console.log('form submit. data.items: ' + data.items);
-
-				$.post($(this).attr('action'), data, function(data, status) {
-					console.log('form submit. status: ' + status);
-				}, 'json');
-				return false;
-			});
 
 			// http://code.google.com/p/jquerytimepicker/
 			$(form + ' input[name=starttime]').timePicker();
@@ -1195,6 +1247,7 @@ $(document).ready(function() {
 
 		showForm: function(type) {
 			var form = $.reshuuSuruToki.forms.cache[type];
+			$(form).attr('rel', 'insert-0'); // Always empty and ready to insert a new.
 			$($.reshuuSuruToki.tabContentElement).contents().detach(); // clean but save
 			$($.reshuuSuruToki.tabContentElement).html(form);
 		}

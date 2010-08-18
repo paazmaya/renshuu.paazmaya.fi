@@ -112,6 +112,7 @@ $gzipped = ''; //'.gz';
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
+	<link type="text/css" href="<?php echo '"/css/iconset-' . $cf['iconset'] . '.css'; ?>" rel="stylesheet" />
 </head>
 <?php
 
@@ -138,13 +139,10 @@ $gzipped = ''; //'.gz';
 		<div id="right">
 			<div>
 				<div class="header qr_tools">
-					<ul id="tabs">
-						<li><a href="#filters" title="">filters</a></li>
-						<li><a href="#location" title="">location</a></li>
-						<li><a href="#art" title="">art</a></li>
-						<li><a href="#profile" title="">profile</a></li>
-						<li><a href="#login" title="">login</a></li>
-					</ul>
+					<?php
+					// Navigation based on the current access level
+					echo createNavigation($lang['navigation']);
+					?>
 				</div>
 				<div class="content">
 					<div class="stuff" id="tabcontent">
