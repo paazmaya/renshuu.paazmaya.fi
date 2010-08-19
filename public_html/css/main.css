@@ -193,6 +193,9 @@ textarea{
 #filtering {
 
 }
+#filtering a[rel] {
+	padding: 0.5em;
+}
 .header {
 	background-color: #0E3621;
 	background-repeat: no-repeat;
@@ -389,8 +392,8 @@ address.geo abbr {
 }
 
 .selected a {
-	border-bottom: 0.3em solid #5E0202;
-	color: #5E0202;
+	border-bottom: 0.3em solid #129EF7;
+	color: #129EF7;
 }
 
 /* http://www.1stwebdesigner.com/development/useful-css-snippets */

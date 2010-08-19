@@ -92,12 +92,6 @@ $(document).ready(function() {
 					visible: true
 				}
 			);
-
-			// Handler for the ability to toggle streetview viewing while marker click.
-			if ($.cookie('showInStreetView')) {
-				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
-				$.reshuuSuruToki.markers.showInStreetView = true;
-			}
 			
 			$('input:checkbox[name=markerstreet]').change(function() {
 				$.reshuuSuruToki.markers.showInStreetView = $(this).is(':checked');
@@ -111,11 +105,11 @@ $(document).ready(function() {
 
 			// Triggers on individual change of the checkboxes
 			$('#filtering input:checkbox').live('change', function () {
-				/*
+				
 				var name = $(this).attr('name');
 				var check = $(this).is(':checked');
 				console.log('change. name: ' + name + ', check: ' + check);
-				*/
+				
 				$.reshuuSuruToki.updateFilters();
 			});
 
@@ -170,22 +164,6 @@ $(document).ready(function() {
 				return false;
 			});
 			*/
-			// If the current hash is something that woudl make filters invisible, store them now
-			console.log('on dom ready. location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
-			if (location.hash !== '') {
-				var found = false;
-				if (location.hash != '#filters') {
-					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
-					console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
-				}
-				
-				// Check if the current hash exists in the list of forms if it was not the filter view.
-				var len = $.reshuuSuruToki.forms.types.length;
-				for (var i = 0; i < len; ++i) {
-					var name = $.reshuuSuruToki.forms.types[i];
-				}
-			}
-
 			// Navigation to forms is done via tabs at the right
 			$('#navigation a').live('click', function () {
 				var href = $(this).attr('href');
@@ -259,6 +237,18 @@ $(document).ready(function() {
 				$(this).parents('form').first().submit();
 			});
 			
+			// Dragging of the modal window.
+			$('h2.summary').live('mousedown', function() {
+			});
+			$('h2.summary').live('mouseup', function() {
+			});
+			
+			// Handler for the ability to toggle streetview viewing while marker click.
+			if ($.cookie('showInStreetView')) {
+				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
+				$.reshuuSuruToki.markers.showInStreetView = true;
+			}
+			
 			// http://github.com/nje/jquery-datalink
 			/*
 			$('#filter_form').link($.reshuuSuruToki.filterSettings, {
@@ -266,6 +256,22 @@ $(document).ready(function() {
 				weekdays: [0, 1, 2, 3, 4, 5, 6]
 			});
 			*/
+
+			// Save the initial filtering form.
+			$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
+			console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+			
+			// If the current hash is something that woudl make filters invisible, store them now
+			console.log('on dom ready. location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
+			if (location.hash !== '') {
+				var found = false;
+				var key = location.hash.substr(1);
+				console.log('key: ' + key);
+				// Check if the current hash exists in the list of forms if it was not the filter view.
+				if (key == 'filters' || $.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
+					$.reshuuSuruToki.showTabContent(key);
+				}
+			}
 
 		},
 		
@@ -281,12 +287,14 @@ $(document).ready(function() {
 				$.reshuuSuruToki.applyFilters();
 			}
 			else {
+				/*
 				console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
 				if ($('#filtering:visible').length) {
 					// Seems this is rather useless as the actual DOM does not apparently update itself
 					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
 					$('#filtering').detach();
 				}
+				*/
 			}
 			if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
 				$.reshuuSuruToki.forms.getForm(key);
@@ -637,8 +645,8 @@ $(document).ready(function() {
 				$.reshuuSuruToki.markers.openModal(marker);
 			});
 
-			$.reshuuSuruToki.trainingMarkers.push(marker);
-			$.reshuuSuruToki.trainingMarkersData.push(data);
+			var len = $.reshuuSuruToki.trainingMarkers.push(marker);
+			$.reshuuSuruToki.trainingMarkersData[len - 1] = data;
 		},
 
 		createMarker: function(pos, title, icon, drag) {
@@ -719,7 +727,7 @@ $(document).ready(function() {
 			var inx = $.reshuuSuruToki.trainingMarkers.indexOf(marker);
 			console.log('openModal. marker.title: '+ marker.title + ', inx: ' + inx);
 			var data;
-			if (inx != -1) {
+			if (inx !== -1) {
 				data = $.reshuuSuruToki.trainingMarkersData[inx];
 			}
 

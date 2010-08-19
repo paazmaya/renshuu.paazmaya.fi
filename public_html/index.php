@@ -83,7 +83,7 @@ $javascript = array(
 	'jquery.corner.js', // 2.11 (15-JUN-2010)
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
-	'jquery.simplemodal.js', // 1.3.5
+	'jquery.simplemodal.js', // 1.4 (2010-08-19)
 	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
 );
@@ -112,7 +112,7 @@ $gzipped = ''; //'.gz';
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
-	<link type="text/css" href="<?php echo '"/css/iconset-' . $cf['iconset'] . '.css'; ?>" rel="stylesheet" />
+	<link type="text/css" href=<?php echo '"/css/iconset-' . $cf['iconset'] . '.css"'; ?> rel="stylesheet" />
 </head>
 <?php
 
@@ -147,30 +147,30 @@ $gzipped = ''; //'.gz';
 				<div class="content">
 					<div class="stuff" id="tabcontent">
 						<div id="filtering">
-							<form name="filter_form" action="/ajax/get" method="post">
-								<?php
-								echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
-								echo '<ul id="arts">';
-								// Filter based on the user access if any...
-								$sql = 'SELECT id, name FROM ren_art ORDER BY name';
-								$run =  $link->query($sql);
-								while($res = $run->fetch(PDO::FETCH_ASSOC))
-								{
-									echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
-								}
-								
-								echo '</ul>';
-								
-								echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
-								echo '<ul id="weekdays">';
-								// Zero index Sunday.
-								foreach($lang['weekdays'] as $key => $val)
-								{
-									echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
-								}
-								echo '</ul>';
-								?>
-							</form>
+							<?php
+							// <form name="filter_form" action="/ajax/get" method="post">
+							echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
+							echo '<ul id="arts">';
+							// Filter based on the user access if any...
+							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
+							$run =  $link->query($sql);
+							while($res = $run->fetch(PDO::FETCH_ASSOC))
+							{
+								echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
+							}
+							
+							echo '</ul>';
+							
+							echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
+							echo '<ul id="weekdays">';
+							// Zero index Sunday.
+							foreach($lang['weekdays'] as $key => $val)
+							{
+								echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+							}
+							echo '</ul>';
+							// </form>
+							?>
 						</div>
 					</div>
 				</div>
