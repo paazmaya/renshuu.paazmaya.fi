@@ -357,15 +357,10 @@ address.geo abbr {
 }
 
 
-.ui-tabs-hide {
+.hide {
 	display: none;
 }
 
-.ui-tabs-selected a {
-	border-bottom: 4px solid #5E0202;
-	padding-bottom: 0.3em;
-	color: #5E0202;
-}
 
 #navigation {
 	display: inline-block;
@@ -391,6 +386,11 @@ address.geo abbr {
 	border-bottom: 0.3em solid #AA1515;
 	color: #AA1515;
 	text-decoration: none;
+}
+
+.selected a {
+	border-bottom: 0.3em solid #5E0202;
+	color: #5E0202;
 }
 
 /* http://www.1stwebdesigner.com/development/useful-css-snippets */

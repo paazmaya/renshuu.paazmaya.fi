@@ -147,28 +147,30 @@ $gzipped = ''; //'.gz';
 				<div class="content">
 					<div class="stuff" id="tabcontent">
 						<div id="filtering">
-							<?php
-							echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
-							echo '<ul id="arts">';
-							// Filter based on the user access if any...
-							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
-							$run =  $link->query($sql);
-							while($res = $run->fetch(PDO::FETCH_ASSOC))
-							{
-								echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
-							}
-							
-							echo '</ul>';
-							
-							echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
-							echo '<ul id="weekdays">';
-							// Zero index Sunday.
-							foreach($lang['weekdays'] as $key => $val)
-							{
-								echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
-							}
-							echo '</ul>';
-							?>
+							<form name="filter_form" action="/ajax/get" method="post">
+								<?php
+								echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
+								echo '<ul id="arts">';
+								// Filter based on the user access if any...
+								$sql = 'SELECT id, name FROM ren_art ORDER BY name';
+								$run =  $link->query($sql);
+								while($res = $run->fetch(PDO::FETCH_ASSOC))
+								{
+									echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
+								}
+								
+								echo '</ul>';
+								
+								echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
+								echo '<ul id="weekdays">';
+								// Zero index Sunday.
+								foreach($lang['weekdays'] as $key => $val)
+								{
+									echo '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
+								}
+								echo '</ul>';
+								?>
+							</form>
 						</div>
 					</div>
 				</div>

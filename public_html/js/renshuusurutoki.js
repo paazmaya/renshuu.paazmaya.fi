@@ -1,4 +1,5 @@
 /*jslint devel: true, windows: true, maxlen: 140 */
+// http://jslint.com/
 
 /** Firebug console functions if they do not exist **/
 (function(window) {
@@ -52,7 +53,7 @@ $(document).ready(function() {
 		// Default filter settings
 		filterSettings: {
 			arts: [],
-			weekdays: []
+			weekdays: [0, 1, 2, 3, 4, 5, 6] // all weekdays are selected by default
 		},
 
 		geocodeMarkers: [],
@@ -170,9 +171,19 @@ $(document).ready(function() {
 			});
 			*/
 			// If the current hash is something that woudl make filters invisible, store them now
-			if (location.hash !== '' && location.hash != '#filters') {
-				$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
-				console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+			console.log('on dom ready. location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
+			if (location.hash !== '') {
+				var found = false;
+				if (location.hash != '#filters') {
+					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
+					console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+				}
+				
+				// Check if the current hash exists in the list of forms if it was not the filter view.
+				var len = $.reshuuSuruToki.forms.types.length;
+				for (var i = 0; i < len; ++i) {
+					var name = $.reshuuSuruToki.forms.types[i];
+				}
 			}
 
 			// Navigation to forms is done via tabs at the right
@@ -228,12 +239,13 @@ $(document).ready(function() {
 			$('form').live('submit', function() {
 				// http://api.jquery.com/serializeArray/
 				var serialized = $(this).serializeArray();
+				var len = serialized.length;
 				var items = {};
-				for (var i in serialized) {
+				for (var i = 0; i < len; ++i) {
 					items[serialized[i].name] = serialized[i].value;
 				}
-				var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
 				var data = { items: items };
+				var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
 				data[rel[0]] = rel[1];
 				console.log('form submit. data: ' + data);
 
@@ -244,12 +256,25 @@ $(document).ready(function() {
 			});
 			
 			$('form input[type=button][name=send]').live('click', function() {
-				$(this).parents('form').submit();
+				$(this).parents('form').first().submit();
 			});
+			
+			// http://github.com/nje/jquery-datalink
+			/*
+			$('#filter_form').link($.reshuuSuruToki.filterSettings, {
+				arts: [],
+				weekdays: [0, 1, 2, 3, 4, 5, 6]
+			});
+			*/
+
 		},
 		
 		showTabContent: function (key) {
 			document.location = '#' + key;
+			
+			// Remove and add "selected" class
+			$('#navigation li').removeClass('selected');
+			$('#navigation li:has(a[href=#' + key + '])').addClass('selected');
 
 			if (key == 'filters') {
 				$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
@@ -467,10 +492,16 @@ $(document).ready(function() {
 				}
 			});
 
+			// This is a bit tricky as the position changes twice in a row
+			// when it is first set by the marker position and then by itself
 			google.maps.event.addListener($.reshuuSuruToki.streetview, 'position_changed', function() {
-				var pos = $.reshuuSuruToki.streetview.getPosition();
-				console.log('streetview position_changed. pos: ' + pos);
-				//$.reshuuSuruToki.streetMarker.setPosition(pos);
+				var posS = $.reshuuSuruToki.streetview.getPosition();
+				var posM = $.reshuuSuruToki.streetMarker.getPosition();
+				console.log('streetview position_changed. posS: ' + posS + ', posM: ' + posM);
+				if (posS && !posS.equals(posM)) {
+					console.log('streetview position_change positions do not equal, thus setting marker to streetview position.');
+					$.reshuuSuruToki.streetMarker.setPosition(posS);
+				}
 			});
 
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
@@ -896,6 +927,7 @@ $(document).ready(function() {
 					console.log(j + ' = ' + res[j]);
 				}
 			}
+			*/
 			/*
 			for (var s in res.address_components) {
 				var a = res.address_components[s];
