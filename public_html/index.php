@@ -109,6 +109,8 @@ $gzipped = ''; //'.gz';
 	<title><?php echo $cf['title']; ?></title>
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="author" href="http://paazio.nanbudo.fi" />
+	<link rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
@@ -121,7 +123,7 @@ $gzipped = ''; //'.gz';
 	<div id="wrap">
 		<div id="left">
 			<div id="mapping">
-				<div class="header qr_training">
+				<div class="header icon icon-tools">
 					<p><a href="#" rel="map">Training locations</a><span></span></p>
 				</div>
 				<div class="content">
@@ -138,7 +140,7 @@ $gzipped = ''; //'.gz';
 
 		<div id="right">
 			<div>
-				<div class="header qr_tools">
+				<div class="header icon icon-equalizer">
 					<?php
 					// Navigation based on the current access level
 					echo createNavigation($lang['navigation']);
@@ -190,6 +192,10 @@ $gzipped = ''; //'.gz';
 				?>
 			</div>
 		</div>
+	</div>
+	
+	<div id="copyright">
+		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
 	</div>
 
 <?php
