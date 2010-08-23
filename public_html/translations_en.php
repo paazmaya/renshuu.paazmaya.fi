@@ -10,7 +10,7 @@ $lang = array(
 /*
 zero indexed, starting from sunday
 */
-$lang['weekdays'] = array('日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日');
+$lang['weekdays'] = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
 
 /*
 FORMS
@@ -287,27 +287,27 @@ $lang['selectionshortcuts'] = array(
  */
 $lang['navigation'] = array(
 	'filters' => array(
-		'title' => '',
+		'title' => 'Map filters',
 		'text' => 'filters',
 		'access' => 0
 	),
 	'location' => array(
-		'title' => '',
+		'title' => 'Location creation',
 		'text' => 'location',
 		'access' => 0
 	),
 	'art' => array(
-		'title' => '',
+		'title' => 'Martial art addition',
 		'text' => 'art',
 		'access' => 0
 	),
 	'profile' => array(
-		'title' => '',
+		'title' => 'Profile editing',
 		'text' => 'profile',
 		'access' => 0
 	),
 	'login' => array(
-		'title' => '',
+		'title' => 'Login',
 		'text' => 'login',
 		'access' => 0
 	)

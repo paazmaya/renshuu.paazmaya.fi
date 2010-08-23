@@ -1,0 +1,86 @@
+@charset "UTF-8";
+/*******************
+RENSHUU.PAAZMAYA.COM
+*******************/
+/*
+bitcons
+*/
+.icon {
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: 1em center;
+}
+
+.icon-add {
+	background-image: url('/img/bitcons/png/green/16x16/add.png');
+}
+.icon-alert {
+	background-image: url('/img/bitcons/png/green/16x16/alert.png');
+}
+.icon-arrow1_se {
+	background-image: url('/img/bitcons/png/green/16x16/arrow1_se.png');
+}
+.icon-calendar {
+	background-image: url('/img/bitcons/png/green/16x16/calendar.png');
+}
+.icon-cellphone {
+	background-image: url('/img/bitcons/png/green/16x16/cellphone.png');
+}
+.icon-check {
+	background-image: url('/img/bitcons/png/green/16x16/check.png');
+}
+.icon-close {
+	background-image: url('/img/bitcons/png/green/16x16/close.png');
+}
+.icon-comment {
+	background-image: url('/img/bitcons/png/green/16x16/comment.png');
+}
+.icon-document {
+	background-image: url('/img/bitcons/png/green/16x16/document.png');
+}
+.icon-edit {
+	background-image: url('/img/bitcons/png/green/16x16/edit.png');
+}
+.icon-equalizer {
+	background-image: url('/img/bitcons/png/green/16x16/equalizer.png');
+}
+.icon-loop {
+	background-image: url('/img/bitcons/png/green/16x16/loop.png');
+}
+.icon-mail {
+	background-image: url('/img/bitcons/png/green/16x16/mail.png');
+}
+.icon-newwindow {
+	background-image: url('/img/bitcons/png/green/16x16/newwindow.png');
+}
+.icon-phone {
+	background-image: url('/img/bitcons/png/green/16x16/phone.png');
+}
+.icon-reload {
+	background-image: url('/img/bitcons/png/green/16x16/reload.png');
+}
+.icon-save {
+	background-image: url('/img/bitcons/png/green/16x16/save.png');
+}
+.icon-search {
+	background-image: url('/img/bitcons/png/green/16x16/search.png');
+}
+.icon-time {
+	background-image: url('/img/bitcons/png/green/16x16/time.png');
+}
+.icon-tools {
+	background-image: url('/img/bitcons/png/green/16x16/tools.png');
+}
+.icon-trash {
+	background-image: url('/img/bitcons/png/green/16x16/trash.png');
+}
+.icon-window {
+	background-image: url('/img/bitcons/png/green/16x16/window.png');
+}
+.icon-zoomin {
+	background-image: url('/img/bitcons/png/green/16x16/zoomin.png');
+}
+.icon-zoomout {
+	background-image: url('/img/bitcons/png/green/16x16/zoomout.png');
+}
+

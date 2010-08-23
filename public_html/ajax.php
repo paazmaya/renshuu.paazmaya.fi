@@ -284,7 +284,7 @@ if ($passcheck)
 
 		$sql = $queries[$pagetype];
 		$results = array();
-		$run =  $link->query($sql);
+		$run = $link->query($sql);
 		if ($run)
 		{
 			while($res = $run->fetch(PDO::FETCH_ASSOC))
@@ -400,7 +400,6 @@ if ($passcheck)
 				
 				// http://sqlite.org/lang_insert.html
 				$sql = 'INSERT INTO ren_' . $pagetype . ' (' . $keys . ') VALUES (' . $values . ')';
-				
 				/*
 				Return Values
 					If a sequence name was not specified for the name parameter, 
@@ -413,18 +412,34 @@ if ($passcheck)
 					If the PDO driver does not support this capability, 
 					PDO::lastInsertId() triggers an IM001 SQLSTATE. 
 				*/
-				$id = $link->lastInsertId('id');
 			}
 			else
 			{
 				// Harms way...
 			}
-
-			$out['result'] = array(
-				'id' => $id,
-				'title' => $trimmed['title']
-			);
-			unset($out['error']);
+			
+			if ($sql != '') 
+			{
+				$affected = $link->exec($sql);
+				
+				if (isset($_POST['insert']))
+				{
+					try 
+					{
+						$id = $link->lastInsertId('id'); // should the "id" be used here as a prametre
+					}
+					catch (PDOException $error)
+					{
+						$out['errorInfo'] = $link->errorInfo();
+					}
+				}
+				
+				$out['result'] = array(
+					'id' => $id,
+					'title' => $trimmed['title']
+				);
+				unset($out['error']);
+			}
 		}
 		else 
 		{

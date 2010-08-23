@@ -75,9 +75,9 @@ $javascript = array(
 	'jquery.ui.tabs.js', // depends ui.core and ui.widget
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	'jquery.timepicker.js',
-	'jquery.cookie.js',
+	'jquery.cookie.js', // 2006
 	'jquery.clockpick.1.2.7.js',
-	'jquery.inputnotes-0.6.js',
+	'jquery.inputnotes-0.6.js', // 0.6
 	'jquery.json-2.2.js',
 	'jstorage.js',
 	'jquery.corner.js', // 2.11 (15-JUN-2010)
