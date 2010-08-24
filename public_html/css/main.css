@@ -160,24 +160,35 @@ td.even, tbody tr:nth-child(even) {
 textarea{
 	overflow: auto;
 }
-#wrap, #bottom  {
+#wrap, #bottom, #copyright {
 	width: 100%;
 	margin-bottom: 1em;
 	clear: both;
 	/*border: 2px solid #05050D;*/
 	float: left;
- }
-#left { 
-	width: 60%; 
-	float: left; 
 }
-#right { 
-	width: 40%;  
-	float: left; 
-	left: 60%; 
+#copyright {
+	width: 50%;
+	background-color: #0E3621;
+	padding: 2em 0;
+	text-align: center;
+	margin-left: 25%;
+	color: #F9FBF7;
+	border-radius: 1em;
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
 }
-#right > div { 
-	padding-left: 1em; 
+#left {
+	width: 60%;
+	float: left;
+}
+#right {
+	width: 40%;
+	float: left;
+	left: 60%;
+}
+#right > div {
+	padding-left: 1em;
 }
 #map {
 	height: 20em;
@@ -198,8 +209,6 @@ textarea{
 }
 .header {
 	background-color: #0E3621;
-	background-repeat: no-repeat;
-	background-position: 0.5em center;
 	padding-left: 2em;
 	color: #F9FBF7;
 	border-radius: 1em 1em 0 0;
@@ -215,21 +224,21 @@ textarea{
 	-webkit-border-radius: 0 0 1em 1em;
 	-moz-border-radius: 0 0 1em 1em;
 }
-.header p, .content p, #savedlist { 
-	padding: 0.5em; 
+.header p, .content p, #savedlist {
+	padding: 0.5em;
 }
-.header p { 
-	font-weight: bold; 
+.header p {
+	font-weight: bold;
 }
-.header a { 
-	width: 65%; 
-	color: #F9FBF7; 
+.header a {
+	width: 65%;
+	color: #F9FBF7;
 }
-.header span { 
-	width: 35%; 
-	float: right; 
-	text-align: right; 
-	font-size: 90%; 
+.header span {
+	width: 35%;
+	float: right;
+	text-align: right;
+	font-size: 90%;
 }
 
 .form-info {
@@ -244,10 +253,10 @@ textarea{
 /*.content input { margin: 0.5em 1em; }*/
 .content a[rel] { font-size: smaller; }
 
-.round { 
-	border-radius: 0.5em; 
-	-webkit-border-radius: 0.5em; 
-	-moz-border-radius: 0.5em; 
+.round {
+	border-radius: 0.5em;
+	-webkit-border-radius: 0.5em;
+	-moz-border-radius: 0.5em;
 }
 
 .jquery-timepicker-mouseover { background-color: #5E0202; color: #F9FBF7; }

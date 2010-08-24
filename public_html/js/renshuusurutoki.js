@@ -55,6 +55,15 @@ $(document).ready(function() {
 			arts: [],
 			weekdays: [0, 1, 2, 3, 4, 5, 6] // all weekdays are selected by default
 		},
+		
+		// Icons (css rules) to use for named menu items, prepended with "icon-"
+		menuicons: {
+			filters: 'equalizer',
+			location: 'addressbook',
+			art: 'smirk',
+			profile: 'womanman',
+			login: 'lock'
+		},
 
 		geocodeMarkers: [],
 
@@ -149,7 +158,7 @@ $(document).ready(function() {
 
 			// http://benalman.com/projects/jquery-hashchange-plugin/
 			$(window).hashchange(function() {
-				console.log( location.hash );
+				console.log('hashchange: ' + location.hash );
 			});
 
 
@@ -249,6 +258,11 @@ $(document).ready(function() {
 				$.reshuuSuruToki.markers.showInStreetView = true;
 			}
 			
+			// How about a cookie for the filter settings?
+			if ($.cookie('trainingFilters')) {
+				$.reshuuSuruToki.filterSettings = $.cookie('trainingFilters');
+			}
+			
 			// http://github.com/nje/jquery-datalink
 			/*
 			$('#filter_form').link($.reshuuSuruToki.filterSettings, {
@@ -281,6 +295,9 @@ $(document).ready(function() {
 			// Remove and add "selected" class
 			$('#navigation li').removeClass('selected');
 			$('#navigation li:has(a[href=#' + key + '])').addClass('selected');
+			
+			// Set icon. Initially the classes are: header icon icon-equalizer
+			$('#right .header').attr('class', 'header icon icon-' + $.reshuuSuruToki.menuicons[key]);
 
 			if (key == 'filters') {
 				$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
@@ -395,6 +412,9 @@ $(document).ready(function() {
 			if (lens.indexOf(0) == -1) {
 				$.reshuuSuruToki.updateLocations();
 			}
+			
+			// Cookie is updated every time
+			$.cookie('trainingFilters', $.reshuuSuruToki.filterSettings);
 		},
 		
 		// This applies the current filter settings to the html in the dom

@@ -70,7 +70,7 @@ function scriptElement($src)
  * A form which is then send via AJAX back and forth between client and server.
  *
  * @param string $id
- * @param array $data 
+ * @param array $data
  * @return string form element containing the requested inputs
  */
 function createForm($id, $data)
@@ -79,7 +79,7 @@ function createForm($id, $data)
 	{
 		return null;
 	}
-	
+
 	// rel=insert-0 makes it possible to use ajax on this.
 	$out = '<form id="' . $id . '_form" action="/ajax/set/' . $id . '" method="post" rel="insert-0">';
 	$out .= '<fieldset>';
@@ -91,28 +91,28 @@ function createForm($id, $data)
 	{
 		$out .= '<p class="form-info">' . $data['info'] . '</p>';
 	}
-	
+
 	$len = count($data['items']);
 	for ($i = 0; $i < $len; $i++)
 	{
 		$item = $data['items'][$i];
 		$out .= '<p><label><span>' . $item['label'] . ':</span>';
-		
+
 		if ($item['type'] == 'select')
 		{
 			$out .= '<select ';
 		}
-		else 
+		else
 		{
 			$out .= '<input type="' . $item['type'] . '" ';
 		}
 		$out .= 'name="' . $item['name'] . '"';
-		
+
 		if (isset($item['class']) && $item['class'] != '')
 		{
 			$out .= ' class="' . $item['class'] . '"';
 		}
-		
+
 		if ($item['type'] == 'select')
 		{
 			$out .= '>';
@@ -124,7 +124,7 @@ function createForm($id, $data)
 				}
 			}
 		}
-		else 
+		else
 		{
 			if (isset($item['disabled']) && $item['disabled'])
 			{
@@ -132,12 +132,12 @@ function createForm($id, $data)
 			}
 			$out .= ' />';
 		}
-		
+
 		if (isset($item['after']) && $item['after'] != '')
 		{
 			$out .= $item['after'];
 		}
-		
+
 		$out .= '</label></p>';
 	}
 	if (isset($data['buttons']) && is_array($data['buttons']))
@@ -154,7 +154,7 @@ function createForm($id, $data)
 		$out .= '</p>';
 	}
 	$out .= '</fieldset></form>';
-	
+
 	return $out;
 }
 
@@ -176,8 +176,8 @@ function createForm($id, $data)
  * 		</td>
  * 	</tbody>
  * </table>
- * 
- * 
+ *
+ *
  * @param array $data = array(
  * 	'summary' => '',
  * 	'caption' => '',
@@ -233,7 +233,7 @@ function createTable($data)
 		$out .= '</tr></tbody>';
 	}
 	$out .= '</table>';
-		
+
 	return $out;
 }
 
@@ -258,7 +258,7 @@ function createSelectionShortcuts($class, $data)
 	foreach ($data as $key => $val)
 	{
 		$out .= '<a href="#" rel="' . $key . '" title="' . $val . '">' . $val . '</a>';
-	}	
+	}
 	$out .= '</p>';
 	return $out;
 }
@@ -283,7 +283,7 @@ function createSelectionShortcuts($class, $data)
 function createNavigation($data, $access = 1)
 {
 	// $access shall be now hard coded...
-	
+
 	$out = '<ul id="navigation">';
 	foreach($data as $key => $val)
 	{
@@ -298,7 +298,7 @@ function createNavigation($data, $access = 1)
 
 /**
  * Combines and minifies the given local files.
- * That is if the resulting minified file does not exist yet, 
+ * That is if the resulting minified file does not exist yet,
  * nor it is not older than any of the given files.
  *
  * @param string $type	Either js or css
@@ -306,22 +306,22 @@ function createNavigation($data, $access = 1)
  * @return boolean True if the resulting file was updated
  */
 function minify($type, $files)
-{	
+{
 	global $cf;
-	
+
 	// Are there newer source files than the single output file?
 	$newerexists = false;
-	
+
 	// Return value will be this
 	$wrote = false;
-	
+
 	// Function failed on a mismatching parametre?
 	$fail = false;
 	if ($type == 'js')
 	{
 		//require_once $cf['libdir'] . 'jsmin.php';
 		require_once $cf['libdir'] . 'minify/Minify/JS/ClosureCompiler.php';
-		
+
 	}
 	else if ($type == 'css')
 	{
@@ -335,9 +335,9 @@ function minify($type, $files)
 	{
 		$fail = true;
 	}
-	
-	if (!$fail) 
-	{		
+
+	if (!$fail)
+	{
 		$data = array();
 		$mtime_newest = 0;
 		foreach($files as $file)
@@ -366,9 +366,9 @@ function minify($type, $files)
 					$p[] = $type;
 					$des = realpath('./' . $type) . '/' . implode('.', $p);
 				}
-				
+
 				//echo "\n" . '<!-- src: ' . $src . ', des: ' . $des . ' -->' . "\n";
-				
+
 				$min = '';
 				if (file_exists($des))
 				{
@@ -382,7 +382,7 @@ function minify($type, $files)
 					}
 				}
 				//echo '<!-- minify: ' . $minify . ' -->' . "\n";
-				
+
 				if ($minify)
 				{
 					$cont = file_get_contents($src);
@@ -391,7 +391,7 @@ function minify($type, $files)
 						//$min = JSMin::minify($cont);
 						try
 						{
-							$min = Minify_JS_ClosureCompiler::minify($cont); 
+							$min = Minify_JS_ClosureCompiler::minify($cont);
 						}
 						catch (Exception $error)
 						{
@@ -400,7 +400,7 @@ function minify($type, $files)
 					}
 					else if ($type == 'css')
 					{
-						$min = Minify_CSS_Compressor::process($cont); 
+						$min = Minify_CSS_Compressor::process($cont);
 					}
 					$mtime_newest = time();
 					file_put_contents($des, $min);
@@ -408,23 +408,23 @@ function minify($type, $files)
 				$data[] = '/* ' . $file . ' */' . "\n" . $min;
 			}
 		}
-		
+
 		$outfile = realpath('./' . $type) . '/' . $cf['minified'] . '.' . $type;
 		$outfilegz = realpath('./' . $type) . '/' . $cf['minified'] . '.gz.' . $type;
 		if (file_exists($outfile))
 		{
 			$mtime_out = filemtime($outfile);
 		}
-		else 
+		else
 		{
 			$newerexists = true;
 		}
-		
+
 		if ($newerexists || $mtime_newest > $mtime_out)
 		{
 			$alldata = implode("\n\n", $data);
 			$bytecount = file_put_contents($outfile, $alldata);
-		
+
 			if ($bytecount !== false)
 			{
 				$gz = gzopen($outfilegz, 'wb9');
@@ -434,6 +434,51 @@ function minify($type, $files)
 			}
 		}
 	}
-	
+
 	return $wrote;
 }
+
+
+/**
+ * Generates an css rule in a human readable format (minifier exists).
+ *
+ * @param string $selector .icon-add
+ * @param array $properties 'background-image' => 'url(/img/bitcons/png/green/16x16/add.png)'
+ * @return string .icon-add { background-image: url(/img/bitcons/png/green/16x16/add.png); }
+ */
+function generateCssRule($selector, $properties)
+{
+	$out = $selector . ' {' . "\n";
+	foreach($properties as $key => $val)
+	{
+		$out .= "\t" . $key . ' : ' . $val . ';' . "\n";
+	}
+	$out .= '}' . "\n";
+	return $out;
+}
+
+/**
+ * Generate the rules for icons.
+ *
+ * @param string $type bitcons or sanscons
+ * @param string $size 16x16, 32x32 or 64x64
+ * @param string $color blue, brown, cyan, green, magenta, orange, ...
+ * @param array $items [add, close, ...]
+ * @return string Long pile of rules prepended with "icon-"
+ */
+function generateIconCssRules($type, $size, $color, $items)
+{
+	$url = '/img/' . $type . '/png/' . $color . '/' . $size . '/';
+	$out = '';
+	$rules = array();
+
+	foreach($items as $item)
+	{
+		$rules[] = generateCssRule('.icon-' . $item, array('background-image' => 'url(' . $url . $item . '.png)'));
+	}
+
+	$out .= implode("\n", $rules);
+
+	return $out;
+}
+

@@ -1,0 +1,47 @@
+[08-Aug-2010 07:03:39] PHP Notice:  Use of undefined constant data - assumed 'data' in /stuff/www/renshuu.paazmaya.com/public_html/functions.php on line 76
+[08-Aug-2010 07:03:39] PHP Stack trace:
+[08-Aug-2010 07:03:39] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:0
+[08-Aug-2010 07:03:39] PHP   2. createForm() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:382
+[08-Aug-2010 07:03:41] PHP Notice:  Use of undefined constant data - assumed 'data' in /stuff/www/renshuu.paazmaya.com/public_html/functions.php on line 76
+[08-Aug-2010 07:03:41] PHP Stack trace:
+[08-Aug-2010 07:03:41] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:0
+[08-Aug-2010 07:03:41] PHP   2. createForm() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:382
+[19-Aug-2010 07:26:43] PHP Notice:  Undefined variable: title in /stuff/www/renshuu.paazmaya.com/public_html/ajax.php on line 426
+[19-Aug-2010 07:26:43] PHP Stack trace:
+[19-Aug-2010 07:26:43] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:0
+[25-Aug-2010 06:07:13] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:07:13] PHP Stack trace:
+[25-Aug-2010 06:07:13] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:07:13] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:07:13] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:07:13] PHP Stack trace:
+[25-Aug-2010 06:07:13] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:07:13] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:10:16] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:10:16] PHP Stack trace:
+[25-Aug-2010 06:10:16] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:10:16] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:10:16] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:10:16] PHP Stack trace:
+[25-Aug-2010 06:10:16] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:10:16] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:11:09] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:11:09] PHP Stack trace:
+[25-Aug-2010 06:11:09] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:11:09] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:11:09] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:11:09] PHP Stack trace:
+[25-Aug-2010 06:11:09] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:11:09] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:11:10] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:11:10] PHP Stack trace:
+[25-Aug-2010 06:11:10] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:11:10] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:11:10] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:11:10] PHP Stack trace:
+[25-Aug-2010 06:11:10] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:11:10] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129
+[25-Aug-2010 06:11:11] PHP Warning:  file_put_contents(css/iconset-bitcons.css): failed to open stream: Permission denied in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 129
+[25-Aug-2010 06:11:11] PHP Stack trace:
+[25-Aug-2010 06:11:11] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
+[25-Aug-2010 06:11:11] PHP   2. file_put_contents() /stuff/www/renshuu.paazmaya.com/public_html/index.php:129

@@ -80,6 +80,7 @@ $javascript = array(
 	'jquery.inputnotes-0.6.js', // 0.6
 	'jquery.json-2.2.js',
 	'jstorage.js',
+	'jquery.hotkeys.js', // 0.8 (2010-02-23)
 	'jquery.corner.js', // 2.11 (15-JUN-2010)
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
@@ -101,6 +102,34 @@ minify('css', array(
 
 // Append with gzip if supported.
 $gzipped = ''; //'.gz';
+
+
+// -----------------
+// Create iconset css file
+$iconcss = '@charset "UTF-8";' . "\n";
+$iconcss .= '/*******************' . "\n";
+$iconcss .= 'RENSHUU.PAAZMAYA.COM' . "\n";
+$iconcss .= '*******************/' . "\n";
+$iconcss .= '/*' . "\n";
+$iconcss .= $cf['iconset'] . "\n";
+$iconcss .= '*/' . "\n";
+$iconcss .= generateCssRule('.icon', array(
+	'background-repeat' => 'no-repeat',
+	'background-attachment' => 'scroll',
+	'background-position' => '1em center'
+));
+
+$items = array(
+	'add', 'addressbook', 'alert', 'arrow1_se', 'calendar', 'cellphone', 'check', 
+	'close', 'comment', 'document', 'edit', 'equalizer', 'lock', 'loop', 'mail', 
+	'newwindow', 'phone', 'reload', 'save', 'search', 'smirk', 'time', 'tools', 
+	'trash', 'window', 'womanman', 'zoomin', 'zoomout'
+);
+$iconcss .= generateIconCssRules($cf['iconset'], '16x16', 'green', $items);
+
+file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
+
+// -----------------
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -129,7 +158,7 @@ $gzipped = ''; //'.gz';
 				<div class="content">
 					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
-				<div class="header qr_street">
+				<div class="header icon icon-search">
 					<p><a href="#" rel="street">Street View</a><span><input type="checkbox" name="markerstreet" /> toggle SV</span></p>
 				</div>
 				<div class="content">
@@ -182,7 +211,7 @@ $gzipped = ''; //'.gz';
 	</div>
 
 	<div id="bottom">
-		<div class="header qr_saved">
+		<div class="header icon icon-calendar">
 			<p><a href="#" rel="savedlist">Saved list</a><span></span></p>
 		</div>
 		<div class="content">
