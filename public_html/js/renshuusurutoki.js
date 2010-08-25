@@ -40,8 +40,15 @@ $(document).ready(function() {
 	$.reshuuSuruToki = {
 		animSpeed: 200,
 		zoom: 8,
-		cookieLifeTime: 3, // days
-		ajaxpoint: { get: '/ajax/get/', set: '/ajax/set/', form: '/ajax/form/' },
+		cookieSettings: { 
+			expires: 3, 
+			path: '/'
+		},
+		ajaxpoint: {
+			get: '/ajax/get/', 
+			set: '/ajax/set/', 
+			form: '/ajax/form/'
+		},
 		geocoder: null,
 		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
 		streetview: null, //StreetViewPanorama
@@ -108,7 +115,7 @@ $(document).ready(function() {
 				$.cookie(
 					'showInStreetView',
 					$.reshuuSuruToki.markers.showInStreetView,
-					{ expires: $.reshuuSuruToki.cookieLifeTime, path: '/' }
+					$.reshuuSuruToki.cookieSettings
 				);
 			});
 
@@ -261,6 +268,8 @@ $(document).ready(function() {
 			// How about a cookie for the filter settings?
 			if ($.cookie('trainingFilters')) {
 				$.reshuuSuruToki.filterSettings = $.cookie('trainingFilters');
+				$.reshuuSuruToki.updateFilters();
+				$.reshuuSuruToki.applyFilters();
 			}
 			
 			// http://github.com/nje/jquery-datalink
@@ -273,9 +282,9 @@ $(document).ready(function() {
 
 			// Save the initial filtering form.
 			$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
-			console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
+			//console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
 			
-			// If the current hash is something that woudl make filters invisible, store them now
+			// If the current hash is something that would make filters invisible, store them now
 			console.log('on dom ready. location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
 			if (location.hash !== '') {
 				var found = false;
@@ -414,7 +423,11 @@ $(document).ready(function() {
 			}
 			
 			// Cookie is updated every time
-			$.cookie('trainingFilters', $.reshuuSuruToki.filterSettings);
+			$.cookie(
+				'trainingFilters', 
+				$.reshuuSuruToki.filterSettings, 
+				$.reshuuSuruToki.cookieSettings
+			);
 		},
 		
 		// This applies the current filter settings to the html in the dom
@@ -438,6 +451,7 @@ $(document).ready(function() {
 			}
 		},
 
+		// http://www.jlpt.jp/samples/forlearners.html
 		updateLocations: function() {
 			var bounds = $.reshuuSuruToki.map.getBounds();
 			var ne = bounds.getNorthEast();
@@ -1010,32 +1024,33 @@ $(document).ready(function() {
 	};
 
 	$.reshuuSuruToki.callbacks = {
-		updateHashUrl: function() {
-
-			var center = $.reshuuSuruToki.map.getCenter();
+		updateZoomCookie: function() {
 			var zoom = $.reshuuSuruToki.map.getZoom();
-			//console.log('center / zoom changed. zoom: ' + zoom + ', center: ' + center);
-			//document.location = '/#/zoom/' + zoom + '/lat/' + center.lat() + '/lng/' + center.lng();
+			$.cookie(
+				'mapZoom', 
+				zoom,
+				$.reshuuSuruToki.cookieSettings
+			);
+		},
+		updateCenterCookie: function() {
+			var center = $.reshuuSuruToki.map.getCenter();
+			$.cookie(
+				'mapCenter', 
+				center.lat() + ',' + center.lng(),
+				$.reshuuSuruToki.cookieSettings
+			);
 		},
 
 		initiate: function() {
 			var callbacks = $.reshuuSuruToki.callbacks;
 			var map = $.reshuuSuruToki.map;
-			//google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
+			google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
 			google.maps.event.addListener(map, 'center_changed', callbacks.center_changed);
-			//google.maps.event.addListener(map, 'click', callbacks.click);
-			//google.maps.event.addListener(map, 'dblclick', callbacks.dblclick);
-			//google.maps.event.addListener(map, 'drag', callbacks.drag);
-			//google.maps.event.addListener(map, 'dragend', callbacks.dragend);
-			//google.maps.event.addListener(map, 'dragstart', callbacks.dragstart);
-			//google.maps.event.addListener(map, 'idle', callbacks.idle);
 			//google.maps.event.addListener(map, 'maptypeid_changed', callbacks.maptypeid_changed);
 			//google.maps.event.addListener(map, 'mousemove', callbacks.mousemove);
 			//google.maps.event.addListener(map, 'mouseout', callbacks.mouseout);
 			//google.maps.event.addListener(map, 'mouseover', callbacks.mouseover);
-			//google.maps.event.addListener(map, 'projection_changed', callbacks.projection_changed);
 			//google.maps.event.addListener(map, 'rightclick', callbacks.rightclick);
-			//google.maps.event.addListener(map, 'tilesloaded', callbacks.tilesloaded);
 			google.maps.event.addListener(map, 'zoom_changed', callbacks.zoom_changed);
 		},
 		bounds_changed: function() {
@@ -1043,26 +1058,7 @@ $(document).ready(function() {
 		},
 		center_changed: function() {
 			// This event is fired when the map center property changes.
-			$.reshuuSuruToki.callbacks.updateHashUrl();
-		},
-		click: function(event) {
-			// This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
-			console.log('map click. ' + event.latLng);
-		},
-		dblclick: function(event) {
-			// This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
-		},
-		drag: function() {
-			// This event is repeatedly fired while the user drags the map.
-		},
-		dragend: function() {
-			// This event is fired when the user stops dragging the map.
-		},
-		dragstart: function() {
-			// This event is fired when the user starts dragging the map.
-		},
-		idle: function() {
-			// This event is fired when the map becomes idle after panning or zooming.
+			$.reshuuSuruToki.callbacks.updateCenterCookie();
 		},
 		maptypeid_changed: function() {
 			// This event is fired when the mapTypeId property changes.
@@ -1082,12 +1078,9 @@ $(document).ready(function() {
 		rightclick: function(event) {
 			// This event is fired when the DOM contextmenu event is fired on the map container.
 		},
-		tilesloaded: function() {
-			// This event is fired when the visible tiles have finished loading.
-		},
 		zoom_changed: function() {
 			// This event is fired when the map zoom property changes.
-			$.reshuuSuruToki.callbacks.updateHashUrl();
+			$.reshuuSuruToki.callbacks.updateZoomCookie();
 		}
 	};
 
