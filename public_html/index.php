@@ -150,24 +150,38 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 ?>
 <body>
 	<div id="wrap">
-		<div id="left">
+		<div id="left" class="left-side">
 			<div id="mapping">
 				<div class="header icon icon-tools">
-					<p><a href="#" rel="map">Training locations</a><span></span></p>
+					<p><a href="#" rel="map"><?php echo $lang['index']['header']['map']; ?></a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
 				<div class="header icon icon-search">
-					<p><a href="#" rel="street">Street View</a><span><input type="checkbox" name="markerstreet" /> toggle SV</span></p>
+					<p><a href="#" rel="street"><?php echo $lang['index']['header']['streetview']; ?></a>
+						<span>
+							<label><input type="checkbox" name="markerstreet" /> toggle SV</label>
+						</span>
+					</p>
 				</div>
 				<div class="content">
 					<div id="street" class="stuff">Google Maps Street View</div>
 				</div>
+				<div class="header icon icon-calendar">
+					<p><a href="#" rel="savedlist"><?php echo $lang['index']['header']['savedlist']; ?></a><span></span></p>
+				</div>
+				<div class="content">
+					<div id="savedlist" class="stuff">
+						<?php
+						echo createTable($lang['savedtable']);
+						?>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<div id="right">
+		<div id="right" class="right-side">
 			<div>
 				<div class="header icon icon-equalizer">
 					<?php
@@ -206,29 +220,49 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 					</div>
 				</div>
 			</div>
-		</div>
-
-	</div>
-
-	<div id="bottom">
-		<div class="header icon icon-calendar">
-			<p><a href="#" rel="savedlist">Saved list</a><span></span></p>
-		</div>
-		<div class="content">
-			<div id="savedlist" class="stuff">
-				<?php
-				echo createTable($lang['savedtable']);
-				?>
+			<div>
+				<div class="header icon icon-edit">
+					<p><a href="#" rel="export"><?php echo $lang['index']['header']['export']; ?></a><span></span></p>
+				</div>
+				<div class="content">
+					<div id="export" class="stuff">
+						<?php
+						// export settings. will require to login for remembering them
+						echo createForm('export', $lang['forms']['export']);
+						
+						$staticmap = 'http://maps.google.com/maps/api/staticmap?' . htmlentities('sensor=false&maptype=roadmap&language=ja&format=png8&zoom=14&size=300x300&markers=color:0x55FF55|label:X|35.276556,136.252639'); // 
+						?>
+						<p><img id="exportpreview" src="<?php echo $staticmap; ?>" alt="Preview of the current settings affect on the resulting map" /></p>
+					</div>
+				</div>
 			</div>
 		</div>
+
 	</div>
+
+	<?php
+	/*
+	<div id="bottom">
+		<div class="left-side">
+		</div>
+		<div class="right-side">
+		</div>
+	</div>
+	*/
+	?>
 	
 	<div id="copyright">
-		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
+		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en" title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
 	</div>
 
 <?php
-echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja');
+// Translations
+echo '<script type="text/javascript">';
+
+echo '</script>';
+
+
+echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja'); // $_SESSION['lang']
 //echo scriptElement($cf['minified'] . $gzipped . '.js');
 
 foreach($javascript as $js)
@@ -236,11 +270,10 @@ foreach($javascript as $js)
 	echo scriptElement($js);
 }
 
-
 // Close the SQLite connection
 $link = null;
 
-if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+if ($_SERVER['SERVER_NAME'] != '192.168.1.37')
 {
 	?>
 	<script type="text/javascript">

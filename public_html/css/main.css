@@ -178,16 +178,16 @@ textarea{
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;
 }
-#left {
+#left, .left-side {
 	width: 60%;
 	float: left;
 }
-#right {
+#right, .right-side {
 	width: 40%;
 	float: left;
 	left: 60%;
 }
-#right > div {
+#right > div, .right-side > div  {
 	padding-left: 1em;
 }
 #map {
@@ -367,7 +367,12 @@ address.geo abbr {
 	color: #0E3621;
 	font-weight: bold;
 }
-
+/* will contain a background image */
+.modal-close {
+	background-repeat : no-repeat;
+	background-attachment : scroll;
+	background-position : right center;
+}
 
 .hide {
 	display: none;

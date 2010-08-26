@@ -34,6 +34,7 @@ Only non empty values will be used.
 			'class' => '' style class
 			'disabled' => false, disabled="disabled" will be written if true
 			'after' => '', text after the element but before the label closes
+			'value' => '', value of the input element if any
 			'options' => array() options used in the case of select: value => visible text
 		)
 	)
@@ -252,8 +253,83 @@ $lang['forms'] = array(
 				'after' => ' (making sure you are a real person)'
 			)
 		)
+	),
+	'export' => array(
+		'legend' => 'Export settings',
+		'info' => 'Set here the properties for the output of your list of saved trainings',
+		'buttons' => array(
+			'send' => 'Update settings'
+		),
+		'items' => array(
+			array(
+				'label' => 'Map type',
+				'type' => 'select',
+				'name' => 'maptype',
+				'options' => array(
+					'roadmap' => 'Roadmap',
+					'satellite' => 'Satellite',
+					'hybrid' => 'Hybdid (roadmap & satellite)',
+					'terrain' => 'Terrain'
+				)
+			),
+			array(
+				'label' => 'Language',
+				'type' => 'select',
+				'name' => 'language',
+				'options' => array(
+					'ja' => 'Japanese',
+					'en' => 'English',
+					'fi' => 'Finnish'
+				)
+			),
+			array(
+				'label' => 'Image format',
+				'type' => 'select',
+				'name' => 'format',
+				'options' => array(
+					'png8' => 'png 8-bit',
+					'png32' => 'png 32-bit',
+					'gif' => 'gif',
+					'jpg' => 'jpeg',
+					'jpg-baseline' => 'jpeg baseline'
+				)
+			),
+			array(
+				'label' => 'Zoom level',
+				'type' => 'text',
+				'name' => 'zoom',
+				'class' => 'short',
+				'after' => ' (0...16)',
+				'value' => '14'
+			),
+			array(
+				'label' => 'Image size',
+				'type' => 'text',
+				'name' => 'size',
+				'class' => 'short',
+				'after' => ' (WxH)',
+				'value' => '300x300'
+			),
+			array(
+				'label' => 'Colour',
+				'type' => 'text',
+				'name' => 'color',
+				'class' => 'short',
+				'after' => ' (hex value or a string)',
+				'value' => '0x55FF55'
+			),
+			array(
+				'label' => 'Label',
+				'type' => 'text',
+				'name' => 'label',
+				'class' => 'short',
+				'after' => ' (one character only)',
+				'value' => 'X'
+			)
+		)
 	)
 );
+
 
 
 /**
@@ -270,9 +346,8 @@ $lang['savedtable'] = array(
 	),
 	'tbody' => array() // needed for creating an empty tbody where items are filled
 );
- 
- 
- 
+
+
 /**
  * Shortcut links for selecting inverse, all or nothing of the checkboxes.
  */
@@ -281,7 +356,7 @@ $lang['selectionshortcuts'] = array(
 	'none' => 'Select none',
 	'inverse' => 'Inverse selection'
 );
- 
+
 /**
  * Links for navigation at the right side of the page.
  */
@@ -313,3 +388,19 @@ $lang['navigation'] = array(
 	)
 );
 
+
+/**
+ * Items needed for the index, which are not within the scope of any other set.
+ */
+$lang['index'] = array(
+	'header' => array(
+		'map' => 'Training locations',
+		'streetview' => 'Street View',
+		'savedlist' => 'Saved list',
+		'export' => 'Export settings'
+	),
+	'' => 'toggle SV',
+	'' => 'Google Maps V3',
+	'' => 'Google Maps Street View',
+	'' => '',
+);

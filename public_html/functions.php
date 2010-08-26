@@ -123,12 +123,17 @@ function createForm($id, $data)
 					$out .= '<option value="' . $k . '">' . $v . '</option>';
 				}
 			}
+			$out .= '</select>';
 		}
 		else
 		{
 			if (isset($item['disabled']) && $item['disabled'])
 			{
 				$out .= ' disabled="disabled"';
+			}
+			if (isset($item['value']) && $item['value'] != '')
+			{
+				$out .= ' value="' . $item['value'] . '"';
 			}
 			$out .= ' />';
 		}

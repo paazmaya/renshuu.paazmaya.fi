@@ -3,9 +3,9 @@
 
 /** Firebug console functions if they do not exist **/
 (function(window) {
-	if (!("console" in window) || !("firebug" in console)) {
-		var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-			"group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+	if (!('console' in window) || !('firebug' in console)) {
+		var names = ['log', 'debug', 'info', 'warn', 'error', 'assert', 'dir', 'dirxml',
+			'group', 'groupEnd', 'time', 'timeEnd', 'count', 'trace', 'profile', 'profileEnd'];
 		var len = names.length;
 		window.console = {};
 		for (var i = 0; i < len; i++) {
@@ -22,7 +22,7 @@
 	$.fn.outerHtml = function() {
 		var outer = null;
 		if (this.length) {
-			var div = $('<div style="display:none"></div>');
+			var div = $('<div style="display:none"><' + '/div>');
 			var clone = $(this[0].cloneNode(false)).html(this.html()).appendTo(div);
 			outer = div.html();
 			div.remove();
@@ -39,7 +39,10 @@ $(document).ready(function() {
 
 	$.reshuuSuruToki = {
 		animSpeed: 200,
-		zoom: 8,
+		
+		// default map zoom, overwritten on every zoom change event and/or by cookie
+		zoom: 8, 
+		
 		cookieSettings: { 
 			expires: 3, 
 			path: '/'
@@ -50,10 +53,16 @@ $(document).ready(function() {
 			form: '/ajax/form/'
 		},
 		geocoder: null,
-		map: null, // http://code.google.com/apis/maps/documentation/javascript/reference.html
+		
+		// http://code.google.com/apis/maps/documentation/javascript/reference.html
+		map: null, 
+		
 		streetview: null, //StreetViewPanorama
 		streetService: null,
+		
+		// default map center will be in the most beautiful castle of Japan
 		hikone: null,
+		
 		tabContentElement: '#tabcontent',
 		filtersHtml: null,
 
@@ -92,7 +101,32 @@ $(document).ready(function() {
 		ready: function() {
 			// Default centre
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
+			
+			// Check for a cookie in case the center would be some other.
+			var centre = $.reshuuSuruToki.hikone;
+			if ($.cookie('mapCenter')) {
+				var arr = $.cookie('mapCenter').split(',');
+				if (arr && arr.length > 1) {
+					centre = new google.maps.LatLng(parseFloat(arr[0]), parseFloat(arr[1]));
+				}
+				console.log('mapCenter cookie existed. arr: ' + arr);
+			}
+			
+			// Would there be a zoom level set in the past?
+			if ($.cookie('mapZoom')) {
+				var zoom = parseInt($.cookie('mapZoom'), 10);
+				if (zoom > -1 && zoom < 20) {
+					$.reshuuSuruToki.zoom = zoom;
+				}
+				console.log('mapZoom cookie existed. zoom: ' + zoom);
+			}
 
+			// Handler for the ability to toggle streetview viewing while marker click.
+			if ($.cookie('showInStreetView')) {
+				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
+				$.reshuuSuruToki.markers.showInStreetView = true;
+			}
+						
 			// Fill the array with current language weekday names.
 			$.reshuuSuruToki.data.getWeekdays();
 
@@ -101,7 +135,7 @@ $(document).ready(function() {
 				$('#map').get(0),
 				$('#street').get(0),
 				{
-					center: $.reshuuSuruToki.hikone
+					center: centre
 				},
 				{
 					enableCloseButton: true,
@@ -121,7 +155,6 @@ $(document).ready(function() {
 
 			// Triggers on individual change of the checkboxes
 			$('#filtering input:checkbox').live('change', function () {
-				
 				var name = $(this).attr('name');
 				var check = $(this).is(':checked');
 				console.log('change. name: ' + name + ', check: ' + check);
@@ -171,15 +204,13 @@ $(document).ready(function() {
 
 
 			// Toggle the visibility of each box
-			/*
-			$('.header a').click(function() {
+			$('.header p a').click(function() {
 				var rel = $(this).attr('rel');
 				var con = $(this).parent('p').parent('div').next('.content').children('.stuff');
 				console.log('rel: ' + rel + ', con.length: ' + con.length);
 				con.toggle($.reshuuSuruToki.animSpeed);
 				return false;
 			});
-			*/
 			// Navigation to forms is done via tabs at the right
 			$('#navigation a').live('click', function () {
 				var href = $(this).attr('href');
@@ -253,25 +284,17 @@ $(document).ready(function() {
 				$(this).parents('form').first().submit();
 			});
 			
+			// Special care for the export settings form, in order to update its preview
+			$('#export_form input, #export_form select').change(function(){
+				$.reshuuSuruToki.updateExportPreview();
+			});
+			
 			// Dragging of the modal window.
 			$('h2.summary').live('mousedown', function() {
 			});
 			$('h2.summary').live('mouseup', function() {
 			});
-			
-			// Handler for the ability to toggle streetview viewing while marker click.
-			if ($.cookie('showInStreetView')) {
-				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
-				$.reshuuSuruToki.markers.showInStreetView = true;
-			}
-			
-			// How about a cookie for the filter settings?
-			if ($.cookie('trainingFilters')) {
-				$.reshuuSuruToki.filterSettings = $.cookie('trainingFilters');
-				$.reshuuSuruToki.updateFilters();
-				$.reshuuSuruToki.applyFilters();
-			}
-			
+						
 			// http://github.com/nje/jquery-datalink
 			/*
 			$('#filter_form').link($.reshuuSuruToki.filterSettings, {
@@ -280,6 +303,18 @@ $(document).ready(function() {
 			});
 			*/
 
+			
+			// How about a cookie for the filter settings?
+			if ($.cookie('filterArts')) {
+				$.reshuuSuruToki.filterSettings.arts = $.cookie('filterArts').split('.');
+				console.log('$.cookie filterArts existed. $.reshuuSuruToki.filterSettings.arts: ' + $.reshuuSuruToki.filterSettings.arts);
+			}
+			if ($.cookie('filterWeekdays')) {
+				$.reshuuSuruToki.filterSettings.weekdays = $.cookie('filterWeekdays').split('.');
+				console.log('$.cookie filterWeekdays existed. $.reshuuSuruToki.filterSettings.weekdays: ' + $.reshuuSuruToki.filterSettings.weekdays);
+			}
+				$.reshuuSuruToki.applyFilters();
+			
 			// Save the initial filtering form.
 			$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
 			//console.log('initial $.reshuuSuruToki.filtersHtml: ' + $.reshuuSuruToki.filtersHtml);
@@ -305,7 +340,8 @@ $(document).ready(function() {
 			$('#navigation li').removeClass('selected');
 			$('#navigation li:has(a[href=#' + key + '])').addClass('selected');
 			
-			// Set icon. Initially the classes are: header icon icon-equalizer
+			// Set icon. Initially the classes are: header icon icon-equalizer. This is the only reference to the id #right.
+			// $('#navigation').parent('.header')... ?
 			$('#right .header').attr('class', 'header icon icon-' + $.reshuuSuruToki.menuicons[key]);
 
 			if (key == 'filters') {
@@ -424,8 +460,13 @@ $(document).ready(function() {
 			
 			// Cookie is updated every time
 			$.cookie(
-				'trainingFilters', 
-				$.reshuuSuruToki.filterSettings, 
+				'filterArts', 
+				$.reshuuSuruToki.filterSettings.arts.join('.'), 
+				$.reshuuSuruToki.cookieSettings
+			);
+			$.cookie(
+				'filterWeekdays', 
+				$.reshuuSuruToki.filterSettings.weekdays.join('.'), 
 				$.reshuuSuruToki.cookieSettings
 			);
 		},
@@ -438,16 +479,19 @@ $(document).ready(function() {
 				var target = sets[i];
 				var list = $.reshuuSuruToki.filterSettings[target];
 				console.log('applyFilters. target: ' + target + ', list: ' + list);
-				$('#' + target + ' input:checkbox').each(function(i, elem) {
-					var rel = $(this).attr('name').split('_').pop();
-					console.log('applyFilters. i: ' + i + ', rel: ' + rel);
-					if (list.indexOf(rel) === -1) {
-						$(this).removeAttr('checked');
-					}
-					else {
-						$(this).attr('checked', 'checked');
-					}
-				});
+				if (list) {
+					$('#' + target + ' input:checkbox').each(function(i, elem) {
+						var rel = $(this).attr('name').split('_').pop();
+						var inx = list.indexOf(rel);
+						console.log('applyFilters. i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
+						if (inx === -1) {
+							$(this).removeAttr('checked');
+						}
+						else {
+							$(this).attr('checked', 'checked');
+						}
+					});
+				}
 			}
 		},
 
@@ -479,6 +523,31 @@ $(document).ready(function() {
 					console.log('Seems AJAX failed. ' + status);
 				}
 			}, 'json');
+		},
+		
+		// http://code.google.com/apis/maps/documentation/staticmaps/
+		updateExportPreview: function() {
+			var url = 'http://maps.google.com/maps/api/staticmap?';
+			var values = ['sensor=false'];
+			var fields = ['maptype', 'language', 'format', 'zoom', 'size'];
+			var items = $('#export_form input, #export_form select');
+			var len = fields.length;
+			for (var i = 0; i < len; ++i) {
+				var field = fields[i];
+				values.push(field + '=' + items.has('[name=' + field + ']').val());
+			}
+			url += values.join('&');
+			// marker requires special attention
+			url += '&markers=color:' + $('#export_form input[name=marker]').val() + 
+				'|label:' + $('#export_form input[name=label]').val() + '|' + 
+				$.reshuuSuruToki.hikone.lat() + ',' +$.reshuuSuruToki.hikone.lng();
+			
+			console.log('updateExportPreview. url: ' + url);
+			
+			// perhaps there could be some animation to show that something happened...
+			$('#exportpreview').animate('opacity: 0.5', 100, function() {
+				$(this).attr('src', url).animate('opacity: 1.0', 100);
+			});
 		},
 
 		// Show the given position in the Street View. Once visibility set, the opening is taken care of by its event handler.
@@ -700,31 +769,6 @@ $(document).ready(function() {
 				icon: icon
 			});
 
-			/*
-			if (drag) {
-				google.maps.event.addListener(marker, 'drag', function() {
-					updateMarkerStatus('Dragging...');
-					updateMarkerPosition(marker.getPosition());
-				});
-				google.maps.event.addListener(marker, 'dragend', function() {
-					marker.setOptions({icon: $.reshuuSuruToki.pins.gYellowIcon()});
-					updateMarkerStatus('Drag ended');
-					$.reshuuSuruToki.data.geocodePosition(marker.getPosition());
-
-					$.reshuuSuruToki.streetview.setPosition(marker.getPosition());
-					$.reshuuSuruToki.streetview.setVisible(true);
-				});
-			}
-			*/
-
-			/*
-			google.maps.event.addListener(marker, 'clickable_changed', function() {
-				// This event is fired when the marker's clickable property changes.
-			});
-			google.maps.event.addListener(marker, 'cursor_changed', function() {
-				// This event is fired when the marker's cursor property changes.
-			});
-			*/
 			google.maps.event.addListener(marker, 'dblclick', function(event) {
 				// This event is fired when the marker icon was double clicked.
 				console.log('marker. dblclick - ' + marker.title);
@@ -747,10 +791,6 @@ $(document).ready(function() {
 			*/
 			google.maps.event.addListener(marker, 'rightclick', function(event) {
 				// This event is fired when the marker is right clicked on.
-			});
-			google.maps.event.addListener(marker, 'visible_changed', function() {
-				// This event is fired when the marker's visible property changes.
-				console.log('marker. visible_changed - ' + marker.title + ', visibility: ' + marker.getVisible());
 			});
 
 			return marker;
@@ -826,7 +866,7 @@ $(document).ready(function() {
 			var info = '<div class="modal-info vevent">';
 			if (data.training && data.training.art && data.training.art.id && data.training.art.title) {
 				info += '<h2 class="summary" rel="art-' + data.training.art.id + '">' +
-					'<a href="#training-' + data.training.id + '" class="modal-close uid" title="' +
+					'<a href="#training-' + data.training.id + '" class="modal-close uid icon-close" title="' +
 					data.training.art.title + '">' + data.training.art.title + '</a></h2>';
 			}
 			if (data.training && data.training.id && data.training.weekday) {
@@ -927,7 +967,7 @@ $(document).ready(function() {
 
 		weekdays: [],
 
-		// Ran when dom is ready. Fetches the weekdays from the list in filters for current language.
+		// Ran when DOM is ready. Fetches the weekdays from the list in filters for current language.
 		getWeekdays: function() {
 			$('#weekdays li').each(function(index) {
 				$.reshuuSuruToki.data.weekdays[index] = $(this).attr('title');
@@ -1031,6 +1071,7 @@ $(document).ready(function() {
 				zoom,
 				$.reshuuSuruToki.cookieSettings
 			);
+			$.reshuuSuruToki.zoom = zoom;
 		},
 		updateCenterCookie: function() {
 			var center = $.reshuuSuruToki.map.getCenter();
