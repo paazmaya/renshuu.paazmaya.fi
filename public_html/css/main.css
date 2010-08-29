@@ -53,11 +53,11 @@ legend {
 fieldset {
 	border: 1px solid #05050D;
 }
-label {
+label, .label {
 	width: 100%;
 	display: block;
 }
-label span {
+label span, .label span {
 	text-align: right;
 	width: 35%;
 	display: block;
@@ -82,9 +82,17 @@ input[type=text]:focus, select:focus {
 	background-color: #67828A;
 	margin: 0;
 }
-input[type=checkbox] {
+input[type=checkbox], input[type=radio] {
 	width: 1em;
 	vertical-align: middle;
+}
+span.radioset {
+	width: 60%;
+	text-align: left;
+}
+span.radioset label {
+	display: inline;
+	margin: 0 0.5em;
 }
 input[type=button] {
 	width: 40%;
@@ -258,6 +266,7 @@ textarea{
 	-webkit-border-radius: 0.5em;
 	-moz-border-radius: 0.5em;
 }
+
 
 .jquery-timepicker-mouseover { background-color: #5E0202; color: #F9FBF7; }
 

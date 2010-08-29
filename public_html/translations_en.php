@@ -90,9 +90,14 @@ $lang['forms'] = array(
 				'name' => 'address'
 			),
 			array(
-				'label' => 'Auto fill',
-				'type' => 'checkbox',
-				'name' => 'addr_autofill',
+				'label' => 'Geocode',
+				'type' => 'radio',
+				'name' => 'geocode',
+				'options' => array(
+					'none' => 'none',
+					'address' => 'address',
+					'position' => 'position'
+				),
 				'after' => ' (address from map position)'
 			),
 			array(

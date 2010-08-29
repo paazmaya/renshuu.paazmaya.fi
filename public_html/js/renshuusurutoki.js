@@ -99,7 +99,7 @@ $(document).ready(function() {
 		savedListData: [],
 
 		ready: function() {
-			// Default centre
+			// http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 			
 			// Check for a cookie in case the center would be some other.
@@ -201,6 +201,13 @@ $(document).ready(function() {
 				console.log('hashchange: ' + location.hash );
 			});
 
+			// Open external links in a new window. Perhaps copyright is the only one...
+			$('a[href^="http://"]').live('click', function() {
+				var href = $(this).attr('href');
+				var now = new Date();
+				window.open(href, now.getMilliseconds());
+				return false;
+			});
 
 
 			// Toggle the visibility of each box
@@ -285,7 +292,7 @@ $(document).ready(function() {
 			});
 			
 			// Special care for the export settings form, in order to update its preview
-			$('#export_form input, #export_form select').change(function(){
+			$('#export_form input, #export_form select').live('change', function(){
 				$.reshuuSuruToki.updateExportPreview();
 			});
 			
@@ -313,7 +320,7 @@ $(document).ready(function() {
 				$.reshuuSuruToki.filterSettings.weekdays = $.cookie('filterWeekdays').split('.');
 				console.log('$.cookie filterWeekdays existed. $.reshuuSuruToki.filterSettings.weekdays: ' + $.reshuuSuruToki.filterSettings.weekdays);
 			}
-				$.reshuuSuruToki.applyFilters();
+			$.reshuuSuruToki.applyFilters();
 			
 			// Save the initial filtering form.
 			$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
@@ -665,7 +672,7 @@ $(document).ready(function() {
 			google.maps.event.addListener($.reshuuSuruToki.locationMarker, 'dragend', function(event) {
 				// geocode current position if the form setting allows.
 				// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
-				if ($('input[name=addr_autofill]:checkbox').is(':checked')) {
+				if ($('input[name=geocode][value=position]').is(':checked')) {
 					var pos = $.reshuuSuruToki.locationMarker.getPosition();
 					$.reshuuSuruToki.data.geocodePosition(pos);
 				}
@@ -690,7 +697,6 @@ $(document).ready(function() {
 				console.log('getPanorama. status: ' + status);
 			});
 		}
-
 	};
 
 	/*

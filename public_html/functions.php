@@ -96,46 +96,62 @@ function createForm($id, $data)
 	for ($i = 0; $i < $len; $i++)
 	{
 		$item = $data['items'][$i];
-		$out .= '<p><label><span>' . $item['label'] . ':</span>';
 
-		if ($item['type'] == 'select')
+		if ($item['type'] == 'radio')
 		{
-			$out .= '<select ';
-		}
-		else
-		{
-			$out .= '<input type="' . $item['type'] . '" ';
-		}
-		$out .= 'name="' . $item['name'] . '"';
-
-		if (isset($item['class']) && $item['class'] != '')
-		{
-			$out .= ' class="' . $item['class'] . '"';
-		}
-
-		if ($item['type'] == 'select')
-		{
-			$out .= '>';
+			$out .= '<p><span class="label"><span>' . $item['label'] . ':</span>';
 			if (isset($item['options']) && is_array($item['options']) && count($item['options']) > 0)
 			{
+				$out .= '<span class="radioset">';
 				foreach($item['options'] as $k => $v)
 				{
-					$out .= '<option value="' . $k . '">' . $v . '</option>';
+					$out .= '<label><input type="radio" name="' . $item['name'] . '" value="' . $k . '" />' . $v . '</label>';
 				}
+				$out .= '';
 			}
-			$out .= '</select>';
 		}
 		else
 		{
-			if (isset($item['disabled']) && $item['disabled'])
+			$out .= '<p><label><span>' . $item['label'] . ':</span>';
+			if ($item['type'] == 'select')
 			{
-				$out .= ' disabled="disabled"';
+				$out .= '<select ';
 			}
-			if (isset($item['value']) && $item['value'] != '')
+			else
 			{
-				$out .= ' value="' . $item['value'] . '"';
+				$out .= '<input type="' . $item['type'] . '" ';
 			}
-			$out .= ' />';
+			$out .= 'name="' . $item['name'] . '"';
+
+			if (isset($item['class']) && $item['class'] != '')
+			{
+				$out .= ' class="' . $item['class'] . '"';
+			}
+
+			if ($item['type'] == 'select')
+			{
+				$out .= '>';
+				if (isset($item['options']) && is_array($item['options']) && count($item['options']) > 0)
+				{
+					foreach($item['options'] as $k => $v)
+					{
+						$out .= '<option value="' . $k . '">' . $v . '</option>';
+					}
+				}
+				$out .= '</select>';
+			}
+			else
+			{
+				if (isset($item['disabled']) && $item['disabled'])
+				{
+					$out .= ' disabled="disabled"';
+				}
+				if (isset($item['value']) && $item['value'] != '')
+				{
+					$out .= ' value="' . $item['value'] . '"';
+				}
+				$out .= ' />';
+			}
 		}
 
 		if (isset($item['after']) && $item['after'] != '')
@@ -143,7 +159,14 @@ function createForm($id, $data)
 			$out .= $item['after'];
 		}
 
-		$out .= '</label></p>';
+		if ($item['type'] == 'radio')
+		{
+			$out .= '</span></p>';
+		}
+		else 
+		{
+			$out .= '</label></p>';
+		}
 	}
 	if (isset($data['buttons']) && is_array($data['buttons']))
 	{
@@ -298,6 +321,47 @@ function createNavigation($data, $access = 1)
 		}
 	}
 	$out .= '</ul>';
+	return $out;
+}
+
+/**
+ * Build an url for Google Static Maps.
+ * Defaults to: http://maps.google.com/maps/api/staticmap?sensor=false&maptype=roadmap&language=ja&format=png8&zoom=14&size=300x300&markers=color:0x55FF55|label:X|35.276556,136.252639
+ *
+ * @see http://code.google.com/apis/maps/documentation/staticmaps/
+ * @param array $items
+ * @return string URL
+ */
+function createStaticMapUrl($items = null)
+{
+	$out = 'http://maps.google.com/maps/api/staticmap?';
+	$options = array(
+		'maptype' => 'roadmap',
+		'language' => 'ja',
+		'format' => 'png8',
+		'sensor' => 'false',
+		//'center' => '0,0', // Marker will set the center anyhow..
+		'zoom' => '14',
+		'size' => '300x300',
+		'markers' => 'color:0x55FF55|label:X|35.276556,136.252639' // hikone castle
+	);
+	
+	// Just to avoid additional checking in the loop
+	if (!isset($items))
+	{
+		$items = array();
+	}
+	
+	$values = array();
+	foreach($options as $key => $val)
+	{
+		if (isset($items[$key]) && $items[$key] != '')
+		{
+			$val = $items[$key];
+		}
+		$values[] = $key . '=' . $val;
+	}
+	$out .= implode('&amp;', $values); //htmlentities(, ENT_QUOTES, 'UTF-8');
 	return $out;
 }
 

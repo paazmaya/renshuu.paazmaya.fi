@@ -20,36 +20,6 @@ require './translations_en.php';
 
 header('Content-type: text/html; charset=utf-8');
 
-// base url
-$gmapstaticbase = 'http://maps.google.com/maps/api/staticmap?';
-
-//http://maps.google.com/maps/api/staticmap?sensor=false&maptype=roadmap&language=ja&format=png8&zoom=14&size=400x300&markers=color:0x55FF55|label:X|35.27655600992416,136.25263971710206
-
-
-
-// Key values are same as used in the url for static Google Maps
-$gmapoptions = array(
-	'maptype' => array('roadmap', 'satellite', 'hybrid', 'terrain'),
-	'language' => array('ja', 'en', 'fi'),
-	'format' => array('png8', 'png32', 'gif', 'jpg', 'jpg-baseline')
-);
-// http://code.google.com/apis/maps/documentation/staticmaps/#URL_Parameters
-// If the value is array, its value becomes the value of that array for an index found in db.
-$options = array(
-	'maptype' => 'roadmap',
-	'language' => 'ja',
-	'format' => 'png8',
-	'sensor' => 'false',
-	//'center' => '0,0', // Marker will set the center anyhow..
-	'zoom' => '14',
-	'size' => '400x300'
-	'markers' => 'color:0x55FF55|label:X|35.27655600992416,136.25263971710206' // hikone castle
-);
-
-// Marker label will be numbered accoring to the order of how many of them are shown, perhaps A-Z as 0-9 is only ten...
-// Marker color will be marked as 0x123456
-// color: (optional) specifies a 24-bit color (example: color=0xFFFFCC) or a predefined color from the set {black, brown, green, purple, yellow, blue, gray, orange, red, white}.
-
 
 $id = 0;
 // This should always be set anyhow due to mod_rewrite...
@@ -64,9 +34,23 @@ if (isset($_GET['page']))
 	}
 }
 
+// Key values are same as used in the url for static Google Maps
+$gmapoptions = array(
+	'maptype' => array('roadmap', 'satellite', 'hybrid', 'terrain'),
+	'language' => array('ja', 'en', 'fi'),
+	'format' => array('png8', 'png32', 'gif', 'jpg', 'jpg-baseline')
+);
+// If the value is array, its value becomes the value of that array for an index found in db.
+
+
+// Marker label will be numbered accoring to the order of how many of them are shown, perhaps A-Z as 0-9 is only ten...
+// Marker color will be marked as 0x123456
+// color: (optional) specifies a 24-bit color (example: color=0xFFFFCC) or a predefined color from the set {black, brown, green, purple, yellow, blue, gray, orange, red, white}.
+
 
 // 0. Get the export settings
 // If not logged in, check "public" boolean...
+$options = array();
 $sql = 'SELECT * FROM ren_export WHERE id = ' . $id;
 $run =  $link->query($sql);
 if ($run)
@@ -86,9 +70,6 @@ if ($run)
 
 
 
-
-
-$url = $gmapstaticbase . implode('&', $options);
 
 
 
@@ -116,7 +97,7 @@ $link = null;
 <?php
 
 
-if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+if ($_SERVER['SERVER_NAME'] != '192.168.1.37')
 {
 	?>
 	<script type="text/javascript">

@@ -120,8 +120,8 @@ $iconcss .= generateCssRule('.icon', array(
 ));
 
 $items = array(
-	'add', 'addressbook', 'alert', 'arrow1_se', 'calendar', 'cellphone', 'check', 
-	'close', 'comment', 'document', 'edit', 'equalizer', 'lock', 'loop', 'mail', 
+	'add', 'addressbook', 'alert', 'arrow1_se', 'arrow3_n', 'arrow3_s', 'calendar', 'cellphone', 'check', 
+	'close', 'comment', 'denied', 'document', 'edit', 'equalizer', 'lock', 'loop', 'mail', 
 	'newwindow', 'phone', 'reload', 'save', 'search', 'smirk', 'time', 'tools', 
 	'trash', 'window', 'womanman', 'zoomin', 'zoomout'
 );
@@ -230,7 +230,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 						// export settings. will require to login for remembering them
 						echo createForm('export', $lang['forms']['export']);
 						
-						$staticmap = 'http://maps.google.com/maps/api/staticmap?' . htmlentities('sensor=false&maptype=roadmap&language=ja&format=png8&zoom=14&size=300x300&markers=color:0x55FF55|label:X|35.276556,136.252639'); // 
+						$staticmap = createStaticMapUrl(); // using defaults
 						?>
 						<p><img id="exportpreview" src="<?php echo $staticmap; ?>" alt="Preview of the current settings affect on the resulting map" /></p>
 					</div>
