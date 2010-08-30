@@ -89,6 +89,9 @@ input[type=checkbox], input[type=radio] {
 span.radioset {
 	width: 60%;
 	text-align: left;
+	background-repeat : no-repeat;
+	background-attachment : scroll;
+	background-position : right center;
 }
 span.radioset label {
 	display: inline;

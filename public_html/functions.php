@@ -175,9 +175,9 @@ function createForm($id, $data)
 		{
 			$out .= '<input type="button" name="send" value="' . $data['buttons']['send'] . '" />';
 		}
-		if (isset($data['buttons']['close']) && $data['buttons']['close'] != '')
+		if (isset($data['buttons']['clear']) && $data['buttons']['clear'] != '')
 		{
-			$out .= '<input type="button" name="close" value="' . $data['buttons']['close'] . '" class="modal_close" />';
+			$out .= '<input type="button" name="clear" value="' . $data['buttons']['clear'] . '" />';
 		}
 		$out .= '</p>';
 	}

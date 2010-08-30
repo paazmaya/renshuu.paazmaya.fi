@@ -26,6 +26,14 @@ bitcons
 	background-image : url(/img/bitcons/png/green/16x16/arrow1_se.png);
 }
 
+.icon-arrow3_n {
+	background-image : url(/img/bitcons/png/green/16x16/arrow3_n.png);
+}
+
+.icon-arrow3_s {
+	background-image : url(/img/bitcons/png/green/16x16/arrow3_s.png);
+}
+
 .icon-calendar {
 	background-image : url(/img/bitcons/png/green/16x16/calendar.png);
 }
@@ -44,6 +52,10 @@ bitcons
 
 .icon-comment {
 	background-image : url(/img/bitcons/png/green/16x16/comment.png);
+}
+
+.icon-denied {
+	background-image : url(/img/bitcons/png/green/16x16/denied.png);
 }
 
 .icon-document {

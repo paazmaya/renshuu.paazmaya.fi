@@ -190,6 +190,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 					?>
 				</div>
 				<div class="content">
+					<div id="formfeedback"></div>
 					<div class="stuff" id="tabcontent">
 						<div id="filtering">
 							<?php

@@ -24,7 +24,7 @@ Only non empty values will be used.
 	'info' => '',
 	'buttons' => array(
 		'send' => '',
-		'close' => '' If empty, no button will be shown
+		'clear' => '' If empty, no button will be shown
 	),
 	'items' => array(
 		array(
@@ -46,7 +46,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -66,7 +66,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Location',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -119,7 +119,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -175,7 +175,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -205,7 +205,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Login',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -232,7 +232,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Update profile',
-			'close' => 'Close'
+			'clear' => 'Close'
 		),
 		'items' => array(
 			array(
@@ -369,6 +369,11 @@ $lang['navigation'] = array(
 	'filters' => array(
 		'title' => 'Map filters',
 		'text' => 'filters',
+		'access' => 0
+	),
+	'training' => array(
+		'title' => 'Training creation',
+		'text' => 'training',
 		'access' => 0
 	),
 	'location' => array(
