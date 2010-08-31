@@ -53,11 +53,14 @@ RENSHUU.PAAZMAYA.COM
 *		}
 *	]
 *
-* In the other use cases of "get", when a keywork is used, the return value will be of
+* In the other use cases of "get", when a keyword is used, the return value will be of
 * the following format. The results are filtered by a keyword as a last parametre in the url.
 *	[keyword, one of four]: [
 *		{ id: 0, title: '' }
 * 	]
+*
+* Note that "get" and "location" with "area" in the POST will return a list of locations
+* within the given boundaries.
 *
 * While in "form" mode, the output is a html string containing <form>
 * with all the requested components, in a "form" key.
@@ -153,30 +156,37 @@ if (isset($_GET['page']))
 
 if ($passcheck)
 {
-	// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
-	if ($page == 'get' && $pagetype == '' && isset($_POST['area']) && is_array($_POST['area']) && isset($_POST['filter']) && is_array($_POST['filter']))
+	// Check for map boundaries, used in two place, for getting trainings and locations.
+	$area_existed = false;
+	if (isset($_POST['area']) && is_array($_POST['area']))
 	{
 		$ne_lat = 0;
+		$ne_lng = 0;
+		$sw_lat = 0;
+		$sw_lng = 0;
+		
 		if (isset($_POST['area']['northeast']['0']) && is_numeric($_POST['area']['northeast']['0']))
 		{
 			$ne_lat = floatval($_POST['area']['northeast']['0']);
 		}
-		$ne_lng = 0;
 		if (isset($_POST['area']['northeast']['1']) && is_numeric($_POST['area']['northeast']['1']))
 		{
 			$ne_lng = floatval($_POST['area']['northeast']['1']);
 		}
-		$sw_lat = 0;
 		if (isset($_POST['area']['southwest']['0']) && is_numeric($_POST['area']['southwest']['0']))
 		{
 			$sw_lat = floatval($_POST['area']['southwest']['0']);
 		}
-		$sw_lng = 0;
 		if (isset($_POST['area']['southwest']['1']) && is_numeric($_POST['area']['southwest']['1']))
 		{
 			$sw_lng = floatval($_POST['area']['southwest']['1']);
 		}
-
+		$area_existed = true;
+	}
+	
+	// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
+	if ($page == 'get' && $pagetype == '' && $area_existed && isset($_POST['filter']) && is_array($_POST['filter']))
+	{
 		$arts = array();
 		if (isset($_POST['filter']['arts']) && is_array($_POST['filter']['arts']))
 		{
@@ -244,6 +254,44 @@ if ($passcheck)
 						'id' => $res['personid'],
 						'title' => $res['personname'],
 						'contact' => $res['contact']
+					)
+				);
+			}
+			unset($out['error']);
+			$out['result'] = $results;
+		}
+		else
+		{
+			if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+			{
+				$out['errorInfo'] = $link->errorInfo();
+			}
+		}
+		if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+		{
+			$out['sql'] = $sql;
+		}
+	}
+	else if ($page == 'get' && $pagetype == 'location' && $area_existed)
+	{
+		$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
+		$from = 'FROM ren_location B';
+
+		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address ' . $from . ' WHERE ' . $position;
+		$results = array();
+		$run =  $link->query($sql);
+		if ($run)
+		{
+			while($res = $run->fetch(PDO::FETCH_ASSOC))
+			{
+				$results[] = array(
+					'location' => array(
+						'id' => $res['locationid'],
+						'latitude' => $res['latitude'],
+						'longitude' => $res['longitude'],
+						'title' => $res['locationname'],
+						'url' => $res['url'],
+						'address' => $res['address'],
 					)
 				);
 			}

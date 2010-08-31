@@ -94,10 +94,11 @@ $(document).ready(function() {
 		// Store temporary geocoded location markers here
 		geocodeMarkers: [],
 		
-		// Store temporary location markers here
+		// Store temporary location markers, of those existing in the backend
 		locationMarkers: [],
+		locationMarkersData: [],
 
-		trainingMarkers: [], // These two should share a same index for dta
+		trainingMarkers: [], // These two should share a same index for data
 		trainingMarkersData: [], // related to the other
 
 		// The actual position where current Street View is at. Shown only when Street View is.
@@ -145,7 +146,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.data.getWeekdays();
 
 			// Set up the Google Map v3 and the Street View
-			$.reshuuSuruToki.mapinit(
+			$.reshuuSuruToki.mapInit(
 				$('#map').get(0),
 				$('#street').get(0),
 				{
@@ -385,15 +386,8 @@ $(document).ready(function() {
 				$($.reshuuSuruToki.tabContentElement).html($.reshuuSuruToki.filtersHtml);
 				$.reshuuSuruToki.applyFilters();
 			}
-			else {
-				/*
-				console.log('$(#filtering:visible).length: ' + $('#filtering:visible').length);
-				if ($('#filtering:visible').length) {
-					// Seems this is rather useless as the actual DOM does not apparently update itself
-					$.reshuuSuruToki.filtersHtml = $('#filtering').outerHtml();
-					$('#filtering').detach();
-				}
-				*/
+			else if (key == 'location') {
+				// begin to show location markers...
 			}
 			if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
 				$.reshuuSuruToki.forms.getForm(key);
@@ -492,7 +486,7 @@ $(document).ready(function() {
 
 			// Make sure any of the selections was not empty
 			if (lens.indexOf(0) == -1) {
-				$.reshuuSuruToki.updateLocations();
+				$.reshuuSuruToki.updateTrainings();
 			}
 
 			// Cookie is updated every time
@@ -533,7 +527,7 @@ $(document).ready(function() {
 		},
 
 		// http://www.jlpt.jp/samples/forlearners.html
-		updateLocations: function() {
+		updateTrainings: function() {
 			var bounds = $.reshuuSuruToki.map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
@@ -561,6 +555,35 @@ $(document).ready(function() {
 				}
 			}, 'json');
 		},
+		
+		// If current tab view is in the location or training, show training place locations.
+		// As opposed to trainings.
+		updateLocations: function() {
+			var bounds = $.reshuuSuruToki.map.getBounds();
+			var ne = bounds.getNorthEast();
+			var sw = bounds.getSouthWest();
+			var para = {
+				area: {
+					northeast: [ne.lat(), ne.lng()],
+					southwest: [sw.lat(), sw.lng()]
+				}
+			};
+			$.reshuuSuruToki.markers.clearMarkers($.reshuuSuruToki.locationMarkers);
+			$.reshuuSuruToki.locationMarkersData = [];
+			
+			$.post($.reshuuSuruToki.ajaxpoint.get + 'location', para, function(data, status) {
+				if (data.response && data.response.result) {
+					var res = data.response.result;
+					var len = res.length;
+					for (var i = 0; i < len; ++i) {
+						$.reshuuSuruToki.markers.createLocationMarker(res[i]);
+					}
+				}
+				else {
+					console.log('Seems AJAX failed. ' + status);
+				}
+			}, 'json');
+		},
 
 		// http://code.google.com/apis/maps/documentation/staticmaps/
 		updateExportPreview: function() {
@@ -569,9 +592,18 @@ $(document).ready(function() {
 			var fields = ['maptype', 'language', 'format', 'zoom', 'size'];
 			var items = $('#export_form input, #export_form select');
 			var len = fields.length;
-			for (var i = 0; i < len; ++i) {
+			// Should there be additional checks for allowed values...
+			for (var i = 0; i < len; ++i) {				
 				var field = fields[i];
-				values.push(field + '=' + items.has('[name=' + field + ']').val());
+				var val = '';
+				if (items.filter('select[name=' + field + ']').size() > 0) {
+					val = items.filter('select[name=' + field + ']').val();
+				}
+				else {
+					val = items.filter('input[name=' + field + ']').val();
+				}
+				console.log('val: ' + val);
+				values.push(field + '=' + val);					
 			}
 			url += values.join('&');
 			// marker requires special attention
@@ -582,9 +614,7 @@ $(document).ready(function() {
 			console.log('updateExportPreview. url: ' + url);
 
 			// perhaps there could be some animation to show that something happened...
-			$('#exportpreview').animate('opacity: 0.5', 100, function() {
-				$(this).attr('src', url).animate('opacity: 1.0', 100);
-			});
+			$('#exportpreview').attr('src', url);
 		},
 
 		// Show the given position in the Street View. Once visibility set, the opening is taken care of by its event handler.
@@ -593,7 +623,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.streetview.setVisible(true);
 		},
 
-		mapinit: function(map_element, street_element, map_options, street_options) {
+		mapInit: function(map_element, street_element, map_options, street_options) {
 			$.reshuuSuruToki.geocoder = new google.maps.Geocoder();
 			$.reshuuSuruToki.streetService = new google.maps.StreetViewService();
 
@@ -801,6 +831,69 @@ $(document).ready(function() {
 
 			var len = $.reshuuSuruToki.trainingMarkers.push(marker);
 			$.reshuuSuruToki.trainingMarkersData[len - 1] = data;
+		},
+		
+		createLocationMarker: function(data) {
+			var icon = $.reshuuSuruToki.pins.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
+			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
+			var marker = $.reshuuSuruToki.markers.createMarker(pos, data.location.title, icon, false);
+
+			google.maps.event.addListener(marker, 'click', function(event) {
+				// This event is fired when the marker icon was clicked.
+				var pos = marker.getPosition();
+				console.log('location marker. click - ' + marker.title + ', pos: ' + pos);
+				// This should now fill the address in the "training" form...
+			});
+
+			var len = $.reshuuSuruToki.locationMarkers.push(marker);
+			$.reshuuSuruToki.locationMarkersData[len - 1] = data;
+		},
+		
+		createGeocodeMarker: function (res, i) {
+			/*
+			for (var j in res) {
+				if (res.hasOwnProperty(j)) {
+					console.log(j + ' = ' + res[j]);
+				}
+			}
+			*/
+			/*
+			for (var s in res.address_components) {
+				var a = res.address_components[s];
+				for (var c in a) {
+					console.log('address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
+				}
+			}
+			for (var g in res.geometry) {
+				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
+			}
+			*/
+			//address_components
+			//geometry
+			//types
+			// formatted_address - not documented
+			var marker = $.reshuuSuruToki.markers.createMarker(
+				res.geometry.location, res.formatted_address,
+				$.reshuuSuruToki.pins.getLetter(i + 1), false);
+			// Right click will be used for deleting...
+			google.maps.event.addListener(marker, 'rightclick', function(event) {
+				$.reshuuSuruToki.data.removeGeoMarker(marker);
+			});
+			google.maps.event.addListener(marker, 'click', function(event) {
+				// This event is fired when the marker is right clicked on.
+				var title = marker.getTitle();
+				var pos = marker.getPosition();
+				console.log('clicking geocode marker. title: ' + title + ', pos: ' + pos);
+				if ($.reshuuSuruToki.geocodeBasedOn == 'position') {
+					$('input[name=address]').val(title);
+				}
+				else if ($.reshuuSuruToki.geocodeBasedOn == 'address') {
+					$('input[name=latitude]').val(pos.lat());
+					$('input[name=longitude]').val(pos.lng());
+				}
+			});
+
+			return marker;
 		},
 
 		createMarker: function(pos, title, icon, drag) {
@@ -1038,7 +1131,7 @@ $(document).ready(function() {
 						// Max three results
 						for (var i = 0; i < len; ++i) {
 							// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
-							var marker = $.reshuuSuruToki.data.createGeoMarker(results[i], i);
+							var marker = $.reshuuSuruToki.markers.createGeocodeMarker(results[i], i);
 							$.reshuuSuruToki.geocodeMarkers.push(marker);
 
 							console.log('---- result ' + i);
@@ -1051,53 +1144,6 @@ $(document).ready(function() {
 					}
 				}
 			);
-		},
-
-		createGeoMarker: function (res, i) {
-			/*
-			for (var j in res) {
-				if (res.hasOwnProperty(j)) {
-					console.log(j + ' = ' + res[j]);
-				}
-			}
-			*/
-			/*
-			for (var s in res.address_components) {
-				var a = res.address_components[s];
-				for (var c in a) {
-					console.log('address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
-				}
-			}
-			for (var g in res.geometry) {
-				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
-			}
-			*/
-			//address_components
-			//geometry
-			//types
-			// formatted_address - not documented
-			var marker = $.reshuuSuruToki.markers.createMarker(
-				res.geometry.location, res.formatted_address,
-				$.reshuuSuruToki.pins.getLetter(i + 1), false);
-			// Right click will be used for deleting...
-			google.maps.event.addListener(marker, 'rightclick', function(event) {
-				$.reshuuSuruToki.data.removeGeoMarker(marker);
-			});
-			google.maps.event.addListener(marker, 'click', function(event) {
-				// This event is fired when the marker is right clicked on.
-				var title = marker.getTitle();
-				var pos = marker.getPosition();
-				console.log('clicking geocode marker. title: ' + title + ', pos: ' + pos);
-				if ($.reshuuSuruToki.geocodeBasedOn == 'position') {
-					$('input[name=address]').val(title);
-				}
-				else if ($.reshuuSuruToki.geocodeBasedOn == 'address') {
-					$('input[name=latitude]').val(pos.lat());
-					$('input[name=longitude]').val(pos.lng());
-				}
-			});
-
-			return marker;
 		},
 
 		removeGeoMarker: function(marker) {
@@ -1154,6 +1200,9 @@ $(document).ready(function() {
 		},
 		bounds_changed: function() {
 			// This event is fired when the viewport bounds have changed
+			if (location.hash == '#location' || location.hash == '#training') {
+				$.reshuuSuruToki.updateLocations();
+			}
 		},
 		center_changed: function() {
 			// This event is fired when the map center property changes.
@@ -1390,6 +1439,7 @@ $(document).ready(function() {
 			
 			// If location form is used, check the possible cookie.
 			if (type == 'location' && $.cookie('locationGeocode')) {
+				$('#location_form input:radio[name=geocode]').removeAttr('checked');
 				$('#location_form input:radio[name=geocode][value=' + $.cookie('locationGeocode') + ']').attr('checked', 'checked');
 			}
 		},
@@ -1414,10 +1464,10 @@ $(document).ready(function() {
 				$('#tabcontent').prepend(div);
 			}
 			var html = '<p>' + data.message + '</p>' +
-				'<p><a href="#insert-0" title="">create new</a>' +
-				'<p><a href="#update-' + data.id + '" title="">update current</a>';
+				'<p><a href="#insert-0" title="">create new</a></p>' +
+				'<p><a href="#update-' + data.id + '" title="">update current</a></p>';
 			$('#formfeedback').attr('class', data.class).html(html);
-			// Should it disappear in few minutes...
+			// Should it disappear in few seconds...
 		}
 	};
 
