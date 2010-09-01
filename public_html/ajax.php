@@ -500,6 +500,7 @@ if ($passcheck)
 		// $lang['weekdays'] too..
 		
 		$data = $lang['forms'][$pagetype];
+		$items = array();
 		foreach($data['items'] as $item)
 		{
 			if ($item['type'] == 'select')
@@ -523,7 +524,9 @@ if ($passcheck)
 					$item['options'] = $results;
 				}
 			}
+			$items[] = $item;
 		}
+		$data['items'] = $items;
 		
 		$out['form'] = createForm($pagetype, $data);
 		unset($out['error']);

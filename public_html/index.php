@@ -2,6 +2,7 @@
 /*******************
 RENSHUU.PAAZMAYA.COM
 *******************/
+
 /*
 Colors at Kuler: http://kuler.adobe.com/#themeID/979806
 
@@ -14,13 +15,14 @@ White: F9FBF7
 Black: 05050D
 Grey: 67828A
 */
+
 /*
 Filtering the list of trainings shown on the map can be set by the following:
 - Art
 - Weekday
 - Area, which would be primarily set according to the current map view.
 
-All data fetched from the backend will be cached locally and will expire after two weeks (unless specific "clear" command is made).
+All data fetched from the backend will be cached locally and will expire after two weeks (unless specific "clear" command is made)...
 
 By dracking or clicking a marker to a saved list it is possible to export a page of all the
 selected training times and locations with static maps.

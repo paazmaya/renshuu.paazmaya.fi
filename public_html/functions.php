@@ -383,6 +383,10 @@ function minify($type, $files)
 
 	// Return value will be this
 	$wrote = false;
+	
+	// Keep log of what has happened and how much the filesizes were reduced.
+	$dateformat = 'Y-m-d H:i:s';
+	$log = '';
 
 	// Function failed on a mismatching parametre?
 	$fail = false;
@@ -390,7 +394,6 @@ function minify($type, $files)
 	{
 		//require_once $cf['libdir'] . 'jsmin.php';
 		require_once $cf['libdir'] . 'minify/Minify/JS/ClosureCompiler.php';
-
 	}
 	else if ($type == 'css')
 	{
@@ -437,6 +440,7 @@ function minify($type, $files)
 				}
 
 				//echo "\n" . '<!-- src: ' . $src . ', des: ' . $des . ' -->' . "\n";
+				$log .= date($dateformat) . ' src: ' . $src . ', size: ' . filesize($src) . "\n";
 
 				$min = '';
 				if (file_exists($des))
@@ -473,6 +477,7 @@ function minify($type, $files)
 					}
 					$mtime_newest = time();
 					file_put_contents($des, $min);
+					$log .= date($dateformat) . ' des: ' . $des . ', size: ' . filesize($des) . "\n";
 				}
 				$data[] = '/* ' . $file . ' */' . "\n" . $min;
 			}
@@ -493,6 +498,7 @@ function minify($type, $files)
 		{
 			$alldata = implode("\n\n", $data);
 			$bytecount = file_put_contents($outfile, $alldata);
+			$log .= date($dateformat) . ' outfile: ' . $outfile . ', size: ' . $bytecount . "\n";
 
 			if ($bytecount !== false)
 			{
@@ -500,9 +506,12 @@ function minify($type, $files)
 				gzwrite($gz, $alldata);
 				gzclose($gz);
 				$wrote = true;
+				$log .= date($dateformat) . ' outfilegz: ' . $outfilegz . ', size: ' . filesize($outfilegz) . "\n";
 			}
 		}
 	}
+	
+	file_put_contents($cf['minifylog'], $log, FILE_APPEND);
 
 	return $wrote;
 }

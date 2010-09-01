@@ -368,6 +368,10 @@ $(document).ready(function() {
 					$.reshuuSuruToki.showTabContent(key);
 				}
 			}
+			else {
+				location.hash = '#filters';
+				$.reshuuSuruToki.showTabContent('filters');
+			}
 
 		},
 
