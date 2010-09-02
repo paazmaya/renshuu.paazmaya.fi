@@ -83,7 +83,6 @@ RENSHUU.PAAZMAYA.COM
 
 require './config.php';
 require './functions.php';
-session_start();
 
 // require 'translations_' . $_SESSION['lang'] . '.php';
 require './translations_en.php';

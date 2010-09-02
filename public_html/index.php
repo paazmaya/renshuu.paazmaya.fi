@@ -51,10 +51,25 @@ and in case matched, redirected to that prepended with a hash (#).
 */
 require './config.php';
 require './functions.php';
-session_start();
 
-// require 'translations_' . $_SESSION['lang'] . '.php';
-require './translations_en.php';
+// Remove www from the url and redirect.
+if (substr($_SERVER['HTTP_HOST'], 0, 3) == 'www')
+{
+	$go = 'http://' . substr($_SERVER['HTTP_HOST'], 4) . $_SERVER['REQUEST_URI'];
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: ' . $go);
+	exit();
+}
+
+// Clear out of the session ids.
+if (isset($_GET['RE']))
+{
+	$uri = preg_replace('/?RE=[^&]+/', '', $_SERVER['REQUEST_URI']);
+	$uri = preg_replace('/&RE=[^&]+/', '', $uri);
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
+	exit();
+}
 
 // As per .htaccess, all requests are redirected to index.php with one GET variable.
 if (isset($_GET['page']) && strlen($_GET['page']) > 0)
@@ -66,15 +81,18 @@ if (isset($_GET['page']) && strlen($_GET['page']) > 0)
 	exit();
 }
 
+require './translations_' . $_SESSION['lang'] . '.php';
 
 header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
 	'jquery.js', // 1.4.2
-	'jquery.ui.core.js', // 1.8.2
+	'jquery.ui.core.js', // 1.8.4
+	'jquery.ui.mouse.js',
 	'jquery.ui.widget.js',
-	'jquery.ui.tabs.js', // depends ui.core and ui.widget
+	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
+	'jquery.ui.datepicker.js', // depends ui.core
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	'jquery.timepicker.js',
 	'jquery.cookie.js', // 2006
@@ -90,6 +108,7 @@ $javascript = array(
 	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
 );
+
 
 // What should be done is to create one javascript file of the local files and minify it followed by gzipping.
 //minify('js', $javascript);
@@ -252,26 +271,29 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 		</div>
 	</div>
 	*/
-	?>
-	
-	<div id="copyright">
-		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en" title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
-	</div>
+	$copyright = '<div id="copyright">
+		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
+			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
+		</div>';
 
-<?php
+	echo $copyright;
+	
 // Translations
 echo '<script type="text/javascript">';
 
 echo '</script>';
 
 
-echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=ja'); // $_SESSION['lang']
+echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=' . $_SESSION['lang']);
 //echo scriptElement($cf['minified'] . $gzipped . '.js');
 
 foreach($javascript as $js)
 {
 	echo scriptElement($js);
 }
+
+// Add localisation to the date picker
+echo scriptElement('jquery.ui.datepicker-' . ($_SESSION['lang'] == 'en' ? 'en-GB' : $_SESSION['lang']) . '.js');
 
 // Close the SQLite connection
 $link = null;

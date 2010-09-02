@@ -66,10 +66,10 @@ $(document).ready(function() {
 		tabContentElement: '#tabcontent',
 		filtersHtml: null,
 
-		// Default filter settings
+		// Default filter settings. Make sure the values are always single strings.
 		filterSettings: {
 			arts: [],
-			weekdays: [0, 1, 2, 3, 4, 5, 6] // all weekdays are selected by default
+			weekdays: ['0', '1', '2', '3', '4', '5', '6'] // all weekdays are selected by default
 		},
 
 		// Icons (css rules) to use for named menu items, prepended with "icon-"
@@ -303,7 +303,7 @@ $(document).ready(function() {
 						out.id = data.result.id;
 						out.message = data.result.title;
 					}
-					// data.id, data.message, data.class
+					// data.id, data.message, data.classes
 					$.reshuuSuruToki.forms.showFormFeedback(out);
 				}, 'json');
 				return false;
@@ -391,6 +391,7 @@ $(document).ready(function() {
 				$.reshuuSuruToki.applyFilters();
 			}
 			else if (key == 'location') {
+				$.reshuuSuruToki.updateGeocodeSelectionIcon();
 				// begin to show location markers...
 			}
 			if ($.reshuuSuruToki.forms.types.indexOf(key) !== -1) {
@@ -811,10 +812,12 @@ $(document).ready(function() {
 		// As per marker double click, show its position in Street View
 		showInStreetView: false,
 
+		// http://code.google.com/apis/maps/documentation/javascript/reference.html#Marker
 		clearMarkers: function(list) {
 			var len = list.length;
 			for (var i = 0; i < len; ++i) {
 				var marker = list[i];
+				// "If map is set to null, the marker will be removed."
 				marker.setMap(null);
 			}
 			list = [];
@@ -1453,8 +1456,8 @@ $(document).ready(function() {
 			if (!data) {
 				data = {};
 			}
-			if (!data.class) {
-				data.class = 'error icon icon-alert';
+			if (!data.classes) {
+				data.classes = 'error icon icon-alert';
 			}
 			if (!data.id) {
 				data.id = '0';
@@ -1463,14 +1466,14 @@ $(document).ready(function() {
 				data.message = 'Seems that some data was lost...';
 			}
 			// If for some strange reason this element has gone...
-			if ($('#formfeedback').size() == 0) {
+			if ($('#formfeedback').size() === 0) {
 				var div = '<div id="formfeedback"></div>';
 				$('#tabcontent').prepend(div);
 			}
 			var html = '<p>' + data.message + '</p>' +
 				'<p><a href="#insert-0" title="">create new</a></p>' +
 				'<p><a href="#update-' + data.id + '" title="">update current</a></p>';
-			$('#formfeedback').attr('class', data.class).html(html);
+			$('#formfeedback').attr('class', data.classes).html(html);
 			// Should it disappear in few seconds...
 		}
 	};
