@@ -97,6 +97,11 @@ span.radioset label {
 	display: inline;
 	margin: 0 0.5em;
 }
+span.after {
+	font-size: 75%;
+	float: none;
+	display: inline;
+}
 input[type=button] {
 	width: 40%;
 	margin: 1em;

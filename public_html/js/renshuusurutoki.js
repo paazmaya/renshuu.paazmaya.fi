@@ -238,7 +238,13 @@ $(document).ready(function() {
 				var href = $(this).attr('href');
 				var key = href.substr(href.indexOf('#') + 1);
 				console.log('#navigation a -- live click. key: ' + key);
-				$.reshuuSuruToki.showTabContent(key);
+				if (key !== 'logout') {
+					$.reshuuSuruToki.showTabContent(key);
+				}
+				else {
+					// https://developer.mozilla.org/en/DOM/window.location
+					window.location = '/logout';
+				}
 				return false;
 			});
 
@@ -284,6 +290,11 @@ $(document).ready(function() {
 
 			// Note that either "insert" = 0 or "update" = id must be set in the root data...
 			$('form').live('submit', function() {
+				var id = $(this).attr('id');
+				console.log('submit. id: ' + id);
+				if (id === 'login_form') {
+					return true;
+				}
 				// http://api.jquery.com/serializeArray/
 				var serialized = $(this).serializeArray();
 				var len = serialized.length;
@@ -1449,6 +1460,10 @@ $(document).ready(function() {
 				$('#location_form input:radio[name=geocode]').removeAttr('checked');
 				$('#location_form input:radio[name=geocode][value=' + $.cookie('locationGeocode') + ']').attr('checked', 'checked');
 			}
+			else if (type == 'profile') {
+				// Data should be prefilled in global "userData" object.
+				$.reshuuSuruToki.forms.fillUserData();
+			}
 		},
 		
 		// After the ajax call made by any of the forms in the tab content, there will be some sort of a feedback
@@ -1475,6 +1490,13 @@ $(document).ready(function() {
 				'<p><a href="#update-' + data.id + '" title="">update current</a></p>';
 			$('#formfeedback').attr('class', data.classes).html(html);
 			// Should it disappear in few seconds...
+		},
+		
+		// User data binding
+		fillUserData: function() {
+			$('#profile_form input[name=email]').val(userData.email);
+			$('#profile_form input[name=title]').val(userData.name);
+			$('#profile_form input[name=email]').val(userData.email);
 		}
 	};
 

@@ -198,7 +198,7 @@ function createForm($id, $data, $action = null)
 
 		if (isset($item['after']) && $item['after'] != '')
 		{
-			$out .= $item['after'];
+			$out .= '<span class="after">' . $item['after'] . '</span>';
 		}
 
 		if ($item['type'] == 'radio')
@@ -347,17 +347,15 @@ function createSelectionShortcuts($class, $data)
  * 		'text' => '',
  * 		'access' => 0
  * 	)
- * @param int Current access level of the user
+ * @param int $access Current access level of the user
  * @return string As shown above
  */
 function createNavigation($data, $access = 1)
 {
-	// $access shall be now hard coded...
-
 	$out = '<ul id="navigation">';
 	foreach($data as $key => $val)
 	{
-		if ($val['access'] <= $access)
+		if ($val['access'] <= $access && ($access == 0 || $key != 'login'))
 		{
 			$out .= '<li><a href="#' . $key . '" title="' . $val['title'] . '">' . $val['text'] . '</a></li>';
 		}

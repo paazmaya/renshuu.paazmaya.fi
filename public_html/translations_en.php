@@ -218,7 +218,7 @@ $lang['forms'] = array(
 				'name' => 'password'
 			),
 			array(
-				'label' => 'How much is 2 + 3',
+				'label' => 'How much is 2 + 3', // always total 5
 				'type' => 'text',
 				'class' => 'short',
 				'name' => 'answer',
@@ -246,14 +246,8 @@ $lang['forms'] = array(
 			array(
 				'label' => 'Password',
 				'type' => 'text',
-				'name' => 'password'
-			),
-			array(
-				'label' => 'How much is 5 - 3',
-				'type' => 'text',
-				'class' => 'short',
-				'name' => 'answer',
-				'after' => ' (making sure you are a real person)'
+				'name' => 'password',
+				'after' => ' (fill if you wish to change, else leave empty)'
 			)
 		)
 	),
@@ -281,7 +275,7 @@ $lang['forms'] = array(
 				'name' => 'password'
 			),
 			array(
-				'label' => 'How much is 8 + 2',
+				'label' => 'How much is 3 + 2', // always total 5
 				'type' => 'text',
 				'class' => 'short',
 				'name' => 'answer',
@@ -404,27 +398,32 @@ $lang['navigation'] = array(
 	'training' => array(
 		'title' => 'Training creation',
 		'text' => 'training',
-		'access' => 0
+		'access' => 8
 	),
 	'location' => array(
 		'title' => 'Location creation',
 		'text' => 'location',
-		'access' => 0
+		'access' => 16
 	),
 	'art' => array(
 		'title' => 'Martial art addition',
 		'text' => 'art',
-		'access' => 0
+		'access' => 32
 	),
 	'profile' => array(
 		'title' => 'Profile editing',
 		'text' => 'profile',
-		'access' => 0
+		'access' => 1
 	),
 	'login' => array(
 		'title' => 'Login',
 		'text' => 'login',
 		'access' => 0
+	),
+	'logout' => array(
+		'title' => 'Logout',
+		'text' => 'logout',
+		'access' => 1
 	)
 );
 

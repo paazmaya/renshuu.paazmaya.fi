@@ -80,9 +80,24 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 	if ($getted['page'] == 'login')
 	{
 		// How much is 2 + 3 --> answer
-		if (isset($posted['email']) && $posted['email'] != '' && isset($posted['password']) && $posted['password'] != '' && isset($posted['answer']) && is_numeric($posted['answer']))
+		if (isset($posted['email']) && $posted['email'] != '' && isset($posted['password']) && $posted['password'] != '' && isset($posted['answer']) && is_numeric($posted['answer']) && intval($posted['answer']) == 5)
 		{
-			$sql = 'SELECT access FROM ren_user WHERE email = \'' . $posted['password'] . '\' AND password = \'' . $posted['password'] . '\'';
+			$sql = 'SELECT id, name, email, access FROM ren_user WHERE email = \'' . $posted['email'] . '\' AND password = \'' . sha1($posted['password']) . '\' AND access > 0';
+			$run = $link->query($sql);
+			if ($run->columnCount() > 0)
+			{
+				$res = $run->fetch(PDO::FETCH_ASSOC);
+				$_SESSION['userid'] = intval($res['id']);
+				$_SESSION['email'] = $res['email'];
+				$_SESSION['username'] = $res['name'];
+				$_SESSION['access'] = intval($res['access']);
+
+				$uri = '/#profile';
+			}
+			else
+			{
+				$uri = '/#login';
+			}
 		}
 	}
 	else if ($getted['page'] == 'logout')
@@ -94,6 +109,8 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 		$uri = '/#' . urize($getted['page']);
 		header('HTTP/1.1 301 Moved Permanently');
 	}
+	//print_r($getted);
+	//print_r($posted);
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
 	exit();
 }
@@ -106,8 +123,8 @@ header('Content-type: text/html; charset=utf-8');
 $javascript = array(
 	'jquery.js', // 1.4.2
 	'jquery.ui.core.js', // 1.8.4
-	'jquery.ui.mouse.js',
 	'jquery.ui.widget.js',
+	'jquery.ui.mouse.js',
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
@@ -224,7 +241,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 				<div class="header icon icon-equalizer">
 					<?php
 					// Navigation based on the current access level
-					echo createNavigation($lang['navigation']);
+					echo createNavigation($lang['navigation'], $_SESSION['access']);
 					?>
 				</div>
 				<div class="content">
@@ -277,7 +294,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 			</div>
 		</div>
 
-	</div>
+	</div> 
 
 	<?php
 	/*
@@ -297,6 +314,12 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	
 // Translations
 echo '<script type="text/javascript">';
+
+echo ' var userData = {';
+echo '  loggedIn: ' . ($_SESSION['access'] > 0 ? 'true' : 'false') . ',';
+echo '  name: "' . $_SESSION['username'] . '",';
+echo '  email: "' . $_SESSION['email'] . '"';
+echo ' }; ';
 
 echo '</script>';
 
