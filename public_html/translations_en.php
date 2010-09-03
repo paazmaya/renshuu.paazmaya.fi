@@ -46,7 +46,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'clear' => 'Close'
+			'clear' => 'Clear'
 		),
 		'items' => array(
 			array(
@@ -66,7 +66,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Location',
-			'clear' => 'Close'
+			'clear' => 'Clear'
 		),
 		'items' => array(
 			array(
@@ -119,7 +119,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'clear' => 'Close'
+			'clear' => 'Clear'
 		),
 		'items' => array(
 			array(
@@ -175,7 +175,7 @@ $lang['forms'] = array(
 		'info' => '',
 		'buttons' => array(
 			'send' => 'Send Martial art',
-			'clear' => 'Close'
+			'clear' => 'Clear'
 		),
 		'items' => array(
 			array(
@@ -204,8 +204,7 @@ $lang['forms'] = array(
 		'legend' => 'Login',
 		'info' => '',
 		'buttons' => array(
-			'send' => 'Login',
-			'clear' => 'Close'
+			'send' => 'Login'
 		),
 		'items' => array(
 			array(
@@ -231,8 +230,7 @@ $lang['forms'] = array(
 		'legend' => 'Profile',
 		'info' => '',
 		'buttons' => array(
-			'send' => 'Update profile',
-			'clear' => 'Close'
+			'send' => 'Update profile'
 		),
 		'items' => array(
 			array(
@@ -252,6 +250,38 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => 'How much is 5 - 3',
+				'type' => 'text',
+				'class' => 'short',
+				'name' => 'answer',
+				'after' => ' (making sure you are a real person)'
+			)
+		)
+	),
+	'register' => array(
+		'legend' => 'Register',
+		'info' => '',
+		'buttons' => array(
+			'send' => 'Register user',
+			'clear' => 'Clear'
+		),
+		'items' => array(
+			array(
+				'label' => 'E-mail',
+				'type' => 'text',
+				'name' => 'email'
+			),
+			array(
+				'label' => 'Full name',
+				'type' => 'text',
+				'name' => 'title'
+			),
+			array(
+				'label' => 'Password',
+				'type' => 'text',
+				'name' => 'password'
+			),
+			array(
+				'label' => 'How much is 8 + 2',
 				'type' => 'text',
 				'class' => 'short',
 				'name' => 'answer',

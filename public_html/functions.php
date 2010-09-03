@@ -3,6 +3,17 @@
 RENSHUU.PAAZMAYA.COM
 *******************/
 
+// Clean the possible incoming data.
+if (isset($_GET) && is_array($_GET))
+{
+	$getted = cleanerlady($_GET);
+}
+// Same for post.
+if (isset($_POST) && is_array($_POST))
+{
+	$posted = cleanerlady($_POST);
+}
+
 /**
  * Encode HTML entities for a block of text
  *
@@ -23,6 +34,31 @@ function htmlenc($str)
 function htmldec($str)
 {
 	return html_entity_decode(trim($str), ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * A function for get/post variables cleanup
+ *
+ * @param array $dirty
+ * @return array
+ */
+function cleanerlady($dirty)
+{
+	$clean = array();
+	foreach ($dirty as $key => $val) 
+	{
+		// Clean the key by taking white space out.
+		$key = preg_replace('/\s/', '', $key);
+		if (is_array($val)) 
+		{
+			$clean[$key] = cleanerlady($val);
+		}
+		else
+		{
+			$clean[$key] = htmlenc($val);
+		}
+	}
+	return $clean;
 }
 
 /**
@@ -71,17 +107,23 @@ function scriptElement($src)
  *
  * @param string $id
  * @param array $data
+ * @param string $action
  * @return string form element containing the requested inputs
  */
-function createForm($id, $data)
+function createForm($id, $data, $action = null)
 {
 	if (!isset($id) || $id == '' || !isset($data) || !is_array($data))
 	{
 		return null;
 	}
 
+	if (!isset($action))
+	{
+		$action = '/ajax/set/' . $id;
+	}
+
 	// rel=insert-0 makes it possible to use ajax on this.
-	$out = '<form id="' . $id . '_form" action="/ajax/set/' . $id . '" method="post" rel="insert-0">';
+	$out = '<form id="' . $id . '_form" action="' . $action . '" method="post" rel="insert-0">';
 	$out .= '<fieldset>';
 	if (isset($data['legend']) && $data['legend'] != '')
 	{
@@ -163,7 +205,7 @@ function createForm($id, $data)
 		{
 			$out .= '</span></p>';
 		}
-		else 
+		else
 		{
 			$out .= '</label></p>';
 		}
@@ -345,13 +387,13 @@ function createStaticMapUrl($items = null)
 		'size' => '300x300',
 		'markers' => 'color:0x55FF55|label:X|35.276556,136.252639' // hikone castle
 	);
-	
+
 	// Just to avoid additional checking in the loop
 	if (!isset($items))
 	{
 		$items = array();
 	}
-	
+
 	$values = array();
 	foreach($options as $key => $val)
 	{
@@ -383,7 +425,7 @@ function minify($type, $files)
 
 	// Return value will be this
 	$wrote = false;
-	
+
 	// Keep log of what has happened and how much the filesizes were reduced.
 	$dateformat = 'Y-m-d H:i:s';
 	$log = '';
@@ -510,7 +552,7 @@ function minify($type, $files)
 			}
 		}
 	}
-	
+
 	file_put_contents($cf['minifylog'], $log, FILE_APPEND);
 
 	return $wrote;

@@ -65,7 +65,7 @@ RENSHUU.PAAZMAYA.COM
 * While in "form" mode, the output is a html string containing <form>
 * with all the requested components, in a "form" key.
 *
-* Additional "form" options are: login and profile.
+* Additional "form" options are: login, register and profile.
 * Those two will use index.php directly as their counter parts, so there is no need 
 * to set up an "set" options for them.
 *
@@ -83,9 +83,7 @@ RENSHUU.PAAZMAYA.COM
 
 require './config.php';
 require './functions.php';
-
-// require 'translations_' . $_SESSION['lang'] . '.php';
-require './translations_en.php';
+require './translations_' . $_SESSION['lang'] . '.php';
 
 
 // http://marcgrabanski.com/articles/jquery-ajax-content-type
@@ -101,8 +99,8 @@ $out = array(
 $page = ''; // get/set/form
 $pages = array('get', 'set', 'form');
 
-$pagetype = ''; // art/location/training/person + profile/login
-$pagetypes = array('art', 'location', 'training', 'person', 'profile', 'login');
+$pagetype = ''; // art/location/training/person + profile/login/register
+$pagetypes = array('art', 'location', 'training', 'person', 'profile', 'login', 'register');
 
 $getfilter = '';
 
@@ -112,14 +110,14 @@ $loggedin = true; // for testing...
 
 if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
 {
-	$out['post'] = $_POST;
-	$out['get'] = $_GET;
+	$out['post'] = $posted;
+	$out['get'] = $getted;
 }
 
 // This should always be set anyhow due to mod_rewrite...
-if (isset($_GET['page']))
+if (isset($getted['page']))
 {
-	$parts = explode('/', strtolower($_GET['page']));
+	$parts = explode('/', strtolower($getted['page']));
 	$count = count($parts);
 	if ($count > 1 && $parts['0'] = 'ajax' && in_array($parts['1'], $pages))
 	{
@@ -157,45 +155,45 @@ if ($passcheck)
 {
 	// Check for map boundaries, used in two place, for getting trainings and locations.
 	$area_existed = false;
-	if (isset($_POST['area']) && is_array($_POST['area']))
+	if (isset($posted['area']) && is_array($posted['area']))
 	{
 		$ne_lat = 0;
 		$ne_lng = 0;
 		$sw_lat = 0;
 		$sw_lng = 0;
 		
-		if (isset($_POST['area']['northeast']['0']) && is_numeric($_POST['area']['northeast']['0']))
+		if (isset($posted['area']['northeast']['0']) && is_numeric($posted['area']['northeast']['0']))
 		{
-			$ne_lat = floatval($_POST['area']['northeast']['0']);
+			$ne_lat = floatval($posted['area']['northeast']['0']);
 		}
-		if (isset($_POST['area']['northeast']['1']) && is_numeric($_POST['area']['northeast']['1']))
+		if (isset($posted['area']['northeast']['1']) && is_numeric($posted['area']['northeast']['1']))
 		{
-			$ne_lng = floatval($_POST['area']['northeast']['1']);
+			$ne_lng = floatval($posted['area']['northeast']['1']);
 		}
-		if (isset($_POST['area']['southwest']['0']) && is_numeric($_POST['area']['southwest']['0']))
+		if (isset($posted['area']['southwest']['0']) && is_numeric($posted['area']['southwest']['0']))
 		{
-			$sw_lat = floatval($_POST['area']['southwest']['0']);
+			$sw_lat = floatval($posted['area']['southwest']['0']);
 		}
-		if (isset($_POST['area']['southwest']['1']) && is_numeric($_POST['area']['southwest']['1']))
+		if (isset($posted['area']['southwest']['1']) && is_numeric($posted['area']['southwest']['1']))
 		{
-			$sw_lng = floatval($_POST['area']['southwest']['1']);
+			$sw_lng = floatval($posted['area']['southwest']['1']);
 		}
 		$area_existed = true;
 	}
 	
 	// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
-	if ($page == 'get' && $pagetype == '' && $area_existed && isset($_POST['filter']) && is_array($_POST['filter']))
+	if ($page == 'get' && $pagetype == '' && $area_existed && isset($posted['filter']) && is_array($posted['filter']))
 	{
 		$arts = array();
-		if (isset($_POST['filter']['arts']) && is_array($_POST['filter']['arts']))
+		if (isset($posted['filter']['arts']) && is_array($posted['filter']['arts']))
 		{
-			$arts = $_POST['filter']['arts'];
+			$arts = $posted['filter']['arts'];
 		}
 
 		$weekdays = array();
-		if (isset($_POST['filter']['weekdays']) && is_array($_POST['filter']['weekdays']))
+		if (isset($posted['filter']['weekdays']) && is_array($posted['filter']['weekdays']))
 		{
-			$weekdays = $_POST['filter']['weekdays'];
+			$weekdays = $posted['filter']['weekdays'];
 		}
 		
 		$at = array();
@@ -313,9 +311,9 @@ if ($passcheck)
 	{
 		// If art id is not set, then fetch all the trainings...
 		$where_art = '';
-		if (isset($_POST['art']) && is_numeric($_POST['art']))
+		if (isset($posted['art']) && is_numeric($posted['art']))
 		{
-			$where_art = ' WHERE art = ' . intval($_POST['art']);
+			$where_art = ' WHERE art = ' . intval($posted['art']);
 		}
 		$where_filter = '';
 		if ($getfilter != '')
@@ -361,7 +359,7 @@ if ($passcheck)
 		// Data availalable is dependant of the form used
 		// Key in the form matches the value of the table row name.
 		// The object named after the $pagetype should include the data that is to be updated.
-		// Keys should match the ones used in $map below, available in $_POST['items'] as an array.
+		// Keys should match the ones used in $map below, available in $posted['items'] as an array.
 		$map = array(
 			'art' => array(
 				'title' => 'A.name',
@@ -398,16 +396,16 @@ if ($passcheck)
 		$missing = array();
 		foreach($map[$pagetype] as $key => $value)
 		{
-			if (isset($_POST['items'][$key]))
+			if (isset($posted['items'][$key]))
 			{
-				$trimmed[$key] = htmlenc($_POST['items'][$key]);
+				$trimmed[$key] = htmlenc($posted['items'][$key]);
 			}
 			else
 			{
 				$missing[] = $key;
 			}
 		}
-		if (!isset($_POST['update']) && !isset($_POST['insert']))
+		if (!isset($posted['update']) && !isset($posted['insert']))
 		{
 			$missing[] = 'main parametre';
 		}
@@ -428,9 +426,9 @@ if ($passcheck)
 			);
 			
 			// This should include the id of that item which is currently being updated.
-			if (isset($_POST['update']) && is_numeric($_POST['update']))
+			if (isset($posted['update']) && is_numeric($posted['update']))
 			{
-				$id = intval($_POST['update']);
+				$id = intval($posted['update']);
 				
 				$sets = array();
 				foreach($trimmed as $key => $val)
@@ -441,7 +439,7 @@ if ($passcheck)
 				// http://sqlite.org/lang_update.html
 				$sql = 'UPDATE ren_' . $pagetype . ' SET ' . implode(', ', $sets) . ' WHERE id = ' . $id;
 			}
-			else if (isset($_POST['insert']) && $_POST['insert'] == '0')
+			else if (isset($posted['insert']) && $posted['insert'] == '0')
 			{
 				// Value of "insert" should be 0
 				
@@ -469,7 +467,7 @@ if ($passcheck)
 			{
 				$affected = $link->exec($sql);
 				
-				if (isset($_POST['insert']))
+				if (isset($posted['insert']))
 				{
 					try 
 					{
@@ -527,7 +525,12 @@ if ($passcheck)
 		}
 		$data['items'] = $items;
 		
-		$out['form'] = createForm($pagetype, $data);
+		$action = null;
+		if ($pagetype == 'login')
+		{
+			$action = '/login';
+		}
+		$out['form'] = createForm($pagetype, $data, $action);
 		unset($out['error']);
 	}
 }

@@ -62,7 +62,7 @@ if (substr($_SERVER['HTTP_HOST'], 0, 3) == 'www')
 }
 
 // Clear out of the session ids.
-if (isset($_GET['RE']))
+if (isset($getted['RE']))
 {
 	$uri = preg_replace('/?RE=[^&]+/', '', $_SERVER['REQUEST_URI']);
 	$uri = preg_replace('/&RE=[^&]+/', '', $uri);
@@ -72,11 +72,28 @@ if (isset($_GET['RE']))
 }
 
 // As per .htaccess, all requests are redirected to index.php with one GET variable.
-if (isset($_GET['page']) && strlen($_GET['page']) > 0)
+if (isset($getted['page']) && strlen($getted['page']) > 0)
 {
-	$uri = '/#' . urize($_GET['page']);
-
-	header('HTTP/1.1 301 Moved Permanently');
+	$uri = '';
+	
+	// Try to login or logout the user if so requested
+	if ($getted['page'] == 'login')
+	{
+		// How much is 2 + 3 --> answer
+		if (isset($posted['email']) && $posted['email'] != '' && isset($posted['password']) && $posted['password'] != '' && isset($posted['answer']) && is_numeric($posted['answer']))
+		{
+			$sql = 'SELECT access FROM ren_user WHERE email = \'' . $posted['password'] . '\' AND password = \'' . $posted['password'] . '\'';
+		}
+	}
+	else if ($getted['page'] == 'logout')
+	{
+		session_destroy();
+	}
+	else 
+	{
+		$uri = '/#' . urize($getted['page']);
+		header('HTTP/1.1 301 Moved Permanently');
+	}
 	header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
 	exit();
 }
