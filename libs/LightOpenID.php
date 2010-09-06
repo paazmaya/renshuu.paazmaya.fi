@@ -24,7 +24,7 @@
  * Optionally, you can set $returnUrl and $realm (or $trustRoot, which is an alias).
  * The default values for those are:
  * $openid->realm     = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
- * $openid->returnUrl = $openid->realm . $_SERVER['REQUEST_URI'];
+ * $openid->returnUrl = $openid->realm . $_SERVER['REQUEST_URI']; # without the query part, if present
  * If you don't know their meaning, refer to any openid tutorial, or specification. Or just guess.
  *
  * AX and SREG extensions are supported.
@@ -39,7 +39,7 @@
  * To get the values, use $openid->getAttributes().
  *
  *
- * The library depends on curl, and requires PHP 5.
+ * The library requires PHP 5 with http/https stream wrappers enabled..
  * @author Mewp
  * @copyright Copyright (c) 2010, Mewp
  * @license http://www.opensource.org/licenses/mit-license.php MIT
@@ -67,11 +67,9 @@ class LightOpenID
     function __construct()
     {
         $this->trustRoot = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-        $this->returnUrl = $this->trustRoot . $_SERVER['REQUEST_URI'];
-
-        if (!function_exists('curl_exec')) {
-            throw new ErrorException('Curl extension is required.');
-        }
+        $uri = $_SERVER['REQUEST_URI'];
+        $uri = strpos($uri, '?') ? substr($uri, 0, strpos($uri, '?')) : $uri;
+        $this->returnUrl = $this->trustRoot . $uri;
 
         $this->data = $_POST + $_GET; # OPs may send data as POST or GET.
     }
@@ -115,27 +113,46 @@ class LightOpenID
     protected function request($url, $method='GET', $params=array())
     {
         $params = http_build_query($params, '', '&');
-        $curl = curl_init($url . ($method == 'GET' && $params ? '?' . $params : ''));
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        if ($method == 'POST') {
-            curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-        } elseif ($method == 'HEAD') {
-            curl_setopt($curl, CURLOPT_HEADER, true);
-            curl_setopt($curl, CURLOPT_NOBODY, true);
-        } else {
-            curl_setopt($curl, CURLOPT_HTTPGET, true);
-        }
-        $response = curl_exec($curl);
+        switch($method) {
+        case 'GET':
+            $opts = array(
+                'http' => array(
+                    'method' => 'GET',
+                )
+            );
+            $url = $url . ($params ? '?' . $params : '');
+            break;
+        case 'POST':
+            $opts = array(
+                'http' => array(
+                    'method' => 'POST',
+                    'header'  => 'Content-type: application/x-www-form-urlencoded',
+                    'content' => $params,
+                )
+            );
+            break;
+        case 'HEAD':
+            # We want to send a HEAD request,
+            # but since get_headers doesn't accept $context parameter,
+            # we have to change the defaults.
+            $default = stream_context_get_options(stream_context_get_default());
+            stream_context_get_default(
+                array('http' => array(
+                    'method' => 'HEAD',
+                    'header' => 'Accept: application/xrds+xml, */*',
+                ))
+            );
 
-        if (curl_errno($curl)) {
-            throw new ErrorException(curl_error($curl), curl_errno($curl));
-        }
+            $url = $url . ($params ? '?' . $params : '');
+            $headers = get_headers ($url, 1);
 
-        return $response;
+            # And restore them.
+            stream_context_get_default($default);
+            return $headers;
+        }
+        $context = stream_context_create ($opts);
+
+        return file_get_contents($url, false, $context);
     }
 
     protected function build_url($url, $parts)
@@ -195,16 +212,16 @@ class LightOpenID
         # We'll jump a maximum of 5 times, to avoid endless redirections.
         for ($i = 0; $i < 5; $i ++) {
             if ($yadis) {
-                $headers = explode("\n",$this->request($url, 'HEAD'));
+                $headers = $this->request($url, 'HEAD');
 
                 $next = false;
-                foreach ($headers as $header) {
-                    if (preg_match('#X-XRDS-Location\s*:\s*(.*)#', $header, $m)) {
-                        $url = $this->build_url(parse_url($url), parse_url(trim($m[1])));
+                    if (isset($headers['X-XRDS-Location'])) {
+                        $url = $this->build_url(parse_url($url), parse_url(trim($headers['X-XRDS-Location'])));
                         $next = true;
                     }
 
-                    if (preg_match('#Content-Type\s*:\s*application/xrds\+xml#i', $header)) {
+                    if (isset($headers['Content-Type'])
+                        && strpos($headers['Content-Type'], 'application/xrds+xml') !== false) {
                         # Found an XRDS document, now let's find the server, and optionally delegate.
                         $content = $this->request($url, 'GET');
 
@@ -260,7 +277,6 @@ class LightOpenID
                         $content = null;
                         break;
                     }
-                }
                 if ($next) continue;
 
                 # There are no relevant information in headers, so we search the body.
@@ -527,7 +543,6 @@ class LightOpenID
                           strlen('http://axschema.org/'));
             $attributes[$key] = $value;
         }
-        # Found the AX attributes, so no need to scan for SREG.
         return $attributes;
     }
     

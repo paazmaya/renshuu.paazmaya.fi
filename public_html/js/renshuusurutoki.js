@@ -22,7 +22,7 @@
 	$.fn.outerHtml = function() {
 		var outer = null;
 		if (this.length) {
-			var div = $('<div style="display:none"><' + '/div>');
+			var div = $('<' + 'div style="display:none"><' + '/div>');
 			var clone = $(this[0].cloneNode(false)).html(this.html()).appendTo(div);
 			outer = div.html();
 			div.remove();
@@ -297,17 +297,18 @@ $(document).ready(function() {
 				}
 				// http://api.jquery.com/serializeArray/
 				var serialized = $(this).serializeArray();
+				console.log('form submit. serialized: ' + serialized);
+				
 				var len = serialized.length;
 				var items = {};
 				for (var i = 0; i < len; ++i) {
 					items[serialized[i].name] = serialized[i].value;
 				}
-				var data = { items: items };
+				var post = { items: items };
 				var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
-				data[rel[0]] = rel[1];
-				console.log('form submit. data: ' + data);
+				post[rel[0]] = rel[1];
 
-				$.post($(this).attr('action'), data, function(data, status) {
+				$.post($(this).attr('action'), post, function(data, status) {
 					console.log('form submit. status: ' + status);
 					var out = {};
 					if (data.result) {
@@ -317,6 +318,12 @@ $(document).ready(function() {
 					// data.id, data.message, data.classes
 					$.reshuuSuruToki.forms.showFormFeedback(out);
 				}, 'json');
+				
+				// Change temporarily the layout of the submit button / form for visual feedback
+				$('#' + id).block({ 
+					message: '<h1>Sending data</h1>', 
+					css: { border: '3px solid #a00' } 
+				});
 				return false;
 			});
 
@@ -1377,14 +1384,14 @@ $(document).ready(function() {
 		setForm: function(form, type) {
 
 			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
-			$(form + ' input[name=location]').autoSuggest(
+			$(form).find('input[name=location]').autoSuggest(
 				$.reshuuSuruToki.ajaxpoint.get + 'location', {
 					startText: 'Type a location name',
 					selectedItemProp: 'id',
 					searchObjProps: 'title'
 				}
 			);
-			$(form + ' input[name=art]').autoSuggest(
+			$(form).find('input[name=art]').autoSuggest(
 				$.reshuuSuruToki.ajaxpoint.get + 'art', {
 					minChars: 2,
 					matchCase: false,
@@ -1409,7 +1416,7 @@ $(document).ready(function() {
 
 			// http://fredibach.ch/jquery-plugins/inputnotes.php
 			/*
-			$(form + ' input[name=title]').inputNotes({
+			$(form).find('input[name=title]').inputNotes({
 				config: {
 					containerTag: 'ul',
 					noteTag: 'li'
@@ -1438,12 +1445,12 @@ $(document).ready(function() {
 
 
 			// http://code.google.com/p/jquerytimepicker/
-			$(form + ' input[name=starttime]').timePicker();
+			$(form).find('input[name=starttime]').timePicker();
 
 			// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
-			$(form + ' input[name=endtime]').clockpick();
+			$(form).find('input[name=endtime]').clockpick();
 
-			$(form + ' fieldset').corner();
+			$(form).find('fieldset').corner();
 
 
 			$.reshuuSuruToki.forms.cache[type] = form;

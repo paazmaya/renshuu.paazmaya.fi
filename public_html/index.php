@@ -139,6 +139,7 @@ $javascript = array(
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
 	'jquery.simplemodal.js', // 1.4 (2010-08-19)
+	'jquery.blockUI.js', // 2.33 (29-MAR-2010)
 	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
 );
