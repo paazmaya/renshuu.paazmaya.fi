@@ -45,11 +45,11 @@ function htmldec($str)
 function cleanerlady($dirty)
 {
 	$clean = array();
-	foreach ($dirty as $key => $val) 
+	foreach ($dirty as $key => $val)
 	{
 		// Clean the key by taking white space out.
 		$key = preg_replace('/\s/', '', $key);
-		if (is_array($val)) 
+		if (is_array($val))
 		{
 			$clean[$key] = cleanerlady($val);
 		}
@@ -213,15 +213,18 @@ function createForm($id, $data, $action = null)
 	if (isset($data['buttons']) && is_array($data['buttons']))
 	{
 		$out .= '<p>';
-		if (isset($data['buttons']['send']) && $data['buttons']['send'] != '')
+		foreach($data['buttons'] as $k => $v) 
 		{
-			$out .= '<input type="button" name="send" value="' . $data['buttons']['send'] . '" />';
-		}
-		if (isset($data['buttons']['clear']) && $data['buttons']['clear'] != '')
-		{
-			$out .= '<input type="button" name="clear" value="' . $data['buttons']['clear'] . '" />';
+			$out .= '<input type="button" name="' . $k . '" value="' . $v . '" />';
 		}
 		$out .= '</p>';
+	}
+	if (isset($data['links']) && is_array($data['links']))
+	{
+		foreach($data['links'] as $k => $v) 
+		{
+			$out .= '<p class="login login-' . $k . '><a href="#' . $k . '" title="' . $v . '">' . $v . '</a></p>';
+		}
 	}
 	$out .= '</fieldset></form>';
 
@@ -598,5 +601,56 @@ function generateIconCssRules($type, $size, $color, $items)
 	$out .= implode("\n", $rules);
 
 	return $out;
+}
+
+/**
+ * Send email to the given address with the given content.
+ * Sends a blind copy to the sender address.
+ *
+ * @param string $toMail	Email address of the recipient
+ * @param string $toName	Name of the recipient
+ * @param string $subject	Subject of the mail
+ * @param string $message	Text format of the mail
+ * @return boolean	True if the sending succeeded
+ */
+function sendEmail($toMail, $toName, $subject, $message)
+{
+	global $cf;
+
+	require_once $cf['libdir'] . 'phpmailer/class.phpmailer.php';
+
+	$mail = new PHPMailer();
+
+	// For testing purposes...
+	$mail->SMTPDebug = true;
+
+	$mail->IsSMTP();
+	$mail->Host = $cf['email']['smtp'];
+	$mail->SMTPAuth = true;
+	$mail->Username = $cf['email']['address'];	// SMTP username
+	$mail->Password = $cf['email']['password'];	// SMTP password
+
+	//$mail->From = $cf['email']['address'];
+	//$mail->FromName = $cf['title'] . ' - renshuu.paazmaya.com';
+	$mail->SetFrom($cf['email']['address'], $cf['title'] . ' - renshuu.paazmaya.com');
+
+	// minor changes every 5 months
+	// patch changes every 2 weeks
+	// sub patch first number, changes every ~4 hours
+	$now = strval(time());
+	$mail->Version = '0.' . substr($now, 2, 1) . '.' . substr($now, 3, 1) . '.' . substr($now, 4, 3);
+
+	$mail->AddAddress($toMail, $toName);
+	$mail->AddBCC($cf['email']['address'], $mail->FromName);
+
+	$mail->WordWrap = 50;
+	//$mail->AddAttachment("/var/tmp/file.tar.gz");
+	$mail->IsHTML(false);
+
+	$mail->Subject = $subject;
+	$mail->Body = $message;
+
+	return $mail->Send();
+	// $mail->ErrorInfo;
 }
 

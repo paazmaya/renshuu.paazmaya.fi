@@ -138,7 +138,6 @@ $javascript = array(
 	'jquery.corner.js', // 2.11 (15-JUN-2010)
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
-	'jquery.simplemodal.js', // 1.4 (2010-08-19)
 	'jquery.blockUI.js', // 2.33 (29-MAR-2010)
 	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
@@ -246,7 +245,6 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 					?>
 				</div>
 				<div class="content">
-					<div id="formfeedback"></div>
 					<div class="stuff" id="tabcontent">
 						<div id="filtering">
 							<?php

@@ -29,6 +29,23 @@
 		}
 		return outer;
 	};
+	
+	/**
+	 * http://www.learningjquery.com/2007/08/clearing-form-data
+	 */
+	$.fn.clearForm = function() {
+		return this.each(function() {
+			var type = this.type, tag = this.tagName.toLowerCase();
+			if (tag == 'form')
+				return $(':input',this).clearForm();
+			if (type == 'text' || type == 'password' || tag == 'textarea')
+				this.value = '';
+			else if (type == 'checkbox' || type == 'radio')
+				this.checked = false;
+			else if (tag == 'select')
+				this.selectedIndex = -1;
+		});
+	};
 })(jQuery);
 
 $(document).ready(function() {
@@ -116,6 +133,9 @@ $(document).ready(function() {
 		ready: function() {
 			// http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 			$.reshuuSuruToki.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
+			
+			// Remove default styling from blockUi.
+			$.blockUI.defaults.css = {};
 
 			// Check for a cookie in case the center would be some other.
 			var centre = $.reshuuSuruToki.hikone;
@@ -287,6 +307,10 @@ $(document).ready(function() {
 				$.reshuuSuruToki.removeSavedList(id);
 				return false;
 			});
+			$('a.login').live('click', function() {
+				$(this).attr('href').substr(1);
+				return false;
+			});
 
 			// Note that either "insert" = 0 or "update" = id must be set in the root data...
 			$('form').live('submit', function() {
@@ -308,22 +332,38 @@ $(document).ready(function() {
 				var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
 				post[rel[0]] = rel[1];
 
-				$.post($(this).attr('action'), post, function(data, status) {
-					console.log('form submit. status: ' + status);
-					var out = {};
-					if (data.result) {
-						out.id = data.result.id;
-						out.message = data.result.title;
-					}
-					// data.id, data.message, data.classes
-					$.reshuuSuruToki.forms.showFormFeedback(out);
-				}, 'json');
-				
 				// Change temporarily the layout of the submit button / form for visual feedback
 				$('#' + id).block({ 
 					message: '<h1>Sending data</h1>', 
 					css: { border: '3px solid #a00' } 
 				});
+				
+				$.post($(this).attr('action'), post, function(data, status) {
+					console.log('form submit. status: ' + status);
+					var classes = 'error icon-alert';
+					var msg = data.result.message;
+					var html = '<div class="icon ' + classes + '"><h1>' + msg + '</h1>';
+					if (data.result.title) {
+						html += '<p>' + data.result.title + '</p>';
+					}
+					html += '<p><a href="#insert-0" rel="clear" title="">create new / clear</a></p>' +
+						'<p><a href="#update-' + data.result.id + '" rel="keep" title="">update current</a></p></div>';
+					
+					$('.blockUI').html(html);
+					
+					$('.blockUI a[rel]').one('click', function() {
+						var rel = $(this).attr('rel');
+						var href = $(this).attr('href').substr(1);
+						if (rel == 'clear') {
+							//$('#' + id).clearForm();
+							$('#' + id).get(0).reset();
+						}
+						$('#' + id).attr('rel', href);
+						$('#' + id).unblock();
+						return false;
+					});
+				}, 'json');
+				
 				return false;
 			});
 
@@ -850,8 +890,8 @@ $(document).ready(function() {
 				// This event is fired when the marker icon was clicked.
 				var pos = marker.getPosition();
 				console.log('training marker. click - ' + marker.title + ', pos: ' + pos);
-				// Open a modal window with the details
-				$.reshuuSuruToki.markers.openModal(marker);
+				// Show the blockUi over map with the details
+				$.reshuuSuruToki.markers.showInfo(marker);
 			});
 
 			var len = $.reshuuSuruToki.trainingMarkers.push(marker);
@@ -965,41 +1005,25 @@ $(document).ready(function() {
 			return marker;
 		},
 
-		// http://www.ericmmartin.com/projects/simplemodal/
-		openModal: function(marker) {
+		// http://malsup.com/jquery/block/
+		showInfo: function(marker) {
 			var inx = $.reshuuSuruToki.trainingMarkers.indexOf(marker);
-			console.log('openModal. marker.title: '+ marker.title + ', inx: ' + inx);
+			console.log('showInfo. marker.title: '+ marker.title + ', inx: ' + inx);
 			var data;
 			if (inx !== -1) {
 				data = $.reshuuSuruToki.trainingMarkersData[inx];
 			}
 
 			if (data) {
-				console.log('openModal. data. ' + data);
+				console.log('showInfo. data. ' + data);
 				var info = $.reshuuSuruToki.markers.buildInfoWindow(data);
-				$.modal(info, {
-					/*
-					onOpen: function(dialog) {
-						dialog.overlay.fadeIn('slow', function() {
-							dialog.container.slideDown('slow', function() {
-								dialog.data.fadeIn('slow');
-							});
-						});
-					},
-					onClose: function(dialog) {
-						dialog.data.fadeOut('slow', function() {
-							dialog.container.hide('slow', function() {
-								dialog.overlay.slideUp('slow', function() {
-									$.modal.close();
-								});
-							});
-						});
-					},
-					*/
-					closeClass: 'modal-close',
-					modal: false
+				$('#map').block({ 
+					message: info
 				});
-
+				$('.modal-close').one('click', function() {
+					$('#map').unblock();
+					return false;
+				});
 			}
 		},
 
@@ -1471,32 +1495,6 @@ $(document).ready(function() {
 				// Data should be prefilled in global "userData" object.
 				$.reshuuSuruToki.forms.fillUserData();
 			}
-		},
-		
-		// After the ajax call made by any of the forms in the tab content, there will be some sort of a feedback
-		showFormFeedback: function(data) {
-			if (!data) {
-				data = {};
-			}
-			if (!data.classes) {
-				data.classes = 'error icon icon-alert';
-			}
-			if (!data.id) {
-				data.id = '0';
-			}
-			if (!data.message) {
-				data.message = 'Seems that some data was lost...';
-			}
-			// If for some strange reason this element has gone...
-			if ($('#formfeedback').size() === 0) {
-				var div = '<div id="formfeedback"></div>';
-				$('#tabcontent').prepend(div);
-			}
-			var html = '<p>' + data.message + '</p>' +
-				'<p><a href="#insert-0" title="">create new</a></p>' +
-				'<p><a href="#update-' + data.id + '" title="">update current</a></p>';
-			$('#formfeedback').attr('class', data.classes).html(html);
-			// Should it disappear in few seconds...
 		},
 		
 		// User data binding

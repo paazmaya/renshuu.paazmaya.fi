@@ -71,7 +71,7 @@ RENSHUU.PAAZMAYA.COM
 *
 * As for the "set" mode, the output is simply to return the id and the title
 * for the data which was successfuly inserted. In any other case "error" will be present.
-*	result: { id: 0, title: '' }
+*	result: { id: 0, title: '', message: '' }
 *
 * In the case of an update, the "set" mode is used, where a post parametre will reveal
 * the need for an update.
@@ -481,7 +481,8 @@ if ($passcheck)
 				
 				$out['result'] = array(
 					'id' => $id,
-					'title' => $trimmed['title']
+					'title' => $trimmed['title'],
+					'message' => 'New data inserted...'
 				);
 				unset($out['error']);
 			}

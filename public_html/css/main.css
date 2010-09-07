@@ -434,3 +434,28 @@ address.geo abbr {
 	-khtml-opacity: 0.5;
 	opacity: 0.5;
 }
+
+
+
+
+.login {
+	background-repeat : no-repeat;
+	background-attachment : scroll;
+	background-position : left center;
+	margin: 2em;
+	border: 0.3em solid black;
+}
+
+.login-facebook {
+	background-image: url('/img/social_signin_buttons_icons/facebook_32.png');
+}
+.login-openid {
+	background-image: url('/img/social_signin_buttons_icons/openid_32.png');
+}
+.login-twitter {
+	background-image: url('/img/social_signin_buttons_icons/twitter_32.png');
+}
+
+	
+	
+	

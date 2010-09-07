@@ -37,6 +37,9 @@ Only non empty values will be used.
 			'value' => '', value of the input element if any
 			'options' => array() options used in the case of select: value => visible text
 		)
+	),
+	'links' => array(
+		'twitter' => 'Login via your Twitter account'
 	)
 )
 */
@@ -224,6 +227,11 @@ $lang['forms'] = array(
 				'name' => 'answer',
 				'after' => ' (making sure you are a real person)'
 			)
+		),
+		'links' => array(
+			'facebook' => '',
+			'openid' => '',
+			'twitter' => 'Login via your Twitter account'
 		)
 	),
 	'profile' => array(
