@@ -441,7 +441,8 @@ address.geo abbr {
 .login {
 	background-repeat : no-repeat;
 	background-attachment : scroll;
-	background-position : left center;
+	background-position : 1em center;
+	padding-left: 2em;
 	margin: 2em;
 	border: 0.3em solid black;
 }

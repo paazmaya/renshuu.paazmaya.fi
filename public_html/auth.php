@@ -7,6 +7,9 @@ RENSHUU.PAAZMAYA.COM
 *
 * This page is used in a modal window for receiving and sending data between
 * consumer (this web site) and provider (others, like twitter or facebook).
+*
+* Those services which require slightly different parametres to set, differing
+* from stantard OpenID, have their independent "page" option.
 */
 
 require './config.php';
@@ -22,7 +25,7 @@ $out = array(
 );
 
 $page = '';
-$pages = array('openid', 'oauth', 'twitter');
+$pages = array('facebook', 'google', 'oauth', 'openid', 'twitter');
 
 if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
 {

@@ -52,6 +52,10 @@ $(document).ready(function() {
 	$.reshuuSuruToki.ready();
 });
 
+/**
+ * https://addons.mozilla.org/en-US/firefox/addon/11905/
+ * https://addons.mozilla.org/en-US/firefox/addon/12632/
+ */
 (function($) {
 
 	$.reshuuSuruToki = {
@@ -311,6 +315,7 @@ $(document).ready(function() {
 			$('p.login a').live('click', function() {
 				var href = $(this).attr('href').substr(1);
 				console.log('href: ' + href);
+				$.reshuuSuruToki.openAuthModal(href);
 				return false;
 			});
 
@@ -342,14 +347,16 @@ $(document).ready(function() {
 				
 				$.post($(this).attr('action'), post, function(data, status) {
 					console.log('form submit. status: ' + status);
+					console.dir(data);
+					var res = data.response.result;
+					
 					var classes = 'error icon-alert';
-					var msg = data.result.message;
-					var html = '<div class="icon ' + classes + '"><h1>' + msg + '</h1>';
-					if (data.result.title) {
-						html += '<p>' + data.result.title + '</p>';
+					var html = '<div class="icon ' + classes + '"><h1>' + res.message + '</h1>';
+					if (res.title) {
+						html += '<p>' + res.title + '</p>';
 					}
 					html += '<p><a href="#insert-0" rel="clear" title="">create new / clear</a></p>' +
-						'<p><a href="#update-' + data.result.id + '" rel="keep" title="">update current</a></p></div>';
+						'<p><a href="#update-' + res.id + '" rel="keep" title="">update current</a></p></div>';
 					
 					$('.blockUI').html(html);
 					
@@ -608,6 +615,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.trainingMarkersData = [];
 
 			$.post($.reshuuSuruToki.ajaxpoint.get, para, function(data, status) {
+				//console.dir(data);
 				if (data.response && data.response.result) {
 					var res = data.response.result;
 					var len = res.length;
@@ -637,6 +645,7 @@ $(document).ready(function() {
 			$.reshuuSuruToki.locationMarkersData = [];
 			
 			$.post($.reshuuSuruToki.ajaxpoint.get + 'location', para, function(data, status) {
+				console.dir(data);
 				if (data.response && data.response.result) {
 					var res = data.response.result;
 					var len = res.length;
@@ -686,6 +695,16 @@ $(document).ready(function() {
 		showStreetView: function(position) {
 			$.reshuuSuruToki.streetview.setPosition(position);
 			$.reshuuSuruToki.streetview.setVisible(true);
+		},
+		
+		// http://getfirebug.com/wiki/index.php/Firebug_Extensions
+		// http://getfirebug.com/wiki/index.php/Console_API
+		openAuthModal: function(key) {
+			console.group('openAuthModal');
+			
+			// ...
+			
+			console.groupEnd();
 		},
 
 		mapInit: function(map_element, street_element, map_options, street_options) {
@@ -1397,6 +1416,7 @@ $(document).ready(function() {
 			else
 			{
 				$.post($.reshuuSuruToki.ajaxpoint.form + type, function(data, status) {
+					//console.dir(data);
 					if (data.response && data.response.form)
 					{
 						$.reshuuSuruToki.forms.setForm(data.response.form, type);

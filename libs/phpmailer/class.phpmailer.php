@@ -37,9 +37,6 @@
  * @version $Id$
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-
-if (version_compare(PHP_VERSION, '5.0.0', '<') ) exit("Sorry, this version of PHPMailer will only run on PHP version 5 or greater!\n");
-
 class PHPMailer {
 
   /////////////////////////////////////////////////
@@ -228,6 +225,7 @@ class PHPMailer {
    * @var bool
    */
   public $SMTPDebug     = false;
+  public $SMTPDebugFile;
 
   /**
    * Prevents the SMTP connection from being closed after each mail
@@ -775,6 +773,8 @@ class PHPMailer {
     }
 
     $this->smtp->do_debug = $this->SMTPDebug;
+    $this->smtp->logFile = $this->SMTPDebugFile;
+	
     $hosts = explode(';', $this->Host);
     $index = 0;
     $connection = $this->smtp->Connected();

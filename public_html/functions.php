@@ -213,7 +213,7 @@ function createForm($id, $data, $action = null)
 	if (isset($data['buttons']) && is_array($data['buttons']))
 	{
 		$out .= '<p>';
-		foreach($data['buttons'] as $k => $v) 
+		foreach($data['buttons'] as $k => $v)
 		{
 			$out .= '<input type="button" name="' . $k . '" value="' . $v . '" />';
 		}
@@ -221,7 +221,7 @@ function createForm($id, $data, $action = null)
 	}
 	if (isset($data['links']) && is_array($data['links']))
 	{
-		foreach($data['links'] as $k => $v) 
+		foreach($data['links'] as $k => $v)
 		{
 			$out .= '<p class="login login-' . $k . '"><a href="#' . $k . '" title="' . $v . '">' . $v . '</a></p>';
 		}
@@ -623,34 +623,55 @@ function sendEmail($toMail, $toName, $subject, $message)
 
 	// For testing purposes...
 	$mail->SMTPDebug = true;
+	$mail->SMTPDebugFile = $cf['email']['log'];
 
 	$mail->IsSMTP();
 	$mail->Host = $cf['email']['smtp'];
 	$mail->SMTPAuth = true;
-	$mail->Username = $cf['email']['address'];	// SMTP username
-	$mail->Password = $cf['email']['password'];	// SMTP password
+	$mail->Username = $cf['email']['address'];
+	$mail->Password = $cf['email']['password'];
 
-	//$mail->From = $cf['email']['address'];
-	//$mail->FromName = $cf['title'] . ' - renshuu.paazmaya.com';
-	$mail->SetFrom($cf['email']['address'], $cf['title'] . ' - renshuu.paazmaya.com');
+	$sender = $cf['title'] . ' - renshuu.paazmaya.com';
+	//$sender = htmlentities($sender, ENT_QUOTES, 'UTF-8');
+	mb_internal_encoding('UTF-7');
+	$sender = mb_encode_mimeheader($sender, 'UTF-7', 'Q'); // from PHP manual
 
-	// minor changes every 5 months
-	// patch changes every 2 weeks
-	// sub patch first number, changes every ~4 hours
+	$mail->SetFrom($cf['email']['address'], $sender);
+
+	// Minor changes every 5 months
+	// Patch changes every 2 weeks
+	// Sub patch first number, changes every ~4 hours
+	// If sub patch is 3 numbers long, its last changes every ~2 minutes
+	// If sub patch is 4 numbers long, its last changes every ~10 seconds
 	$now = strval(time());
-	$mail->Version = '0.' . substr($now, 2, 1) . '.' . substr($now, 3, 1) . '.' . substr($now, 4, 3);
+	$ver = '0.' . substr($now, 2, 1) . '.' . substr($now, 3, 1) . '.' . substr($now, 4, 3);
+	$mail->Version = $ver;
 
 	$mail->AddAddress($toMail, $toName);
 	$mail->AddBCC($cf['email']['address'], $mail->FromName);
 
 	$mail->WordWrap = 50;
-	//$mail->AddAttachment("/var/tmp/file.tar.gz");
+	$mail->AddAttachment('./img/favicon64x64.png');
 	$mail->IsHTML(false);
+	
+	$signature = "\n\n-------------------\nRENSHUU.PAAZMAYA.COM\nhttp://renshuu.paazmaya.com/\nv" . $ver;
+	
+	/*
+	mb_internal_encoding('UTF-8');
+	$signature .= "\nUTF-8:" . mb_encode_mimeheader($cf['title'], 'UTF-8', 'Q'); 
+	mb_internal_encoding('UTF-7');
+	$signature .= "\nUTF-7:" . mb_encode_mimeheader($cf['title'], 'UTF-7', 'Q'); 
+	mb_internal_encoding('ISO-8859-15');
+	$signature .= "\nISO-8859-15:" . mb_encode_mimeheader($cf['title'], 'ISO-8859-15', 'Q'); 
+	mb_internal_encoding('ISO-8859-1');
+	$signature .= "\nISO-8859-1:" . mb_encode_mimeheader($cf['title'], 'ISO-8859-1', 'Q'); 
+	*/
 
 	$mail->Subject = $subject;
-	$mail->Body = $message;
+	$mail->Body = $message . $signature;
 
 	return $mail->Send();
 	// $mail->ErrorInfo;
 }
 
+// Disturbed - Another way to die
