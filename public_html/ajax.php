@@ -65,7 +65,7 @@ RENSHUU.PAAZMAYA.COM
 * While in "form" mode, the output is a html string containing <form>
 * with all the requested components, in a "form" key.
 *
-* Additional "form" options are: login, register and profile.
+* Additional "form" options are: login, register and user.
 * Those two will use index.php directly as their counter parts, so there is no need 
 * to set up an "set" options for them.
 *
@@ -99,8 +99,8 @@ $out = array(
 $page = ''; // get/set/form
 $pages = array('get', 'set', 'form');
 
-$pagetype = ''; // art/location/training/person + profile/login/register
-$pagetypes = array('art', 'location', 'training', 'person', 'profile', 'login', 'register');
+$pagetype = ''; // art/location/training/person + user/login/register
+$pagetypes = array('art', 'location', 'training', 'person', 'register', 'user', 'login');
 
 $getfilter = '';
 
@@ -130,8 +130,8 @@ if (isset($getted['page']))
 		
 		if ($page != 'form')
 		{
-			// Remove "profile" and "login" options.
-			array_splice($pagetypes, -2);
+			// Remove "login" option.
+			array_splice($pagetypes, -1);
 		}
 
 		if ($count > 2 && in_array($parts['2'], $pagetypes))
@@ -362,11 +362,9 @@ if ($passcheck)
 		// Keys should match the ones used in $map below, available in $posted['items'] as an array.
 		$map = array(
 			'art' => array(
-				'title' => 'A.name',
 				'uri' => 'A.uri'
 			),
 			'location' => array(
-				'title' => '',
 				'uri' => '',
 				'info' => '',
 				'address' => '',
@@ -375,7 +373,6 @@ if ($passcheck)
 				'longitude' => ''
 			),
 			'training' => array(
-				'title' => '',
 				'location' => '',
 				'weekday' => '',
 				'occurance' => '',
@@ -385,16 +382,25 @@ if ($passcheck)
 				'art' => ''
 			),
 			'person' => array(
-				'title' => '',
 				'art' => '',
 				'contact' => '',
 				'info' => '',
+			),
+			'user' => array(
+				'email' => '',
+				'password' => ''
+			),
+			'register' => array(
+				'email' => ''
 			)
 		);
+		$always = array_merge($map[$pagetype], array(
+			'title' => 'name'
+		));
 		// Are all the posted keys set which are needed for that type?
 		$trimmed = array();
 		$missing = array();
-		foreach($map[$pagetype] as $key => $value)
+		foreach($always as $key => $value)
 		{
 			if (isset($posted['items'][$key]))
 			{
@@ -426,7 +432,7 @@ if ($passcheck)
 			);
 			
 			// This should include the id of that item which is currently being updated.
-			if (isset($posted['update']) && is_numeric($posted['update']))
+			if (isset($posted['update']) && is_numeric($posted['update']) && $pagetype != 'register')
 			{
 				$id = intval($posted['update']);
 				
@@ -457,6 +463,10 @@ if ($passcheck)
 					If the PDO driver does not support this capability, 
 					PDO::lastInsertId() triggers an IM001 SQLSTATE. 
 				*/
+				if ($pagetype == 'register')
+				{
+					sendEmail($trimmed['email'], $trimmed['title'], 'Hello there', 'Ciao ciao');
+				}
 			}
 			else
 			{
@@ -471,7 +481,7 @@ if ($passcheck)
 				{
 					try 
 					{
-						$id = $link->lastInsertId('id'); // should the "id" be used here as a prametre
+						$id = $link->lastInsertId('id'); // should the "id" be used here as a parametre
 					}
 					catch (PDOException $error)
 					{

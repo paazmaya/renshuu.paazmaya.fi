@@ -223,7 +223,7 @@ function createForm($id, $data, $action = null)
 	{
 		foreach($data['links'] as $k => $v) 
 		{
-			$out .= '<p class="login login-' . $k . '><a href="#' . $k . '" title="' . $v . '">' . $v . '</a></p>';
+			$out .= '<p class="login login-' . $k . '"><a href="#' . $k . '" title="' . $v . '">' . $v . '</a></p>';
 		}
 	}
 	$out .= '</fieldset></form>';
@@ -341,7 +341,7 @@ function createSelectionShortcuts($class, $data)
  *   <li><a href="#filters" title="">filters</a></li>
  *   <li><a href="#location" title="">location</a></li>
  *   <li><a href="#art" title="">art</a></li>
- *   <li><a href="#profile" title="">profile</a></li>
+ *   <li><a href="#user" title="">profile</a></li>
  *   <li><a href="#login" title="">login</a></li>
  * </ul>
  *

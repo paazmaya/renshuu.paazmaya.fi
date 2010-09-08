@@ -92,7 +92,7 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 				$_SESSION['username'] = $res['name'];
 				$_SESSION['access'] = intval($res['access']);
 
-				$uri = '/#profile';
+				$uri = '/#user';
 			}
 			else
 			{

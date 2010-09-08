@@ -94,8 +94,9 @@ $(document).ready(function() {
 			filters: 'equalizer',
 			location: 'addressbook',
 			art: 'smirk',
-			profile: 'womanman',
-			login: 'lock'
+			user: 'womanman',
+			login: 'lock',
+			register: 'phone'
 		},
 		
 		// Icon used as a background for the geocode direction
@@ -307,8 +308,9 @@ $(document).ready(function() {
 				$.reshuuSuruToki.removeSavedList(id);
 				return false;
 			});
-			$('a.login').live('click', function() {
-				$(this).attr('href').substr(1);
+			$('p.login a').live('click', function() {
+				var href = $(this).attr('href').substr(1);
+				console.log('href: ' + href);
 				return false;
 			});
 
@@ -1384,9 +1386,9 @@ $(document).ready(function() {
 		// Save the earlierly fetched form elements with callbacks once set.
 		cache: {},
 
-		types: ['art', 'location', 'training', 'person', 'profile', 'login'],
+		types: ['art', 'location', 'training', 'person', 'user', 'login', 'register'],
 
-		// Six types available: art, location, training, person, profile, login
+		// Seven types available: art, location, training, person, user, login, register
 		getForm: function(type) {
 			if ($.reshuuSuruToki.forms.cache[type])
 			{
@@ -1491,7 +1493,7 @@ $(document).ready(function() {
 				$('#location_form input:radio[name=geocode]').removeAttr('checked');
 				$('#location_form input:radio[name=geocode][value=' + $.cookie('locationGeocode') + ']').attr('checked', 'checked');
 			}
-			else if (type == 'profile') {
+			else if (type == 'user') {
 				// Data should be prefilled in global "userData" object.
 				$.reshuuSuruToki.forms.fillUserData();
 			}

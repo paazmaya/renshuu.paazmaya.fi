@@ -234,7 +234,7 @@ $lang['forms'] = array(
 			'twitter' => 'Login via your Twitter account'
 		)
 	),
-	'profile' => array(
+	'user' => array(
 		'legend' => 'Profile',
 		'info' => '',
 		'buttons' => array(
@@ -418,7 +418,7 @@ $lang['navigation'] = array(
 		'text' => 'art',
 		'access' => 32
 	),
-	'profile' => array(
+	'user' => array(
 		'title' => 'Profile editing',
 		'text' => 'profile',
 		'access' => 1
@@ -426,6 +426,11 @@ $lang['navigation'] = array(
 	'login' => array(
 		'title' => 'Login',
 		'text' => 'login',
+		'access' => 0
+	),
+	'register' => array(
+		'title' => 'Register',
+		'text' => 'register',
 		'access' => 0
 	),
 	'logout' => array(
