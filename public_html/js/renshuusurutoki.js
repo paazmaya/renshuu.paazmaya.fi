@@ -60,6 +60,7 @@ $(document).ready(function() {
 
 	$.reshuuSuruToki = {
 		animSpeed: 200,
+		keepAlive: 1000 * 60 * 5, // Every 5 minutes a keepalive call
 
 		// default map zoom, overwritten on every zoom change event and/or by cookie
 		zoom: 8,
@@ -341,26 +342,28 @@ $(document).ready(function() {
 
 				// Change temporarily the layout of the submit button / form for visual feedback
 				$('#' + id).block({ 
-					message: '<h1>Sending data</h1>', 
-					css: { border: '3px solid #a00' } 
+					message: '<div id="formfeedback"><h1>Sending data</h1></div>'
 				});
 				
 				$.post($(this).attr('action'), post, function(data, status) {
 					console.log('form submit. status: ' + status);
 					console.dir(data);
-					var res = data.response.result;
+					var res;
+					if (data.response && data.response.result) {
+						res = data.response.result;
+					}
 					
-					var classes = 'error icon-alert';
-					var html = '<div class="icon ' + classes + '"><h1>' + res.message + '</h1>';
+					var classes = 'icon error icon-alert';
+					var html = '<h1>' + res.message + '</h1>';
 					if (res.title) {
 						html += '<p>' + res.title + '</p>';
 					}
 					html += '<p><a href="#insert-0" rel="clear" title="">create new / clear</a></p>' +
 						'<p><a href="#update-' + res.id + '" rel="keep" title="">update current</a></p></div>';
 					
-					$('.blockUI').html(html);
+					$('#formfeedback').attr('class', classes).html(html);
 					
-					$('.blockUI a[rel]').one('click', function() {
+					$('#formfeedback a[rel]').one('click', function() {
 						var rel = $(this).attr('rel');
 						var href = $(this).attr('href').substr(1);
 						if (rel == 'clear') {
@@ -368,7 +371,7 @@ $(document).ready(function() {
 							$('#' + id).get(0).reset();
 						}
 						$('#' + id).attr('rel', href);
-						$('#' + id).unblock();
+						$('#' + id).unblock(); // Should destroy #formfeedback...
 						return false;
 					});
 				}, 'json');
@@ -378,10 +381,12 @@ $(document).ready(function() {
 
 			$('form input:button[name=send]').live('click', function() {
 				$(this).parents('form').first().submit();
+				return false;
 			});
 			
 			$('form input:button[name=clear]').live('click', function() {
 				$(this).parents('form').first().reset();
+				return false;
 			});
 			
 			// Change icon based on geocode direction
@@ -439,6 +444,13 @@ $(document).ready(function() {
 				location.hash = '#filters';
 				$.reshuuSuruToki.showTabContent('filters');
 			}
+			
+			// Finally, set the keepalive call
+			setInterval(function() {
+				$.get('/ajax/keepalive', function(data) {
+					//console.log(data);
+				}, 'json');
+			}, $.reshuuSuruToki.keepAlive);
 
 		},
 

@@ -7,6 +7,9 @@ $lang = array(
 );
 
 
+$lang['title'] = '';
+$lang['description'] = '';
+
 /*
 zero indexed, starting from sunday
 */

@@ -6,7 +6,8 @@ RENSHUU.PAAZMAYA.COM
 * Possible commands as the first part of the url after "ajax":
 * - get		Get public data while not logged in
 * - set		Accessable only when logged in
-* - form	Can be accessed anytime but useless if not logged in.
+* - form	Can be accessed anytime but useless if not logged in
+* - keepalive	Used for keeping the session alive.
 *
 * In all of the cases, the keyword followed must be one of the following,
 * if not "get" option:
@@ -96,8 +97,8 @@ $out = array(
 	'error' => 'Parameters missing'
 );
 
-$page = ''; // get/set/form
-$pages = array('get', 'set', 'form');
+$page = ''; // get/set/form + keepalive
+$pages = array('get', 'set', 'form', 'keepalive');
 
 $pagetype = ''; // art/location/training/person + user/login/register
 $pagetypes = array('art', 'location', 'training', 'person', 'register', 'user', 'login');
@@ -542,6 +543,11 @@ if ($passcheck)
 			$action = '/login';
 		}
 		$out['form'] = createForm($pagetype, $data, $action);
+		unset($out['error']);
+	}
+	else if ($page == 'keepalive')
+	{
+		$out['keepalive'] = time();
 		unset($out['error']);
 	}
 }

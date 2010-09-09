@@ -190,7 +190,8 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title><?php echo $cf['title']; ?></title>
+	<title><?php echo $cf['title'] . ' | ' . $lang['title']; ?></title>
+	<meta name="description" content="<?php echo $lang['description']; ?>" />
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="author" href="http://paazio.nanbudo.fi" />
