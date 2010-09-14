@@ -454,8 +454,30 @@ $lang['index'] = array(
 		'savedlist' => 'Saved list',
 		'export' => 'Export settings'
 	),
-	'' => 'toggle SV',
-	'' => 'Google Maps V3',
-	'' => 'Google Maps Street View',
+	'streettoggle' => 'toggle SV',
+	'map_alt' => 'Google Maps V3',
+	'street_alt' => 'Google Maps Street View',
+	'' => '',
+	'' => '',
+);
+
+/**
+ * Items for the copyright area.
+ * Contains also the author information.
+ */
+$lang['copyright'] = array(
+	'license' => 'License information',
+	'' => '',
+	'' => '',
+	'' => '',
+);
+
+/**
+ * Lastly the items needed for javascript
+ */
+$lang['javascript'] = array(
+	'license' => 'License information',
+	'' => '',
+	'' => '',
 	'' => '',
 );

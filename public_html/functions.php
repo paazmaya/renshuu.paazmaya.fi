@@ -674,4 +674,85 @@ function sendEmail($toMail, $toName, $subject, $message)
 	// $mail->ErrorInfo;
 }
 
+/**
+ * Fetch a translation, if available, for the given string.
+ * 
+ * @param string $str
+ * @return string
+ */
+function tr($str)
+{
+	global $lang;
+	$out = $str;
+	
+	return $out;
+}
+
+// http://www.icanlocalize.com/tools/php_scanner
+
+// http://www.php.net/manual/en/function.bind-textdomain-codeset.php
+function languageInit ()
+{
+	// set the LANGUAGE environmental variable
+	// This one for some reason makes a difference FU@#$%^&*!CK
+	// and when combined with bind_textdomain_codeset allows one
+	// to set locale independent of server locale setup!!!
+	if ( false == putenv("LANGUAGE=" . $this->_language ) )
+	{
+		echo sprintf("Could not set the ENV variable LANGUAGE = %s", $this->_language);
+	}
+	
+	// set the LANG environmental variable
+	if ( false == putenv("LANG=" . $this->_language ) )
+	{
+		echo sprintf("Could not set the ENV variable LANG = %s", $this->_language);
+	}
+
+	// if locales are not installed in locale folder, they will not
+	// get set! This is usually in /usr/lib/locale
+	// Also, the backup language should always be the default language
+	// because of this...see the NOTE in the class description
+
+	// Try first what we want but with the .utf8, which is what the locale
+	// setting on most systems want (and is most compatible
+	// Then just try the standard lang encoding asked for, and then if
+	// all else fails, just try the default language
+	// LC_ALL is said to be used, but it has nasty usage in some languages
+	// in swapping commas and periods! Thus try LC_MESSAGE if on one of
+	// those systems.
+	// It is supposedly not defined on WINDOWS, so am including it here
+	// for possible uncommenting if a problem is shown
+	//
+	// if (!defined('LC_MESSAGES')) define('LC_MESSAGES', 6);
+	// yes, setlocale is case-sensitive...arg
+	$locale_set = setlocale(LC_ALL, $this->_language . ".utf8",
+									$this->_language . ".UTF8",
+									$this->_language . ".utf-8",
+									$this->_language . ".UTF-8",
+									$this->_language,
+									CC_LANG);
+	// if we don't get the setting we want, make sure to complain!
+	if ( ( $locale_set != $this->_language && CC_LANG == $locale_set) || empty($locale_set) )
+	{
+		echo sprintf("Tried: setlocale to '%s', but could only set to '%s'.", $this->_language, $locale_set);
+	}
+
+	$bindtextdomain_set = bindtextdomain($this->_domain,
+							  CC_LANG_LOCALE . "/" . $this->_locale_pref );
+	if ( empty($bindtextdomain_set) )
+	{
+		echo sprintf("Tried: bindtextdomain, '%s', to directory, '%s', " .
+				"but received '%s'",
+				$this->_domain, CC_LANG_LOCALE . "/" . $this->_locale_pref,
+				$bindtextdomain_set) ;
+	}
+	bind_textdomain_codeset($this->_domain, "UTF-8");
+	$textdomain_set = textdomain($this->_domain);
+	if ( empty($textdomain_set) )
+	{
+		echo sprintf("Tried: set textdomain to '%s', but got '%s'", $this->_domain, $textdomain_set);
+	}
+}
+
+
 // Disturbed - Another way to die

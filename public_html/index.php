@@ -212,17 +212,17 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 					<p><a href="#" rel="map"><?php echo $lang['index']['header']['map']; ?></a><span></span></p>
 				</div>
 				<div class="content">
-					<div id="map" class="stuff">Google Maps V3</div>
+					<div id="map" class="stuff"><?php echo $lang['index']['map_alt']; ?></div>
 				</div>
 				<div class="header icon icon-search">
 					<p><a href="#" rel="street"><?php echo $lang['index']['header']['streetview']; ?></a>
 						<span>
-							<label><input type="checkbox" name="markerstreet" /> toggle SV</label>
+							<label><input type="checkbox" name="markerstreet" /> <?php echo $lang['index']['streettoggle']; ?></label>
 						</span>
 					</p>
 				</div>
 				<div class="content">
-					<div id="street" class="stuff">Google Maps Street View</div>
+					<div id="street" class="stuff"><?php echo $lang['index']['street_alt']; ?></div>
 				</div>
 				<div class="header icon icon-calendar">
 					<p><a href="#" rel="savedlist"><?php echo $lang['index']['header']['savedlist']; ?></a><span></span></p>
@@ -307,19 +307,27 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	*/
 	$copyright = '<div id="copyright">
 		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
-			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">License information</a></p>
+			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . $lang['copyright']['license'] . '</a></p>
 		</div>';
 
 	echo $copyright;
 	
-// Translations
+// Translations and user data if any...
 echo '<script type="text/javascript">';
+
+echo ' var lang = {';
+foreach ($lang['javascript'] as $k => $v)
+{
+	echo '  ' . $k . ': "' . $v . '",';
+}
+echo '  language: "' . $_SESSION['lang'] . '"';
+echo ' };';
 
 echo ' var userData = {';
 echo '  loggedIn: ' . ($_SESSION['access'] > 0 ? 'true' : 'false') . ',';
 echo '  name: "' . $_SESSION['username'] . '",';
 echo '  email: "' . $_SESSION['email'] . '"';
-echo ' }; ';
+echo ' };';
 
 echo '</script>';
 
