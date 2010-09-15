@@ -209,23 +209,23 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 		<div id="left" class="left-side">
 			<div id="mapping">
 				<div class="header icon icon-tools">
-					<p><a href="#" rel="map"><?php echo $lang['index']['header']['map']; ?></a><span></span></p>
+					<p><a href="#" rel="map"><?php echo gettext('Training locations'); ?></a><span></span></p>
 				</div>
 				<div class="content">
-					<div id="map" class="stuff"><?php echo $lang['index']['map_alt']; ?></div>
+					<div id="map" class="stuff">Google Maps V3</div>
 				</div>
 				<div class="header icon icon-search">
-					<p><a href="#" rel="street"><?php echo $lang['index']['header']['streetview']; ?></a>
+					<p><a href="#" rel="street"><?php echo gettext('Street View'); ?></a>
 						<span>
-							<label><input type="checkbox" name="markerstreet" /> <?php echo $lang['index']['streettoggle']; ?></label>
+							<label><input type="checkbox" name="markerstreet" /> <?php echo gettext('toggle SV'); ?></label>
 						</span>
 					</p>
 				</div>
 				<div class="content">
-					<div id="street" class="stuff"><?php echo $lang['index']['street_alt']; ?></div>
+					<div id="street" class="stuff">Google Maps Street View</div>
 				</div>
 				<div class="header icon icon-calendar">
-					<p><a href="#" rel="savedlist"><?php echo $lang['index']['header']['savedlist']; ?></a><span></span></p>
+					<p><a href="#" rel="savedlist"><?php echo gettext('Saved list'); ?></a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="savedlist" class="stuff">
@@ -251,6 +251,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 							<?php
 							// <form name="filter_form" action="/ajax/get" method="post">
 							echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
+							
 							echo '<ul id="arts">';
 							// Filter based on the user access if any...
 							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
@@ -278,7 +279,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 			</div>
 			<div>
 				<div class="header icon icon-edit">
-					<p><a href="#" rel="export"><?php echo $lang['index']['header']['export']; ?></a><span></span></p>
+					<p><a href="#" rel="export"><?php echo gettext('Export settings'); ?></a><span></span></p>
 				</div>
 				<div class="content">
 					<div id="export" class="stuff">
@@ -288,7 +289,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 						
 						$staticmap = createStaticMapUrl(); // using defaults
 						?>
-						<p><img id="exportpreview" src="<?php echo $staticmap; ?>" alt="Preview of the current settings affect on the resulting map" /></p>
+						<p><img id="exportpreview" src="<?php echo $staticmap; ?>" alt="<?php echo gettext('Preview of the current settings affect on the resulting map'); ?>" /></p>
 					</div>
 				</div>
 			</div>
@@ -297,6 +298,8 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	</div> 
 
 	<?php
+	
+	
 	/*
 	<div id="bottom">
 		<div class="left-side">
@@ -307,7 +310,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	*/
 	$copyright = '<div id="copyright">
 		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
-			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . $lang['copyright']['license'] . '</a></p>
+			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
 		</div>';
 
 	echo $copyright;

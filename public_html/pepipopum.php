@@ -240,6 +240,11 @@ class POTranslator extends POProcessor
      * value for sub-second delays
      */
     public $delay=PEPIPOPUM_DELAY;
+	
+	/**
+	 * curl resourse
+	 */
+	public $curl;
     
     public function __construct()
     {
@@ -247,6 +252,10 @@ class POTranslator extends POProcessor
         
         //Google API needs to be passed a referrer
         $this->referrer="http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+		//$this->referrer = 'http://paazmaya.com/';
+		
+		$this->curl = curl_init('http://ajax.googleapis.com/ajax/services/language/translate');
+		curl_setopt($this->curl, CURLOPT_HEADER, 0);
     }
     
         
@@ -303,9 +312,15 @@ class POTranslator extends POProcessor
         {
             $q=urlencode($input);
             $langpair=urlencode("{$this->srcLanguage}|{$this->targetLanguage}");
-            $url="http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q={$q}&langpair={$langpair}";
-            $cmd="curl -e ".escapeshellarg($this->referrer).' '.escapeshellarg($url);
+			
+			$this->curl
+			
+            $url="?v=1.0&q={$q}&langpair={$langpair}";
             
+			$cmd="curl -e ".escapeshellarg($this->referrer).' '.escapeshellarg($url);
+            
+			curl_exec($this->curl);
+			
             $result=`$cmd`;
             $data=json_decode($result);
             if (is_object($data) && is_object($data->responseData) && isset($data->responseData->translatedText))
@@ -400,7 +415,7 @@ function processForm()
         $leaf=basename($outfile);
         $name=$_FILES['pofile']['name'];
         
-        echo "Completed - <a href=\"index.php?download=".urlencode($leaf)."&name=".urlencode($name)."\">download your updated po file</a>";
+        echo "Completed - <a href=\"pepipopum.php?download=".urlencode($leaf)."&name=".urlencode($name)."\">download your updated po file</a>";
     }
     else
     {
@@ -438,7 +453,7 @@ if (isset($_GET['download']) && isset($_GET['name']))
     {
         //fail
         header("HTTP/1.0 404 Not Found");
-        echo "The requested pepipopum output file is not available - it may have expired. <a href=\"index.php\">Click here to generate a new one</a>.";
+        echo "The requested pepipopum output file is not available - it may have expired. <a href=\"pepipopum.php\">Click here to generate a new one</a>.";
     }
     exit;
 }
@@ -561,7 +576,7 @@ to construct a PO file containing translated equivalents in each corresponding <
 <p>If the PO file already contains a translation for a given msgid, it will not be translated. This 
 allows you to upload a proof-read PO and just get translations for any new elements.</p>
 
-<form enctype="multipart/form-data" action="index.php" method="post">
+<form enctype="multipart/form-data" action="pepipopum.php" method="post">
     
      <fieldset>
     <legend>Input</legend>
