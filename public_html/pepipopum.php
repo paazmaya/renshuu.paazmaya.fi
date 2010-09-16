@@ -1,9 +1,9 @@
 <?php
 /**
- * Pepipopum - Automatic PO Translation via Google Translate 
+ * Pepipopum - Automatic PO Translation via Google Translate
  * Copyright (C)2009  Paul Dixon (lordelph@gmail.com)
- * $Id$ 
- * 
+ * $Id$
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,11 +13,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * 
+ *
  * REQUIREMENTS:
  *
  * Requires curl to perform the Google Translate API call but could
@@ -28,27 +28,31 @@
 
 /**
  * Define delay between Google API calls (can be fractional for sub-second delays)
- * 
+ *
  * This reduces load on the server and plays nice with Google. If you want a faster
  * experience, simply host Pepipopum on your own server and lower this value.
- */ 
+ */
 define('PEPIPOPUM_DELAY', 1);
- 
+
  /**
  * POProcessor provides a simple PO file parser
- * 
+ *
  * Can parse a PO file and calls processEntry for each entry in it
  * Can derive from this class to perform any transformation you
  * like
  */
 class POProcessor
 {
+	public $debug = true;
+	public $logfile = './pepipopum.debug.log';
+	public $loghandle;
+
     public $max_entries=0; //for testing you can limit the number of entries processed
     private $start=0; //timestamp when we started
-    
+
     public function __construct()
     {
-        
+        $this->loghandle = fopen($this->logfile, 'a');
     }
 
     /**
@@ -56,7 +60,7 @@ class POProcessor
      * percentage and remaining time of the parsing operation. This callback
      * will be called up to 100 times, depending on the
      * size of the file.
-     * 
+     *
      * Callback is a function name, or an array of ($object,$methodname)
      * as is common for PHP style callbacks
      */
@@ -69,27 +73,27 @@ class POProcessor
     /**
      * Parses input file and calls processEntry for each recgonized entry
      * and output for all other lines
-     * 
+     *
      * To track progress, see setProgressCallback
      */
     public function process($inFile)
     {
         set_time_limit(86400);
         $this->start=time();
-        
+
         $msgid=array();
         $msgstr=array();
         $count=0;
-        
+
         $size=filesize($inFile);
         $percent=-1;
-        
-        $state=0; 
+
+        $state=0;
         $in=fopen($inFile, 'r');
-        while (!feof($in))
+        while (!feof($in)) // Tests for end-of-file on a file pointer
         {
-            $line=trim(fgets($in));
-            $pos=ftell($in);
+            $line=trim(fgets($in)); // Gets line from file pointer
+            $pos=ftell($in); // Returns the current position of the file read/write pointer
             $percent_now=round(($pos*100)/$size);
             if ($percent_now!=$percent)
             {
@@ -101,74 +105,96 @@ class POProcessor
                     $total = $elapsed/($percent/100);
                     $remain=$total-$elapsed;
                 }
-                
-                $this->showProgress($percent,$remain);
+
             }
-            
+
             $match=array();
-            
+
+			echo '<p>line: '. $line . '<br />' . "\n";
+			echo 'percent_now: '. $percent_now . '<br />' . "\n";
+			echo 'state: '. $state . '<br />' . "\n";
+
+			$found_msgid = preg_match('/^msgid(\s+)"(.*)"$/', $line, $match_msgid);
+			$found_msgstr = preg_match('/msgstr(\s+)"(.*)"/', $line, $match_msgstr);
+			$found_empty = preg_match('/"(.*)"/', $line, $match_empty);
+			
+			echo 'found_msgid: '. $found_msgid . ', found_msgstr: '. $found_msgstr . ', found_empty: '. $found_empty . '<br />' . "\n";
+			
+			$found_msgid_pos = strpos($line, 'msgid');
+			
             switch ($state)
             {
                 case 0://waiting for msgid
-                    if (preg_match('/^msgid "(.*)"$/', $line,$match))
+					// returns the number of times pattern matches
+					// msgid "png 32-bit"
+                    if ($found_msgid)
                     {
-                        $clean=stripcslashes($match[1]);
+						echo 'match_msgid: '. implode(', ', $match_msgid) . '<br />' . "\n";
+                        $clean=stripcslashes($match_msgid[2]);
                         $msgid=array($clean);
                         $state=1;
-                        
                     }
                     break;
                 case 1: //reading msgid, waiting for msgstr
-                    if (preg_match('/^msgstr "(.*)"$/', $line,$match))
+                    if ($found_msgstr)
                     {
-                        $clean=stripcslashes($match[1]);
+						echo 'match_msgstr: '. implode(', ', $match_msgstr) . '<br />' . "\n";
+                        $clean=stripcslashes($match_msgstr[2]);
                         $msgstr=array($clean);
                         $state=2;
                     }
-                    elseif (preg_match('/^"(.*)"$/', $line,$match))
+                    elseif ($found_empty)
                     {
-                        $msgid[]=stripcslashes($match[1]);
+                        $msgid[]=stripcslashes($match_empty[1]);
                     }
                     break;
                 case 2: //reading msgstr, waiting for blank
-                    
-                    if (preg_match('/^"(.*)"$/', $line,$match))
+
+                    if ($found_empty)
                     {
-                        $msgstr[]=stripcslashes($match[1]);
+                        $msgid[]=stripcslashes($match_empty[1]);
                     }
-                    elseif (empty($line))
+                    else if (empty($line))
                     {
                         //we have a complete entry
                         $this->processEntry($msgid, $msgstr);
                         $count++;
+						/*
                         if ($this->max_entries && ($count>$this->max_entries))
                         {
                             break 2;
                         }
-                        
+						*/
+
                         $state=0;
+						$msgid=array();
+						$msgstr=array();
                     }
-                    
+
                     break;
             }
-            
+
+			echo 'count: '. $count . '<br />' . "\n";
+			echo 'msgid: '. implode(' ', $msgid) . '<br />' . "\n";
+			echo 'msgstr: '. implode(' ', $msgstr) . '</p>' . "\n";
+
             //comment or blank line?
             if (empty($line) || preg_match('/^#/',$line))
             {
                 $this->output($line."\n");
             }
-            
+
         }
         fclose($in);
     }
 
-        
+
     /**
      * Called whenever the parser recognizes a msgid/msgstr pair in the
      * po file. It is passed an array of strings for the msgid and msgstr
      * which correspond to multiple lines in the input file, allowing you
      * to preserve this if desired.
-     * 
+     *
      * Default implementation simply outputs the msgid and msgstr without
      * any further processing
      */
@@ -189,26 +215,6 @@ class POProcessor
     }
 
 
-    
-    /**
-     * Internal method to call the progress callback if set
-     */
-    protected function showProgress($percentComplete, $remainingTime)
-    {
-        if (is_array($this->progressCallback))
-        {
-            $obj=$this->progressCallback[0];
-            $method=$this->progressCallback[1];
-            
-            $obj->$method($percentComplete,$remainingTime);
-        }
-        elseif (is_string($this->progressCallback))
-        {
-            $func=$this->progressCallback;
-            $func($percentComplete,$remainingTime);
-        }
-    }
-    
     /**
      * Called to emit parsed lines of the file - override this
      * to provide customised output
@@ -218,76 +224,79 @@ class POProcessor
         global $output;
         $output.=$str;
     }
-    
+
 
 }
 
 /**
  * Derivation of POProcessor which passes untranslated entries through the Google Translate
  * API and writes the transformed PO to another file
- * 
+ *
  */
 class POTranslator extends POProcessor
 {
     /**
-     * Google API requires a referrer - constructor will build a suitable default
+     * Google API requires a referer - constructor will build a suitable default
      */
-    public $referrer;
-    
+    public $referer;
+
     /**
      * How many seconds should we wait between Google API calls to be nice
      * to google and the server running Pepipopum? Can use a floating point
      * value for sub-second delays
      */
     public $delay=PEPIPOPUM_DELAY;
-	
+
 	/**
 	 * curl resourse
 	 */
 	public $curl;
-    
+
+	public $apikey = 'ABQIAAAAyLIwOFKaznKcdf7DtmATHRS63tg4GPYAq5NgLkRBG-kstXlQIhR2bt33tcKswj6TjD_GOD3k-XKfcg';
+
     public function __construct()
     {
         parent::__construct();
-        
-        //Google API needs to be passed a referrer
-        $this->referrer="http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-		//$this->referrer = 'http://paazmaya.com/';
-		
-		$this->curl = curl_init('http://ajax.googleapis.com/ajax/services/language/translate');
+
+        //Google API needs to be passed a referer
+        $this->referer="http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+		//$this->referer = 'http://paazmaya.com/';
+
+		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_HEADER, 0);
+		curl_setopt($this->curl, CURLOPT_REFERER, $this->referer);
     }
-    
-        
+
+
     /**
      * Translates a PO file storing output in desired location
      */
     public function translate($inFile, $outFile, $srcLanguage, $targetLanguage)
     {
         $ok=true;
-        $this->srcLanguage=$srcLanguage;    
-        $this->targetLanguage=$targetLanguage;    
-        
+        $this->srcLanguage=$srcLanguage;
+        $this->targetLanguage=$targetLanguage;
+
         $this->fOut=fopen($outFile, 'w');
         if ($this->fOut)
         {
             $this->process($inFile);
             fclose($this->fOut);
-            
+
         }
         else
         {
             trigger_error("POProcessor::translate unable to open $outfile for writing", E_USER_ERROR);
             $ok=false;
         }
-        
-        
+
+
         return $ok;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Overriden output method writes to output file
      */
@@ -299,105 +308,96 @@ class POTranslator extends POProcessor
             flush();
         }
     }
-    
+
     /**
      * Overriden processEntry method performs the Google Translate API call
+	 * http://code.google.com/apis/ajaxlanguage/documentation/
      */
     protected function processEntry($msgid, $msgstr)
     {
         $input=implode('', $msgid);
         $output=implode('', $msgstr);
-        
+
+		echo '<p>input: ' . $input . '<br />' . "\n";
+		echo 'output: ' . $output . '<br />' . "\n";
+
         if (!empty($input) && empty($output))
         {
             $q=urlencode($input);
             $langpair=urlencode("{$this->srcLanguage}|{$this->targetLanguage}");
+
+			// http://code.google.com/apis/ajaxlanguage/documentation/reference.html#_intro_fonje
+			$url = 'http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&key=' . $this->apikey . '&q=' . $q . '&langpair=' . $langpair;
+			echo 'url: ' . $url . '<br />' . "\n";
 			
-			$this->curl
-			
-            $url="?v=1.0&q={$q}&langpair={$langpair}";
-            
-			$cmd="curl -e ".escapeshellarg($this->referrer).' '.escapeshellarg($url);
-            
-			curl_exec($this->curl);
-			
-            $result=`$cmd`;
+			curl_setopt(
+				$this->curl,
+				CURLOPT_URL,
+				$url
+			);
+			$result = curl_exec($this->curl);
+
+			echo 'result: ' . $result . '<br />' . "\n";
+
+			//$cmd="curl -e ".escapeshellarg($this->referer).' '.escapeshellarg($url);
+            //$result=`$cmd`;
+
+
             $data=json_decode($result);
+			
+			echo '<pre>';
+			print_r($data);
+			echo '</pre>';
+			
             if (is_object($data) && is_object($data->responseData) && isset($data->responseData->translatedText))
             {
-                $output=$data->responseData->translatedText;    
-                
+                $output=$data->responseData->translatedText;
+
                 //Google translate mangles placeholders, lets restore them
                 $output=preg_replace('/%\ss/', '%s', $output);
                 $output=preg_replace('/% (\d+) \$ s/', ' %$1\$s', $output);
                 $output=preg_replace('/^ %/', '%', $output);
-            
+
                 //have seen %1 get flipped to 1%
                 if (preg_match('/%\d/', $input) && preg_match('/\d%/', $output))
                 {
                     $output=preg_replace('/(\d)%/', '%$1', $output);
-            
+
                 }
-            
+
                 //we also get entities for some chars
                 $output=html_entity_decode($output);
-                
+
                 $msgstr=array($output);
             }
-            
+
             //play nice with google
             usleep($this->delay * 1000000);
-            
+
         }
-        
+
+		echo '</p>' . "\n";
         //output entry
         parent::processEntry($msgid, $msgstr);
     }
 
-    
-    
-}
 
 
-//simple progress callback which emits some JS to update the
-//page with a progress count
-function showProgress($percent,$remainingTime)
-{
-    $time='';
-    if (!empty($remainingTime))
-    {
-        if ($remainingTime<120)
-        {
-            $time=sprintf("(%d seconds remaining)",$remainingTime);
-        }
-        elseif ($remainingTime<60*120)
-        {
-            $time=sprintf("(%d minutes remaining)",round($remainingTime/60));
-        }
-        else
-        {
-            $time=sprintf("(%d hours remaining)",round($remainingTime/3600));
-        }
-    }
-    echo '<script language="Javascript">';
-    echo "document.getElementById('info').innerHTML='$percent% complete $time';";
-    echo "</script>\n";
-    flush();
 }
+
 
 function processForm()
 {
     set_time_limit(86400);
-    
+
     $translator=new POTranslator();
-    
+
     if ($_POST['output']=='html')
     {
         //we output to a temporary file to allow later download
         echo '<h1>Processing PO file...</h1>';
         echo '<div id="info"></div>';
-        $translator->setProgressCallback('showProgress');
-        $outfile = tempnam(sys_get_temp_dir(), 'pepipopum'); 
+        $outfile = tempnam(sys_get_temp_dir(), 'pepipopum');
     }
     else
     {
@@ -405,16 +405,16 @@ function processForm()
         header("Content-Type:text/plain");
         $outfile="php://output";
     }
-    
-    
+
+
     $translator->translate($_FILES['pofile']['tmp_name'], $outfile, 'en', $_POST['language']);
-    
+
     if ($_POST['output']=='html')
     {
         //show download link
         $leaf=basename($outfile);
         $name=$_FILES['pofile']['name'];
-        
+
         echo "Completed - <a href=\"pepipopum.php?download=".urlencode($leaf)."&name=".urlencode($name)."\">download your updated po file</a>";
     }
     else
@@ -422,7 +422,7 @@ function processForm()
         //we're done
         exit;
     }
-    
+
 }
 
 if (isset($_GET['viewsource']))
@@ -437,16 +437,16 @@ if (isset($_GET['download']) && isset($_GET['name']))
     $file=sys_get_temp_dir().DIRECTORY_SEPARATOR.$_GET['download'];
     $ok=preg_match('/^pepipopum[A-Za-z0-9]+$/', $_GET['download']);
     $ok=$ok && file_exists($file);
-    
+
     //sanitize name
     $name=preg_replace('/[^a-z0-9\._]/i', '', $_GET['name']);
-        
+
     if ($ok)
     {
         header("Content-Type:text/plain");
         header("Content-Length:".filesize($file));
         header("Content-Disposition: attachment; filename=\"{$name}\"");
-        
+
         readfile($file);
     }
     else
@@ -478,7 +478,7 @@ body
     margin: 0;
     padding: 0;
     text-align: center;
-    
+
     font-family:Verdana,Arial,Helvetica
 }
 
@@ -510,11 +510,11 @@ form
     background:#dddddd;
     padding:2em;
     margin:0 2em 0 2em;
-    
+
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
     border-radius: 1em;
-    
+
     font-size:0.8em;
 }
 
@@ -525,11 +525,11 @@ fieldset
     margin-bottom:1em;
     padding:1em;
     position:relative;
-    
+
     -moz-border-radius: 0.5em;
     -webkit-border-radius: 0.5em;
     border-radius: 0.5em;
-    
+
 }
 
 legend
@@ -539,16 +539,16 @@ legend
     padding:0 1em 0 1em;
     margin-left:1em;
     color:#ffffff;
-    
+
     position: absolute;
     top: -.5em;
     left: .2em;
-    
-    
+
+
     -moz-border-radius: 0.5em;
     -webkit-border-radius: 0.5em;
     border-radius: 0.5em;
-    
+
 }
 
 </style>
@@ -569,15 +569,15 @@ if (isset($_POST['output']) && ($_POST['output']=='html'))
 <p>PO files originate from the <a href="http://www.gnu.org/software/gettext/gettext.html">GNU gettext</a>
 tools and can be generated by a wide variety of other localization tools.</p>
 
-<p>Pepipopum allows you to upload a PO file containing English language strings in the <i>msgid</i>, 
-and it uses the <a href="http://code.google.com/apis/ajaxlanguage/">Google Translate API</a> 
+<p>Pepipopum allows you to upload a PO file containing English language strings in the <i>msgid</i>,
+and it uses the <a href="http://code.google.com/apis/ajaxlanguage/">Google Translate API</a>
 to construct a PO file containing translated equivalents in each corresponding <i>msgstr</i></p>
 
-<p>If the PO file already contains a translation for a given msgid, it will not be translated. This 
+<p>If the PO file already contains a translation for a given msgid, it will not be translated. This
 allows you to upload a proof-read PO and just get translations for any new elements.</p>
 
 <form enctype="multipart/form-data" action="pepipopum.php" method="post">
-    
+
      <fieldset>
     <legend>Input</legend>
        <div class="field">
@@ -585,7 +585,7 @@ allows you to upload a proof-read PO and just get translations for any new eleme
         <div class="input"><input id="pofile" name="pofile" type="file" /></div>
         </div>
     </fieldset>
-    
+
     <fieldset>
     <legend>Output options</legend>
 
@@ -652,17 +652,17 @@ allows you to upload a proof-read PO and just get translations for any new eleme
      <input id="output_po" name="output" value="pofile" type="radio"/>
      <label for="output_po">Output PO File</label>
      </div>
-     
+
      <div>
      <input id="output_html" name="output" value="html" checked="checked" type="radio"/>
      <label for="output_html">Output progress meter and then provide a download link</label>
      </div>
      </fieldset>
-   
+
     <div>
     <input type="submit" value="Translate File" />
     </div>
-    
+
 </form>
 
 <p>You can automate translation by using a tool like <a href="http://curl.haxx.se/">cURL</a> to post a PO file and obtain
@@ -671,20 +671,20 @@ a translated result. For example:</p>
 <pre>
     curl -F pofile=@<i>input-po-filename</i> \
         -F language=<i>target-language-code</i> \
-        -F output=pofile 
+        -F output=pofile
         http://pepipopum.dixo.net \
-        --output <i>output-po-filename</i> 
-         
+        --output <i>output-po-filename</i>
+
 </pre>
 
 
-<p>The <a href="?viewsource">PHP5 source code</a> to this software is available under an 
+<p>The <a href="?viewsource">PHP5 source code</a> to this software is available under an
 <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">Affero GPL licence</a>. Please
 note that this installation of Pepipopum introduces a <?php echo PEPIPOPUM_DELAY?> second
 delay between each Google API call to reduce load on this server and to play nice with
 Google. If you want to go faster, you're encouraged to host your own installation.
 
-</p> 
+</p>
 
 <p>Why is called "Pepipopum"? I just invented a word which had
 'po' in it and was relatively rare on Google! Pronounce it <i>pee-pie-poe-pum</i>.</p>
