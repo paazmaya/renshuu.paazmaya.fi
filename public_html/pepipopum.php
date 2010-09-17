@@ -2,6 +2,7 @@
 /**
  * Pepipopum - Automatic PO Translation via Google Translate
  * Copyright (C)2009  Paul Dixon (lordelph@gmail.com)
+ * Copyright (C)2010  Juga Paazmaya (olavic@gmail.com)
  * $Id$
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,139 +26,165 @@
  * natively.
  */
 
-
 /**
- * Define delay between Google API calls (can be fractional for sub-second delays)
- *
- * This reduces load on the server and plays nice with Google. If you want a faster
- * experience, simply host Pepipopum on your own server and lower this value.
+ * Passes untranslated entries through the Google Translate
+ * API and writes the transformed PO to another file
  */
-define('PEPIPOPUM_DELAY', 1);
-
- /**
- * POProcessor provides a simple PO file parser
- *
- * Can parse a PO file and calls processEntry for each entry in it
- * Can derive from this class to perform any transformation you
- * like
- */
-class POProcessor
+class POTranslator
 {
 	public $debug = true;
 	public $logfile = './pepipopum.debug.log';
-	public $loghandle;
+	private $loghandle;
+	
+	public $languageIn = 'en';
+	public $languageOut = 'fi';
 
-    public $max_entries=0; //for testing you can limit the number of entries processed
-    private $start=0; //timestamp when we started
+    public $max_entries = 0; //for testing you can limit the number of entries processed
+    private $start = 0; //timestamp when we started
+
+	/**
+	 * The translated PO data is build in this variable.
+	 */
+	private $translated = '';
+	
+    /**
+     * Google API requires a referer - constructor will build a suitable default
+     */
+    public $referer;
+
+    /**
+	 * Define delay between Google API calls (can be fractional for sub-second delays).
+     * How many seconds should we wait between Google API calls to be nice
+     * to google and the server running Pepipopum? Can use a floating point
+     * value for sub-second delays
+     */
+    public $delay = 0.25;
+
+	/**
+	 * curl resourse
+	 */
+	private $curl;
+
+	/**
+	 * Google Search API key
+	 * http://code.google.com/apis/ajaxlanguage/documentation/reference.html#_intro_fonje
+	 */
+	public $apikey = 'ABQIAAAAyLIwOFKaznKcdf7DtmATHRS63tg4GPYAq5NgLkRBG-kstXlQIhR2bt33tcKswj6TjD_GOD3k-XKfcg';
+	private $apiurl = 'http://ajax.googleapis.com/ajax/services/language/translate';
 
     public function __construct()
     {
-        $this->loghandle = fopen($this->logfile, 'a');
+        // Google API needs to be passed a referer
+        $this->referer = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		$this->curl = curl_init();
+		curl_setopt_array($this->curl, array(
+			CURLOPT_HEADER => false,
+			CURLOPT_REFERER => $this->referer,
+			CURLOPT_RETURNTRANSFER => true
+		));
     }
 
+
     /**
-     * Set callback function which is passed the completion
-     * percentage and remaining time of the parsing operation. This callback
-     * will be called up to 100 times, depending on the
-     * size of the file.
-     *
-     * Callback is a function name, or an array of ($object,$methodname)
-     * as is common for PHP style callbacks
+     * Translates a PO file storing output in desired location.
+	 * Returns the translated PO as a string or false in case it failed.
      */
-    public function setProgressCallback($callback)
+    public function translate($inData)
     {
-        $this->progressCallback=$callback;
+		if ($this->debug && !$this->loghandle)
+		{
+			$this->loghandle = fopen($this->logfile, 'a');
+		}
+		
+		$this->process($inData);
+		
+		if ($this->debug && $this->loghandle)
+		{
+			fclose($this->loghandle);
+		}
+		return $this->translated;
     }
-
-
+	
     /**
-     * Parses input file and calls processEntry for each recgonized entry
+     * Parses input string and calls processEntry for each recgonized entry
      * and output for all other lines
-     *
-     * To track progress, see setProgressCallback
      */
-    public function process($inFile)
+    public function process($inData)
     {
+		$lines = explode("\n", $inData);
+		
         set_time_limit(86400);
-        $this->start=time();
+        $this->start = time();
 
-        $msgid=array();
-        $msgstr=array();
-        $count=0;
+        $msgid = $msgstr = array();
+        $count = $state = 0;
+		
+		foreach($lines as $line)
+		{
+            $line = trim($line);
+            $match_msgid = $match_msgstr = $match_empty = array();
 
-        $size=filesize($inFile);
-        $percent=-1;
-
-        $state=0;
-        $in=fopen($inFile, 'r');
-        while (!feof($in)) // Tests for end-of-file on a file pointer
-        {
-            $line=trim(fgets($in)); // Gets line from file pointer
-            $pos=ftell($in); // Returns the current position of the file read/write pointer
-            $percent_now=round(($pos*100)/$size);
-            if ($percent_now!=$percent)
-            {
-                $percent=$percent_now;
-                $remain='';
-                $elapsed=time()-$this->start;
-                if ($elapsed>=5)
-                {
-                    $total = $elapsed/($percent/100);
-                    $remain=$total-$elapsed;
-                }
-
-            }
-
-            $match=array();
-
-			echo '<p>line: '. $line . '<br />' . "\n";
-			echo 'percent_now: '. $percent_now . '<br />' . "\n";
-			echo 'state: '. $state . '<br />' . "\n";
-
-			$found_msgid = preg_match('/^msgid(\s+)"(.*)"$/', $line, $match_msgid);
-			$found_msgstr = preg_match('/msgstr(\s+)"(.*)"/', $line, $match_msgstr);
-			$found_empty = preg_match('/"(.*)"/', $line, $match_empty);
+			if ($this->debug)
+			{
+				$this->trace('<p>line: '. $line . '<br />');
+				$this->trace('state: '. $state . '<br />');
+			}
 			
-			echo 'found_msgid: '. $found_msgid . ', found_msgstr: '. $found_msgstr . ', found_empty: '. $found_empty . '<br />' . "\n";
+			$found_msgid = preg_match('/^msgid(\s+)"(.*)"$/', $line, $match_msgid);
+			$found_msgstr = preg_match('/^msgstr(\s+)"(.*)"$/', $line, $match_msgstr);
+			$found_empty = preg_match('/"(.*)"/', $line, $match_empty);
+			$found_hash = preg_match('/^#/', $line);
+			
+			if ($this->debug)
+			{
+				$this->trace('found_msgid: '. $found_msgid . ', found_msgstr: '. $found_msgstr . ', found_empty: '. $found_empty . ', found_hash: ' . $found_hash . '<br />');
+			}
 			
 			$found_msgid_pos = strpos($line, 'msgid');
 			
             switch ($state)
             {
-                case 0://waiting for msgid
-					// returns the number of times pattern matches
-					// msgid "png 32-bit"
+                case 0:
+					//waiting for msgid
                     if ($found_msgid)
                     {
-						echo 'match_msgid: '. implode(', ', $match_msgid) . '<br />' . "\n";
-                        $clean=stripcslashes($match_msgid[2]);
-                        $msgid=array($clean);
-                        $state=1;
+						if ($this->debug)
+						{
+							$this->trace('match_msgid: '. implode(', ', $match_msgid) . '<br />');
+						}
+                        $clean = stripcslashes($match_msgid[2]);
+                        $msgid = array($clean);
+                        $state = 1;
                     }
                     break;
-                case 1: //reading msgid, waiting for msgstr
+                case 1: 
+					//reading msgid, waiting for msgstr
                     if ($found_msgstr)
                     {
-						echo 'match_msgstr: '. implode(', ', $match_msgstr) . '<br />' . "\n";
-                        $clean=stripcslashes($match_msgstr[2]);
-                        $msgstr=array($clean);
-                        $state=2;
+						if ($this->debug)
+						{
+							$this->trace('match_msgstr: '. implode(', ', $match_msgstr) . '<br />');
+						}
+                        $clean = stripcslashes($match_msgstr[2]);
+                        $msgstr = array($clean);
+                        $state = 2;
                     }
-                    elseif ($found_empty)
+                    else if ($found_empty)
                     {
-                        $msgid[]=stripcslashes($match_empty[1]);
+                        $msgid[] = stripcslashes($match_empty[1]);
                     }
                     break;
-                case 2: //reading msgstr, waiting for blank
-
+                case 2:
+					//reading msgstr, waiting for blank
                     if ($found_empty)
                     {
-                        $msgid[]=stripcslashes($match_empty[1]);
+                        $msgid[] = stripcslashes($match_empty[1]);
                     }
-                    else if (empty($line))
+                    else if (empty($line) || $found_hash)
                     {
-                        //we have a complete entry
-                        $this->processEntry($msgid, $msgstr);
+                        // We should have a complete entry
+                        $this->processEntry($msgid, $msgstr); // this should add it to the output...
                         $count++;
 						/*
                         if ($this->max_entries && ($count>$this->max_entries))
@@ -165,234 +192,162 @@ class POProcessor
                             break 2;
                         }
 						*/
-
-                        $state=0;
-						$msgid=array();
-						$msgstr=array();
+                        $state = 0;
+						$msgid = $msgstr = array();
                     }
-
                     break;
             }
 
-			echo 'count: '. $count . '<br />' . "\n";
-			echo 'msgid: '. implode(' ', $msgid) . '<br />' . "\n";
-			echo 'msgstr: '. implode(' ', $msgstr) . '</p>' . "\n";
+			if ($this->debug)
+			{
+				$this->trace('count: ' . $count . '<br />');
+				$this->trace('msgid: ' . implode(', ', $msgid) . '<br />');
+				$this->trace('msgstr: ' . implode(', ', $msgstr) . '</p>');
+			}
 
             //comment or blank line?
-            if (empty($line) || preg_match('/^#/',$line))
+            if (empty($line) || $found_hash)
             {
-                $this->output($line."\n");
+                $this->output($line);
             }
-
         }
-        fclose($in);
+		if ($this->debug)
+		{
+			$this->trace('<p>Prosessing time: ' . (time() - $this->start) . ' sec</p>');
+		}
     }
-
-
+	
     /**
-     * Called whenever the parser recognizes a msgid/msgstr pair in the
-     * po file. It is passed an array of strings for the msgid and msgstr
-     * which correspond to multiple lines in the input file, allowing you
-     * to preserve this if desired.
-     *
-     * Default implementation simply outputs the msgid and msgstr without
-     * any further processing
+     * Performs the Google Translate API call
+	 * http://code.google.com/apis/ajaxlanguage/documentation/
      */
     protected function processEntry($msgid, $msgstr)
     {
-        $this->output("msgid ");
+        $input = implode('', $msgid);
+        $output = implode('', $msgstr);
+
+		if ($this->debug)
+		{
+			$this->trace('<span style="display:block; background-color:#F4F4F4;">input: ' . $input . '<br />');
+			$this->trace('output: ' . $output . '<br />');
+		}
+		
+        if (!empty($input) && empty($output))
+        {
+            $q = urlencode($input);		
+            $langpair = urlencode($this->languageIn . '|' . $this->languageOut);
+
+			// http://code.google.com/apis/ajaxlanguage/documentation/reference.html#_intro_fonje
+			$url = $this->apiurl . '?v=1.0&key=' . $this->apikey . '&hl=' . $this->languageIn . '&q=' . $q . '&langpair=' . $langpair;
+			
+			if ($this->debug)
+			{
+				$this->trace('url: ' . $url . '<br />');
+			}
+			
+			curl_setopt($this->curl, CURLOPT_URL, $url);
+			$result = curl_exec($this->curl);
+
+			if ($this->debug)
+			{
+				$this->trace('result: ' . $result . '<br />');
+			}
+			/*
+			{
+			  "responseData" : {
+				"translatedText" : the-translated-text,
+				"detectedSourceLanguage"? : the-source-language
+			  },
+			  "responseDetails" : null | string-on-error,
+			  "responseStatus" : 200 | error-code
+			}
+			*/
+
+			if ($result !== false)
+			{
+				$data = json_decode($result);
+				
+				if ($this->debug)
+				{
+					echo '<pre>';
+					print_r($data);
+					echo '</pre>';
+				}
+				
+				if (is_object($data) && is_object($data->responseData) && isset($data->responseData->translatedText))
+				{
+					$output = $data->responseData->translatedText;
+
+					//Google translate mangles placeholders, lets restore them
+					$output = preg_replace('/%\ss/', '%s', $output);
+					$output = preg_replace('/% (\d+) \$ s/', ' %$1\$s', $output);
+					$output = preg_replace('/^ %/', '%', $output);
+
+					//have seen %1 get flipped to 1%
+					if (preg_match('/%\d/', $input) && preg_match('/\d%/', $output))
+					{
+						$output = preg_replace('/(\d)%/', '%$1', $output);
+					}
+
+					//we also get entities for some chars
+					$output = html_entity_decode($output, ENT_QUOTES, 'UTF-8');
+
+					$msgstr = array($output);
+				}
+			}
+			//play nice with google
+			usleep($this->delay * 1000000);
+        }
+
+		if ($this->debug)
+		{
+			$this->trace('</span>');
+		}
+		
+        //output entry
+		$out = "msgid ";
         foreach($msgid as $part)
         {
-            $part=addcslashes($part,"\r\n\"");
-            $this->output("\"{$part}\"\n");
+            $part = addcslashes($part,"\r\n\"");
+            $out .= "\"{$part}\"\n";
         }
-        $this->output("msgstr ");
+        $out .= "msgstr ";
         foreach($msgstr as $part)
         {
-            $part=addcslashes($part,"\r\n\"");
-            $this->output("\"{$part}\"\n");
+            $part = addcslashes($part,"\r\n\"");
+            $out .= "\"{$part}\"\n";
         }
+        $this->output($out);
     }
-
-
-    /**
-     * Called to emit parsed lines of the file - override this
-     * to provide customised output
-     */
-    protected function output($str)
-    {
-        global $output;
-        $output.=$str;
-    }
-
-
-}
-
-/**
- * Derivation of POProcessor which passes untranslated entries through the Google Translate
- * API and writes the transformed PO to another file
- *
- */
-class POTranslator extends POProcessor
-{
-    /**
-     * Google API requires a referer - constructor will build a suitable default
-     */
-    public $referer;
-
-    /**
-     * How many seconds should we wait between Google API calls to be nice
-     * to google and the server running Pepipopum? Can use a floating point
-     * value for sub-second delays
-     */
-    public $delay=PEPIPOPUM_DELAY;
-
-	/**
-	 * curl resourse
-	 */
-	public $curl;
-
-	public $apikey = 'ABQIAAAAyLIwOFKaznKcdf7DtmATHRS63tg4GPYAq5NgLkRBG-kstXlQIhR2bt33tcKswj6TjD_GOD3k-XKfcg';
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        //Google API needs to be passed a referer
-        $this->referer="http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
-		//$this->referer = 'http://paazmaya.com/';
-
-		$this->curl = curl_init();
-		curl_setopt($this->curl, CURLOPT_HEADER, 0);
-		curl_setopt($this->curl, CURLOPT_REFERER, $this->referer);
-    }
-
-
-    /**
-     * Translates a PO file storing output in desired location
-     */
-    public function translate($inFile, $outFile, $srcLanguage, $targetLanguage)
-    {
-        $ok=true;
-        $this->srcLanguage=$srcLanguage;
-        $this->targetLanguage=$targetLanguage;
-
-        $this->fOut=fopen($outFile, 'w');
-        if ($this->fOut)
-        {
-            $this->process($inFile);
-            fclose($this->fOut);
-
-        }
-        else
-        {
-            trigger_error("POProcessor::translate unable to open $outfile for writing", E_USER_ERROR);
-            $ok=false;
-        }
-
-
-        return $ok;
-    }
-
-
-
 
     /**
      * Overriden output method writes to output file
      */
     protected function output($str)
     {
-        if ($this->fOut)
-        {
-            fwrite($this->fOut, $str);
-            flush();
-        }
+		$this->translated .= $str;
     }
-
-    /**
-     * Overriden processEntry method performs the Google Translate API call
-	 * http://code.google.com/apis/ajaxlanguage/documentation/
-     */
-    protected function processEntry($msgid, $msgstr)
-    {
-        $input=implode('', $msgid);
-        $output=implode('', $msgstr);
-
-		echo '<p>input: ' . $input . '<br />' . "\n";
-		echo 'output: ' . $output . '<br />' . "\n";
-
-        if (!empty($input) && empty($output))
-        {
-            $q=urlencode($input);
-            $langpair=urlencode("{$this->srcLanguage}|{$this->targetLanguage}");
-
-			// http://code.google.com/apis/ajaxlanguage/documentation/reference.html#_intro_fonje
-			$url = 'http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&key=' . $this->apikey . '&q=' . $q . '&langpair=' . $langpair;
-			echo 'url: ' . $url . '<br />' . "\n";
-			
-			curl_setopt(
-				$this->curl,
-				CURLOPT_URL,
-				$url
-			);
-			$result = curl_exec($this->curl);
-
-			echo 'result: ' . $result . '<br />' . "\n";
-
-			//$cmd="curl -e ".escapeshellarg($this->referer).' '.escapeshellarg($url);
-            //$result=`$cmd`;
-
-
-            $data=json_decode($result);
-			
-			echo '<pre>';
-			print_r($data);
-			echo '</pre>';
-			
-            if (is_object($data) && is_object($data->responseData) && isset($data->responseData->translatedText))
-            {
-                $output=$data->responseData->translatedText;
-
-                //Google translate mangles placeholders, lets restore them
-                $output=preg_replace('/%\ss/', '%s', $output);
-                $output=preg_replace('/% (\d+) \$ s/', ' %$1\$s', $output);
-                $output=preg_replace('/^ %/', '%', $output);
-
-                //have seen %1 get flipped to 1%
-                if (preg_match('/%\d/', $input) && preg_match('/\d%/', $output))
-                {
-                    $output=preg_replace('/(\d)%/', '%$1', $output);
-
-                }
-
-                //we also get entities for some chars
-                $output=html_entity_decode($output);
-
-                $msgstr=array($output);
-            }
-
-            //play nice with google
-            usleep($this->delay * 1000000);
-
-        }
-
-		echo '</p>' . "\n";
-        //output entry
-        parent::processEntry($msgid, $msgstr);
-    }
-
-
-
+	
+	/**
+	 * Debugging of the outgoing and incoming data.
+	 */
+	protected function trace($str)
+	{
+		echo $str . "\n";
+		// or write to the log file...
+		if ($this->loghandle)
+		{
+			fwrite($this->loghandle, $str . "\n");
+		}
+	}
 }
 
 
 function processForm()
 {
-    set_time_limit(86400);
+    set_time_limit(86400); // Set the number of seconds a script is allowed to run
 
-    $translator=new POTranslator();
-
-    if ($_POST['output']=='html')
+    if ($_POST['output'] == 'html')
     {
         //we output to a temporary file to allow later download
         echo '<h1>Processing PO file...</h1>';
@@ -403,43 +358,43 @@ function processForm()
     {
         //output directly
         header("Content-Type:text/plain");
-        $outfile="php://output";
+        $outfile = "php://output";
     }
+	
+	$data = file_get_contents($_FILES['pofile']['tmp_name']);
+
+    $translator = new POTranslator();
+	$translator->languageIn = 'en';
+	$translator->languageOut = $_POST['language'];
+    $translated = $translator->translate($data);
+	
+	file_put_contents($outfile, $translated);
 
 
-    $translator->translate($_FILES['pofile']['tmp_name'], $outfile, 'en', $_POST['language']);
-
-    if ($_POST['output']=='html')
+    if ($_POST['output'] == 'html')
     {
         //show download link
-        $leaf=basename($outfile);
-        $name=$_FILES['pofile']['name'];
+        $leaf = basename($outfile);
+        $name = $_FILES['pofile']['name'];
 
-        echo "Completed - <a href=\"pepipopum.php?download=".urlencode($leaf)."&name=".urlencode($name)."\">download your updated po file</a>";
+        echo "Completed - <a href=\"pepipopum.php?download=".urlencode($leaf)."&name = ".urlencode($name)."\">download your updated po file</a>";
     }
     else
     {
         //we're done
         exit;
     }
-
-}
-
-if (isset($_GET['viewsource']))
-{
-    highlight_file($_SERVER['SCRIPT_FILENAME']);
-    exit;
 }
 
 if (isset($_GET['download']) && isset($_GET['name']))
 {
     //check download file is valid
-    $file=sys_get_temp_dir().DIRECTORY_SEPARATOR.$_GET['download'];
-    $ok=preg_match('/^pepipopum[A-Za-z0-9]+$/', $_GET['download']);
-    $ok=$ok && file_exists($file);
+    $file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$_GET['download'];
+    $ok = preg_match('/^pepipopum[A-Za-z0-9]+$/', $_GET['download']);
+    $ok = $ok && file_exists($file);
 
     //sanitize name
-    $name=preg_replace('/[^a-z0-9\._]/i', '', $_GET['name']);
+    $name = preg_replace('/[^a-z0-9\._]/i', '', $_GET['name']);
 
     if ($ok)
     {
@@ -458,7 +413,7 @@ if (isset($_GET['download']) && isset($_GET['name']))
     exit;
 }
 
-if (isset($_POST['output']) && ($_POST['output']=='pofile'))
+if (isset($_POST['output']) && ($_POST['output'] == 'pofile'))
 {
     processForm();
 }
@@ -558,7 +513,7 @@ legend
 <div id="main">
 
 <?php
-if (isset($_POST['output']) && ($_POST['output']=='html'))
+if (isset($_POST['output']) && ($_POST['output'] == 'html'))
 {
     processForm();
 }
@@ -677,14 +632,6 @@ a translated result. For example:</p>
 
 </pre>
 
-
-<p>The <a href="?viewsource">PHP5 source code</a> to this software is available under an
-<a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html">Affero GPL licence</a>. Please
-note that this installation of Pepipopum introduces a <?php echo PEPIPOPUM_DELAY?> second
-delay between each Google API call to reduce load on this server and to play nice with
-Google. If you want to go faster, you're encouraged to host your own installation.
-
-</p>
 
 <p>Why is called "Pepipopum"? I just invented a word which had
 'po' in it and was relatively rare on Google! Pronounce it <i>pee-pie-poe-pum</i>.</p>
