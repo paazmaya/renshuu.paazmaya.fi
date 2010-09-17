@@ -30,6 +30,8 @@ function processForm()
 	$data = file_get_contents($_FILES['pofile']['tmp_name']);
 
     $translator = new Pepipopum();
+	$translator->debug = true;
+	$translator->logfile = './pepipopum.debug.' . time() . '.log';
 	$translator->languageIn = 'en';
 	$translator->languageOut = $_POST['language'];
     $translated = $translator->translate($data);

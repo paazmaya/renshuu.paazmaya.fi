@@ -32,7 +32,7 @@
  */
 class Pepipopum
 {
-	public $debug = true;
+	public $debug = false;
 	public $logfile = './pepipopum.debug.log';
 	private $loghandle;
 	
@@ -95,12 +95,15 @@ class Pepipopum
 		if ($this->debug && !$this->loghandle)
 		{
 			$this->loghandle = fopen($this->logfile, 'a');
+			$this->trace('---- start -------------------');
+			$this->trace('referer: ' . $this->referer);
 		}
 		
 		$this->process($inData);
 		
 		if ($this->debug && $this->loghandle)
 		{
+			$this->trace('---- end ---------------------');
 			fclose($this->loghandle);
 		}
 		return $this->translated;
@@ -127,8 +130,8 @@ class Pepipopum
 
 			if ($this->debug)
 			{
-				$this->trace('<p>line: '. $line . '<br />');
-				$this->trace('state: '. $state . '<br />');
+				$this->trace('line: '. $line);
+				$this->trace('state: '. $state);
 			}
 			
 			$found_msgid = preg_match('/^msgid(\s+)"(.*)"$/', $line, $match_msgid);
@@ -138,7 +141,7 @@ class Pepipopum
 			
 			if ($this->debug)
 			{
-				$this->trace('found_msgid: '. $found_msgid . ', found_msgstr: '. $found_msgstr . ', found_empty: '. $found_empty . ', found_hash: ' . $found_hash . '<br />');
+				$this->trace('found_msgid: '. $found_msgid . ', found_msgstr: '. $found_msgstr . ', found_empty: '. $found_empty . ', found_hash: ' . $found_hash);
 			}
 			
 			$found_msgid_pos = strpos($line, 'msgid');
@@ -151,7 +154,7 @@ class Pepipopum
                     {
 						if ($this->debug)
 						{
-							$this->trace('match_msgid: '. implode(', ', $match_msgid) . '<br />');
+							$this->trace('match_msgid: '. implode(', ', $match_msgid));
 						}
                         $clean = stripcslashes($match_msgid[2]);
                         $msgid = array($clean);
@@ -164,7 +167,7 @@ class Pepipopum
                     {
 						if ($this->debug)
 						{
-							$this->trace('match_msgstr: '. implode(', ', $match_msgstr) . '<br />');
+							$this->trace('match_msgstr: '. implode(', ', $match_msgstr));
 						}
                         $clean = stripcslashes($match_msgstr[2]);
                         $msgstr = array($clean);
@@ -200,20 +203,20 @@ class Pepipopum
 
 			if ($this->debug)
 			{
-				$this->trace('count: ' . $count . '<br />');
-				$this->trace('msgid: ' . implode(', ', $msgid) . '<br />');
-				$this->trace('msgstr: ' . implode(', ', $msgstr) . '</p>');
+				$this->trace('count: ' . $count);
+				$this->trace('msgid: ' . implode(', ', $msgid));
+				$this->trace('msgstr: ' . implode(', ', $msgstr));
 			}
 
             //comment or blank line?
             if (empty($line) || $found_hash)
             {
-                $this->output($line);
+                $this->output($line . "\n");
             }
         }
 		if ($this->debug)
 		{
-			$this->trace('<p>Prosessing time: ' . (time() - $this->start) . ' sec</p>');
+			$this->trace('Prosessing time: ' . (time() - $this->start) . ' sec');
 		}
     }
 	
@@ -228,8 +231,8 @@ class Pepipopum
 
 		if ($this->debug)
 		{
-			$this->trace('<span style="display:block; background-color:#F4F4F4;">input: ' . $input . '<br />');
-			$this->trace('output: ' . $output . '<br />');
+			$this->trace('input: ' . $input);
+			$this->trace('output: ' . $output);
 		}
 		
         if (!empty($input) && empty($output))
@@ -242,7 +245,7 @@ class Pepipopum
 			
 			if ($this->debug)
 			{
-				$this->trace('url: ' . $url . '<br />');
+				$this->trace('url: ' . $url);
 			}
 			
 			curl_setopt($this->curl, CURLOPT_URL, $url);
@@ -250,7 +253,7 @@ class Pepipopum
 
 			if ($this->debug)
 			{
-				$this->trace('result: ' . $result . '<br />');
+				$this->trace('result: ' . $result);
 			}
 			/*
 			{
@@ -267,12 +270,14 @@ class Pepipopum
 			{
 				$data = json_decode($result);
 				
+				/*
 				if ($this->debug)
 				{
 					echo '<pre>';
 					print_r($data);
 					echo '</pre>';
 				}
+				*/
 				
 				if (is_object($data) && is_object($data->responseData) && isset($data->responseData->translatedText))
 				{
@@ -298,11 +303,6 @@ class Pepipopum
 			//play nice with google
 			usleep($this->delay * 1000000);
         }
-
-		if ($this->debug)
-		{
-			$this->trace('</span>');
-		}
 		
         //output entry
 		$out = "msgid ";
@@ -333,11 +333,11 @@ class Pepipopum
 	 */
 	protected function trace($str)
 	{
-		echo $str . "\n";
+		//echo $str . "\n";
 		// or write to the log file...
 		if ($this->loghandle)
 		{
-			fwrite($this->loghandle, $str . "\n");
+			fwrite($this->loghandle, date('Y-m-d H:i:s') . "\t" . $str . "\n");
 		}
 	}
 }
