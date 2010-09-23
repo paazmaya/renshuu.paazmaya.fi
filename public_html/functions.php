@@ -60,6 +60,8 @@ function cleanerlady($dirty)
 	}
 	return $clean;
 }
+// INPUT_GET, INPUT_POST, INPUT_COOKIE, INPUT_SERVER, or INPUT_ENV
+// filter_input_array(); // should be used to sanitate the incoming data
 
 /**
  * Converts a block of text to be suitable for the use in URI.
@@ -616,7 +618,6 @@ function generateIconCssRules($type, $size, $color, $items)
 function sendEmail($toMail, $toName, $subject, $message)
 {
 	global $cf;
-
 	require_once $cf['libdir'] . 'phpmailer/class.phpmailer.php';
 
 	$mail = new PHPMailer();
@@ -649,6 +650,7 @@ function sendEmail($toMail, $toName, $subject, $message)
 
 	$mail->AddAddress($toMail, $toName);
 	$mail->AddBCC($cf['email']['address'], $mail->FromName);
+	//Content-Language
 
 	$mail->WordWrap = 50;
 	$mail->AddAttachment('./img/favicon64x64.png');
@@ -674,19 +676,6 @@ function sendEmail($toMail, $toName, $subject, $message)
 	// $mail->ErrorInfo;
 }
 
-/**
- * Fetch a translation, if available, for the given string.
- * 
- * @param string $str
- * @return string
- */
-function tr($str)
-{
-	global $lang;
-	$out = $str;
-	
-	return $out;
-}
 
 // http://www.icanlocalize.com/tools/php_scanner
 

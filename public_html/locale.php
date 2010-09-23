@@ -125,7 +125,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Name'),
 				'type' => gettext('text'),
-				'name' => gettext('title'
+				'name' => gettext('title')
 			),
 			array(
 				'label' => gettext('URI'),

@@ -84,7 +84,7 @@ RENSHUU.PAAZMAYA.COM
 
 require './config.php';
 require './functions.php';
-require './translations_' . $_SESSION['lang'] . '.php';
+require './locale.php';
 
 
 // http://marcgrabanski.com/articles/jquery-ajax-content-type

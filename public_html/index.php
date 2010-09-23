@@ -75,6 +75,7 @@ if (isset($getted['RE']))
 if (isset($getted['page']) && strlen($getted['page']) > 0)
 {
 	$uri = '';
+	$getted['page'] = strtolower($getted['page']);
 	
 	// Try to login or logout the user if so requested
 	if ($getted['page'] == 'login')
@@ -104,6 +105,11 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 	{
 		session_destroy();
 	}
+	else if (strlen($getted['page']) == 2 && array_key_exists($getted['page'], $cf['languages']))
+	{
+		$_SESSION['lang'] = $getted['page'];
+		$uri = '/';
+	}
 	else 
 	{
 		$uri = '/#' . urize($getted['page']);
@@ -115,7 +121,8 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 	exit();
 }
 
-require './translations_' . $_SESSION['lang'] . '.php';
+// Using gettext for further localisation.
+require './locale.php';
 
 header('Content-type: text/html; charset=utf-8');
 
@@ -334,6 +341,11 @@ echo ' };';
 
 echo '</script>';
 
+// -----
+echo '<pre>SESSION ';
+print_r($_SESSION);
+echo '</pre>';
+// -----
 
 echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=' . $_SESSION['lang']);
 //echo scriptElement($cf['minified'] . $gzipped . '.js');

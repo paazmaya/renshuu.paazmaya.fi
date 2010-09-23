@@ -37,3 +37,22 @@ php_value session.name "RE"
 php_value date.timezone "Asia/Tokyo"
 php_value date.default_latitude "35.700556"
 php_value date.default_longitude "139.715"
+
+php_value default_charset "UTF-8"
+#php_admin_value mail.log "../renshuu.mail.log"
+
+# Defaults to 128M in 5.3, 16M in 5.2
+php_value memory_limit "256M"
+php_value sendmail_from "renshuu@paazmaya.com"
+
+# Correct encoding for the multibyte operations
+php_value mbstring.internal_encoding "UTF-8"
+
+# User agent string that is sent while fetching data
+php_value user_agent "RenshuuSuruToki 0.8.429"
+
+
+php_value iconv.input_encoding "UTF-8"
+php_value iconv.internal_encoding "UTF-8"
+php_value iconv.output_encoding "UTF-8"
+

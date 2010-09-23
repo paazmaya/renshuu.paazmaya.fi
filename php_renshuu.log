@@ -1,9 +1,0 @@
-[09-Sep-2010 04:27:47] PHP Parse error:  syntax error, unexpected ';' in /stuff/www/renshuu.paazmaya.com/libs/phpmailer/class.smtp.php on line 282
-[09-Sep-2010 04:27:47] PHP Stack trace:
-[09-Sep-2010 04:27:47] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:0
-[09-Sep-2010 04:27:47] PHP   2. sendEmail() /stuff/www/renshuu.paazmaya.com/public_html/ajax.php:468
-[09-Sep-2010 04:27:47] PHP   3. PHPMailer->Send() /stuff/www/renshuu.paazmaya.com/public_html/functions.php:661
-[09-Sep-2010 04:27:47] PHP   4. PHPMailer->SmtpSend() /stuff/www/renshuu.paazmaya.com/libs/phpmailer/class.phpmailer.php:574
-[15-Sep-2010 00:10:40] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /stuff/www/renshuu.paazmaya.com/public_html/functions.php on line 737
-[15-Sep-2010 00:10:40] PHP Stack trace:
-[15-Sep-2010 00:10:40] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
