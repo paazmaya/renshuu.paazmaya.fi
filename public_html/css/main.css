@@ -72,7 +72,7 @@ input, select, form ul, form li {
 	height: 1.5em;
 }
 input:hover, select:hover {
-	background-color: #AA1515;
+	background-color: #129EF7;
 }
 input[type=text], select {
 	margin: 1px;
@@ -116,7 +116,7 @@ input[type=button]:focus {
 	background-color: #5E0202;
 }
 input[type=button]:hover {
-	background-color: #AA1515;
+	background-color: #129EF7;
 }
 input[disabled] {
 	background-color: #5E0202;
@@ -256,6 +256,14 @@ textarea{
 	text-align: right;
 	font-size: 90%;
 }
+.content a {
+	background-color: inherit;
+}
+.content a:hover, .content li:hover {
+	background-color: #129EF7;
+}
+
+
 
 .form-info {
 	font-size: 90%;

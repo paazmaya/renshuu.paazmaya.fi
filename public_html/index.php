@@ -322,24 +322,6 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 
 	echo $copyright;
 	
-// Translations and user data if any...
-echo '<script type="text/javascript">';
-
-echo ' var lang = {';
-foreach ($lang['javascript'] as $k => $v)
-{
-	echo '  ' . $k . ': "' . $v . '",';
-}
-echo '  language: "' . $_SESSION['lang'] . '"';
-echo ' };';
-
-echo ' var userData = {';
-echo '  loggedIn: ' . ($_SESSION['access'] > 0 ? 'true' : 'false') . ',';
-echo '  name: "' . $_SESSION['username'] . '",';
-echo '  email: "' . $_SESSION['email'] . '"';
-echo ' };';
-
-echo '</script>';
 
 // -----
 echo '<pre>SESSION ';
@@ -361,14 +343,65 @@ echo scriptElement('jquery.ui.datepicker-' . ($_SESSION['lang'] == 'en' ? 'en-GB
 // Close the SQLite connection
 $link = null;
 
-if ($_SERVER['SERVER_NAME'] != '192.168.1.37')
+// Translations and user data if any...
+echo '<script type="text/javascript">' . "\n";
+echo '$(document).ready(function() {' . "\n";
+echo ' $.renshuu.locale = "' . $cf['languages'][$_SESSION['lang']] . '";' . "\n";
+
+// Translations based on the current locale
+$jslang = array(
+	'license' => gettext('License information'),
+	'form' => array(
+		'createnew' => gettext('Create new'),
+		'clear' => gettext('Clear'),
+		'modify' => gettext('Modify current'),
+		'sending' => gettext('Sending data')
+	),
+	'list' => array(
+		'removeitem' => gettext('Remove this item from the list')
+	),
+	'modal' => array(
+		//'' => gettext(''),
+		'savetolist' => gettext(' Save to list'),
+		'removefromlist' => gettext('Remove from list')
+	),
+	'suggest' => array(
+		//'' => gettext(''),
+		//'' => gettext(''),
+		'art' => gettext('Type an art name'),
+		'location' => gettext('Type a location name')
+	),
+	'validate' => array(
+		//'' => gettext(''),
+		'requiredfield' => gettext('This field is required!'),
+		'minlength' => gettext('Minimum password length is 5 characters')
+	)
+);
+echo ' $.renshuu.lang = ' . json_encode($jslang) . ';' . "\n"; // JSON_FORCE_OBJECT
+
+// List weekdays. Sunday is at 0 index
+echo ' $.renshuu.weekdays = ' . json_encode($lang['weekdays']) . ';' . "\n";
+
+// User specific data in case they would be logged in. Used for prefilling the forms.
+echo ' $.renshuu.userData = {';
+echo '  loggedIn: ' . ($_SESSION['access'] > 0 ? 'true' : 'false') . ',';
+echo '  name: "' . $_SESSION['username'] . '",';
+echo '  email: "' . $_SESSION['email'] . '"';
+echo ' };' . "\n";
+
+// Now that the final variables have been set, it is ok to initiate the site.
+echo ' $.renshuu.ready();' . "\n";
+
+echo '});' . "\n";
+echo '</script>';
+
+if (!$cf['isdevserver'])
 {
 	?>
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-2643697-11']);
 		_gaq.push(['_trackPageview']);
-
 		(function() {
 			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';

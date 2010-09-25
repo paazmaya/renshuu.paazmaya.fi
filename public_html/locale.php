@@ -60,13 +60,15 @@ http://www.php.net/manual/en/function.sprintf.php
 
 */
 
+/**
+ * Site wide title and other meta data
+ */
 $lang = array(
-	'language' => gettext('en')
+	'title' => gettext('training times and locations'),
+	'description' => gettext('In order to find the martial art trainings interesting for the user, this service offers the filters for searching through the community driven International database of martial art trainings.')
 );
 
 
-$lang['title'] = '';
-$lang['description'] = '';
 
 /**
  * Weekday list.
@@ -508,15 +510,4 @@ $lang['navigation'] = array(
 		'text' => gettext('logout'),
 		'access' => 1
 	)
-);
-
-
-/**
- * Lastly the items needed for javascript
- */
-$lang['javascript'] = array(
-	'license' => gettext('License information'),
-	'' => gettext(''),
-	'' => gettext(''),
-	'' => gettext(''),
 );
