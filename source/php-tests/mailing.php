@@ -1,8 +1,12 @@
 <?php
 
 header('Content-type: text/plain');
-$toMail, $toName, $subject, $message
+$toMail = 'olavic@gmail.com';
+$toName = 'Juga Paazmaya';
+$subject = 'Kukkuu Apina!';
+$message = 'Testing the abilities of the multibyte string handling in emails.　パーソネン　ユッカ　・　雪花';
 
+require_once './config.php';
 require_once '../libs/phpmailer/class.phpmailer.php';
 
 $mail = new PHPMailer();
@@ -18,9 +22,7 @@ $mail->Username = $cf['email']['address'];
 $mail->Password = $cf['email']['password'];
 
 $sender = $cf['title'] . ' - renshuu.paazmaya.com';
-//$sender = htmlentities($sender, ENT_QUOTES, 'UTF-8');
-mb_internal_encoding('UTF-7');
-$sender = mb_encode_mimeheader($sender, 'UTF-7', 'Q'); // from PHP manual
+$sender = mb_encode_mimeheader($sender, 'UTF-8', 'Q');
 
 $mail->SetFrom($cf['email']['address'], $sender);
 
@@ -37,20 +39,27 @@ $mail->AddAddress($toMail, $toName);
 $mail->AddBCC($cf['email']['address'], $mail->FromName);
 
 $mail->WordWrap = 50;
-//$mail->AddAttachment("/var/tmp/file.tar.gz");
+$mail->AddAttachment('./img/favicon64x64.png');
 $mail->IsHTML(false);
+
 
 $signature = "\n\n-------------------\nRENSHUU.PAAZMAYA.COM\nhttp://renshuu.paazmaya.com/\nv" . $ver;
 
-mb_internal_encoding('UTF-8');
-$signature .= "\nUTF-8:" . mb_encode_mimeheader($cf['title'], 'UTF-8', 'Q'); 
-mb_internal_encoding('UTF-7');
-$signature .= "\nUTF-7:" . mb_encode_mimeheader($cf['title'], 'UTF-7', 'Q'); 
-mb_internal_encoding('ISO-8859-15');
-$signature .= "\nISO-8859-15:" . mb_encode_mimeheader($cf['title'], 'ISO-8859-15', 'Q'); 
-mb_internal_encoding('ISO-8859-1');
-$signature .= "\nISO-8859-1:" . mb_encode_mimeheader($cf['title'], 'ISO-8859-1', 'Q'); 
 
+mb_internal_encoding('UTF-8');
+$mail->AddCustomHeader('X-Tonttu-UTF8: ' . mb_encode_mimeheader($cf['title'], 'UTF-8', 'Q'));
+mb_internal_encoding('UTF-7');
+$mail->AddCustomHeader('X-Tonttu-UTF7: ' . mb_encode_mimeheader($cf['title'], 'UTF-7', 'Q'));
+mb_internal_encoding('ISO-8859-15');
+$mail->AddCustomHeader('X-Tonttu-ISO-8859-15: ' . mb_encode_mimeheader($cf['title'], 'ISO-8859-15', 'Q'));
+mb_internal_encoding('ISO-8859-1');
+$mail->AddCustomHeader('X-Tonttu-ISO-8859-1: ' . mb_encode_mimeheader($cf['title'], 'ISO-8859-1', 'Q'));
+
+//$mail->AddCustomHeader('Content-Type: text/plain; charset="iso-8859-1"');
+$mail->AddCustomHeader('Content-Language: en_GB');
+
+
+mb_internal_encoding('UTF-8');
 
 $mail->Subject = $subject;
 $mail->Body = $message . $signature;

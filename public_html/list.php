@@ -13,7 +13,7 @@ http://code.google.com/apis/maps/documentation/staticmaps/
 
 require './config.php';
 require './functions.php';
-require './translations_' . $_SESSION['lang'] . '.php';
+require './locale.php';
 
 header('Content-type: text/html; charset=utf-8');
 

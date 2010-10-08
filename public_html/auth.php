@@ -14,7 +14,7 @@ RENSHUU.PAAZMAYA.COM
 
 require './config.php';
 require './functions.php';
-require './translations_' . $_SESSION['lang'] . '.php';
+require './locale.php';
 
 header('Content-type: text/plain; charset=utf-8');
 
@@ -49,8 +49,10 @@ if (isset($getted['page']))
 	}
 }
 
+print_r($posted);
+print_r($getted);
 
-
+/*
 if ($page == 'twitter')
 {
 
@@ -114,7 +116,7 @@ else if ($page == 'openid' || $page == 'google')
 }
 
 
-
+*/
 
 
 

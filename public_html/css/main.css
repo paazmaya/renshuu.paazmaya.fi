@@ -37,6 +37,9 @@ a {
 a:hover {
 	text-decoration: underline;
 }
+p {
+	padding: 0.5em;
+}
 div {
 	display: block;
 }

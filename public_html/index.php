@@ -318,6 +318,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	$copyright = '<div id="copyright">
 		<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
 			title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
+		<p>RenshuuSuruToki version ' . $cf['version'] . '</p>
 		</div>';
 
 	echo $copyright;

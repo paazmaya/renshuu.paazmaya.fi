@@ -1,6 +1,8 @@
 /*jslint devel: true, windows: true, maxlen: 140 */
 // http://jslint.com/
 
+// http://javascriptweblog.wordpress.com/2010/07/26/no-more-ifs-alternatives-to-statement-branching-in-javascript/
+
 /** Firebug console functions if they do not exist **/
 (function(window) {
 	if (!('console' in window) || !('firebug' in console)) {
@@ -14,6 +16,9 @@
 	}
 })(window);
 
+/**
+ * Few small plugins which are build based on a research in the Internet
+ */
 (function($) {
 	/**
 	 * Get the inner and outer html data,
@@ -36,14 +41,18 @@
 	$.fn.clearForm = function() {
 		return this.each(function() {
 			var type = this.type, tag = this.tagName.toLowerCase();
-			if (tag == 'form')
+			if (tag == 'form') {
 				return $(':input',this).clearForm();
-			if (type == 'text' || type == 'password' || tag == 'textarea')
+			}
+			if (type == 'text' || type == 'password' || tag == 'textarea') {
 				this.value = '';
-			else if (type == 'checkbox' || type == 'radio')
+			}
+			else if (type == 'checkbox' || type == 'radio') {
 				this.checked = false;
-			else if (tag == 'select')
+			}
+			else if (tag == 'select') {
 				this.selectedIndex = -1;
+			}
 		});
 	};
 })(jQuery);
