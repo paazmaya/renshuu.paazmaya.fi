@@ -1,5 +1,6 @@
 <?php
 // vim: foldmethod=marker
+// http://oauth.googlecode.com/svn/code/php/
 
 /* Generic exception class
  */
@@ -733,7 +734,7 @@ class OAuthUtil {
     return str_replace(
       '+',
       ' ',
-      str_replace('%7E', '~', rawurlencode($input))
+      str_replace('%7E', '~', rawurlencode($input)) // rawurlencode — URL-encode according to RFC 1738
     );
   } else {
     return '';
