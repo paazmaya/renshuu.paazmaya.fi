@@ -134,6 +134,7 @@ $javascript = array(
 	'jquery.ui.mouse.js',
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
+	'jquery.tmpl.js', // github version 2010-10-21
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	'jquery.timepicker.js',
 	'jquery.cookie.js', // 2006
@@ -395,6 +396,30 @@ echo ' $.renshuu.ready();' . "\n";
 
 echo '});' . "\n";
 echo '</script>';
+
+
+
+// Templating available onwards from jQuery 1.4.3
+// http://api.jquery.com/jquery.tmpl/
+// http://www.slideshare.net/garann/using-templates-to-achieve-awesomer-architecture
+// http://www.borismoore.com/2010/10/jquery-templates-is-now-official-jquery.html
+/*
+var t = $('#tmpl-t1').html();
+// Compile a template
+var tmpl = _.template(t);
+// render it
+tmpl({data: {title : 'Ralph Smells'}});
+*/
+?>
+<script type="text/html" id="tmpl-t1">
+	<h1>${data.title}</h1>
+	{{if data.item}}
+		// hoplaa
+	{{else}}
+		// kukkuu
+	{{/if}}
+</script>
+<?php
 
 if (!$cf['isdevserver'])
 {
