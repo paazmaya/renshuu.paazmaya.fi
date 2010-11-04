@@ -67,7 +67,10 @@
 		animSpeed: 200,
 		keepAlive: 1000 * 60 * 5, // Every 5 minutes a keepalive call
 
-		// default map zoom, overwritten on every zoom change event and/or by cookie
+		/**
+		 * Default map zoom,
+		 * overwritten on every zoom change event and/or by cookie
+		 */
 		zoom: 8,
 
 		cookieSettings: {
@@ -81,7 +84,9 @@
 		},
 		geocoder: null,
 
-		// http://code.google.com/apis/maps/documentation/javascript/reference.html
+		/**
+		 * http://code.google.com/apis/maps/documentation/javascript/reference.html
+		 */
 		map: null,
 
 		streetview: null, //StreetViewPanorama
@@ -632,7 +637,9 @@
 			}
 		},
 
-		// http://www.jlpt.jp/samples/forlearners.html
+		/**
+		 * http://www.jlpt.jp/samples/forlearners.html
+		 */
 		updateTrainings: function() {
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
@@ -663,8 +670,11 @@
 			}, 'json');
 		},
 		
-		// If current tab view is in the location or training, show training place locations.
-		// As opposed to trainings.
+		/**
+		 * If current tab view is in the location or training,
+		 * show training place locations.
+		 * As opposed to trainings.
+		 */
 		updateLocations: function() {
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
@@ -693,7 +703,9 @@
 			}, 'json');
 		},
 
-		// http://code.google.com/apis/maps/documentation/staticmaps/
+		/** 
+		 * http://code.google.com/apis/maps/documentation/staticmaps/
+		 */ 
 		updateExportPreview: function() {
 			var url = 'http://maps.google.com/maps/api/staticmap?';
 			var values = ['sensor=false'];
@@ -725,14 +737,19 @@
 			$('#exportpreview').attr('src', url);
 		},
 
-		// Show the given position in the Street View. Once visibility set, the opening is taken care of by its event handler.
+		/**
+		 * Show the given position in the Street View. 
+		 * Once visibility set, the opening is taken care of by its event handler.
+		 */
 		showStreetView: function(position) {
 			$.renshuu.streetview.setPosition(position);
 			$.renshuu.streetview.setVisible(true);
 		},
 		
-		// http://getfirebug.com/wiki/index.php/Firebug_Extensions
-		// http://getfirebug.com/wiki/index.php/Console_API
+		/**
+		 * http://getfirebug.com/wiki/index.php/Firebug_Extensions
+		 * http://getfirebug.com/wiki/index.php/Console_API
+		 */
 		openAuthModal: function(key) {
 			console.group('openAuthModal');
 			
@@ -741,6 +758,13 @@
 			console.groupEnd();
 		},
 
+		/**
+		 * Initiate the following tools in Google Maps:
+		 * - Maps
+		 * - StreetViewPanorama
+		 * - Geocoder
+		 * - StreetViewService
+		 */
 		mapInit: function(map_element, street_element, map_options, street_options) {
 			$.renshuu.geocoder = new google.maps.Geocoder();
 			$.renshuu.streetService = new google.maps.StreetViewService();
@@ -865,8 +889,10 @@
 			});
 		},
 
-		// http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
-		// getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
+		/**
+		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
+		 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
+		 */
 		getPanorama: function(pos, radius) {
 			if (!radius) {
 				radius = 100; // Metres
@@ -876,7 +902,9 @@
 			});
 		},
 		
-		// Set the icon next to the radio buttons in the location form
+		/**
+		 * Set the icon next to the radio buttons in the location form
+		 */
 		updateGeocodeSelectionIcon: function() {
 			if ($('#location_form').size() > 0) {
 				var val = $('#location_form input:radio[name=geocode]:checked').val();
