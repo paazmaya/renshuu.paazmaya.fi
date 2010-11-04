@@ -91,6 +91,9 @@
 
 		streetview: null, //StreetViewPanorama
 		streetService: null,
+		
+		dirService: null // DirectionsService
+		dirLines: [] // Polylines used by DirectionsService {polyline: line, points: [pos0, pos1]}
 
 		// default map center will be in the most beautiful castle of Japan
 		hikone: null,
