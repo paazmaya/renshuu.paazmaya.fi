@@ -1,6 +1,9 @@
 /*jslint devel: true, windows: true, maxlen: 140 */
 // http://jslint.com/
 
+// http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/
+"use strict";
+
 // http://javascriptweblog.wordpress.com/2010/07/26/no-more-ifs-alternatives-to-statement-branching-in-javascript/
 
 /** Firebug console functions if they do not exist **/
