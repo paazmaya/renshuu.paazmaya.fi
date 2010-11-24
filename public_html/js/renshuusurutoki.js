@@ -95,6 +95,7 @@
 		streetview: null, //StreetViewPanorama
 		streetService: null,
 		
+		// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
 		dirService: null // DirectionsService
 		dirLines: [] // Polylines used by DirectionsService {polyline: line, points: [pos0, pos1]}
 
@@ -210,6 +211,8 @@
 				}
 			);
 
+			// Set up the directions service
+			$.renshuu.dirService = new google.maps.DirectionsService();
 			// Toggle "street view position update based on the map position" setting.
 			$('input:checkbox[name=markerstreet]').change(function() {
 				$.renshuu.markers.showInStreetView = $(this).is(':checked');
@@ -743,6 +746,63 @@
 			$('#exportpreview').attr('src', url);
 		},
 
+		/**
+
+
+		 * Draw route between two spots, while using directions service.
+		 */
+		drawRoute: function(pos1, pos2) {
+			var reg = {
+				avoidHighways: true, 
+				destination: pos2, 
+				origin: pos1,
+				provideRouteAlternatives: false,
+				travelMode: google.maps.DirectionsTravelMode.WALKING
+			};
+			$.renshuu.dirService.route(reg, function(result, status) {
+				console.log(status);
+				if (result && result.routes && result.routes[0]) {
+					var route = result.routes[0]; // DirectionsRoute  just one if provideRouteAlternatives == false
+					var lenl = route.legs.length;
+					for (var i = 0; i < lenl; ++i) {
+						var leg = route.legs[i]; // DirectionsLeg  http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsLeg
+						var lens = leg.steps.length;
+						for (var j = 0; j < lens; ++j) {
+							var step = leg.steps[j]; // DirectionsStep 
+							// step.path 
+							// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsDistance 
+							$.renshuu.drawPath(step.start_location, step.end_location); //, step.distance.text);
+						}
+					}
+				}
+			});
+		},
+		
+		/**
+		 * Draw a path between two positions by using tools in Google Maps.
+		 * pos1 and pos2 are type of google.maps.LatLng
+		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
+		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
+		 */
+		drawPath: function(pos1, pos2) {
+			var opts = {
+				clickable: false,
+				geodesic: true,
+				map: $.renshuu.map
+				path: [pos1, pos2],
+				strokeColor: "#FFAA00", // html hex
+				strokeOpacity: 0.5,
+				strokeWeight: 2 // pixels
+			};
+			var line = new google.maps.Polyline(opts);
+			
+			// Change the color slightly
+			google.maps.event.addListener(line, 'mouseover', function() {
+			});
+			google.maps.event.addListener(line, 'mouseout', function() {
+			});
+		},
+		
 		/**
 		 * Show the given position in the Street View. 
 		 * Once visibility set, the opening is taken care of by its event handler.
