@@ -165,9 +165,12 @@
 		// User specific data will be filled, in case logged in, via the bottom of index.php...
 		userData: null,
 
-		// Please trigger this once document is ready, thus DOM has been loaded.
+		/**
+		 * Please trigger this once document is ready, thus DOM has been loaded.
+		 * Hikone Castle & Town.
+		 * @see http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
+		 */
 		ready: function() {
-			// http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 			$.renshuu.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 			
 			// Remove default styling from blockUi.
@@ -488,6 +491,10 @@
 
 		},
 
+		/**
+		 * Each tab has an individual content.
+		 * @see 
+		 */
 		showTabContent: function (key) {
 			document.location = '#' + key;
 
@@ -525,7 +532,10 @@
 			}
 		},
 
-		// Add a training to the list of saved trainings if it is not there yet.
+		/**
+		 * Add a training to the list of saved trainings if it is not there yet.
+		 * @see 
+		 */
 		addSavedList: function (id) {
 			var inx = $.renshuu.savedList.indexOf(id);
 			var data = null;
@@ -561,7 +571,10 @@
 			}
 		},
 
-		// Remove from list, as a counter part of adding.
+		/**
+		 * Remove from list, as a counter part of adding.
+		 * @see 
+		 */
 		removeSavedList: function (id) {
 			var inx = $.renshuu.savedList.indexOf(id);
 			console.log('removeSavedList. id: ' + id + ', inx: ' + inx);
@@ -583,7 +596,10 @@
 			}
 		},
 
-		// Update filters data according to current checkbox selection.
+		/**
+		 * Update filters data according to current checkbox selection.
+		 * @see 
+		 */
 		updateFilters: function() {
 			var sets = ['arts', 'weekdays'];
 			var len = sets.length;
@@ -622,7 +638,10 @@
 			);
 		},
 
-		// This applies the current filter settings to the html in the dom
+		/**
+		 * This applies the current filter settings to the html in the dom
+		 * @see 
+		 */
 		applyFilters: function() {
 			var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
 			var len = sets.length; // Should be 2
@@ -647,7 +666,7 @@
 		},
 
 		/**
-		 * http://www.jlpt.jp/samples/forlearners.html
+		 * @see http://www.jlpt.jp/samples/forlearners.html
 		 */
 		updateTrainings: function() {
 			var bounds = $.renshuu.map.getBounds();
@@ -713,7 +732,7 @@
 		},
 
 		/** 
-		 * http://code.google.com/apis/maps/documentation/staticmaps/
+		 * @see http://code.google.com/apis/maps/documentation/staticmaps/
 		 */ 
 		updateExportPreview: function() {
 			var url = 'http://maps.google.com/maps/api/staticmap?';
@@ -747,8 +766,6 @@
 		},
 
 		/**
-
-
 		 * Draw route between two spots, while using directions service.
 		 */
 		drawRoute: function(pos1, pos2) {
@@ -781,8 +798,8 @@
 		/**
 		 * Draw a path between two positions by using tools in Google Maps.
 		 * pos1 and pos2 are type of google.maps.LatLng
-		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
-		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
 		 */
 		drawPath: function(pos1, pos2) {
 			var opts = {
@@ -956,7 +973,7 @@
 		},
 
 		/**
-		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
 		 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
 		 */
 		getPanorama: function(pos, radius) {
@@ -1019,7 +1036,10 @@
 		// As per marker double click, show its position in Street View
 		showInStreetView: false,
 
-		// http://code.google.com/apis/maps/documentation/javascript/reference.html#Marker
+		/**
+		 *
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Marker
+		 */
 		clearMarkers: function(list) {
 			var len = list.length;
 			for (var i = 0; i < len; ++i) {
@@ -1030,6 +1050,10 @@
 			list = [];
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		createTrainingMarker: function(data) {
 			var icon = $.renshuu.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
@@ -1047,6 +1071,10 @@
 			$.renshuu.trainingMarkersData[len - 1] = data;
 		},
 		
+		/**
+		 *
+		 * @see 
+		 */
 		createLocationMarker: function(data) {
 			var icon = $.renshuu.pins.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
@@ -1063,6 +1091,10 @@
 			$.renshuu.locationMarkersData[len - 1] = data;
 		},
 		
+		/**
+		 *
+		 * @see 
+		 */
 		createGeocodeMarker: function (res, i) {
 			/*
 			for (var j in res) {
@@ -1087,8 +1119,11 @@
 			//types
 			// formatted_address - not documented
 			var marker = $.renshuu.markers.createMarker(
-				res.geometry.location, res.formatted_address,
-				$.renshuu.pins.getLetter(i + 1), false);
+				res.geometry.location,
+				res.formatted_address,
+				$.renshuu.pins.getLetter(i + 1),
+				false
+			);
 			// Right click will be used for deleting...
 			google.maps.event.addListener(marker, 'rightclick', function(event) {
 				$.renshuu.data.removeGeoMarker(marker);
@@ -1110,8 +1145,11 @@
 			return marker;
 		},
 
+		/**
+		 *
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
+		 */
 		createMarker: function(pos, title, icon, drag) {
-			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 			if (!icon) {
 				icon = $.renshuu.pins.getIcon();
 			}
@@ -1124,7 +1162,8 @@
 				title: title,
 				map: $.renshuu.map,
 				draggable: drag,
-				icon: icon
+				icon: icon,
+				animation: google.maps.Animation.DROP
 			});
 
 			google.maps.event.addListener(marker, 'dblclick', function(event) {
@@ -1154,7 +1193,10 @@
 			return marker;
 		},
 
-		// http://malsup.com/jquery/block/
+		/**
+		 *
+		 * @see http://malsup.com/jquery/block/
+		 */
 		showInfo: function(marker) {
 			var inx = $.renshuu.trainingMarkers.indexOf(marker);
 			console.log('showInfo. marker.title: '+ marker.title + ', inx: ' + inx);
@@ -1176,6 +1218,10 @@
 			}
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		buildInfoWindow: function(data) {
 			/*
 			Marker data from the backend.
@@ -1268,7 +1314,10 @@
 	};
 
 	$.renshuu.data = {
-		// http://en.wikipedia.org/wiki/Geographic_coordinate_conversion
+		/**
+		 *
+		 * @see http://en.wikipedia.org/wiki/Geographic_coordinate_conversion
+		 */
 		deg2dms: function(degfloat, isLatitude) {
 			var letter = '';
 			if (isLatitude) {
@@ -1309,8 +1358,11 @@
 			return (deg + '° ' + min + "' " + secfloat + '" ' + letter);
 		},
 
+		/**
+		 *
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
+		 */
 		geocodePosition: function(pos) {
-			// http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 			// Clear earlier geocode markers
 			$.renshuu.data.removeAllGeoMarkers();
 			$.renshuu.geocoder.geocode(
@@ -1336,6 +1388,10 @@
 			);
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		removeGeoMarker: function(marker) {
 			var inx = $.renshuu.geocodeMarkers.indexOf(marker);
 			console.log('rightclicking thus removing marker with title: ' + marker.getTitle() + ', inx: ' + inx);
@@ -1345,6 +1401,10 @@
 			marker.setMap(null);
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		removeAllGeoMarkers: function() {
 			var len = $.renshuu.geocodeMarkers.length;
 			while (len > 0) {
@@ -1358,6 +1418,10 @@
 	};
 
 	$.renshuu.callbacks = {
+		/**
+		 *
+		 * @see 
+		 */
 		updateZoomCookie: function() {
 			var zoom = $.renshuu.map.getZoom();
 			$.cookie(
@@ -1367,6 +1431,10 @@
 			);
 			$.renshuu.zoom = zoom;
 		},
+		/**
+		 *
+		 * @see 
+		 */
 		updateCenterCookie: function() {
 			var center = $.renshuu.map.getCenter();
 			$.cookie(
@@ -1376,6 +1444,10 @@
 			);
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		initiate: function() {
 			var callbacks = $.renshuu.callbacks;
 			var map = $.renshuu.map;
@@ -1422,9 +1494,11 @@
 		}
 	};
 
-	// http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 	$.renshuu.pins = {
-		// MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
+		/**
+		 * MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
+		 * @see http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
+		 */
 		getMarkerImage: function(image, size, origin, anchor) {
 			console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
 			return new google.maps.MarkerImage(
@@ -1432,6 +1506,10 @@
 			);
 		},
 
+		/**
+		 *
+		 * @see http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
+		 */
 		getIcon: function(icon, color) { // 21, 34
 			if (!icon) {
 				icon = 'fire';
@@ -1439,12 +1517,15 @@
 			if (!color) {
 				color = 'ADDE63';
 			}
-			// http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
 			return $.renshuu.pins.getMarkerImage(
 				'chst=d_map_pin_icon&chld=' + icon + '|' + color
 			);
 		},
 
+		/**
+		 *
+		 * @see http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
+		 */
 		getLetter: function(letter, fill, color) {
 			if (!letter) {
 				letter = '場';
@@ -1455,13 +1536,15 @@
 			if (!color) {
 				color = '05050D';
 			}
-			// http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
 			return $.renshuu.pins.getMarkerImage(
 				'chst=d_map_pin_letter&chld=' + encodeURI(letter) + '|' + fill + '|' + color
 			);
 		},
 
-		// type can be only one of the two [pin_sright, pin_sleft], othervise size mismatches.
+		/**
+		 * Type can be only one of the two [pin_sright, pin_sleft], othervise size mismatches.
+		 * @see 
+		 */
 		getPinStar: function(icon, fill, star, type) {
 			if (!icon) {
 				icon = 'glyphish_compass';
@@ -1488,6 +1571,10 @@
 			);
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		getBubble: function(icon, text, fill, color, type) {
 			if (!icon) {
 				icon = 'glyphish_paperclip';
@@ -1527,7 +1614,10 @@
 
 		types: ['art', 'location', 'training', 'person', 'user', 'login', 'register'],
 
-		// Seven types available: art, location, training, person, user, login, register
+		/**
+		 * Seven types available: art, location, training, person, user, login, register
+		 * @see 
+		 */
 		getForm: function(type) {
 			if ($.renshuu.forms.cache[type])
 			{
@@ -1546,10 +1636,12 @@
 			}
 		},
 
-		// form contains the form element with the requested input fields.
+		/**
+		 * Form contains the form element with the requested input fields.
+		 * @see http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+		 */
 		setForm: function(form, type) {
 
-			// http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 			$(form).find('input[name=location]').autoSuggest(
 				$.renshuu.ajaxpoint.get + 'location', {
 					startText: $.renshuu.lang.suggest.location,
@@ -1622,6 +1714,10 @@
 			$.renshuu.forms.cache[type] = form;
 		},
 
+		/**
+		 *
+		 * @see 
+		 */
 		showForm: function(type) {
 			var form = $.renshuu.forms.cache[type];
 			$(form).attr('rel', 'insert-0'); // Always empty and ready to insert a new.
@@ -1639,7 +1735,10 @@
 			}
 		},
 		
-		// User data binding
+		/**
+		 * User data binding
+		 * @see 
+		 */
 		fillUserData: function() {
 			var userData = $.renshuu.userData;
 			if (userData) {
