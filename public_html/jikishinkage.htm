@@ -7,130 +7,82 @@
 	<style type="text/css">
 		* { margin:0; padding:0;}
 		#map {
-			width: 1000px;
-			height: 700px;
+			width: 1200px;
+			height: 600px;
+			background-color: #ff5533;
+		}
+		#street {
+			width: 600px;
+			height: 200px;
 			background-color: #ff5533;
 		}
 	</style>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=ja"></script>
-	<script type="text/javascript" src="js/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
 	<script type="text/javascript" src="js/jikishinkage.js"></script>
+	<script type="text/javascript" src="js/renshuusurutoki.js"></script>
 	<script type="text/javascript">
 		/*
-		var dojoList = [
-			{
-				prefecture: "北海道",
-				locations: [
-					{
-						title: "中央クラブ",
-						location: "札幌市立中央体育館"
-						latitude: 0,
-						longitude: 0,
-						weekday: "金",
-						hours: "10：00～12：30"
-					}
-				]
-			},
-			....
-		];
+		{
+			prefecture: "茨城県",
+			locations: [
+				{
+					title: "東町同好会",
+					location: "東町運動公園",
+					latitude: 0,
+					longitude: 0,
+					weekday: "月",
+					hours: "13：30～15：30"
+				},
+				{
+					title: "土浦薙刀クラブ",
+					location: "土浦市立武道館",
+					latitude: 0,
+					longitude: 0,
+					weekday: "火",
+					hours: "13：30～15：30"
+				},
+				{
+					title: "土浦薙刀クラブ",
+					location: "土浦市立武道館",
+					latitude: 0,
+					longitude: 0,
+					weekday: "日",
+					hours: "13：00～16：00"
+				}
+			]
+		}
 		*/
 
-		var map;
-		var geocoder;
-		var delay = 0;
-		var markers = [];
 
 		$(document).ready(function() {
 		
-			function createMarker(opts) {
-				var marker = new google.maps.Marker({
-					position: opts.position, 
-					map: opts.map,
-					title: opts.title,
-					draggable: true
-				});
-				google.maps.event.addListener(marker, 'click', function() {
-					var infowindow = new google.maps.InfoWindow({ content: opts.html });
-					var latlng = marker.getPosition();
-					console.log("latitude: " + latlng.lat() + ", longitude: " + latlng.lng());
-					infowindow.open(opts.map, marker);
-				});
-				google.maps.event.addListener(marker, 'dragend', function(event) {
-					var latlng = marker.getPosition();
-					console.log("dragend-latlng: " + latlng);
-				});
-				
-				markers.push(marker);
-			}
-			
-			function geolocate(data, timeout) {
-
-				// geocode this address
-				console.log("geocoding: " + data.prefecture + data.location + ", delay: " + delay);
-				setTimeout(function() {
-					geocoder.geocode({
-						address: data.address,
-						region: 'jp'
-					}, function(result, status) {
-						console.log("geocoding status: " + status + ", data.location: " + data.location);
-						for(var s in result) {
-							console.log(result[s]);
-						}
-						if (status == google.maps.GeocoderStatus.OK) {
-							var geo = result[0].geometry;
-							
-							createMarker({
-								position: geo.location, 
-								map: map,
-								title: data.title,
-								html: '<b>' + data.prefecture + '</b> - ' + data.title + '<br />' + data.location
-							});
-						}
-					});
-				}, timeout);
-			}
-			
-			map = new google.maps.Map(document.getElementById('map'), {
-				center: new google.maps.LatLng(38, 140), 
-				zoom: 6,
-				mapTypeId: google.maps.MapTypeId.HYBRID
-			});
-			geocoder = new google.maps.Geocoder();
-			
-			
-
+			$.renshuu.ready();
+		
 			var len = dojoList.length;
 			for (var i = 0; i < len; ++i) {
-				var obj = dojoList[i];
-				var llen = obj.locations.length;
-				console.log("prefecture: " + obj.prefecture + " has " + llen + " locations");
-				for (var j = 0; j < llen; ++j) {
-					var place = obj.locations[j];
-					var marker;
-					if (place.latitude != 0 && place.longitude != 0) {
-						createMarker({
-							position: new google.maps.LatLng(place.latitude, place.longitude), 
-							map: map,
-							title: place.title,
-							html: '<b>' + obj.prefecture + '</b> - ' + place.title + '<br />' + place.location
-						});
-					}
-					else {
-						delay += 5000;
-						geolocate({
-							address: obj.prefecture + place.location,
-							title: place.title,
-							location: place.location,
-							prefecture: obj.prefecture
-						}, delay);
-					}
+				var ken = dojoList[i]; // object
+				var loc = ken.locations; // array
+				var locLen = loc.length;
+				console.log("prefecture: " + ken.prefecture);
+				var out = ken.prefecture + ' : ' + locLen + '<br />';
+				
+				for (var j = 0; j < locLen; ++j) {
+					var dojo = loc[j]; // object
+					console.log("geocoding dojo: " + dojo.location);
+					$.renshuu.data.geocodePosition({ address: dojo.location });
 				}
+				$('#ken').append('<p>' + out + '</p>');
 			}
-			
 		});
 </script>
 </head>
 <body>
   <div id="map"></div>
+  <div id="street"></div>
+  <div id="ken"></div>
 </body>
 </html>

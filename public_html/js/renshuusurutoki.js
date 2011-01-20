@@ -6,28 +6,38 @@
 
 // http://javascriptweblog.wordpress.com/2010/07/26/no-more-ifs-alternatives-to-statement-branching-in-javascript/
 
-/** Firebug console functions if they do not exist **/
-(function(window) {
+/**
+ * Please keep reading:
+ *  http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog
+ */
+
+/** 
+ * Firebug console functions if they do not exist
+ */
+(function (window) {
 	if (!('console' in window) || !('firebug' in console)) {
-		var names = ['log', 'debug', 'info', 'warn', 'error', 'assert', 'dir', 'dirxml',
-			'group', 'groupEnd', 'time', 'timeEnd', 'count', 'trace', 'profile', 'profileEnd'];
+		var names = [
+			'log', 'debug', 'info', 'warn', 'error', 'assert', 
+			'dir', 'dirxml', 'group', 'groupEnd', 'time', 
+			'timeEnd', 'count', 'trace', 'profile', 'profileEnd'
+		];
 		var len = names.length;
 		window.console = {};
-		for (var i = 0; i < len; i++) {
-			window.console[names[i]] = function() {};
+		for (var i = 0; i < len; ++i) {
+			window.console[names[i]] = function () {};
 		}
 	}
 })(window);
 
 /**
- * Few small plugins which are build based on a research in the Internet
+ * Few small plugins which are build based on a research in the Internet.
  */
-(function($) {
+(function ($) {
 	/**
 	 * Get the inner and outer html data,
 	 * that is the selected element itself including.
 	 */
-	$.fn.outerHtml = function() {
+	$.fn.outerHtml = function () {
 		var outer = null;
 		if (this.length) {
 			var div = $('<' + 'div style="display:none"><' + '/div>');
@@ -41,8 +51,8 @@
 	/**
 	 * http://www.learningjquery.com/2007/08/clearing-form-data
 	 */
-	$.fn.clearForm = function() {
-		return this.each(function() {
+	$.fn.clearForm = function () {
+		return this.each(function () {
 			var type = this.type, tag = this.tagName.toLowerCase();
 			if (tag == 'form') {
 				return $(':input',this).clearForm();
@@ -64,7 +74,7 @@
  * https://addons.mozilla.org/en-US/firefox/addon/11905/
  * https://addons.mozilla.org/en-US/firefox/addon/12632/
  */
-(function($) {
+(function ($) {
 
 	$.renshuu = {
 		animSpeed: 200,
@@ -96,8 +106,8 @@
 		streetService: null,
 		
 		// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
-		dirService: null // DirectionsService
-		dirLines: [] // Polylines used by DirectionsService {polyline: line, points: [pos0, pos1]}
+		dirService: null, // DirectionsService
+		dirLines: [], // Polylines used by DirectionsService {polyline: line, points: [pos0, pos1]}
 
 		// default map center will be in the most beautiful castle of Japan
 		hikone: null,
@@ -131,7 +141,8 @@
 		// If this value is 'address' and a marker is clicked, its position will be place in the form.
 		geocodeBasedOn: 'none',
 
-		// Store temporary geocoded location markers here
+		// Store temporary geocoded location markers here.
+		// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
 		geocodeMarkers: [],
 		
 		// Store temporary location markers, of those existing in the backend
@@ -167,10 +178,19 @@
 
 		/**
 		 * Please trigger this once document is ready, thus DOM has been loaded.
+		 * Assumes that there exists elements with the following ids:
+		 * - map
+		 * - street
+		 * - filtering
+		 * - navigation
+		 * - mapping
+		 * - savedlist
+		 * - 
+		 *
 		 * Hikone Castle & Town.
 		 * @see http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 		 */
-		ready: function() {
+		ready: function () {
 			$.renshuu.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 			
 			// Remove default styling from blockUi.
@@ -217,7 +237,7 @@
 			// Set up the directions service
 			$.renshuu.dirService = new google.maps.DirectionsService();
 			// Toggle "street view position update based on the map position" setting.
-			$('input:checkbox[name=markerstreet]').change(function() {
+			$('input:checkbox[name=markerstreet]').change(function () {
 				$.renshuu.markers.showInStreetView = $(this).is(':checked');
 				console.log('markerstreet change. ' + $.renshuu.markers.showInStreetView);
 				$.cookie(
@@ -247,7 +267,7 @@
 				// Only update filters if anything changed.
 				//var changed = false;
 
-				$('#' + target + ' input:checkbox').each(function(i, elem) {
+				$('#' + target + ' input:checkbox').each(function (i, elem) {
 					//console.log('each. i: ' + i + ', name: ' + $(this).attr('name') + ', checked: ' + $(this).is(':checked'));
 					var checked = $(this).is(':checked');
 					var tobecheck = false;
@@ -271,12 +291,12 @@
 			});
 
 			// http://benalman.com/projects/jquery-hashchange-plugin/
-			$(window).hashchange(function() {
+			$(window).hashchange(function () {
 				console.log('hashchange: ' + location.hash );
 			});
 
 			// Open external links in a new window. Perhaps copyright is the only one...
-			$('a[href^="http://"]').live('click', function() {
+			$('a[href^="http://"]').live('click', function () {
 				var href = $(this).attr('href');
 				var now = new Date();
 				window.open(href, now.getMilliseconds());
@@ -285,7 +305,7 @@
 
 
 			// Toggle the visibility of each box
-			$('.header p a').click(function() {
+			$('.header p a').click(function () {
 				var rel = $(this).attr('rel');
 				var con = $(this).parent('p').parent('div').next('.content').children('.stuff');
 				console.log('rel: ' + rel + ', con.length: ' + con.length);
@@ -307,21 +327,21 @@
 				return false;
 			});
 
-			$('#mapping .header a[rel=street]').click(function() {
+			$('#mapping .header a[rel=street]').click(function () {
 				var visible = $.renshuu.streetview.getVisible();
 				$.renshuu.streetview.setVisible(!visible);
 				return false;
 			});
 			/*
-			$('').click(function() {
+			$('').click(function () {
 				return false;
 			});
-			$('').click(function() {
+			$('').click(function () {
 				return false;
 			});
 			*/
 
-			$('.modal-tools a[rel=savetolist]').live('click', function() {
+			$('.modal-tools a[rel=savetolist]').live('click', function () {
 				var href = $(this).attr('href');
 				var id = href.split('-').pop();
 				console.log('savetolist click. href: ' + href + ', id: ' + id);
@@ -330,7 +350,7 @@
 				$(this).hide();
 				return false;
 			});
-			$('.modal-tools a[rel=removefromlist]').live('click', function() {
+			$('.modal-tools a[rel=removefromlist]').live('click', function () {
 				var href = $(this).attr('href');
 				var id = href.split('-').pop();
 				console.log('removefromlist click. href: ' + href + ', id: ' + id);
@@ -339,14 +359,14 @@
 				$(this).hide();
 				return false;
 			});
-			$('#savedlist a[rel=remove]').live('click', function() {
+			$('#savedlist a[rel=remove]').live('click', function () {
 				var href = $(this).attr('href');
 				var id = href.split('-').pop();
 				console.log('#savedlist a[remove] click. href: ' + href + ', id: ' + id);
 				$.renshuu.removeSavedList(id);
 				return false;
 			});
-			$('p.login a').live('click', function() {
+			$('p.login a').live('click', function () {
 				var href = $(this).attr('href').substr(1);
 				console.log('href: ' + href);
 				$.renshuu.openAuthModal(href);
@@ -354,7 +374,7 @@
 			});
 
 			// Note that either "insert" = 0 or "update" = id must be set in the root data...
-			$('form').live('submit', function() {
+			$('form').live('submit', function () {
 				var id = $(this).attr('id');
 				console.log('submit. id: ' + id);
 				if (id === 'login_form') {
@@ -378,7 +398,7 @@
 					message: '<div id="formfeedback"><h1 title="' + $.renshuu.lang.form.sending + '">' + $.renshuu.lang.form.sending + '</h1></div>'
 				});
 				
-				$.post($(this).attr('action'), post, function(data, status) {
+				$.post($(this).attr('action'), post, function (data, status) {
 					console.log('form submit. status: ' + status);
 					console.dir(data);
 					var res;
@@ -398,7 +418,7 @@
 					
 					$('#formfeedback').attr('class', classes).html(html);
 					
-					$('#formfeedback a[rel]').one('click', function() {
+					$('#formfeedback a[rel]').one('click', function () {
 						var rel = $(this).attr('rel');
 						var href = $(this).attr('href').substr(1);
 						if (rel == 'clear') {
@@ -414,32 +434,32 @@
 				return false;
 			});
 
-			$('form input:button[name=send]').live('click', function() {
+			$('form input:button[name=send]').live('click', function () {
 				$(this).parents('form').first().submit();
 				return false;
 			});
 			
-			$('form input:button[name=clear]').live('click', function() {
+			$('form input:button[name=clear]').live('click', function () {
 				$(this).parents('form').first().reset();
 				return false;
 			});
 			
 			// Change icon based on geocode direction
-			$('#location_form input:radio[name=geocode]').live('change', function() {
+			$('#location_form input:radio[name=geocode]').live('change', function () {
 				$.renshuu.updateGeocodeSelectionIcon();
 			});
 
 			// Special care for the export settings form, in order to update its preview
-			$('#export_form input, #export_form select').live('change', function(){
+			$('#export_form input, #export_form select').live('change', function (){
 				$.renshuu.updateExportPreview();
 			});
 			// Initial load...
 			$.renshuu.updateExportPreview();
 
 			// Dragging of the modal window.
-			$('h2.summary').live('mousedown', function() {
+			$('h2.summary').live('mousedown', function () {
 			});
-			$('h2.summary').live('mouseup', function() {
+			$('h2.summary').live('mouseup', function () {
 			});
 
 			// http://github.com/nje/jquery-datalink
@@ -483,8 +503,8 @@
 			}
 			
 			// Finally, set the keepalive call
-			setInterval(function() {
-				$.get('/ajax/keepalive', function(data) {
+			setInterval(function () {
+				$.get('/ajax/keepalive', function (data) {
 					//console.log(data);
 				}, 'json');
 			}, $.renshuu.keepAlive);
@@ -600,7 +620,7 @@
 		 * Update filters data according to current checkbox selection.
 		 * @see 
 		 */
-		updateFilters: function() {
+		updateFilters: function () {
 			var sets = ['arts', 'weekdays'];
 			var len = sets.length;
 			var lens = [];
@@ -608,7 +628,7 @@
 			for (var i = 0; i < len; ++i) {
 				var target = sets[i];
 				var list = [];
-				$('#' + target + ' input:checkbox').each(function(inx, elem) {
+				$('#' + target + ' input:checkbox').each(function (inx, elem) {
 					var id = $(this).attr('name').split('_').pop();
 					//console.log('updateFilters. inx: ' + inx + ', name: ' + $(this).attr('name') + ', id: ' + id + ', checked: ' + $(this).is(':checked'));
 					if ($(this).is(':checked')) {
@@ -642,7 +662,7 @@
 		 * This applies the current filter settings to the html in the dom
 		 * @see 
 		 */
-		applyFilters: function() {
+		applyFilters: function () {
 			var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
 			var len = sets.length; // Should be 2
 			for (var i = 0; i < len; ++i) {
@@ -650,7 +670,7 @@
 				var list = $.renshuu.filterSettings[target];
 				console.log('applyFilters. target: ' + target + ', list: ' + list);
 				if (list) {
-					$('#' + target + ' input:checkbox').each(function(i, elem) {
+					$('#' + target + ' input:checkbox').each(function (i, elem) {
 						var rel = $(this).attr('name').split('_').pop();
 						var inx = list.indexOf(rel);
 						//console.log('applyFilters. i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
@@ -668,7 +688,7 @@
 		/**
 		 * @see http://www.jlpt.jp/samples/forlearners.html
 		 */
-		updateTrainings: function() {
+		updateTrainings: function () {
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
@@ -683,7 +703,7 @@
 			$.renshuu.markers.clearMarkers($.renshuu.trainingMarkers);
 			$.renshuu.trainingMarkersData = [];
 
-			$.post($.renshuu.ajaxpoint.get, para, function(data, status) {
+			$.post($.renshuu.ajaxpoint.get, para, function (data, status) {
 				//console.dir(data);
 				if (data.response && data.response.result) {
 					var res = data.response.result;
@@ -703,7 +723,7 @@
 		 * show training place locations.
 		 * As opposed to trainings.
 		 */
-		updateLocations: function() {
+		updateLocations: function () {
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
@@ -716,7 +736,7 @@
 			$.renshuu.markers.clearMarkers($.renshuu.locationMarkers);
 			$.renshuu.locationMarkersData = [];
 			
-			$.post($.renshuu.ajaxpoint.get + 'location', para, function(data, status) {
+			$.post($.renshuu.ajaxpoint.get + 'location', para, function (data, status) {
 				console.dir(data);
 				if (data.response && data.response.result) {
 					var res = data.response.result;
@@ -734,7 +754,7 @@
 		/** 
 		 * @see http://code.google.com/apis/maps/documentation/staticmaps/
 		 */ 
-		updateExportPreview: function() {
+		updateExportPreview: function () {
 			var url = 'http://maps.google.com/maps/api/staticmap?';
 			var values = ['sensor=false'];
 			var fields = ['maptype', 'language', 'format', 'zoom', 'size'];
@@ -768,7 +788,7 @@
 		/**
 		 * Draw route between two spots, while using directions service.
 		 */
-		drawRoute: function(pos1, pos2) {
+		drawRoute: function (pos1, pos2) {
 			var reg = {
 				avoidHighways: true, 
 				destination: pos2, 
@@ -776,7 +796,7 @@
 				provideRouteAlternatives: false,
 				travelMode: google.maps.DirectionsTravelMode.WALKING
 			};
-			$.renshuu.dirService.route(reg, function(result, status) {
+			$.renshuu.dirService.route(reg, function (result, status) {
 				console.log(status);
 				if (result && result.routes && result.routes[0]) {
 					var route = result.routes[0]; // DirectionsRoute  just one if provideRouteAlternatives == false
@@ -801,11 +821,11 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
 		 */
-		drawPath: function(pos1, pos2) {
+		drawPath: function (pos1, pos2) {
 			var opts = {
 				clickable: false,
 				geodesic: true,
-				map: $.renshuu.map
+				map: $.renshuu.map,
 				path: [pos1, pos2],
 				strokeColor: "#FFAA00", // html hex
 				strokeOpacity: 0.5,
@@ -814,9 +834,9 @@
 			var line = new google.maps.Polyline(opts);
 			
 			// Change the color slightly
-			google.maps.event.addListener(line, 'mouseover', function() {
+			google.maps.event.addListener(line, 'mouseover', function () {
 			});
-			google.maps.event.addListener(line, 'mouseout', function() {
+			google.maps.event.addListener(line, 'mouseout', function () {
 			});
 		},
 		
@@ -824,7 +844,7 @@
 		 * Show the given position in the Street View. 
 		 * Once visibility set, the opening is taken care of by its event handler.
 		 */
-		showStreetView: function(position) {
+		showStreetView: function (position) {
 			$.renshuu.streetview.setPosition(position);
 			$.renshuu.streetview.setVisible(true);
 		},
@@ -833,7 +853,7 @@
 		 * http://getfirebug.com/wiki/index.php/Firebug_Extensions
 		 * http://getfirebug.com/wiki/index.php/Console_API
 		 */
-		openAuthModal: function(key) {
+		openAuthModal: function (key) {
 			console.group('openAuthModal');
 			
 			// ...
@@ -848,7 +868,7 @@
 		 * - Geocoder
 		 * - StreetViewService
 		 */
-		mapInit: function(map_element, street_element, map_options, street_options) {
+		mapInit: function (map_element, street_element, map_options, street_options) {
 			$.renshuu.geocoder = new google.maps.Geocoder();
 			$.renshuu.streetService = new google.maps.StreetViewService();
 
@@ -886,7 +906,7 @@
 			);
 
 			// Marker draggin overrides the Street View position and makes it visible if hidden.
-			google.maps.event.addListener($.renshuu.streetMarker, 'dragend', function() {
+			google.maps.event.addListener($.renshuu.streetMarker, 'dragend', function () {
 				var pos = $.renshuu.streetMarker.getPosition();
 				console.log('streetMarker dragend. pos: ' + pos);
 				$.renshuu.streetview.setPosition(pos);
@@ -897,7 +917,7 @@
 
 			// This is a bit tricky as the position changes twice in a row
 			// when it is first set by the marker position and then by itself
-			google.maps.event.addListener($.renshuu.streetview, 'position_changed', function() {
+			google.maps.event.addListener($.renshuu.streetview, 'position_changed', function () {
 				var posS = $.renshuu.streetview.getPosition();
 				var posM = $.renshuu.streetMarker.getPosition();
 				console.log('streetview position_changed. posS: ' + posS + ', posM: ' + posM);
@@ -908,7 +928,7 @@
 			});
 
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
-			google.maps.event.addListener($.renshuu.streetview, 'visible_changed', function() {
+			google.maps.event.addListener($.renshuu.streetview, 'visible_changed', function () {
 				var posS = $.renshuu.streetview.getPosition();
 				var posM = $.renshuu.streetMarker.getPosition();
 				var bounds = $.renshuu.map.getBounds();
@@ -945,28 +965,35 @@
 				opts.center, 'Choose position', icon, true
 			);
 
-			google.maps.event.addListener($.renshuu.locationMarker, 'drag', function(event) {
+			google.maps.event.addListener($.renshuu.locationMarker, 'drag', function (event) {
 				// update position info in the form
 				var pos = $.renshuu.locationMarker.getPosition();
 				$('input[name=latitude]').val(pos.lat());
 				$('input[name=longitude]').val(pos.lng());
 			});
-			google.maps.event.addListener($.renshuu.locationMarker, 'dragstart', function(event) {
+			google.maps.event.addListener($.renshuu.locationMarker, 'dragstart', function (event) {
 				// This event is fired when the user starts dragging the marker.
 			});
-			google.maps.event.addListener($.renshuu.locationMarker, 'dragend', function(event) {
+			google.maps.event.addListener($.renshuu.locationMarker, 'dragend', function (event) {
 				// geocode current position if the form setting allows.
 				// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
 				if ($('input[name=geocode][value=position]').is(':checked')) {
 					var pos = $.renshuu.locationMarker.getPosition();
-					$.renshuu.data.geocodePosition(pos);
+					
+					// Clear earlier geocode markers
+					$.renshuu.data.removeAllGeoMarkers();
+			
+					$.renshuu.data.geocodePosition(
+						{ location: pos },
+						$.renshuu.data.addGeoMarkers
+					);
 				}
 			});
 			$.renshuu.locationMarker.setVisible(false);
 
 			$.renshuu.callbacks.initiate();
 
-			$(window).resize(function() {
+			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.map, 'resize');
 				google.maps.event.trigger($.renshuu.streetview, 'resize');
 			});
@@ -974,13 +1001,13 @@
 
 		/**
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
-		 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function(StreetViewPanoramaData, StreetViewStatus):void))
+		 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function (StreetViewPanoramaData, StreetViewStatus):void))
 		 */
-		getPanorama: function(pos, radius) {
+		getPanorama: function (pos, radius) {
 			if (!radius) {
 				radius = 100; // Metres
 			}
-			$.renshuu.streetService.getPanoramaByLocation(pos, radius, function(data, status) {
+			$.renshuu.streetService.getPanoramaByLocation(pos, radius, function (data, status) {
 				console.log('getPanorama. status: ' + status);
 			});
 		},
@@ -988,7 +1015,7 @@
 		/**
 		 * Set the icon next to the radio buttons in the location form
 		 */
-		updateGeocodeSelectionIcon: function() {
+		updateGeocodeSelectionIcon: function () {
 			if ($('#location_form').size() > 0) {
 				var val = $('#location_form input:radio[name=geocode]:checked').val();
 				console.log('updateGeocodeSelectionIcon. val: ' + val);
@@ -1040,7 +1067,7 @@
 		 *
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Marker
 		 */
-		clearMarkers: function(list) {
+		clearMarkers: function (list) {
 			var len = list.length;
 			for (var i = 0; i < len; ++i) {
 				var marker = list[i];
@@ -1054,12 +1081,12 @@
 		 *
 		 * @see 
 		 */
-		createTrainingMarker: function(data) {
+		createTrainingMarker: function (data) {
 			var icon = $.renshuu.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.renshuu.markers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
 
-			google.maps.event.addListener(marker, 'click', function(event) {
+			google.maps.event.addListener(marker, 'click', function (event) {
 				// This event is fired when the marker icon was clicked.
 				var pos = marker.getPosition();
 				console.log('training marker. click - ' + marker.title + ', pos: ' + pos);
@@ -1075,12 +1102,12 @@
 		 *
 		 * @see 
 		 */
-		createLocationMarker: function(data) {
+		createLocationMarker: function (data) {
 			var icon = $.renshuu.pins.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.renshuu.markers.createMarker(pos, data.location.title, icon, false);
 
-			google.maps.event.addListener(marker, 'click', function(event) {
+			google.maps.event.addListener(marker, 'click', function (event) {
 				// This event is fired when the marker icon was clicked.
 				var pos = marker.getPosition();
 				console.log('location marker. click - ' + marker.title + ', pos: ' + pos);
@@ -1093,17 +1120,17 @@
 		
 		/**
 		 *
-		 * @see 
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
 		 */
 		createGeocodeMarker: function (res, i) {
-			/*
+			
 			for (var j in res) {
 				if (res.hasOwnProperty(j)) {
-					console.log(j + ' = ' + res[j]);
+					console.log('res[' + j + '] = ' + res[j]);
 				}
 			}
-			*/
-			/*
+			
+			
 			for (var s in res.address_components) {
 				var a = res.address_components[s];
 				for (var c in a) {
@@ -1113,11 +1140,7 @@
 			for (var g in res.geometry) {
 				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
 			}
-			*/
-			//address_components
-			//geometry
-			//types
-			// formatted_address - not documented
+			
 			var marker = $.renshuu.markers.createMarker(
 				res.geometry.location,
 				res.formatted_address,
@@ -1125,10 +1148,10 @@
 				false
 			);
 			// Right click will be used for deleting...
-			google.maps.event.addListener(marker, 'rightclick', function(event) {
+			google.maps.event.addListener(marker, 'rightclick', function (event) {
 				$.renshuu.data.removeGeoMarker(marker);
 			});
-			google.maps.event.addListener(marker, 'click', function(event) {
+			google.maps.event.addListener(marker, 'click', function (event) {
 				// This event is fired when the marker is right clicked on.
 				var title = marker.getTitle();
 				var pos = marker.getPosition();
@@ -1146,10 +1169,10 @@
 		},
 
 		/**
-		 *
+		 * Create a simple marker with common settings and listeners.
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 		 */
-		createMarker: function(pos, title, icon, drag) {
+		createMarker: function (pos, title, icon, drag) {
 			if (!icon) {
 				icon = $.renshuu.pins.getIcon();
 			}
@@ -1166,7 +1189,8 @@
 				animation: google.maps.Animation.DROP
 			});
 
-			google.maps.event.addListener(marker, 'dblclick', function(event) {
+			// Marker double click shows that spot in street view
+			google.maps.event.addListener(marker, 'dblclick', function (event) {
 				// This event is fired when the marker icon was double clicked.
 				console.log('marker. dblclick - ' + marker.title);
 				console.log('showInStreetView: ' + $.renshuu.markers.showInStreetView);
@@ -1174,19 +1198,19 @@
 					$.renshuu.showStreetView(marker.getPosition());
 				}
 			});
-			google.maps.event.addListener(marker, 'mouseout', function(event) {
+			google.maps.event.addListener(marker, 'mouseout', function (event) {
 				// This event is fired when the mouse leaves the area of the marker icon.
 			});
-			google.maps.event.addListener(marker, 'mouseover', function(event) {
+			google.maps.event.addListener(marker, 'mouseover', function (event) {
 				// This event is fired when the mouse enters the area of the marker icon.
 			});
 			/*
-			google.maps.event.addListener(marker, 'position_changed', function() {
+			google.maps.event.addListener(marker, 'position_changed', function () {
 				// This event is fired when the marker position property changes.
 				console.log('marker. position_changed - ' + marker.title);
 			});
 			*/
-			google.maps.event.addListener(marker, 'rightclick', function(event) {
+			google.maps.event.addListener(marker, 'rightclick', function (event) {
 				// This event is fired when the marker is right clicked on.
 			});
 
@@ -1197,7 +1221,7 @@
 		 *
 		 * @see http://malsup.com/jquery/block/
 		 */
-		showInfo: function(marker) {
+		showInfo: function (marker) {
 			var inx = $.renshuu.trainingMarkers.indexOf(marker);
 			console.log('showInfo. marker.title: '+ marker.title + ', inx: ' + inx);
 			var data;
@@ -1211,7 +1235,7 @@
 				$('#map').block({ 
 					message: info
 				});
-				$('.modal-close').one('click', function() {
+				$('.modal-close').one('click', function () {
 					$('#map').unblock();
 					return false;
 				});
@@ -1222,7 +1246,7 @@
 		 *
 		 * @see 
 		 */
-		buildInfoWindow: function(data) {
+		buildInfoWindow: function (data) {
 			/*
 			Marker data from the backend.
 			data: {
@@ -1318,14 +1342,9 @@
 		 *
 		 * @see http://en.wikipedia.org/wiki/Geographic_coordinate_conversion
 		 */
-		deg2dms: function(degfloat, isLatitude) {
-			var letter = '';
-			if (isLatitude) {
-				letter = 'NS';
-			}
-			else {
-				letter = 'EW';
-			}
+		deg2dms: function (degfloat, isLatitude) {
+			var letter = isLatitude ? 'NS' : 'EW';
+			
 			if (degfloat < 0) {
 				degfloat = Math.abs(degfloat);
 				letter = letter.substr(1, 1);
@@ -1346,11 +1365,11 @@
 			secfloat = Math.round( secfloat );
 
 			if (secfloat == 60) {
-				min = min + 1;
+				min++;
 				secfloat = 0;
 			}
 			if (min == 60) {
-				deg = deg + 1;
+				deg++;
 				min = 0;
 			}
 			//W 87°43'41"
@@ -1359,44 +1378,110 @@
 		},
 
 		/**
-		 *
+		 * Geocode an address based on a given text or latitude and longitude.
+		 * data {
+		 *    address: "",
+		 *    bounds: LatLngBounds,
+		 *    language: "",
+		 *    location: LatLng,
+		 *    region: ""
+		 *  }
+		 * callBack(key, results, status)
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 		 */
-		geocodePosition: function(pos) {
-			// Clear earlier geocode markers
-			$.renshuu.data.removeAllGeoMarkers();
+		geocodePosition: function (data, callBack) {
+			if (!callBack) {
+				callBack = $.renshuu.data.addGeoMarkers;
+			}
+			if (!data.language) {
+				data.language = 'ja';
+			}
 			$.renshuu.geocoder.geocode(
-				{ location: pos, language: 'ja' },
-				function(results, status) {
-					if (results) {
-						var len = Math.min(3, results.length);
-						// Max three results
-						for (var i = 0; i < len; ++i) {
-							// http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
-							var marker = $.renshuu.markers.createGeocodeMarker(results[i], i);
-							$.renshuu.geocodeMarkers.push(marker);
-
-							console.log('---- result ' + i);
-
-						}
-						$('input[name=address]').val(results[0].formatted_address);
-					}
-					else {
-						$('input[name=address]').val('Cannot determine address at this location.');
+				data,
+				function (results, status) {
+					//console.log('geocodePosition. results: ' + results + ', status: ' + status);
+					if (results && status == google.maps.GeocoderStatus.OK) {
+						var key = data.address ? data.address : data.location.toString();
+						//console.log('geocodePosition. key: ' + key);
+						callBack.apply(this, [key, results, status]);
 					}
 				}
 			);
 		},
+		
+		/**
+		 * Based on the geocode results, add max three markers.
+		 * @param key		Must be a string, either location or address, used in geocode request.
+		 * @param results	An array of google.maps.GeocoderResult,
+		 * @param status	A constant from google.maps.GeocoderStatus...
+		 *   ERROR			 	There was a problem contacting the Google servers.
+         *   INVALID_REQUEST 	This GeocoderRequest was invalid.
+         *   OK 				The response contains a valid GeocoderResponse.
+         *   OVER_QUERY_LIMIT 	The webpage has gone over the requests limit in too short a period of time.
+         *   REQUEST_DENIED 	The webpage is not allowed to use the geocoder.
+         *   UNKNOWN_ERROR 		A geocoding request could not be processed due to a server error. The request may succeed if you try again.
+         *   ZERO_RESULTS 		No result was found for this GeocoderRequest.
+		 *
+		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
+		 * {
+		 *   address_components: [
+		 *     long_name: "",
+		 *     short_name: "",
+		 *     types: []
+		 *   ],
+		 *   geometry: {
+		 *     bounds: LatLngBounds,
+		 *     location: LatLng,
+		 *     location_type: GeocoderLocationType,
+		 *     viewport: LatLngBounds
+		 *   },
+		 *   types: [],
+		 *   formatted_address: "" (not documented)
+		 * }
+		 */
+		addGeoMarkers: function (key, results, status) {
+			console.log('addGeoMarkers. key: ' + key + ', status: ' + status + ', results: ' + results);
+			var lenG = $.renshuu.geocodeMarkers.length;
+			var markers = [];
+			var len = Math.min(3, results.length); // Max three results
+			console.log('addGeoMarkers. len: ' + len);
+			
+			for (var i = 0; i < len; ++i) {
+				// Should check that each address has only one marker.
+				markers.push($.renshuu.markers.createGeocodeMarker(results[i], i));
+
+				console.log('addGeoMarkers. i: ' + i);
+
+			}
+			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
+			$.renshuu.geocodeMarkers.push({
+				key: key,
+				markers: markers
+			});
+			//$('input[name=address]').val(results[0].formatted_address);
+				//$('input[name=address]').val('Cannot determine address at this location.');
+			
+		},
 
 		/**
-		 *
+		 * Removes one marker from the list of geocode result markers.
+		 * If it was the last one in that patch, then the whole patch will be removed.
 		 * @see 
 		 */
-		removeGeoMarker: function(marker) {
-			var inx = $.renshuu.geocodeMarkers.indexOf(marker);
-			console.log('rightclicking thus removing marker with title: ' + marker.getTitle() + ', inx: ' + inx);
-			if (inx !== -1) {
-				$.renshuu.geocodeMarkers.splice(inx, 1);
+		removeGeoMarker: function (marker) {
+			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
+			var i = $.renshuu.geocodeMarkers.length;
+			while (0 < i) {
+				--i;
+				var markers = $.renshuu.geocodeMarkers[i].markers;
+				var inx = $.renshuu.geocodeMarkers.indexOf(marker);
+				console.log('rightclicking thus removing marker with title: ' + marker.getTitle() + ', inx: ' + inx + ", i: " + i);
+				if (inx !== -1) {
+					markers.splice(inx, 1);
+				}
+				if (markers.length == 0) {
+					$.renshuu.geocodeMarkers.splice(i, 1);
+				}
 			}
 			marker.setMap(null);
 		},
@@ -1405,7 +1490,9 @@
 		 *
 		 * @see 
 		 */
-		removeAllGeoMarkers: function() {
+		removeAllGeoMarkers: function () {
+			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
+			var lenG = $.renshuu.geocodeMarkers.length;
 			var len = $.renshuu.geocodeMarkers.length;
 			while (len > 0) {
 				len--;
@@ -1422,7 +1509,7 @@
 		 *
 		 * @see 
 		 */
-		updateZoomCookie: function() {
+		updateZoomCookie: function () {
 			var zoom = $.renshuu.map.getZoom();
 			$.cookie(
 				'mapZoom',
@@ -1435,7 +1522,7 @@
 		 *
 		 * @see 
 		 */
-		updateCenterCookie: function() {
+		updateCenterCookie: function () {
 			var center = $.renshuu.map.getCenter();
 			$.cookie(
 				'mapCenter',
@@ -1448,7 +1535,7 @@
 		 *
 		 * @see 
 		 */
-		initiate: function() {
+		initiate: function () {
 			var callbacks = $.renshuu.callbacks;
 			var map = $.renshuu.map;
 			google.maps.event.addListener(map, 'bounds_changed', callbacks.bounds_changed);
@@ -1460,35 +1547,35 @@
 			//google.maps.event.addListener(map, 'rightclick', callbacks.rightclick);
 			google.maps.event.addListener(map, 'zoom_changed', callbacks.zoom_changed);
 		},
-		bounds_changed: function() {
+		bounds_changed: function () {
 			// This event is fired when the viewport bounds have changed
 			if (location.hash == '#location' || location.hash == '#training') {
 				$.renshuu.updateLocations();
 			}
 		},
-		center_changed: function() {
+		center_changed: function () {
 			// This event is fired when the map center property changes.
 			$.renshuu.callbacks.updateCenterCookie();
 		},
-		maptypeid_changed: function() {
+		maptypeid_changed: function () {
 			// This event is fired when the mapTypeId property changes.
 		},
-		mousemove: function(event) {
+		mousemove: function (event) {
 			// This event is fired whenever the user's mouse moves over the map container.
 		},
-		mouseout: function(event) {
+		mouseout: function (event) {
 			// This event is fired when the user's mouse exits the map container.
 		},
-		mouseover: function(event) {
+		mouseover: function (event) {
 			// This event is fired when the user's mouse enters the map container.
 		},
-		projection_changed: function() {
+		projection_changed: function () {
 			// This event is fired when the projection has changed.
 		},
-		rightclick: function(event) {
+		rightclick: function (event) {
 			// This event is fired when the DOM contextmenu event is fired on the map container.
 		},
-		zoom_changed: function() {
+		zoom_changed: function () {
 			// This event is fired when the map zoom property changes.
 			$.renshuu.callbacks.updateZoomCookie();
 		}
@@ -1499,7 +1586,7 @@
 		 * MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
 		 * @see http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 		 */
-		getMarkerImage: function(image, size, origin, anchor) {
+		getMarkerImage: function (image, size, origin, anchor) {
 			console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
 			return new google.maps.MarkerImage(
 				'http://chart.apis.google.com/chart?' + image, size, origin, anchor, size
@@ -1510,7 +1597,7 @@
 		 *
 		 * @see http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
 		 */
-		getIcon: function(icon, color) { // 21, 34
+		getIcon: function (icon, color) { // 21, 34
 			if (!icon) {
 				icon = 'fire';
 			}
@@ -1526,7 +1613,7 @@
 		 *
 		 * @see http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
 		 */
-		getLetter: function(letter, fill, color) {
+		getLetter: function (letter, fill, color) {
 			if (!letter) {
 				letter = '場';
 			}
@@ -1545,7 +1632,7 @@
 		 * Type can be only one of the two [pin_sright, pin_sleft], othervise size mismatches.
 		 * @see 
 		 */
-		getPinStar: function(icon, fill, star, type) {
+		getPinStar: function (icon, fill, star, type) {
 			if (!icon) {
 				icon = 'glyphish_compass';
 			}
@@ -1575,7 +1662,7 @@
 		 *
 		 * @see 
 		 */
-		getBubble: function(icon, text, fill, color, type) {
+		getBubble: function (icon, text, fill, color, type) {
 			if (!icon) {
 				icon = 'glyphish_paperclip';
 			}
@@ -1601,9 +1688,9 @@
 			);
 		},
 
-		gYellowIcon: function() { return $.renshuu.pins.getIcon('glyphish_target', 'F9FBF7'); },
-		gRedIcon: function() { return $.renshuu.pins.getIcon('star', 'CC2233'); },
-		gBlueIcon: function() { return $.renshuu.pins.getIcon('snow', '2233CC'); }
+		gYellowIcon: function () { return $.renshuu.pins.getIcon('glyphish_target', 'F9FBF7'); },
+		gRedIcon: function () { return $.renshuu.pins.getIcon('star', 'CC2233'); },
+		gBlueIcon: function () { return $.renshuu.pins.getIcon('snow', '2233CC'); }
 	};
 
 
@@ -1618,14 +1705,14 @@
 		 * Seven types available: art, location, training, person, user, login, register
 		 * @see 
 		 */
-		getForm: function(type) {
+		getForm: function (type) {
 			if ($.renshuu.forms.cache[type])
 			{
 				$.renshuu.forms.showForm(type);
 			}
 			else
 			{
-				$.post($.renshuu.ajaxpoint.form + type, function(data, status) {
+				$.post($.renshuu.ajaxpoint.form + type, function (data, status) {
 					//console.dir(data);
 					if (data.response && data.response.form)
 					{
@@ -1640,7 +1727,7 @@
 		 * Form contains the form element with the requested input fields.
 		 * @see http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 		 */
-		setForm: function(form, type) {
+		setForm: function (form, type) {
 
 			$(form).find('input[name=location]').autoSuggest(
 				$.renshuu.ajaxpoint.get + 'location', {
@@ -1659,10 +1746,10 @@
 					searchObjProps: 'name',
 					queryParam: '/',
 					selectionLimit: 2,
-					//selectionClick: function(elem){ elem.fadeTo("slow", 0.33); },
-					//selectionAdded: function(elem){ elem.fadeTo("slow", 0.33); },
-					//selectionRemoved: function(elem){ elem.fadeTo("fast", 0, function(){ elem.remove(); }); },
-					resultClick: function(data){
+					//selectionClick: function (elem){ elem.fadeTo("slow", 0.33); },
+					//selectionAdded: function (elem){ elem.fadeTo("slow", 0.33); },
+					//selectionRemoved: function (elem){ elem.fadeTo("fast", 0, function (){ elem.remove(); }); },
+					resultClick: function (data){
 						for (var i in data.attributes) {
 							console.log('resultClick - ' + i + ' = ' + data.attributes[i]);
 						}
@@ -1718,7 +1805,7 @@
 		 *
 		 * @see 
 		 */
-		showForm: function(type) {
+		showForm: function (type) {
 			var form = $.renshuu.forms.cache[type];
 			$(form).attr('rel', 'insert-0'); // Always empty and ready to insert a new.
 			$($.renshuu.tabContentElement).contents().detach(); // clean but save
@@ -1739,7 +1826,7 @@
 		 * User data binding
 		 * @see 
 		 */
-		fillUserData: function() {
+		fillUserData: function () {
 			var userData = $.renshuu.userData;
 			if (userData) {
 				$('#profile_form input[name=email]').val(userData.email);
