@@ -1,0 +1,125 @@
+SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "220 b1.hitrost.net ESMTP Exim 4.72 Wed, 08 Sep 2010 06:56:32 +0200
+"
+<br />SMTP -> get_lines(): $data is "220 b1.hitrost.net ESMTP Exim 4.72 Wed, 08 Sep 2010 06:56:32 +0200
+"
+<br />SMTP -> FROM SERVER:220 b1.hitrost.net ESMTP Exim 4.72 Wed, 08 Sep 2010 06:56:32 +0200
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+"
+<br />SMTP -> get_lines(): $data was "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+"
+<br />SMTP -> get_lines(): $str is "250-SIZE 104857600
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+"
+<br />SMTP -> get_lines(): $data was "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+"
+<br />SMTP -> get_lines(): $str is "250-PIPELINING
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+"
+<br />SMTP -> get_lines(): $data was "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+"
+<br />SMTP -> get_lines(): $str is "250-AUTH PLAIN LOGIN
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+"
+<br />SMTP -> get_lines(): $data was "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+"
+<br />SMTP -> get_lines(): $str is "250-STARTTLS
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+250-STARTTLS
+"
+<br />SMTP -> get_lines(): $data was "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+250-STARTTLS
+"
+<br />SMTP -> get_lines(): $str is "250 HELP
+"
+<br />SMTP -> get_lines(): $data is "250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+250-STARTTLS
+250 HELP
+"
+<br />SMTP -> FROM SERVER: 250-b1.hitrost.net Hello a91-153-255-236.elisa-laajakaista.fi [91.153.255.236]
+250-SIZE 104857600
+250-PIPELINING
+250-AUTH PLAIN LOGIN
+250-STARTTLS
+250 HELP
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "334 VXNlcm5hbWU6
+"
+<br />SMTP -> get_lines(): $data is "334 VXNlcm5hbWU6
+"
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "334 UGFzc3dvcmQ6
+"
+<br />SMTP -> get_lines(): $data is "334 UGFzc3dvcmQ6
+"
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "235 Authentication succeeded
+"
+<br />SMTP -> get_lines(): $data is "235 Authentication succeeded
+"
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "250 OK
+"
+<br />SMTP -> get_lines(): $data is "250 OK
+"
+<br />SMTP -> FROM SERVER:250 OK
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "250 Accepted
+"
+<br />SMTP -> get_lines(): $data is "250 Accepted
+"
+<br />SMTP -> FROM SERVER:250 Accepted
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "250 Accepted
+"
+<br />SMTP -> get_lines(): $data is "250 Accepted
+"
+<br />SMTP -> FROM SERVER:250 Accepted
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "354 Enter message, ending with "." on a line by itself
+"
+<br />SMTP -> get_lines(): $data is "354 Enter message, ending with "." on a line by itself
+"
+<br />SMTP -> FROM SERVER:354 Enter message, ending with "." on a line by itself
+
+<br />SMTP -> get_lines(): $data was ""
+<br />SMTP -> get_lines(): $str is "250 OK id=1OtCi1-00073p-47
+"
+<br />SMTP -> get_lines(): $data is "250 OK id=1OtCi1-00073p-47
+"
+<br />SMTP -> FROM SERVER:250 OK id=1OtCi1-00073p-47
+
+<br />{"response":{"post":{"items":{"email":"olavic@gmail.com","title":"Lantern in the moonlight","password":"apina","answer":"5"},"insert":"0"},"get":{"page":"ajax\/set\/register"},"sql_build":{"keys":"email, title, modified","values":"'olavic@gmail.com', 'Lantern in the moonlight', '1283921794'"},"result":{"id":"0","title":"Lantern in the moonlight","message":"New data inserted..."},"created":"08\/09\/2010 13:56"}}

@@ -1,0 +1,630 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2010 Jukka Paasonen
+# This file is distributed under the same license as the RENSHUU.PAAZMAYA.COM package.
+# Jukka Paasonen <jukka.paasonen@kobudo.fi>, 2010.
+#
+# File: locale.php, line: 119
+# File: locale.php, line: 139
+# File: locale.php, line: 192
+# File: locale.php, line: 248
+# File: locale.php, line: 278
+# File: locale.php, line: 302
+# File: locale.php, line: 303
+# File: locale.php, line: 309
+# File: locale.php, line: 334
+# File: locale.php, line: 519
+# File: locale.php, line: 520
+# File: locale.php, line: 521
+#, fuzzy
+#
+# File: locale.php, line: 409
+#
+# File: locale.php, line: 417
+#
+# File: locale.php, line: 174
+#
+# File: locale.php, line: 328
+#
+# File: locale.php, line: 425
+#
+# File: locale.php, line: 298
+# File: locale.php, line: 360
+#
+# File: locale.php, line: 433
+#
+# File: locale.php, line: 426
+#
+# File: locale.php, line: 410
+#
+# File: locale.php, line: 418
+#
+# File: locale.php, line: 446
+# File: locale.php, line: 447
+#
+# File: locale.php, line: 161
+#
+# File: locale.php, line: 118
+# File: locale.php, line: 239
+# File: locale.php, line: 260
+#
+# File: locale.php, line: 122
+# File: locale.php, line: 142
+# File: locale.php, line: 195
+# File: locale.php, line: 251
+# File: locale.php, line: 337
+#
+# File: locale.php, line: 421
+#
+# File: locale.php, line: 265
+#
+# File: locale.php, line: 232
+#
+# File: locale.php, line: 284
+# File: locale.php, line: 315
+# File: locale.php, line: 341
+#
+# File: locale.php, line: 226
+#
+# File: locale.php, line: 388
+#
+# File: index.php, line: 282
+# File: locale.php, line: 365
+#
+# File: locale.php, line: 389
+#
+# File: locale.php, line: 81
+#
+# File: locale.php, line: 320
+# File: locale.php, line: 346
+#
+# File: locale.php, line: 166
+#
+# File: locale.php, line: 294
+#
+# File: locale.php, line: 356
+#
+# File: locale.php, line: 378
+#
+# File: locale.php, line: 393
+#
+# File: locale.php, line: 413
+#
+# File: locale.php, line: 156
+# File: locale.php, line: 270
+#
+# File: locale.php, line: 464
+#
+# File: locale.php, line: 387
+#
+# File: locale.php, line: 429
+#
+# File: locale.php, line: 383
+#
+# File: locale.php, line: 177
+#
+# File: index.php, line: 313
+# File: locale.php, line: 518
+#
+# File: locale.php, line: 138
+# File: locale.php, line: 204
+#
+# File: locale.php, line: 482
+#
+# File: locale.php, line: 277
+# File: locale.php, line: 280
+# File: locale.php, line: 497
+#
+# File: locale.php, line: 304
+#
+# File: locale.php, line: 507
+#
+# File: locale.php, line: 183
+#
+# File: locale.php, line: 472
+#
+# File: locale.php, line: 372
+#
+# File: locale.php, line: 449
+#
+# File: locale.php, line: 487
+#
+# File: locale.php, line: 77
+#
+# File: locale.php, line: 126
+# File: locale.php, line: 255
+#
+# File: locale.php, line: 215
+#
+# File: locale.php, line: 289
+# File: locale.php, line: 325
+# File: locale.php, line: 351
+#
+# File: locale.php, line: 247
+#
+# File: index.php, line: 292
+#
+# File: locale.php, line: 308
+#
+# File: locale.php, line: 492
+#
+# File: locale.php, line: 333
+# File: locale.php, line: 502
+#
+# File: locale.php, line: 336
+#
+# File: locale.php, line: 452
+#
+# File: locale.php, line: 376
+#
+# File: locale.php, line: 377
+#
+# File: locale.php, line: 82
+#
+# File: index.php, line: 228
+#
+# File: locale.php, line: 462
+#
+# File: locale.php, line: 463
+#
+# File: locale.php, line: 141
+#
+# File: locale.php, line: 121
+# File: locale.php, line: 194
+# File: locale.php, line: 250
+#
+# File: locale.php, line: 366
+#
+# File: locale.php, line: 220
+#
+# File: index.php, line: 218
+#
+# File: locale.php, line: 76
+#
+# File: locale.php, line: 379
+#
+# File: locale.php, line: 80
+#
+# File: locale.php, line: 451
+#
+# File: locale.php, line: 146
+# File: locale.php, line: 199
+#
+# File: locale.php, line: 191
+#
+# File: locale.php, line: 477
+#
+# File: index.php, line: 212
+#
+# File: locale.php, line: 78
+#
+# File: locale.php, line: 131
+# File: locale.php, line: 151
+#
+# File: locale.php, line: 311
+#
+# File: locale.php, line: 368
+#
+# File: locale.php, line: 79
+#
+# File: locale.php, line: 209
+# File: locale.php, line: 450
+#
+# File: locale.php, line: 434
+#
+# File: locale.php, line: 405
+#
+# File: locale.php, line: 163
+# File: locale.php, line: 171
+#
+# File: locale.php, line: 297
+# File: locale.php, line: 359
+#
+# File: locale.php, line: 241
+# File: locale.php, line: 262
+# File: locale.php, line: 488
+#
+# File: locale.php, line: 423
+#
+# File: locale.php, line: 267
+#
+# File: locale.php, line: 234
+#
+# File: locale.php, line: 286
+# File: locale.php, line: 317
+# File: locale.php, line: 343
+#
+# File: locale.php, line: 64
+#
+# File: locale.php, line: 228
+#
+# File: locale.php, line: 473
+#
+# File: locale.php, line: 395
+#
+# File: locale.php, line: 168
+#
+# File: locale.php, line: 399
+#
+# File: locale.php, line: 158
+# File: locale.php, line: 272
+#
+# File: locale.php, line: 400
+#
+# File: locale.php, line: 401
+#
+# File: locale.php, line: 431
+#
+# File: locale.php, line: 385
+#
+# File: locale.php, line: 179
+#
+# File: locale.php, line: 206
+# File: locale.php, line: 483
+#
+# File: locale.php, line: 498
+#
+# File: locale.php, line: 508
+#
+# File: locale.php, line: 185
+#
+# File: locale.php, line: 374
+#
+# File: locale.php, line: 170
+#
+# File: locale.php, line: 217
+#
+# File: locale.php, line: 291
+# File: locale.php, line: 327
+# File: locale.php, line: 353
+#
+# File: locale.php, line: 398
+#
+# File: locale.php, line: 397
+#
+# File: locale.php, line: 172
+#
+# File: locale.php, line: 493
+#
+# File: locale.php, line: 167
+#
+# File: locale.php, line: 503
+#
+# File: locale.php, line: 210
+# File: locale.php, line: 240
+# File: locale.php, line: 373
+# File: locale.php, line: 384
+# File: locale.php, line: 394
+#
+# File: locale.php, line: 223
+# File: locale.php, line: 229
+# File: locale.php, line: 235
+# File: locale.php, line: 296
+# File: locale.php, line: 358
+# File: locale.php, line: 408
+# File: locale.php, line: 416
+# File: locale.php, line: 424
+# File: locale.php, line: 432
+#
+# File: locale.php, line: 415
+#
+# File: locale.php, line: 222
+#
+# File: locale.php, line: 127
+# File: locale.php, line: 132
+# File: locale.php, line: 147
+# File: locale.php, line: 152
+# File: locale.php, line: 157
+# File: locale.php, line: 162
+# File: locale.php, line: 178
+# File: locale.php, line: 184
+# File: locale.php, line: 200
+# File: locale.php, line: 205
+# File: locale.php, line: 216
+# File: locale.php, line: 221
+# File: locale.php, line: 227
+# File: locale.php, line: 233
+# File: locale.php, line: 256
+# File: locale.php, line: 261
+# File: locale.php, line: 266
+# File: locale.php, line: 271
+# File: locale.php, line: 285
+# File: locale.php, line: 290
+# File: locale.php, line: 295
+# File: locale.php, line: 316
+# File: locale.php, line: 321
+# File: locale.php, line: 326
+# File: locale.php, line: 342
+# File: locale.php, line: 347
+# File: locale.php, line: 352
+# File: locale.php, line: 357
+# File: locale.php, line: 406
+# File: locale.php, line: 414
+# File: locale.php, line: 422
+# File: locale.php, line: 430
+#
+# File: locale.php, line: 128
+# File: locale.php, line: 148
+# File: locale.php, line: 201
+# File: locale.php, line: 257
+# File: locale.php, line: 322
+# File: locale.php, line: 348
+#
+# File: index.php, line: 220
+#
+# File: locale.php, line: 478
+#
+# File: locale.php, line: 133
+# File: locale.php, line: 153
+#
+# File: locale.php, line: 211
+#
+# File: locale.php, line: 407
+msgid ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-15 22:47+0300\n"
+"PO-Revision-Date: 2010-09-16 HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+" (0...16)"
+""
+" (WxH)"
+""
+" (address from map position)"
+""
+" (fill if you wish to change, else leave empty)"
+""
+" (hex value or a string)"
+""
+" (making sure you are a real person)"
+""
+" (one character only)"
+""
+"0x55FF55"
+""
+"14"
+""
+"300x300"
+""
+"A list of saved trainings"
+""
+"Address(if any)"
+""
+"Art"
+""
+"Clear"
+""
+"Colour"
+""
+"Contact"
+""
+"Duration (minutes)"
+""
+"E-mail"
+""
+"End time"
+""
+"English"
+""
+"Export settings"
+""
+"Finnish"
+""
+"Friday"
+""
+"Full name"
+""
+"Geocode"
+""
+"How much is 2 + 3"
+""
+"How much is 3 + 2"
+""
+"Hybdid (roadmap & satellite)"
+""
+"Image format"
+""
+"Image size"
+""
+"Info"
+""
+"Inverse selection"
+""
+"Japanese"
+""
+"Label"
+""
+"Language"
+""
+"Latitude"
+""
+"License information"
+""
+"Location"
+""
+"Location creation"
+""
+"Login"
+""
+"Login via your Twitter account"
+""
+"Logout"
+""
+"Longitude"
+""
+"Map filters"
+""
+"Map type"
+""
+"Martial art"
+""
+"Martial art addition"
+""
+"Monday"
+""
+"Name"
+""
+"Occurance"
+""
+"Password"
+""
+"Person"
+""
+"Preview of the current settings affect on the resulting map"
+""
+"Profile"
+""
+"Profile editing"
+""
+"Register"
+""
+"Register user"
+""
+"Remove"
+""
+"Roadmap"
+""
+"Satellite"
+""
+"Saturday"
+""
+"Saved list"
+""
+"Select all"
+""
+"Select none"
+""
+"Send Location"
+""
+"Send Martial art"
+""
+"Set here the properties for the output of your list of saved trainings"
+""
+"Start time"
+""
+"Street View"
+""
+"Sunday"
+""
+"Terrain"
+""
+"Thursday"
+""
+"Time"
+""
+"Title"
+""
+"Training"
+""
+"Training creation"
+""
+"Training locations"
+""
+"Tuesday"
+""
+"URI"
+""
+"Update profile"
+""
+"Update settings"
+""
+"Wednesday"
+""
+"Weekday"
+""
+"X"
+""
+"Zoom level"
+""
+"address"
+""
+"answer"
+""
+"art"
+""
+"color"
+""
+"contact"
+""
+"duration"
+""
+"email"
+""
+"en"
+""
+"endtime"
+""
+"filters"
+""
+"format"
+""
+"geocode"
+""
+"gif"
+""
+"info"
+""
+"jpeg"
+""
+"jpeg baseline"
+""
+"label"
+""
+"language"
+""
+"latitude"
+""
+"location"
+""
+"login"
+""
+"logout"
+""
+"longitude"
+""
+"maptype"
+""
+"none"
+""
+"occurance"
+""
+"password"
+""
+"png 32-bit"
+""
+"png 8-bit"
+""
+"position"
+""
+"profile"
+""
+"radio"
+""
+"register"
+""
+"select"
+""
+"short"
+""
+"size"
+""
+"starttime"
+""
+"text"
+""
+"title"
+""
+"toggle SV"
+""
+"training"
+""
+"uri"
+""
+"weekday"
+""
+"zoom"
+""
+msgstr "Project-Id-Version: RENSHUU.PAAZMAYA.COM 0.8.11.452\n"
+

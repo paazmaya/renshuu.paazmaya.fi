@@ -86,15 +86,26 @@
 		 */
 		zoom: 8,
 
+		/**
+		 * Common settings for all cookies
+		 */
 		cookieSettings: {
 			expires: 3,
 			path: '/'
 		},
+		
+		/**
+		 * Points of contact
+		 */
 		ajaxpoint: {
 			get: '/ajax/get/',
 			set: '/ajax/set/',
 			form: '/ajax/form/'
 		},
+		
+		/**
+		 * Google Maps Geocoder
+		 */
 		geocoder: null,
 
 		/**
