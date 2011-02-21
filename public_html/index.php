@@ -128,8 +128,8 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.4.2
-	'jquery.ui.core.js', // 1.8.4
+	'jquery.js', // 1.5
+	'jquery.ui.core.js', // 1.8.9
 	'jquery.ui.widget.js',
 	'jquery.ui.mouse.js',
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
@@ -146,7 +146,7 @@ $javascript = array(
 	'jquery.corner.js', // 2.11 (15-JUN-2010)
 	'jquery.form.js', // 2.45 (09-AUG-2010)
 	'jquery.autoSuggest.js',
-	'jquery.blockUI.js', // 2.33 (29-MAR-2010)
+	'jquery.blockUI.js', // 2.37 (29-JAN-2011)
 	'jquery.ba-hashchange.js', // 1.3
 	'renshuusurutoki.js'
 );
@@ -331,7 +331,8 @@ print_r($_SESSION);
 echo '</pre>';
 // -----
 
-echo scriptElement('http://maps.google.com/maps/api/js?v=3.1&amp;sensor=false&amp;language=' . $_SESSION['lang']);
+// http://code.google.com/apis/maps/documentation/javascript/basics.html#Versioning
+echo scriptElement('http://maps.google.com/maps/api/js?v=' . $cf['gmapsver'] . '&amp;sensor=false&amp;language=' . $_SESSION['lang']);
 //echo scriptElement($cf['minified'] . $gzipped . '.js');
 
 foreach($javascript as $js)

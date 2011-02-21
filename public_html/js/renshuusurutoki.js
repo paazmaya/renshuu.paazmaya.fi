@@ -1,6 +1,8 @@
 /*jslint devel: true, windows: true, maxlen: 140 */
 // http://jslint.com/
 
+// http://jshint.com/
+
 // http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/
 "use strict";
 
@@ -113,12 +115,37 @@
 		 */
 		map: null,
 
-		streetview: null, //StreetViewPanorama
+		/**
+		 * google.maps.StreetViewPanorama
+		 */
+		streetView: null,
+		
+		/**
+		 * google.maps.StreetViewService
+		 * A StreetViewService object performs searches for Street View data.
+		 * The reason for having it as separate variable is the possible use
+		 * of other implementations.
+		 */
 		streetService: null,
 		
-		// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
-		dirService: null, // DirectionsService
-		dirLines: [], // Polylines used by DirectionsService {polyline: line, points: [pos0, pos1]}
+		/**
+		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
+		 * The service for getting directions between two locations.
+		 */
+		dirService: null,
+		
+		/**
+		 * Polylines used by DirectionsService, structured:
+		 * { polyline: line, points: [pos0, pos1] }
+		 */
+		dirLines: [],
+		
+		/**
+		 * The time in milliseconds between consecutive call to the directions
+		 * service (google.maps.DirectionsRequest).
+		 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT 
+		 */
+		dirRequestInterval: 1000, // 1 sec
 
 		// default map center will be in the most beautiful castle of Japan
 		hikone: null,
@@ -226,7 +253,7 @@
 				console.log('mapZoom cookie existed. zoom: ' + zoom);
 			}
 
-			// Handler for the ability to toggle streetview viewing while marker click.
+			// Handler for the ability to toggle streetView viewing while marker click.
 			if ($.cookie('showInStreetView')) {
 				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
 				$.renshuu.markers.showInStreetView = true;
@@ -339,8 +366,8 @@
 			});
 
 			$('#mapping .header a[rel=street]').click(function () {
-				var visible = $.renshuu.streetview.getVisible();
-				$.renshuu.streetview.setVisible(!visible);
+				var visible = $.renshuu.streetView.getVisible();
+				$.renshuu.streetView.setVisible(!visible);
 				return false;
 			});
 			/*
@@ -577,7 +604,7 @@
 				var savedlen = $.renshuu.savedListData.length; // only for debugging
 				for (var i = 0; i < len; ++i) {
 					data = $.renshuu.trainingMarkersData[i];
-					if (data.training.id == id) {
+					if (data && data.training.id == id) {
 						console.log('addSavedList. found matching data for addition, i: ' + i);
 						$.renshuu.savedListData.push(data);
 						break;
@@ -807,6 +834,8 @@
 				provideRouteAlternatives: false,
 				travelMode: google.maps.DirectionsTravelMode.WALKING
 			};
+			// This request should not be made too often..
+			// Check for $.renshuu.dirRequestInterval
 			$.renshuu.dirService.route(reg, function (result, status) {
 				console.log(status);
 				if (result && result.routes && result.routes[0]) {
@@ -832,7 +861,7 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
 		 */
-		drawPath: function (pos1, pos2) {
+		drawPath: function (pos1, pos2, color) {
 			var opts = {
 				clickable: false,
 				geodesic: true,
@@ -842,12 +871,19 @@
 				strokeOpacity: 0.5,
 				strokeWeight: 2 // pixels
 			};
+			if (color) {
+				opts.strokeColor = color;
+			}
 			var line = new google.maps.Polyline(opts);
 			
 			// Change the color slightly
 			google.maps.event.addListener(line, 'mouseover', function () {
+				var o = opts;
+				o.strokeOpacity = 0.8;
+				line.setOptions(o);
 			});
 			google.maps.event.addListener(line, 'mouseout', function () {
+				line.setOptions(opts);
 			});
 		},
 		
@@ -856,8 +892,8 @@
 		 * Once visibility set, the opening is taken care of by its event handler.
 		 */
 		showStreetView: function (position) {
-			$.renshuu.streetview.setPosition(position);
-			$.renshuu.streetview.setVisible(true);
+			$.renshuu.streetView.setPosition(position);
+			$.renshuu.streetView.setVisible(true);
 		},
 		
 		/**
@@ -908,7 +944,7 @@
 			opts = $.extend(true, {}, opts, map_options);
 			$.renshuu.map = new google.maps.Map(map_element, opts);
 
-			$.renshuu.streetview = new google.maps.StreetViewPanorama(street_element, street_options);
+			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
 
 
 			// The marker which can be dragged on a spot which is should be revealed in Street View
@@ -920,32 +956,32 @@
 			google.maps.event.addListener($.renshuu.streetMarker, 'dragend', function () {
 				var pos = $.renshuu.streetMarker.getPosition();
 				console.log('streetMarker dragend. pos: ' + pos);
-				$.renshuu.streetview.setPosition(pos);
-				if (!$.renshuu.streetview.getVisible()) {
-					$.renshuu.streetview.setVisible(true);
+				$.renshuu.streetView.setPosition(pos);
+				if (!$.renshuu.streetView.getVisible()) {
+					$.renshuu.streetView.setVisible(true);
 				}
 			});
 
 			// This is a bit tricky as the position changes twice in a row
 			// when it is first set by the marker position and then by itself
-			google.maps.event.addListener($.renshuu.streetview, 'position_changed', function () {
-				var posS = $.renshuu.streetview.getPosition();
+			google.maps.event.addListener($.renshuu.streetView, 'position_changed', function () {
+				var posS = $.renshuu.streetView.getPosition();
 				var posM = $.renshuu.streetMarker.getPosition();
-				console.log('streetview position_changed. posS: ' + posS + ', posM: ' + posM);
+				console.log('streetView position_changed. posS: ' + posS + ', posM: ' + posM);
 				if (posS && !posS.equals(posM)) {
-					console.log('streetview position_change positions do not equal, thus setting marker to streetview position.');
+					console.log('streetView position_change positions do not equal, thus setting marker to streetView position.');
 					$.renshuu.streetMarker.setPosition(posS);
 				}
 			});
 
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
-			google.maps.event.addListener($.renshuu.streetview, 'visible_changed', function () {
-				var posS = $.renshuu.streetview.getPosition();
+			google.maps.event.addListener($.renshuu.streetView, 'visible_changed', function () {
+				var posS = $.renshuu.streetView.getPosition();
 				var posM = $.renshuu.streetMarker.getPosition();
 				var bounds = $.renshuu.map.getBounds();
-				var visible = $.renshuu.streetview.getVisible();
+				var visible = $.renshuu.streetView.getVisible();
 
-				console.log('streetview visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
+				console.log('streetView visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
 
 				if (visible) {
 					$(street_element).slideDown();
@@ -966,7 +1002,7 @@
 				//$('#street:hidden').slideDown($.renshuu.animSpeed);
 			});
 
-			$.renshuu.map.setStreetView($.renshuu.streetview);
+			$.renshuu.map.setStreetView($.renshuu.streetView);
 
 			//var icon = $.renshuu.pins.getBubble('glyphish_paperclip', 'Select+position');
 			var icon = $.renshuu.pins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sright');
@@ -1006,7 +1042,7 @@
 
 			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.map, 'resize');
-				google.maps.event.trigger($.renshuu.streetview, 'resize');
+				google.maps.event.trigger($.renshuu.streetView, 'resize');
 			});
 		},
 

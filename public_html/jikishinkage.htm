@@ -62,6 +62,8 @@
 		
 			$.renshuu.ready();
 		
+			var timeout = 0;
+			
 			var len = dojoList.length;
 			for (var i = 0; i < len; ++i) {
 				var ken = dojoList[i]; // object
@@ -73,7 +75,12 @@
 				for (var j = 0; j < locLen; ++j) {
 					var dojo = loc[j]; // object
 					console.log("geocoding dojo: " + dojo.location);
-					$.renshuu.data.geocodePosition({ address: dojo.location });
+					// https://developer.mozilla.org/en/DOM/window.setTimeout
+					setTimeout (function (dojo) {
+						console.log("Geocoding at " + $.now() + ", dojo: " + dojo.location);
+						$.renshuu.data.geocodePosition({ address: dojo.location });
+					}, timeout, dojo);
+					timeout += $.renshuu.dirRequestInterval;
 				}
 				$('#ken').append('<p>' + out + '</p>');
 			}
