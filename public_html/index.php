@@ -395,6 +395,9 @@ echo ' };' . "\n";
 // Now that the final variables have been set, it is ok to initiate the site.
 echo ' $.renshuu.ready();' . "\n";
 
+// http://twitter.com/#!/cowboy/status/42753115878989824
+//echo ' (function n(e){e.eq(0).fadeIn(99,function(){n(e.slice(1))})})($(":visible").hide()) ' . "\n";
+
 echo '});' . "\n";
 echo '</script>';
 

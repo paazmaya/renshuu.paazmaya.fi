@@ -129,6 +129,11 @@
 		streetService: null,
 		
 		/**
+		 * Should the Street View utilities be available?
+		 */
+		streetEnable: false,
+		
+		/**
 		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
 		 * The service for getting directions between two locations.
 		 */
@@ -259,31 +264,41 @@
 				$.renshuu.markers.showInStreetView = true;
 			}
 
-			// Set up the Google Map v3 and the Street View
+			// Set up the Google Map v3
 			$.renshuu.mapInit(
 				$('#map').get(0),
-				$('#street').get(0),
 				{
 					center: centre
-				},
-				{
-					enableCloseButton: true,
-					visible: true
 				}
 			);
+			
+			// and the Street View
+			if ($.renshuu.streetEnable) {
+				$.renshuu.streetInit(
+					$('#street').get(0),
+					{
+						enableCloseButton: true,
+						visible: true
+					}
+				);
+			}
+			
 
 			// Set up the directions service
 			$.renshuu.dirService = new google.maps.DirectionsService();
+			
 			// Toggle "street view position update based on the map position" setting.
-			$('input:checkbox[name=markerstreet]').change(function () {
-				$.renshuu.markers.showInStreetView = $(this).is(':checked');
-				console.log('markerstreet change. ' + $.renshuu.markers.showInStreetView);
-				$.cookie(
-					'showInStreetView',
-					$.renshuu.markers.showInStreetView,
-					$.renshuu.cookieSettings
-				);
-			});
+			if ($.renshuu.streetEnable) {
+				$('input:checkbox[name=markerstreet]').change(function () {
+					$.renshuu.markers.showInStreetView = $(this).is(':checked');
+					console.log('markerstreet change. ' + $.renshuu.markers.showInStreetView);
+					$.cookie(
+						'showInStreetView',
+						$.renshuu.markers.showInStreetView,
+						$.renshuu.cookieSettings
+					);
+				});
+			}
 
 			// Triggers on individual change of the checkboxes
 			$('#filtering input:checkbox').live('change', function () {
@@ -365,11 +380,13 @@
 				return false;
 			});
 
-			$('#mapping .header a[rel=street]').click(function () {
-				var visible = $.renshuu.streetView.getVisible();
-				$.renshuu.streetView.setVisible(!visible);
-				return false;
-			});
+			if ($.renshuu.streetEnable) {
+				$('#mapping .header a[rel=street]').click(function () {
+					var visible = $.renshuu.streetView.getVisible();
+					$.renshuu.streetView.setVisible(!visible);
+					return false;
+				});
+			}
 			/*
 			$('').click(function () {
 				return false;
@@ -911,13 +928,10 @@
 		/**
 		 * Initiate the following tools in Google Maps:
 		 * - Maps
-		 * - StreetViewPanorama
 		 * - Geocoder
-		 * - StreetViewService
 		 */
-		mapInit: function (map_element, street_element, map_options, street_options) {
+		mapInit: function (elem, map_options) {
 			$.renshuu.geocoder = new google.maps.Geocoder();
-			$.renshuu.streetService = new google.maps.StreetViewService();
 
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 			var opts = {
@@ -942,67 +956,7 @@
 			};
 
 			opts = $.extend(true, {}, opts, map_options);
-			$.renshuu.map = new google.maps.Map(map_element, opts);
-
-			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
-
-
-			// The marker which can be dragged on a spot which is should be revealed in Street View
-			$.renshuu.streetMarker = $.renshuu.markers.createMarker(
-				$.renshuu.map.getCenter(), 'Street View', $.renshuu.pins.getPinStar('glyphish_eye'), true
-			);
-
-			// Marker draggin overrides the Street View position and makes it visible if hidden.
-			google.maps.event.addListener($.renshuu.streetMarker, 'dragend', function () {
-				var pos = $.renshuu.streetMarker.getPosition();
-				console.log('streetMarker dragend. pos: ' + pos);
-				$.renshuu.streetView.setPosition(pos);
-				if (!$.renshuu.streetView.getVisible()) {
-					$.renshuu.streetView.setVisible(true);
-				}
-			});
-
-			// This is a bit tricky as the position changes twice in a row
-			// when it is first set by the marker position and then by itself
-			google.maps.event.addListener($.renshuu.streetView, 'position_changed', function () {
-				var posS = $.renshuu.streetView.getPosition();
-				var posM = $.renshuu.streetMarker.getPosition();
-				console.log('streetView position_changed. posS: ' + posS + ', posM: ' + posM);
-				if (posS && !posS.equals(posM)) {
-					console.log('streetView position_change positions do not equal, thus setting marker to streetView position.');
-					$.renshuu.streetMarker.setPosition(posS);
-				}
-			});
-
-			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
-			google.maps.event.addListener($.renshuu.streetView, 'visible_changed', function () {
-				var posS = $.renshuu.streetView.getPosition();
-				var posM = $.renshuu.streetMarker.getPosition();
-				var bounds = $.renshuu.map.getBounds();
-				var visible = $.renshuu.streetView.getVisible();
-
-				console.log('streetView visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
-
-				if (visible) {
-					$(street_element).slideDown();
-				}
-				else {
-					$(street_element).slideUp();
-				}
-				/*
-				if (!bounds.contains(posS)) {
-					posS = $.renshuu.map.getCenter();
-				}
-				*/
-				if (posS === undefined) {
-					posS = $.renshuu.map.getCenter();
-				}
-				$.renshuu.streetMarker.setPosition(posS);
-				$.renshuu.streetMarker.setVisible(visible);
-				//$('#street:hidden').slideDown($.renshuu.animSpeed);
-			});
-
-			$.renshuu.map.setStreetView($.renshuu.streetView);
+			$.renshuu.map = new google.maps.Map(elem, opts);
 
 			//var icon = $.renshuu.pins.getBubble('glyphish_paperclip', 'Select+position');
 			var icon = $.renshuu.pins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sright');
@@ -1042,6 +996,79 @@
 
 			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.map, 'resize');
+			});
+		},
+		
+		/**
+		 * Initiate the following tools related to Google Street View:
+		 * - StreetViewPanorama
+		 * - StreetViewService
+		 */
+		streetInit: function (street_element, street_options) {
+			$.renshuu.streetService = new google.maps.StreetViewService();
+			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
+
+			
+			
+			
+			// The marker which can be dragged on a spot which is should be revealed in Street View
+			$.renshuu.streetMarker = $.renshuu.markers.createMarker(
+				$.renshuu.map.getCenter(), 'Street View', $.renshuu.pins.getPinStar('glyphish_eye'), true
+			);
+
+			// Marker draggin overrides the Street View position and makes it visible if hidden.
+			google.maps.event.addListener($.renshuu.streetMarker, 'dragend', function () {
+				var pos = $.renshuu.streetMarker.getPosition();
+				console.log('streetMarker dragend. pos: ' + pos);
+				$.renshuu.streetView.setPosition(pos);
+				if (!$.renshuu.streetView.getVisible()) {
+					$.renshuu.streetView.setVisible(true);
+				}
+			});
+
+			// This is a bit tricky as the position changes twice in a row
+			// when it is first set by the marker position and then by itself
+			google.maps.event.addListener($.renshuu.streetView, 'position_changed', function () {
+				var posS = $.renshuu.streetView.getPosition();
+				var posM = $.renshuu.streetMarker.getPosition();
+				console.log('streetView position_changed. posS: ' + posS + ', posM: ' + posM);
+				if (posS && !posS.equals(posM)) {
+					console.log('streetView position_change positions do not equal, thus setting marker to streetView position.');
+					$.renshuu.streetMarker.setPosition(posS);
+				}
+			});
+			
+			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
+			google.maps.event.addListener($.renshuu.streetView, 'visible_changed', function () {
+				var posS = $.renshuu.streetView.getPosition();
+				var posM = $.renshuu.streetMarker.getPosition();
+				var bounds = $.renshuu.map.getBounds();
+				var visible = $.renshuu.streetView.getVisible();
+
+				console.log('streetView visible_changed. visible: ' + visible + ', posS: ' + posS + ', posM: ' + posM);
+
+				if (visible) {
+					$(street_element).slideDown();
+				}
+				else {
+					$(street_element).slideUp();
+				}
+				/*
+				if (!bounds.contains(posS)) {
+					posS = $.renshuu.map.getCenter();
+				}
+				*/
+				if (posS === undefined) {
+					posS = $.renshuu.map.getCenter();
+				}
+				$.renshuu.streetMarker.setPosition(posS);
+				$.renshuu.streetMarker.setVisible(visible);
+				//$('#street:hidden').slideDown($.renshuu.animSpeed);
+			});
+
+			$.renshuu.map.setStreetView($.renshuu.streetView);
+			
+			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.streetView, 'resize');
 			});
 		},
