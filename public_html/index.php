@@ -200,7 +200,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 <head>
 	<title><?php echo $cf['title'] . ' | ' . $lang['title']; ?></title>
 	<meta name="description" content="<?php echo $lang['description']; ?>" />
-	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1, user-scalable=no, width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="author" href="http://paazio.nanbudo.fi" />
 	<link rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" />
