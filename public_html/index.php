@@ -76,7 +76,7 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 {
 	$uri = '';
 	$getted['page'] = strtolower($getted['page']);
-	
+
 	// Try to login or logout the user if so requested
 	if ($getted['page'] == 'login')
 	{
@@ -110,7 +110,7 @@ if (isset($getted['page']) && strlen($getted['page']) > 0)
 		$_SESSION['lang'] = $getted['page'];
 		$uri = '/';
 	}
-	else 
+	else
 	{
 		$uri = '/#' . urize($getted['page']);
 		header('HTTP/1.1 301 Moved Permanently');
@@ -128,17 +128,17 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.5
-	'jquery.ui.core.js', // 1.8.9
+	'jquery.js', // 1.6.2 (2011-)
+	'jquery.ui.core.js', // 1.8.
 	'jquery.ui.widget.js',
 	'jquery.ui.mouse.js',
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
-	'jquery.tmpl.js', // github version 2010-10-21
+	'jquery.tmpl.js', // github version 2011-
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	'jquery.timepicker.js',
 	'jquery.cookie.js', // 2006
-	'jquery.clockpick.1.2.7.js',
+	'jquery.clockpick.js', // 1.2.9
 	'jquery.inputnotes-0.6.js', // 0.6
 	'jquery.json-2.2.js',
 	'jstorage.js',
@@ -159,7 +159,7 @@ $javascript = array(
 minify('css', array(
 	'main.css',
 	'autoSuggest.css',
-	'jquery.clockpick.1.2.7.css',
+	'jquery.clockpick.css',
 	'ui.timepickr.css'
 ));
 
@@ -183,9 +183,9 @@ $iconcss .= generateCssRule('.icon', array(
 ));
 
 $items = array(
-	'add', 'addressbook', 'alert', 'arrow1_se', 'arrow3_n', 'arrow3_s', 'calendar', 'cellphone', 'check', 
-	'close', 'comment', 'denied', 'document', 'edit', 'equalizer', 'lock', 'loop', 'mail', 
-	'newwindow', 'phone', 'reload', 'save', 'search', 'smirk', 'time', 'tools', 
+	'add', 'addressbook', 'alert', 'arrow1_se', 'arrow3_n', 'arrow3_s', 'calendar', 'cellphone', 'check',
+	'close', 'comment', 'denied', 'document', 'edit', 'equalizer', 'lock', 'loop', 'mail',
+	'newwindow', 'phone', 'reload', 'save', 'search', 'smirk', 'time', 'tools',
 	'trash', 'window', 'womanman', 'zoomin', 'zoomout'
 );
 $iconcss .= generateIconCssRules($cf['iconset'], '16x16', 'green', $items);
@@ -194,20 +194,100 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 
 // -----------------
 
+// http://ogp.me/
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xml:lang="en" lang="en">
 <head>
 	<title><?php echo $cf['title'] . ' | ' . $lang['title']; ?></title>
 	<meta name="description" content="<?php echo $lang['description']; ?>" />
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1, user-scalable=no, width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta property="og:type" content="sport" />
 	<link rel="author" href="http://paazio.nanbudo.fi" />
 	<link rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	<link type="text/css" href=<?php echo '"/css/' . $cf['minified'] . $gzipped . '.css"'; ?> rel="stylesheet" />
 	<link type="text/css" href=<?php echo '"/css/iconset-' . $cf['iconset'] . '.css"'; ?> rel="stylesheet" />
+
+	<script id="savedTemplate" type="text/x-jquery-tmpl">
+		<tr rel="{{id}">
+			<td>{{artTitle}</td>
+			<td>{{weekDay}}/td>
+			<td>{{startTime}} - {{endTime}}/td>
+			<td><a href="#remove-{{id}}" rel="remove" title="{{removeTitle}} - {{weekDayInt}}">
+				<img src="/img/sanscons/png/green/32x32/close.png" alt="{{removeTitle}}" />
+			</a></td>
+		</tr>
+	</script>
+		
+	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
+		<h1 title="{{message}}">{{message}}</h1>
+		{{if title}}
+			<p>{{title}}</p>
+		{{/if}}
+		<p>
+			<a href="#insert-0" rel="clear" title="{{$.renshuu.lang.form.createnew}}">
+				{{$.renshuu.lang.form.createnew}} / {{$.renshuu.lang.form.clear}}
+			</a>
+		</p>
+		<p>
+			<a href="#update-{{id}}" rel="keep" title="{{$.renshuu.lang.form.modify}}">
+				{{$.renshuu.lang.form.modify}}
+			</a>
+		</p>
+	</script>
+	
+	<script id="modalTemplate" type="text/x-jquery-tmpl">
+		<div class="modal-info vevent">
+			{{if artId && artTitle}}
+				<h2 class="summary" rel="art-{{artId}}">
+					<a href="#training-{{ trainingId}}" class="modal-close uid icon-close" title="{{artTitle}}">{{artTitle}}</a>
+				</h2>
+			{{/if}}
+			{{if weekDay}}
+				<p class="modal-time" rel="training-{{trainingId}}">{{weekDay}}
+				{{if trainingStime && trainingEtime}}
+					<span class="dtstart" title="{{trainingStime}}">{{trainingStime}}</span>
+					-<span class="dtend" title="{{trainingEtime}}">{{trainingEtime}}</span>
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if personId && personTitle}}
+				<p class="modal-contact" rel="person-{{personId}}">{{personTitle}}
+				{{if personContact}}
+					 ( {{personContact}})
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if locationId && locationTitle}}
+				<p class="modal-location" rel="location-{{locationId}}">{{locationTitle}}
+				{{if locationUrl}}
+					<a href="{{locationUrl}}" title="{{locationTitle}}"> {{locationUrl}}</a>
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if locationLat && locationLng}}
+				<address class="geo">
+					{{if locationAddr}}
+						{{locationAddr}}
+					{{/if}}
+					<span>
+						<abbr class="latitude" title="{{locationLat}}">$.renshuu.data.deg2dms(locationLat, true)</abbr>
+						<abbr class="longitude" title="{{locationLng}}">$.renshuu.data.deg2dms(locationLng, false)</abbr>
+					</span>
+				</address>
+			{{/if}}
+			{{if trainingId}}
+				<p class="modal-tools">
+					<a href="#training-{{trainingId}}" title="{{langSave}}" rel="savetolist">{{langSave}}</a>
+					<a href="#training-{{trainingId}}" title="{{langRemove}}" rel="removefromlist" style="display:none;">{{langRemove}}</a>
+				</p>
+			{{/if}}
+		</div>
+	</script>
+
 </head>
 <?php
 
@@ -259,7 +339,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 							<?php
 							// <form name="filter_form" action="/ajax/get" method="post">
 							echo createSelectionShortcuts('rel_arts', $lang['selectionshortcuts']);
-							
+
 							echo '<ul id="arts">';
 							// Filter based on the user access if any...
 							$sql = 'SELECT id, name FROM ren_art ORDER BY name';
@@ -268,9 +348,9 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 							{
 								echo '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
 							}
-							
+
 							echo '</ul>';
-							
+
 							echo createSelectionShortcuts('rel_weekdays', $lang['selectionshortcuts']);
 							echo '<ul id="weekdays">';
 							// Zero index Sunday.
@@ -294,7 +374,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 						<?php
 						// export settings. will require to login for remembering them
 						echo createForm('export', $lang['forms']['export']);
-						
+
 						$staticmap = createStaticMapUrl(); // using defaults
 						?>
 						<p><img id="exportpreview" src="<?php echo $staticmap; ?>" alt="<?php echo gettext('Preview of the current settings affect on the resulting map'); ?>" /></p>
@@ -303,11 +383,11 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 			</div>
 		</div>
 
-	</div> 
+	</div>
 
 	<?php
-	
-	
+
+
 	/*
 	<div id="bottom">
 		<div class="left-side">
@@ -323,7 +403,7 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 		</div>';
 
 	echo $copyright;
-	
+
 
 // -----
 echo '<pre>SESSION ';

@@ -13,14 +13,14 @@
  *  http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog
  */
 
-/** 
+/**
  * Firebug console functions if they do not exist
  */
 (function (window) {
 	if (!('console' in window) || !('firebug' in console)) {
 		var names = [
-			'log', 'debug', 'info', 'warn', 'error', 'assert', 
-			'dir', 'dirxml', 'group', 'groupEnd', 'time', 
+			'log', 'debug', 'info', 'warn', 'error', 'assert',
+			'dir', 'dirxml', 'group', 'groupEnd', 'time',
 			'timeEnd', 'count', 'trace', 'profile', 'profileEnd'
 		];
 		var len = names.length;
@@ -49,7 +49,7 @@
 		}
 		return outer;
 	};
-	
+
 	/**
 	 * http://www.learningjquery.com/2007/08/clearing-form-data
 	 */
@@ -95,7 +95,7 @@
 			expires: 3,
 			path: '/'
 		},
-		
+
 		/**
 		 * Points of contact
 		 */
@@ -104,7 +104,7 @@
 			set: '/ajax/set/',
 			form: '/ajax/form/'
 		},
-		
+
 		/**
 		 * Google Maps Geocoder
 		 */
@@ -119,7 +119,7 @@
 		 * google.maps.StreetViewPanorama
 		 */
 		streetView: null,
-		
+
 		/**
 		 * google.maps.StreetViewService
 		 * A StreetViewService object performs searches for Street View data.
@@ -127,28 +127,28 @@
 		 * of other implementations.
 		 */
 		streetService: null,
-		
+
 		/**
 		 * Should the Street View utilities be available?
 		 */
 		streetEnable: false,
-		
+
 		/**
 		 * http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
 		 * The service for getting directions between two locations.
 		 */
 		dirService: null,
-		
+
 		/**
 		 * Polylines used by DirectionsService, structured:
 		 * { polyline: line, points: [pos0, pos1] }
 		 */
 		dirLines: [],
-		
+
 		/**
 		 * The time in milliseconds between consecutive call to the directions
 		 * service (google.maps.DirectionsRequest).
-		 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT 
+		 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT
 		 */
 		dirRequestInterval: 1000, // 1 sec
 
@@ -173,21 +173,21 @@
 			login: 'lock',
 			register: 'phone'
 		},
-		
+
 		// Icon used as a background for the geocode direction
 		geocodeClass: {
 			none: 'denied',
 			address: 'arrow3_s',
 			position: 'arrow3_n'
 		},
-		
+
 		// If this value is 'address' and a marker is clicked, its position will be place in the form.
 		geocodeBasedOn: 'none',
 
 		// Store temporary geocoded location markers here.
 		// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
 		geocodeMarkers: [],
-		
+
 		// Store temporary location markers, of those existing in the backend
 		locationMarkers: [],
 		locationMarkersData: [],
@@ -206,16 +206,16 @@
 		// and is copied to savedListData.
 		savedList: [],
 		savedListData: [],
-		
+
 		// The current locale, filled from the bottom of index.php... Something like ja_JP or sl_SI
 		locale: null,
-		
+
 		// This language collection will be populated from the bottom of index.php...
 		lang: null,
-		
+
 		// Weekday names as per current language. Sunday is at zero index.
 		weekdays: [],
-		
+
 		// User specific data will be filled, in case logged in, via the bottom of index.php...
 		userData: null,
 
@@ -228,14 +228,14 @@
 		 * - navigation
 		 * - mapping
 		 * - savedlist
-		 * - 
+		 * -
 		 *
 		 * Hikone Castle & Town.
 		 * @see http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 		 */
 		ready: function () {
 			$.renshuu.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
-			
+
 			// Remove default styling from blockUi.
 			$.blockUI.defaults.css = {};
 
@@ -271,7 +271,7 @@
 					center: centre
 				}
 			);
-			
+
 			// and the Street View
 			if ($.renshuu.streetEnable) {
 				$.renshuu.streetInit(
@@ -282,11 +282,11 @@
 					}
 				);
 			}
-			
+
 
 			// Set up the directions service
 			$.renshuu.dirService = new google.maps.DirectionsService();
-			
+
 			// Toggle "street view position update based on the map position" setting.
 			if ($.renshuu.streetEnable) {
 				$('input:checkbox[name=markerstreet]').change(function () {
@@ -438,7 +438,7 @@
 				// http://api.jquery.com/serializeArray/
 				var serialized = $(this).serializeArray();
 				console.log('form submit. serialized: ' + serialized);
-				
+
 				var len = serialized.length;
 				var items = {};
 				for (var i = 0; i < len; ++i) {
@@ -449,30 +449,26 @@
 				post[rel[0]] = rel[1];
 
 				// Change temporarily the layout of the submit button / form for visual feedback
-				$('#' + id).block({ 
-					message: '<div id="formfeedback"><h1 title="' + $.renshuu.lang.form.sending + '">' + $.renshuu.lang.form.sending + '</h1></div>'
+				$('#' + id).block({
+					message: '<div id="formfeedback"><h1 title="' +
+						$.renshuu.lang.form.sending + '">' +
+						$.renshuu.lang.form.sending + '</h1></div>'
 				});
-				
+
+				// When this AJAX call returns, it will replace the content of the above created div.
 				$.post($(this).attr('action'), post, function (data, status) {
 					console.log('form submit. status: ' + status);
 					console.dir(data);
-					var res;
+					var res = {};
 					if (data.response && data.response.result) {
 						res = data.response.result;
 					}
-					
+
 					var classes = 'icon error icon-alert';
-					var html = '<h1 title="' + res.message + '">' + res.message + '</h1>';
-					if (res.title) {
-						html += '<p>' + res.title + '</p>';
-					}
-					html += '<p><a href="#insert-0" rel="clear" title="' + $.renshuu.lang.form.createnew + '">' +
-						$.renshuu.lang.form.createnew + ' / ' + $.renshuu.lang.form.clear + '</a></p>' +
-						'<p><a href="#update-' + res.id + '" rel="keep" title="' + $.renshuu.lang.form.modify +
-						'">' + $.renshuu.lang.form.modify + '</a></p></div>';
-					
-					$('#formfeedback').attr('class', classes).html(html);
-					
+					$('#formfeedback').attr('class', classes);
+
+					$('#feedbackTemplate').tmpl(res).replaceAll('#formfeedback');
+
 					$('#formfeedback a[rel]').one('click', function () {
 						var rel = $(this).attr('rel');
 						var href = $(this).attr('href').substr(1);
@@ -485,7 +481,7 @@
 						return false;
 					});
 				}, 'json');
-				
+
 				return false;
 			});
 
@@ -493,12 +489,12 @@
 				$(this).parents('form').first().submit();
 				return false;
 			});
-			
+
 			$('form input:button[name=clear]').live('click', function () {
 				$(this).parents('form').first().reset();
 				return false;
 			});
-			
+
 			// Change icon based on geocode direction
 			$('#location_form input:radio[name=geocode]').live('change', function () {
 				$.renshuu.updateGeocodeSelectionIcon();
@@ -517,8 +513,9 @@
 			$('h2.summary').live('mouseup', function () {
 			});
 
-			// http://github.com/nje/jquery-datalink
+			// https://github.com/jquery/jquery-datalink
 			/*
+			// this could handle all the above...
 			$('#filter_form').link($.renshuu.filterSettings, {
 				arts: [],
 				weekdays: [0, 1, 2, 3, 4, 5, 6]
@@ -556,7 +553,7 @@
 				location.hash = '#filters';
 				$.renshuu.showTabContent('filters');
 			}
-			
+
 			// Finally, set the keepalive call
 			setInterval(function () {
 				$.get('/ajax/keepalive', function (data) {
@@ -568,7 +565,7 @@
 
 		/**
 		 * Each tab has an individual content.
-		 * @see 
+		 * @see
 		 */
 		showTabContent: function (key) {
 			document.location = '#' + key;
@@ -609,7 +606,7 @@
 
 		/**
 		 * Add a training to the list of saved trainings if it is not there yet.
-		 * @see 
+		 * @see
 		 */
 		addSavedList: function (id) {
 			var inx = $.renshuu.savedList.indexOf(id);
@@ -630,25 +627,27 @@
 				console.log('addSavedList. savedListData length before and after adding try: ' + savedlen + ' > ' + $.renshuu.savedListData.length);
 
 				// Now add it to DOM... Should this be made as a table or a list? table.
+				// Use template "savedTemplate", but this is used only one way as a template.
+				// Removal is done via regular DOM removal actions.
 				if (data !== null) {
-					var tr = '<tr rel="' + id + '"><td>' + data.training.art.title + '</td><td>';
-					if ($.renshuu.weekdays.length > data.training.weekday) {
-						tr += $.renshuu.weekdays[data.training.weekday];
-					}
-					tr += '</td><td>' + data.training.starttime + ' - ' +
-						data.training.endtime + '</td><td><a href="#remove-' + id +
-						'" rel="remove" title="' + $.renshuu.lang.list.removeitem + ' - ' +
-						data.training.weekday + '"><img src="/img/sanscons/png/green/32x32/close.png" alt="' +
-						$.renshuu.lang.list.removeitem + '" /></tr>';
-					console.log('inserting tr: ' + tr);
-					$('#savedlist tbody').prepend(tr);
+					var saved = {
+						id: id,
+						artTitle: data.training.art.title,
+						weekDayInt: data.training.weekday,
+						weekDay: ($.renshuu.weekdays.length > data.training.weekday ?
+							$.renshuu.weekdays[data.training.weekday] : ""),
+						startTime: data.training.starttime,
+						endTime: data.training.endtime,
+						removeTitle: $.renshuu.lang.list.removeitem
+					};
+					$('#savedTemplate').tmpl(saved).prependTo('#savedlist tbody');
 				}
 			}
 		},
 
 		/**
 		 * Remove from list, as a counter part of adding.
-		 * @see 
+		 * @see
 		 */
 		removeSavedList: function (id) {
 			var inx = $.renshuu.savedList.indexOf(id);
@@ -673,7 +672,7 @@
 
 		/**
 		 * Update filters data according to current checkbox selection.
-		 * @see 
+		 * @see
 		 */
 		updateFilters: function () {
 			var sets = ['arts', 'weekdays'];
@@ -715,7 +714,7 @@
 
 		/**
 		 * This applies the current filter settings to the html in the dom
-		 * @see 
+		 * @see
 		 */
 		applyFilters: function () {
 			var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
@@ -772,7 +771,7 @@
 				}
 			}, 'json');
 		},
-		
+
 		/**
 		 * If current tab view is in the location or training,
 		 * show training place locations.
@@ -790,7 +789,7 @@
 			};
 			$.renshuu.markers.clearMarkers($.renshuu.locationMarkers);
 			$.renshuu.locationMarkersData = [];
-			
+
 			$.post($.renshuu.ajaxpoint.get + 'location', para, function (data, status) {
 				console.dir(data);
 				if (data.response && data.response.result) {
@@ -806,9 +805,9 @@
 			}, 'json');
 		},
 
-		/** 
+		/**
 		 * @see http://code.google.com/apis/maps/documentation/staticmaps/
-		 */ 
+		 */
 		updateExportPreview: function () {
 			var url = 'http://maps.google.com/maps/api/staticmap?';
 			var values = ['sensor=false'];
@@ -816,7 +815,7 @@
 			var items = $('#export_form input, #export_form select');
 			var len = fields.length;
 			// Should there be additional checks for allowed values...
-			for (var i = 0; i < len; ++i) {				
+			for (var i = 0; i < len; ++i) {
 				var field = fields[i];
 				var val = '';
 				if (items.filter('select[name=' + field + ']').size() > 0) {
@@ -826,7 +825,7 @@
 					val = items.filter('input[name=' + field + ']').val();
 				}
 				//console.log('val: ' + val);
-				values.push(field + '=' + val);					
+				values.push(field + '=' + val);
 			}
 			url += values.join('&');
 			// marker requires special attention
@@ -845,8 +844,8 @@
 		 */
 		drawRoute: function (pos1, pos2) {
 			var reg = {
-				avoidHighways: true, 
-				destination: pos2, 
+				avoidHighways: true,
+				destination: pos2,
 				origin: pos1,
 				provideRouteAlternatives: false,
 				travelMode: google.maps.DirectionsTravelMode.WALKING
@@ -862,16 +861,16 @@
 						var leg = route.legs[i]; // DirectionsLeg  http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsLeg
 						var lens = leg.steps.length;
 						for (var j = 0; j < lens; ++j) {
-							var step = leg.steps[j]; // DirectionsStep 
-							// step.path 
-							// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsDistance 
+							var step = leg.steps[j]; // DirectionsStep
+							// step.path
+							// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsDistance
 							$.renshuu.drawPath(step.start_location, step.end_location); //, step.distance.text);
 						}
 					}
 				}
 			});
 		},
-		
+
 		/**
 		 * Draw a path between two positions by using tools in Google Maps.
 		 * pos1 and pos2 are type of google.maps.LatLng
@@ -892,7 +891,7 @@
 				opts.strokeColor = color;
 			}
 			var line = new google.maps.Polyline(opts);
-			
+
 			// Change the color slightly
 			google.maps.event.addListener(line, 'mouseover', function () {
 				var o = opts;
@@ -903,25 +902,25 @@
 				line.setOptions(opts);
 			});
 		},
-		
+
 		/**
-		 * Show the given position in the Street View. 
+		 * Show the given position in the Street View.
 		 * Once visibility set, the opening is taken care of by its event handler.
 		 */
 		showStreetView: function (position) {
 			$.renshuu.streetView.setPosition(position);
 			$.renshuu.streetView.setVisible(true);
 		},
-		
+
 		/**
 		 * http://getfirebug.com/wiki/index.php/Firebug_Extensions
 		 * http://getfirebug.com/wiki/index.php/Console_API
 		 */
 		openAuthModal: function (key) {
 			console.group('openAuthModal');
-			
+
 			// ...
-			
+
 			console.groupEnd();
 		},
 
@@ -980,10 +979,10 @@
 				// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
 				if ($('input[name=geocode][value=position]').is(':checked')) {
 					var pos = $.renshuu.locationMarker.getPosition();
-					
+
 					// Clear earlier geocode markers
 					$.renshuu.data.removeAllGeoMarkers();
-			
+
 					$.renshuu.data.geocodePosition(
 						{ location: pos },
 						$.renshuu.data.addGeoMarkers
@@ -998,7 +997,7 @@
 				google.maps.event.trigger($.renshuu.map, 'resize');
 			});
 		},
-		
+
 		/**
 		 * Initiate the following tools related to Google Street View:
 		 * - StreetViewPanorama
@@ -1008,9 +1007,9 @@
 			$.renshuu.streetService = new google.maps.StreetViewService();
 			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
 
-			
-			
-			
+
+
+
 			// The marker which can be dragged on a spot which is should be revealed in Street View
 			$.renshuu.streetMarker = $.renshuu.markers.createMarker(
 				$.renshuu.map.getCenter(), 'Street View', $.renshuu.pins.getPinStar('glyphish_eye'), true
@@ -1037,7 +1036,7 @@
 					$.renshuu.streetMarker.setPosition(posS);
 				}
 			});
-			
+
 			// When Street View is set visible, the position for it should have been set before, thus its position is the one that is used for the marker.
 			google.maps.event.addListener($.renshuu.streetView, 'visible_changed', function () {
 				var posS = $.renshuu.streetView.getPosition();
@@ -1067,7 +1066,7 @@
 			});
 
 			$.renshuu.map.setStreetView($.renshuu.streetView);
-			
+
 			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.streetView, 'resize');
 			});
@@ -1085,7 +1084,7 @@
 				console.log('getPanorama. status: ' + status);
 			});
 		},
-		
+
 		/**
 		 * Set the icon next to the radio buttons in the location form
 		 */
@@ -1153,7 +1152,7 @@
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		createTrainingMarker: function (data) {
 			var icon = $.renshuu.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
@@ -1171,10 +1170,10 @@
 			var len = $.renshuu.trainingMarkers.push(marker);
 			$.renshuu.trainingMarkersData[len - 1] = data;
 		},
-		
+
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		createLocationMarker: function (data) {
 			var icon = $.renshuu.pins.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
@@ -1191,20 +1190,20 @@
 			var len = $.renshuu.locationMarkers.push(marker);
 			$.renshuu.locationMarkersData[len - 1] = data;
 		},
-		
+
 		/**
 		 *
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
 		 */
 		createGeocodeMarker: function (res, i) {
-			
+
 			for (var j in res) {
 				if (res.hasOwnProperty(j)) {
 					console.log('res[' + j + '] = ' + res[j]);
 				}
 			}
-			
-			
+
+
 			for (var s in res.address_components) {
 				var a = res.address_components[s];
 				for (var c in a) {
@@ -1214,7 +1213,7 @@
 			for (var g in res.geometry) {
 				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
 			}
-			
+
 			var marker = $.renshuu.markers.createMarker(
 				res.geometry.location,
 				res.formatted_address,
@@ -1305,20 +1304,22 @@
 
 			if (data) {
 				console.log('showInfo. data. ' + data);
+				// Get data
 				var info = $.renshuu.markers.buildInfoWindow(data);
-				$('#map').block({ 
-					message: info
-				});
+				// Create overlay
+				$('#map').block();
 				$('.modal-close').one('click', function () {
 					$('#map').unblock();
 					return false;
 				});
+				// Fill overlay with the data inserted to a template
+				$('#modalTemplate').tmpl(info).appendTo('div.blockMsg');
 			}
 		},
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		buildInfoWindow: function (data) {
 			/*
@@ -1349,61 +1350,33 @@
 				}
 			}
 			*/
-			var lang = $.renshuu.lang.modal;
-			var info = '<div class="modal-info vevent">';
-			if (data.training && data.training.art && data.training.art.id && data.training.art.title) {
-				info += '<h2 class="summary" rel="art-' + data.training.art.id + '">' +
-					'<a href="#training-' + data.training.id + '" class="modal-close uid icon-close" title="' +
-					data.training.art.title + '">' + data.training.art.title + '</a></h2>';
-			}
-			if (data.training && data.training.id && data.training.weekday) {
-				info += '<p class="modal-time" rel="training-' + data.training.id + '">';
-				if ($.renshuu.weekdays.length > data.training.weekday) {
-					info += $.renshuu.weekdays[data.training.weekday];
-				}
-				if (data.training.starttime && data.training.endtime) {
-					info += '<span class="dtstart" title="' + data.training.starttime + '">' +
-						data.training.starttime + '</span>-<span class="dtend" title="' + 
-						data.training.endtime + '">' + data.training.endtime + '</span>';
-				}
-				info += '</p>';
-			}
 
-			if (data.person && data.person.id && data.person.title) {
-				info += '<p class="modal-contact" rel="person-' + data.person.id + '">' + data.person.title;
-				if (data.person.contact) {
-					info += ' (' + data.person.contact + ')';
-				}
-				info += '</p>';
+			// Had too many checks for existing variables,
+			// which should be taken care of at the backend.
+			var info = {};
+
+			if (data.training && data.training.art && data.training.id) {
+				info = {
+					trainingId: data.training.id,
+					trainingTitle: (data.training.title ? data.training.title : null),
+					trainingStime: data.training.starttime ? data.training.starttime : null,
+					trainingEtime: data.training.endtime ? data.training.endtime : null,
+					weekDay: ($.renshuu.weekdays.length > data.training.weekday ? $.renshuu.weekdays[data.training.weekday] : ''),
+					artId: (data.training.art.id ? data.training.art.id : null),
+					artTitle: (data.training.art.title ? data.training.art.title : null),
+					personId: (data.person && data.person.id) ? data.person.id : null,
+					personTitle: (data.person && data.person.title) ? data.person.title : null,
+					personContact: (data.person && data.person.contact) ? data.person.contact : null,
+					locationId: (data.location && data.location.id) ? data.location.id : null,
+					locationTitle: (data.location && data.location.title) ? data.location.title : null,
+					locationUrl: (data.location && data.location.url) ? data.location.url : null,
+					locationLat: (data.location && data.location.latitude) ? data.location.latitude : null,
+					locationLng: (data.location && data.location.longitude) ? data.location.longitude : null,
+					locationAddr: (data.location && data.location.address) ? data.location.address : null,
+					langSave: $.renshuu.lang.modal.savetolist,
+					langRemove: $.renshuu.lang.modal.removefromlist
+				};
 			}
-			if (data.location && data.location.id && data.location.title) {
-				info += '<p class="modal-location" rel="location-' + data.location.id + '">' + data.location.title;
-				if (data.location.url) {
-					info += '<a href="' + data.location.url + '" title="' +
-						data.location.title + '">' + data.location.url + '</a>';
-				}
-				info += '</p>';
-			}
-			if (data.location && data.location.latitude && data.location.longitude) {
-				info += '<address class="geo">';
-				if (data.location.address) {
-					info += data.location.address;
-				}
-				info += '<span><abbr class="latitude" title="' + data.location.latitude + '">' +
-					$.renshuu.data.deg2dms(data.location.latitude, true) + '</abbr>' +
-					'<abbr class="longitude" title="' + data.location.longitude + '">' +
-					$.renshuu.data.deg2dms(data.location.longitude, false) + '</abbr></span>' +
-					'</address>';
-			}
-			if (data.training && data.training.id) {
-				info += '<p class="modal-tools">';
-				info += '<a href="#training-' + data.training.id + '" title="' + lang.savetolist +
-					'" rel="savetolist">' + lang.savetolist + '</a>';
-				info += '<a href="#training-' + data.training.id + '" title="' + lang.removefromlist +
-					'" rel="removefromlist" style="display:none;">' + lang.removefromlist + '</a>';
-				info += '</p>';
-			}
-			info += '</div>';
 
 			console.log('buildInfoWindow. info. ' + info);
 			//$(info).appendTo('body');
@@ -1418,7 +1391,7 @@
 		 */
 		deg2dms: function (degfloat, isLatitude) {
 			var letter = isLatitude ? 'NS' : 'EW';
-			
+
 			if (degfloat < 0) {
 				degfloat = Math.abs(degfloat);
 				letter = letter.substr(1, 1);
@@ -1482,7 +1455,7 @@
 				}
 			);
 		},
-		
+
 		/**
 		 * Based on the geocode results, add max three markers.
 		 * @param key		Must be a string, either location or address, used in geocode request.
@@ -1519,7 +1492,7 @@
 			var markers = [];
 			var len = Math.min(3, results.length); // Max three results
 			console.log('addGeoMarkers. len: ' + len);
-			
+
 			for (var i = 0; i < len; ++i) {
 				// Should check that each address has only one marker.
 				markers.push($.renshuu.markers.createGeocodeMarker(results[i], i));
@@ -1534,13 +1507,13 @@
 			});
 			//$('input[name=address]').val(results[0].formatted_address);
 				//$('input[name=address]').val('Cannot determine address at this location.');
-			
+
 		},
 
 		/**
 		 * Removes one marker from the list of geocode result markers.
 		 * If it was the last one in that patch, then the whole patch will be removed.
-		 * @see 
+		 * @see
 		 */
 		removeGeoMarker: function (marker) {
 			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
@@ -1562,7 +1535,7 @@
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		removeAllGeoMarkers: function () {
 			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
@@ -1581,7 +1554,7 @@
 	$.renshuu.callbacks = {
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		updateZoomCookie: function () {
 			var zoom = $.renshuu.map.getZoom();
@@ -1594,7 +1567,7 @@
 		},
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		updateCenterCookie: function () {
 			var center = $.renshuu.map.getCenter();
@@ -1607,7 +1580,7 @@
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		initiate: function () {
 			var callbacks = $.renshuu.callbacks;
@@ -1704,7 +1677,7 @@
 
 		/**
 		 * Type can be only one of the two [pin_sright, pin_sleft], othervise size mismatches.
-		 * @see 
+		 * @see
 		 */
 		getPinStar: function (icon, fill, star, type) {
 			if (!icon) {
@@ -1734,7 +1707,7 @@
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		getBubble: function (icon, text, fill, color, type) {
 			if (!icon) {
@@ -1777,7 +1750,7 @@
 
 		/**
 		 * Seven types available: art, location, training, person, user, login, register
-		 * @see 
+		 * @see
 		 */
 		getForm: function (type) {
 			if ($.renshuu.forms.cache[type])
@@ -1877,14 +1850,14 @@
 
 		/**
 		 *
-		 * @see 
+		 * @see
 		 */
 		showForm: function (type) {
 			var form = $.renshuu.forms.cache[type];
 			$(form).attr('rel', 'insert-0'); // Always empty and ready to insert a new.
 			$($.renshuu.tabContentElement).contents().detach(); // clean but save
 			$($.renshuu.tabContentElement).html(form);
-			
+
 			// If location form is used, check the possible cookie.
 			if (type == 'location' && $.cookie('locationGeocode')) {
 				$('#location_form input:radio[name=geocode]').removeAttr('checked');
@@ -1895,10 +1868,10 @@
 				$.renshuu.forms.fillUserData();
 			}
 		},
-		
+
 		/**
 		 * User data binding
-		 * @see 
+		 * @see
 		 */
 		fillUserData: function () {
 			var userData = $.renshuu.userData;
