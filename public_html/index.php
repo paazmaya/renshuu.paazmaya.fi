@@ -128,26 +128,35 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.6.2 (2011-)
-	'jquery.ui.core.js', // 1.8.
+	'jquery.js', // 1.6.2 (2011-06-30), http://jquery.com/
+	
+	'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
+	'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
+	
+	'jquery.ui.core.js', // 1.8.15 (2011-08-08), http://jqueryui.com/
 	'jquery.ui.widget.js',
-	'jquery.ui.mouse.js',
+	'jquery.ui.mouse.js', // depends ui.widget
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
-	'jquery.tmpl.js', // github version 2011-
+	'jquery.ui.tabs.js', // depends ui.core and ui.widget
+	
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
-	'jquery.timepicker.js',
-	'jquery.cookie.js', // 2006
-	'jquery.clockpick.js', // 1.2.9
-	'jquery.inputnotes-0.6.js', // 0.6
-	'jquery.json-2.2.js',
-	'jstorage.js',
-	'jquery.hotkeys.js', // 0.8 (2010-02-23)
-	'jquery.corner.js', // 2.11 (15-JUN-2010)
-	'jquery.form.js', // 2.45 (09-AUG-2010)
-	'jquery.autoSuggest.js',
-	'jquery.blockUI.js', // 2.37 (29-JAN-2011)
-	'jquery.ba-hashchange.js', // 1.3
+	'jquery.timepicker.js', // 
+	'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
+	'jquery.cookie.js', // (2011-07-08), https://github.com/carhartl/jquery-cookie/
+	'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
+	'jquery.inputnotes-0.6.js', // 0.6 ()
+	'jquery.json-2.2.js', // ()
+	'jstorage.js', // ()
+	//'jquery.simplemodal.js', // 1.4.1 (2010-11-05), http://www.ericmmartin.com/projects/simplemodal/
+	'jquery.gomap.js', // 1.3.2 (2011-07-01), http://www.pittss.lv/jquery/gomap/
+	'jquery.hotkeys.js', // 0.8 (2010-03-10), https://github.com/tzuryby/jquery.hotkeys
+	'jquery.corner.js', // 2.12 (2011-05-23), http://jquery.malsup.com/corner/
+	'jquery.form.js', // 2.83 (2011-07-11), http://malsup.com/jquery/form/
+	'jquery.autoSuggest.js', // 1.4 (2010-03-23), http://code.drewwilson.com/entry/autosuggest-jquery-plugin
+	'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
+	'jquery.ba-hashchange.js', // 1.3 (2010-07-21), http://benalman.com/projects/jquery-hashchange-plugin/
+	'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
 	'renshuusurutoki.js'
 );
 
