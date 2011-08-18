@@ -135,12 +135,17 @@ $javascript = array(
 	
 	'jquery.ui.core.js', // 1.8.15 (2011-08-08), http://jqueryui.com/
 	'jquery.ui.widget.js',
+	'jquery.ui.button.js', // depends ui.core and ui.widget
+	'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
+	'jquery.ui.draggable.js', // depends ui.core, ui.mouse and ui.widget
+	'jquery.ui.position.js',
 	'jquery.ui.mouse.js', // depends ui.widget
 	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
 	'jquery.ui.tabs.js', // depends ui.core and ui.widget
 	
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
+	
 	'jquery.timepicker.js', // 
 	'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
 	'jquery.cookie.js', // (2011-07-08), https://github.com/carhartl/jquery-cookie/
@@ -167,9 +172,18 @@ $javascript = array(
 // Same thing for cascaded style sheet, in public_html/css/..
 minify('css', array(
 	'main.css',
-	'autoSuggest.css',
+	
+	'jquery.ui.button.css',
+	'jquery.ui.core.css',
+	'jquery.ui.datepicker.css',
+	'jquery.ui.dialog.css',
+	'jquery.ui.rezisable.css',
+	'jquery.ui.tabs.css',
+	
+	'jquery-ui-timepicker-addon.css',		
 	'jquery.clockpick.css',
-	'ui.timepickr.css'
+	'ui.timepickr.css',
+	'autoSuggest.css'
 ));
 
 // Append with gzip if supported.
@@ -490,29 +504,6 @@ echo ' $.renshuu.ready();' . "\n";
 echo '});' . "\n";
 echo '</script>';
 
-
-
-// Templating available onwards from jQuery 1.4.3
-// http://api.jquery.com/jquery.tmpl/
-// http://www.slideshare.net/garann/using-templates-to-achieve-awesomer-architecture
-// http://www.borismoore.com/2010/10/jquery-templates-is-now-official-jquery.html
-/*
-var t = $('#tmpl-t1').html();
-// Compile a template
-var tmpl = _.template(t);
-// render it
-tmpl({data: {title : 'Ralph Smells'}});
-*/
-?>
-<script type="text/html" id="tmpl-t1">
-	<h1>${data.title}</h1>
-	{{if data.item}}
-		// hoplaa
-	{{else}}
-		// kukkuu
-	{{/if}}
-</script>
-<?php
 
 if (!$cf['isdevserver'])
 {
