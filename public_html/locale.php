@@ -101,9 +101,9 @@ Only non empty values will be used.
 	'items' => array(
 		array(
 			'label' => gettext(''), label text before the element
-			'type' => gettext(''), input types or select
-			'name' => gettext(''), name of the field
-			'class' => gettext('' style class
+			'type' => '', input types or select
+			'name' => '', name of the field
+			'class' => '' style class
 			'disabled' => false, disabled="disabled" will be written if true
 			'after' => gettext(''), text after the element but before the label closes
 			'value' => gettext(''), value of the input element if any
@@ -114,6 +114,8 @@ Only non empty values will be used.
 		'twitter' => gettext('Login via your Twitter account')
 	)
 )
+
+ * @see http://developers.whatwg.org/the-input-element.html#attr-input-type
 */
 $lang['forms'] = array(
 	'art' => array(
@@ -126,13 +128,13 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('Name'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('URI'),
-				'type' => gettext('text'),
-				'name' => gettext('uri')
+				'type' => 'text',
+				'name' => 'uri'
 			)
 		)
 	),
@@ -146,28 +148,28 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('Title'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('URI'),
-				'type' => gettext('text'),
-				'name' => gettext('uri')
+				'type' => 'url',
+				'name' => 'uri'
 			),
 			array(
 				'label' => gettext('Info'),
-				'type' => gettext('text'),
-				'name' => gettext('info')
+				'type' => 'text',
+				'name' => 'info'
 			),
 			array(
 				'label' => gettext('Address(if any)'),
-				'type' => gettext('text'),
-				'name' => gettext('address')
+				'type' => 'text',
+				'name' => 'address'
 			),
 			array(
 				'label' => gettext('Geocode'),
-				'type' => gettext('radio'),
-				'name' => gettext('geocode'),
+				'type' => 'radio',
+				'name' => 'geocode',
 				'options' => array(
 					'none' => gettext('none'),
 					'address' => gettext('address'),
@@ -177,14 +179,14 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Latitude'),
-				'type' => gettext('text'),
-				'name' => gettext('latitude'),
+				'type' => 'number',
+				'name' => 'latitude',
 				'disabled' => true
 			),
 			array(
 				'label' => gettext('Longitude'),
-				'type' => gettext('text'),
-				'name' => gettext('longitude'),
+				'type' => 'number',
+				'name' => 'longitude',
 				'disabled' => true
 			)
 		)
@@ -199,48 +201,48 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('Title'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('Location'),
-				'type' => gettext('text'),
-				'name' => gettext('location')
+				'type' => 'text',
+				'name' => 'location'
 			),
 			array(
 				'label' => gettext('Weekday'),
-				'type' => gettext('select'),
-				'name' => gettext('weekday'),
+				'type' => 'select',
+				'name' => 'weekday',
 				'options' => array()
 			),
 			array(
 				'label' => gettext('Occurance'),
-				'type' => gettext('text'),
-				'name' => gettext('occurance')
+				'type' => 'text',
+				'name' => 'occurance'
 			),
 			array(
 				'label' => gettext('Start time'),
-				'type' => gettext('text'),
-				'name' => gettext('starttime'),
-				'class' => gettext('short')
+				'type' => 'text',
+				'name' => 'starttime',
+				'class' => 'short'
 			),
 			array(
 				'label' => gettext('End time'),
-				'type' => gettext('text'),
-				'name' => gettext('endtime'),
-				'class' => gettext('short')
+				'type' => 'text',
+				'name' => 'endtime',
+				'class' => 'short'
 			),
 			array(
 				'label' => gettext('Duration (minutes)'),
-				'type' => gettext('text'),
-				'name' => gettext('duration'),
-				'class' => gettext('short'),
+				'type' => 'number',
+				'name' => 'duration',
+				'class' => 'short',
 				'disabled' => true
 			),
 			array(
 				'label' => gettext('Art'),
-				'type' => gettext('select'),
-				'name' => gettext('art'),
+				'type' => 'select',
+				'name' => 'art',
 				'options' => array()
 			)
 		)
@@ -255,23 +257,23 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('Name'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('Art'),
-				'type' => gettext('text'),
-				'name' => gettext('art')
+				'type' => 'text',
+				'name' => 'art'
 			),
 			array(
 				'label' => gettext('Contact'),
-				'type' => gettext('text'),
-				'name' => gettext('contact')
+				'type' => 'text',
+				'name' => 'contact'
 			),
 			array(
 				'label' => gettext('Info'),
-				'type' => gettext('text'),
-				'name' => gettext('info')
+				'type' => 'text',
+				'name' => 'info'
 			)
 		)
 	),
@@ -284,26 +286,28 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('E-mail'),
-				'type' => gettext('text'),
-				'name' => gettext('email')
+				'type' => 'email',
+				'name' => 'email',
+				'required' => true
 			),
 			array(
 				'label' => gettext('Password'),
-				'type' => gettext('text'),
-				'name' => gettext('password')
+				'type' => 'text',
+				'name' => 'password',
+				'required' => true
 			),
 			array(
 				'label' => gettext('How much is 2 + 3'), // always total 5
-				'type' => gettext('text'),
-				'class' => gettext('short'),
-				'name' => gettext('answer'),
+				'type' => 'text',
+				'class' => 'short',
+				'name' => 'answer',
 				'after' => gettext(' (making sure you are a real person)')
 			)
 		),
 		'links' => array(
-			'facebook' => gettext(''),
-			'openid' => gettext(''),
-			'twitter' => gettext('Login via your Twitter account')
+			'facebook' => gettext('Login via Facebook account'),
+			'openid' => gettext('Login with OpenID'),
+			'twitter' => gettext('Login via Twitter account')
 		)
 	),
 	'user' => array(
@@ -315,18 +319,18 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('E-mail'),
-				'type' => gettext('text'),
-				'name' => gettext('email')
+				'type' => 'email',
+				'name' => 'email'
 			),
 			array(
 				'label' => gettext('Full name'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('Password'),
-				'type' => gettext('text'),
-				'name' => gettext('password'),
+				'type' => 'text',
+				'name' => 'password',
 				'after' => gettext(' (fill if you wish to change, else leave empty)')
 			)
 		)
@@ -341,24 +345,24 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('E-mail'),
-				'type' => gettext('text'),
-				'name' => gettext('email')
+				'type' => 'email',
+				'name' => 'email'
 			),
 			array(
 				'label' => gettext('Full name'),
-				'type' => gettext('text'),
-				'name' => gettext('title')
+				'type' => 'text',
+				'name' => 'title'
 			),
 			array(
 				'label' => gettext('Password'),
-				'type' => gettext('text'),
-				'name' => gettext('password')
+				'type' => 'text',
+				'name' => 'password'
 			),
 			array(
 				'label' => gettext('How much is 3 + 2'), // always total 5
-				'type' => gettext('text'),
-				'class' => gettext('short'),
-				'name' => gettext('answer'),
+				'type' => 'text',
+				'class' => 'short',
+				'name' => 'answer',
 				'after' => gettext(' (making sure you are a real person)')
 			)
 		)
@@ -372,8 +376,8 @@ $lang['forms'] = array(
 		'items' => array(
 			array(
 				'label' => gettext('Map type'),
-				'type' => gettext('select'),
-				'name' => gettext('maptype'),
+				'type' => 'select',
+				'name' => 'maptype',
 				'options' => array(
 					'roadmap' => gettext('Roadmap'),
 					'satellite' => gettext('Satellite'),
@@ -383,8 +387,8 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Language'),
-				'type' => gettext('select'),
-				'name' => gettext('language'),
+				'type' => 'select',
+				'name' => 'language',
 				'options' => array(
 					'ja' => gettext('Japanese'),
 					'en' => gettext('English'),
@@ -393,8 +397,8 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Image format'),
-				'type' => gettext('select'),
-				'name' => gettext('format'),
+				'type' => 'select',
+				'name' => 'format',
 				'options' => array(
 					'png8' => gettext('png 8-bit'),
 					'png32' => gettext('png 32-bit'),
@@ -405,33 +409,33 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Zoom level'),
-				'type' => gettext('text'),
-				'name' => gettext('zoom'),
-				'class' => gettext('short'),
+				'type' => 'text',
+				'name' => 'zoom',
+				'class' => 'short',
 				'after' => gettext(' (0...16)'),
 				'value' => gettext('14')
 			),
 			array(
 				'label' => gettext('Image size'),
-				'type' => gettext('text'),
-				'name' => gettext('size'),
-				'class' => gettext('short'),
+				'type' => 'text',
+				'name' => 'size',
+				'class' => 'short',
 				'after' => gettext(' (WxH)'),
 				'value' => gettext('300x300')
 			),
 			array(
 				'label' => gettext('Colour'),
-				'type' => gettext('text'),
-				'name' => gettext('color'),
-				'class' => gettext('short'),
+				'type' => 'text',
+				'name' => 'color',
+				'class' => 'short',
 				'after' => gettext(' (hex value or a string)'),
 				'value' => gettext('0x55FF55')
 			),
 			array(
 				'label' => gettext('Label'),
-				'type' => gettext('text'),
-				'name' => gettext('label'),
-				'class' => gettext('short'),
+				'type' => 'text',
+				'name' => 'label',
+				'class' => 'short',
 				'after' => gettext(' (one character only)'),
 				'value' => gettext('X')
 			)

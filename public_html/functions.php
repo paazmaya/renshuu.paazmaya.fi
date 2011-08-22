@@ -190,6 +190,13 @@ function createForm($id, $data, $action = null)
 				{
 					$out .= ' disabled="disabled"';
 				}
+				
+				// http://developers.whatwg.org/common-input-element-attributes.html#attr-input-required
+				if (isset($item['required']) && $item['required'])
+				{
+					$out .= ' required="required"';
+				}
+				
 				if (isset($item['value']) && $item['value'] != '')
 				{
 					$out .= ' value="' . $item['value'] . '"';
