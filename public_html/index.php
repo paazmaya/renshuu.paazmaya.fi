@@ -235,77 +235,77 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 	<link type="text/css" href=<?php echo '"/css/iconset-' . $cf['iconset'] . '.css"'; ?> rel="stylesheet" />
 
 	<script id="savedTemplate" type="text/x-jquery-tmpl">
-		<tr rel="{{id}">
-			<td>{{artTitle}</td>
-			<td>{{weekDay}}/td>
-			<td>{{startTime}} - {{endTime}}/td>
-			<td><a href="#remove-{{id}}" rel="remove" title="{{removeTitle}} - {{weekDayInt}}">
-				<img src="/img/sanscons/png/green/32x32/close.png" alt="{{removeTitle}}" />
+		<tr rel="${id}">
+			<td>${artTitle}</td>
+			<td>${weekDay}/td>
+			<td>${startTime} - ${endTime}/td>
+			<td><a href="#remove-${id}" rel="remove" title="${removeTitle} - ${weekDayInt}">
+				<img src="/img/sanscons/png/green/32x32/close.png" alt="${removeTitle}" />
 			</a></td>
 		</tr>
 	</script>
 		
 	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
-		<h1 title="{{message}}">{{message}}</h1>
+		<h1 title="${message}">${message}</h1>
 		{{if title}}
-			<p>{{title}}</p>
+			<p>${title}</p>
 		{{/if}}
 		<p>
-			<a href="#insert-0" rel="clear" title="{{$.renshuu.lang.form.createnew}}">
-				{{$.renshuu.lang.form.createnew}} / {{$.renshuu.lang.form.clear}}
+			<a href="#insert-0" rel="clear" title="${$.renshuu.lang.form.createnew}">
+				${$.renshuu.lang.form.createnew} / ${$.renshuu.lang.form.clear}
 			</a>
 		</p>
 		<p>
-			<a href="#update-{{id}}" rel="keep" title="{{$.renshuu.lang.form.modify}}">
-				{{$.renshuu.lang.form.modify}}
+			<a href="#update-${id}" rel="keep" title="${$.renshuu.lang.form.modify}">
+				${$.renshuu.lang.form.modify}
 			</a>
 		</p>
 	</script>
 	
 	<script id="modalTemplate" type="text/x-jquery-tmpl">
 		<div class="modal-info vevent">
-			{{if artId && artTitle}}
-				<h2 class="summary" rel="art-{{artId}}">
-					<a href="#training-{{ trainingId}}" class="modal-close uid icon-close" title="{{artTitle}}">{{artTitle}}</a>
+			{{if (artId && artTitle)}}
+				<h2 class="summary" rel="art-${artId}">
+					<a href="#training-${trainingId}" class="modal-close uid icon-close" title="${artTitle}">${artTitle}</a>
 				</h2>
 			{{/if}}
 			{{if weekDay}}
-				<p class="modal-time" rel="training-{{trainingId}}">{{weekDay}}
+				<p class="modal-time" rel="training-${trainingId}">${weekDay}
 				{{if trainingStime && trainingEtime}}
-					<span class="dtstart" title="{{trainingStime}}">{{trainingStime}}</span>
-					-<span class="dtend" title="{{trainingEtime}}">{{trainingEtime}}</span>
+					<span class="dtstart" title="${trainingStime}">${trainingStime}</span>
+					-<span class="dtend" title="${trainingEtime}">${trainingEtime}</span>
 				{{/if}}
 				</p>
 			{{/if}}
 			{{if personId && personTitle}}
-				<p class="modal-contact" rel="person-{{personId}}">{{personTitle}}
+				<p class="modal-contact" rel="person-${personId}">${personTitle}
 				{{if personContact}}
-					 ( {{personContact}})
+					 ( ${personContact})
 				{{/if}}
 				</p>
 			{{/if}}
 			{{if locationId && locationTitle}}
-				<p class="modal-location" rel="location-{{locationId}}">{{locationTitle}}
+				<p class="modal-location" rel="location-${locationId}">${locationTitle}
 				{{if locationUrl}}
-					<a href="{{locationUrl}}" title="{{locationTitle}}"> {{locationUrl}}</a>
+					<a href="${locationUrl}" title="${locationTitle}"> ${locationUrl}</a>
 				{{/if}}
 				</p>
 			{{/if}}
 			{{if locationLat && locationLng}}
 				<address class="geo">
 					{{if locationAddr}}
-						{{locationAddr}}
+						${locationAddr}
 					{{/if}}
 					<span>
-						<abbr class="latitude" title="{{locationLat}}">$.renshuu.data.deg2dms(locationLat, true)</abbr>
-						<abbr class="longitude" title="{{locationLng}}">$.renshuu.data.deg2dms(locationLng, false)</abbr>
+						<abbr class="latitude" title="${locationLat}">${$.renshuu.data.deg2dms(locationLat, true)}</abbr>
+						<abbr class="longitude" title="${locationLng}">${$.renshuu.data.deg2dms(locationLng, false)}</abbr>
 					</span>
 				</address>
 			{{/if}}
 			{{if trainingId}}
 				<p class="modal-tools">
-					<a href="#training-{{trainingId}}" title="{{langSave}}" rel="savetolist">{{langSave}}</a>
-					<a href="#training-{{trainingId}}" title="{{langRemove}}" rel="removefromlist" style="display:none;">{{langRemove}}</a>
+					<a href="#training-${trainingId}" title="${langSave}" rel="savetolist">${langSave}</a>
+					<a href="#training-${trainingId}" title="${langRemove}" rel="removefromlist" style="display:none;">${langRemove}</a>
 				</p>
 			{{/if}}
 		</div>
@@ -427,6 +427,12 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 
 	echo $copyright;
 
+	// http://www.w3.org/html/logo/#the-technology
+	/*
+	<a href="http://www.w3.org/html/logo/">
+<img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-semantics-storage.png" width="229" height="64" alt="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage">
+</a>
+*/
 
 // -----
 echo '<pre>SESSION ';

@@ -109,7 +109,7 @@ $id = 0;
 $passcheck = false;
 $loggedin = true; // for testing...
 
-if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+if ($cf['isdevserver'])
 {
 	$out['post'] = $posted;
 	$out['get'] = $getted;
@@ -124,7 +124,7 @@ if (isset($getted['page']))
 	{
 		$page = $parts['1'];
 
-		if ($page == 'get')
+		if ($page == 'get' || $page == 'keepalive')
 		{
 			$passcheck = true;
 		}
@@ -260,12 +260,12 @@ if ($passcheck)
 		}
 		else
 		{
-			if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+			if ($cf['isdevserver'])
 			{
 				$out['errorInfo'] = $link->errorInfo();
 			}
 		}
-		if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+		if ($cf['isdevserver'])
 		{
 			$out['sql'] = $sql;
 		}
@@ -298,12 +298,12 @@ if ($passcheck)
 		}
 		else
 		{
-			if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+			if ($cf['isdevserver'])
 			{
 				$out['errorInfo'] = $link->errorInfo();
 			}
 		}
-		if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+		if ($cf['isdevserver'])
 		{
 			$out['sql'] = $sql;
 		}
@@ -345,12 +345,12 @@ if ($passcheck)
 		}
 		else
 		{
-			if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+			if ($cf['isdevserver'])
 			{
 				$out['errorInfo'] = $link->errorInfo();
 			}
 		}
-		if ($_SERVER['SERVER_NAME'] == '192.168.1.37')
+		if ($cf['isdevserver'])
 		{
 			$out['sql'] = $sql;
 		}

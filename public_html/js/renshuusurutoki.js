@@ -1378,7 +1378,7 @@
 				};
 			}
 
-			console.log('buildInfoWindow. info. ' + info);
+			console.debug('buildInfoWindow. info. ' + info);
 			//$(info).appendTo('body');
 			return info;
 		}
