@@ -218,9 +218,11 @@ file_put_contents('css/iconset-' . $cf['iconset'] . '.css', $iconcss);
 // -----------------
 
 // http://ogp.me/
+// http://www.w3.org/TR/html5-author/spec.html#the-doctype
+// <!DOCTYPE html>
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xml:lang="en" lang="<?php echo $_SESSION['lang']; ?>">
 <head>
 	<title><?php echo $cf['title'] . ' | ' . $lang['title']; ?></title>
 	<meta name="description" content="<?php echo $lang['description']; ?>" />
