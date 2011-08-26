@@ -97,7 +97,8 @@
 		},
 
 		/**
-		 * Points of contact
+		 * Points of contact.
+		 * Use these "constants" for pointing the ajax url.
 		 */
 		ajaxpoint: {
 			get: '/ajax/get/',
@@ -140,8 +141,9 @@
 		dirService: null,
 
 		/**
-		 * Polylines used by DirectionsService, structured:
-		 * { polyline: line, points: [pos0, pos1] }
+		 * Polylines used by DirectionsService to show the path on the map.
+		 * Structure:
+		 *  { polyline: line, points: [pos0, pos1] }
 		 */
 		dirLines: [],
 
@@ -152,19 +154,33 @@
 		 */
 		dirRequestInterval: 1000, // 1 sec
 
-		// default map center will be in the most beautiful castle of Japan
+		/**
+		 * Default map center will be in the most beautiful castle of Japan,
+		 * based on personal opinion.
+		 */
 		hikone: null,
 
+		/**
+		 * Tabs contain all the different forms.
+		 */
 		tabContentElement: '#tabcontent',
+		
+		/**
+		 *
+		 */
 		filtersHtml: null,
 
-		// Default filter settings. Make sure the values are always single strings.
+		/**
+		 * Default filter settings. Make sure the values are always single strings.
+		 */
 		filterSettings: {
 			arts: [],
 			weekdays: ['0', '1', '2', '3', '4', '5', '6'] // all weekdays are selected by default
 		},
 
-		// Icons (css rules) to use for named menu items, prepended with "icon-"
+		/**
+		 * Icons (css rules) to use for named menu items, prepended with "icon-"
+		 */
 		menuicons: {
 			filters: 'equalizer',
 			location: 'addressbook',
@@ -181,42 +197,66 @@
 			position: 'arrow3_n'
 		},
 
-		// If this value is 'address' and a marker is clicked, its position will be place in the form.
+		/**
+		 * If this value is 'address' and a marker is clicked, its position will be place in the form.
+		 */
 		geocodeBasedOn: 'none',
 
-		// Store temporary geocoded location markers here.
-		// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
+		/**
+		 * Store temporary geocoded location markers here.
+		 * { key:"address or lat/lng that was tried to be geocoded", markers: [] }
+		 */
 		geocodeMarkers: [],
 
-		// Store temporary location markers, of those existing in the backend
+		/**
+		 * Store temporary location markers, of those existing in the backend
+		 */
 		locationMarkers: [],
 		locationMarkersData: [],
+		
+		/**
+		 * trainingMarkers and trainingMarkersData should share 
+		 * a same index for data related to the other.
+		 */
+		trainingMarkers: [],
+		trainingMarkersData: [],
 
-		trainingMarkers: [], // These two should share a same index for data
-		trainingMarkersData: [], // related to the other
-
-		// The actual position where current Street View is at. Shown only when Street View is.
+		/**
+		 * The actual position where current Street View is at. Shown only when Street View is.
+		 */
 		streetMarker: null,
 
-		// Marker for positioning location while in location form filling.
+		/**
+		 * Marker for positioning location while in location form filling.
+		 */
 		locationMarker: null,
 
-		// List of trainings which are saved for the purpose of exporting them as a list later on.
-		// Only the id of the training is saved, rest of the data is available in trainingMarkersData...
-		// and is copied to savedListData.
+		/**
+		 * List of trainings which are saved for the purpose of exporting them as a list later on.
+		 * Only the id of the training is saved, rest of the data is available in trainingMarkersData...
+		 * and is copied to savedListData.
+		 */
 		savedList: [],
 		savedListData: [],
 
-		// The current locale, filled from the bottom of index.php... Something like ja_JP or sl_SI
+		/**
+		 * The current locale, filled from the bottom of index.php... Something like ja_JP or sl_SI
+		 */
 		locale: null,
 
-		// This language collection will be populated from the bottom of index.php...
+		/**
+		 * This language collection will be populated from the bottom of index.php...
+		 */
 		lang: null,
 
-		// Weekday names as per current language. Sunday is at zero index.
+		/**
+		 * Weekday names as per current language. Sunday is at zero index.
+		 */
 		weekdays: [],
 
-		// User specific data will be filled, in case logged in, via the bottom of index.php...
+		/**
+		 * User specific data will be filled, in case logged in, via the bottom of index.php...
+		 */
 		userData: null,
 
 		/**
