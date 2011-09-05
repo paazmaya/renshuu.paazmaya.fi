@@ -2,15 +2,15 @@
 /*~ class.smtp.php
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
-|   Version: 5.1                                                            |
-|   Contact: via sourceforge.net support pages (also www.codeworxtech.com)  |
-|      Info: http://phpmailer.sourceforge.net                               |
-|   Support: http://sourceforge.net/projects/phpmailer/                     |
+|   Version: 5.2                                                            |
+|      Site: https://code.google.com/a/apache-extras.org/p/phpmailer/       |
 | ------------------------------------------------------------------------- |
-|     Admin: Andy Prevost (project admininistrator)                         |
+|     Admin: Jim Jagielski (project admininistrator)                        |
 |   Authors: Andy Prevost (codeworxtech) codeworxtech@users.sourceforge.net |
 |          : Marcus Bointon (coolbru) coolbru@users.sourceforge.net         |
+|          : Jim Jagielski (jimjag) jimjag@gmail.com                        |
 |   Founder: Brent R. Matzelle (original founder)                           |
+| Copyright (c) 2010-2011, Jim Jagielski. All Rights Reserved.               |
 | Copyright (c) 2004-2009, Andy Prevost. All Rights Reserved.               |
 | Copyright (c) 2001-2003, Brent R. Matzelle                                |
 | ------------------------------------------------------------------------- |
@@ -19,11 +19,6 @@
 | This program is distributed in the hope that it will be useful - WITHOUT  |
 | ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     |
 | FITNESS FOR A PARTICULAR PURPOSE.                                         |
-| ------------------------------------------------------------------------- |
-| We offer a number of paid services (www.codeworxtech.com):                |
-| - Web Hosting on highly optimized fast and secure servers                 |
-| - Technology Consulting                                                   |
-| - Oursourcing (highly qualified programmers and graphic designers)        |
 '---------------------------------------------------------------------------'
 */
 
@@ -34,8 +29,10 @@
  * @author Andy Prevost
  * @author Marcus Bointon
  * @copyright 2004 - 2008 Andy Prevost
+ * @author Jim Jagielski
+ * @copyright 2010 - 2011 Jim Jagielski
  * @license http://www.gnu.org/copyleft/lesser.html Distributed under the Lesser General Public License (LGPL)
- * @version $Id$
+ * @version $Id: class.smtp.php 450 2010-06-23 16:46:33Z coolbru $
  */
 
 /**
@@ -64,18 +61,18 @@ class SMTP {
    *  @var bool
    */
   public $do_debug;       // the level of debug to perform
-  // FIX: here documented as boolen but treated as int later on...
-  
-  /**
-   * The text file where log should be written if any.
-   */
-  public $logFile;
 
   /**
    *  Sets VERP use on/off (default is off)
    *  @var bool
    */
   public $do_verp = false;
+
+  /**
+   * Sets the SMTP PHPMailer Version number
+   * @var string
+   */
+  public $Version         = '5.2';
 
   /////////////////////////////////////////////////
   // PROPERTIES, PRIVATE AND PROTECTED
@@ -142,7 +139,7 @@ class SMTP {
                            "errno" => $errno,
                            "errstr" => $errstr);
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": $errstr ($errno) \n");
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": $errstr ($errno)" . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -156,7 +153,7 @@ class SMTP {
     $announce = $this->get_lines();
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $announce);
+      echo "SMTP -> FROM SERVER:" . $announce . $this->CRLF . '<br />';
     }
 
     return true;
@@ -185,7 +182,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 220) {
@@ -194,7 +191,7 @@ class SMTP {
                "smtp_code" => $code,
                "smtp_msg"  => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply .  "\n");
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -226,7 +223,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply .  "\n");
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -243,7 +240,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -260,7 +257,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -279,7 +276,7 @@ class SMTP {
       if($sock_status["eof"]) {
         // the socket is valid but we are not connected
         if($this->do_debug >= 1) {
-            $this->log("SMTP -> NOTICE: EOF caught while checking if connected");
+            echo "SMTP -> NOTICE:" . $this->CRLF . "EOF caught while checking if connected";
         }
         $this->Close();
         return false;
@@ -344,7 +341,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 354) {
@@ -353,7 +350,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -438,7 +435,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250) {
@@ -447,7 +444,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -503,7 +500,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER: " . $rply);
+      echo "SMTP -> FROM SERVER: " . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250) {
@@ -512,7 +509,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -552,7 +549,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250) {
@@ -561,7 +558,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -595,7 +592,7 @@ class SMTP {
     $byemsg = $this->get_lines();
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $byemsg);
+      echo "SMTP -> FROM SERVER:" . $byemsg . $this->CRLF . '<br />';
     }
 
     $rval = true;
@@ -609,7 +606,7 @@ class SMTP {
                  "smtp_rply" => substr($byemsg,4));
       $rval = false;
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $e["error"] . ": " . $byemsg);
+        echo "SMTP -> ERROR: " . $e["error"] . ": " . $byemsg . $this->CRLF . '<br />';
       }
     }
 
@@ -647,7 +644,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250 && $code != 251) {
@@ -656,7 +653,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -690,7 +687,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250) {
@@ -699,7 +696,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -738,7 +735,7 @@ class SMTP {
     $code = substr($rply,0,3);
 
     if($this->do_debug >= 2) {
-      $this->log("SMTP -> FROM SERVER:" . $rply);
+      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
     }
 
     if($code != 250) {
@@ -747,7 +744,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply,4));
       if($this->do_debug >= 1) {
-        $this->log("SMTP -> ERROR: " . $this->error["error"] . ": " . $rply);
+        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
       }
       return false;
     }
@@ -771,7 +768,7 @@ class SMTP {
     $this->error = array("error" => "This method, TURN, of the SMTP ".
                                     "is not implemented");
     if($this->do_debug >= 1) {
-      $this->log("SMTP -> NOTICE: " . $this->error["error"]);
+      echo "SMTP -> NOTICE: " . $this->error["error"] . $this->CRLF . '<br />';
     }
     return false;
   }
@@ -802,28 +799,19 @@ class SMTP {
     $data = "";
     while($str = @fgets($this->smtp_conn,515)) {
       if($this->do_debug >= 4) {
-        $this->log("SMTP -> get_lines(): \$data was \"$data\"");
-        $this->log("SMTP -> get_lines(): \$str is \"$str\"");
+        echo "SMTP -> get_lines(): \$data was \"$data\"" . $this->CRLF . '<br />';
+        echo "SMTP -> get_lines(): \$str is \"$str\"" . $this->CRLF . '<br />';
       }
       $data .= $str;
       if($this->do_debug >= 4) {
-        $this->log("SMTP -> get_lines(): \$data is \"$data\"");
+        echo "SMTP -> get_lines(): \$data is \"$data\"" . $this->CRLF . '<br />';
       }
       // if 4th character is a space, we are done reading, break the loop
       if(substr($str,3,1) == " ") { break; }
     }
     return $data;
   }
-  
-  /**
-  * Write a log entry
-  */
-  private function log($str) {
-	if ($this->logFile) {
-		$now = date('Y-m-d H:i:s');
-		file_put_contents($this->logFile, $now . "\t" . $str . "\n", FILE_APPEND);
-	}
-  }
+
 }
 
 ?>
