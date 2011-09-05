@@ -128,7 +128,7 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.6.2 (2011-06-30), http://jquery.com/
+	'jquery.js', // 1.6.3 (2011-08-31), http://jquery.com/
 	
 	'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 	'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
