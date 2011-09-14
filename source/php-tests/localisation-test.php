@@ -36,9 +36,9 @@ echo "\nlocalisedlang: " . $localisedlang;
 //putenv('LC_ALL=' . $cf['languages'][$lang]);
 //setlocale(LC_ALL, $cf['languages'][$lang]);
 
-//putenv('LANGUAGE=' . $localisedlang);
+putenv('LANGUAGE=' . $localisedlang);
 putenv('LC_ALL=' . $localisedlang);
-//setlocale(LC_ALL, $localisedlang);
+setlocale(LC_ALL, $localisedlang);
 
 
 bindtextdomain($cf['gettextdomain'], realpath($cf['localedir']));
