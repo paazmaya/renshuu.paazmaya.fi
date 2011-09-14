@@ -111,6 +111,7 @@ function scriptElement($src)
  * @param array $data
  * @param string $action
  * @return string form element containing the requested inputs
+ * @see http://www.alistapart.com/articles/forward-thinking-form-validation/
  */
 function createForm($id, $data, $action = null)
 {
@@ -189,6 +190,12 @@ function createForm($id, $data, $action = null)
 				if (isset($item['disabled']) && $item['disabled'])
 				{
 					$out .= ' disabled="disabled"';
+				}
+				
+				// http://developers.whatwg.org/common-input-element-attributes.html#the-placeholder-attribute
+				if (isset($item['placeholder']) && $item['placeholder'] != '')
+				{
+					$out .= ' placeholder="' . $item['placeholder'] . '"';
 				}
 				
 				// http://developers.whatwg.org/common-input-element-attributes.html#attr-input-required

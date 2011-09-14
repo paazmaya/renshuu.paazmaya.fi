@@ -150,12 +150,14 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Name'),
 				'type' => 'text',
-				'name' => 'title'
+				'name' => 'title',
+				'placeholder' => gettext('Name of the martial art')
 			),
 			array(
 				'label' => gettext('URI'),
 				'type' => 'text',
-				'name' => 'uri'
+				'name' => 'uri',
+				'placeholder' => gettext('eg. martial-art.org')
 			)
 		)
 	),
