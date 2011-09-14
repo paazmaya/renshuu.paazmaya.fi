@@ -11,35 +11,39 @@ $cf['localedir'] = '../locale';
 
 // Languages supported
 $cf['languages'] = array(
-	'en' => '',
-	'fi' => '',
-	'fr' => '',
-	'it' => '',
-	'ja' => '',
-	'sl' => ''
+	'en' => 'en_GB',
+	'fi' => 'fi_FI',
+	'fr' => 'fr_FR',
+	'it' => 'it_IT',
+	'ja' => 'ja_JP',
+	'sl' => 'sl_SI'
 );
 
-$lang = 'fi_FI';
+$lang = 'fi';
+
+echo "Realpath of locale: " . realpath($cf['localedir']) . "\n";
 
 // Gettext related settings.
-putenv('LANGUAGE=' . $lang); // ?
-putenv('LC_ALL=' . $lang); // ? should this be the actual language name...
-//setlocale(LC_ALL, $lang); // . '.UTF-8');
-//bindtextdomain($cf['gettextdomain'], $cf['localedir']);
-//bind_textdomain_codeset($cf['gettextdomain'], 'UTF-8'); // ?
-//textdomain($cf['gettextdomain']);
+$localisedlang = $cf['languages'][$lang] . '.UTF-8';
+echo "\nlocalisedlang: " . $localisedlang;
 
-echo "\nsetlocale LC_MESSAGES: ";
-//echo setlocale( LC_MESSAGES, $lang . '.UTF-8');
-echo setlocale( LC_MESSAGES, $lang . '.utf8');
-echo "\nbindtextdomain: ";
-echo bindtextdomain($cf['gettextdomain'], $cf['localedir']);
-echo "\nbind_textdomain_codeset: ";
-echo bind_textdomain_codeset($cf['gettextdomain'], 'UTF-8');
-echo "\ntextdomain: ";
-echo textdomain($cf['gettextdomain']);
+// http://fi.php.net/manual/en/function.gettext.php
+//putenv('LANGUAGE=' . $lang);
+//putenv('LC_ALL=' . $lang);
+//setlocale(LC_ALL, $lang);
+
+//putenv('LANGUAGE=' . $cf['languages'][$lang]);
+//putenv('LC_ALL=' . $cf['languages'][$lang]);
+//setlocale(LC_ALL, $cf['languages'][$lang]);
+
+//putenv('LANGUAGE=' . $localisedlang);
+putenv('LC_ALL=' . $localisedlang);
+//setlocale(LC_ALL, $localisedlang);
 
 
+bindtextdomain($cf['gettextdomain'], realpath($cf['localedir']));
+bind_textdomain_codeset($cf['gettextdomain'], 'UTF-8');
+echo "\ntextdomain set: " . textdomain($cf['gettextdomain']);
 
 // Translation is looking for in ../../locale/en/LC_MESSAGES/renshuuSuruToki.mo
 
@@ -55,3 +59,4 @@ $weekdays = array(
 );
 
 print_r($weekdays);
+

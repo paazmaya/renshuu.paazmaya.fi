@@ -22,19 +22,29 @@ xgettext \
 --default-domain=renshuuSuruToki \
 --indent \
 --sort-output \
---width=90 \
+--no-wrap \
 --language=PHP \
 --from-code=UTF-8 \
 --copyright-holder="Jukka Paasonen" \
 --package-name=RENSHUU.PAAZMAYA.COM \
---package-version=0.8.11.452 \
+--package-version=0.8.20110912 \
 --strict \
 --debug \
 index.php locale.php
 
+"C:\Program Files\Poedit\bin\xgettext.exe" --default-domain=renshuuSuruToki --indent --sort-output --no-wrap --language=PHP --from-code=UTF-8 --copyright-holder="Jukka Paasonen" --package-name=RENSHUU.PAAZMAYA.COM --package-version=0.8.20110912 --strict --debug index.php locale.php
+
 mv renshuuSuruToki.po renshuuSuruToki.pot
 
-msgfmt -o renshuuSuruToki.mo renshuuSuruToki.po
+Locale should appear from the po file...
+msgfmt --strict --check --verbose -o renshuuSuruToki.mo renshuuSuruToki.po
+
+
+"C:\Program Files\Poedit\bin\msgfmt.exe" --strict --check --verbose -o renshuuSuruToki.mo renshuuSuruToki.po
+
+"C:\Program Files\Poedit\bin\msgmerge.exe" -U locale\fi\LC_MESSAGES\renshuuSuruToki.po locale\renshuuSuruToki.po
+
+
 
 
 http://www.php.net/manual/en/function.sprintf.php
@@ -58,6 +68,16 @@ http://www.php.net/manual/en/function.sprintf.php
 * X - the argument is treated as an integer and presented as a hexadecimal number (with uppercase letters).
 
 
+The msgmerge program merges two Uniforum style .po files together. 
+The def.po file is an existing PO file with translations which will be taken over to the newly 
+created file as long as they still match; comments will be preserved, but extracted comments and 
+file positions will be discarded. The ref.pot file is the last created PO file with up-to-date 
+source references but old translations, or a PO Template file (generally created by xgettext); 
+any translations or comments in the file will be discarded, however dot comments and 
+file positions will be preserved. 
+Where an exact match cannot be found, fuzzy matching is used to produce better results. 
+
+msgmerge -U renshuuSuruToki.po renshuuSuruToki.pot
 */
 
 /**
@@ -120,7 +140,7 @@ Only non empty values will be used.
 $lang['forms'] = array(
 	'art' => array(
 		'legend' => gettext('Art'),
-		'info' => gettext(''),
+		'info' => gettext('Add a martial art to the arts listed'),
 		'buttons' => array(
 			'send' => gettext('Send Martial art'),
 			'clear' => gettext('Clear')
@@ -140,7 +160,7 @@ $lang['forms'] = array(
 	),
 	'location' => array(
 		'legend' => gettext('Location'),
-		'info' => gettext(''),
+		'info' => gettext('Add a location to the available locations'),
 		'buttons' => array(
 			'send' => gettext('Send Location'),
 			'clear' => gettext('Clear')
@@ -193,9 +213,9 @@ $lang['forms'] = array(
 	),
 	'training' => array(
 		'legend' => gettext('Training'),
-		'info' => gettext(''),
+		'info' => gettext('Add a training event on the selected martial art'),
 		'buttons' => array(
-			'send' => gettext('Send Martial art'),
+			'send' => gettext('Send Training'),
 			'clear' => gettext('Clear')
 		),
 		'items' => array(
@@ -249,9 +269,9 @@ $lang['forms'] = array(
 	),
 	'person' => array(
 		'legend' => gettext('Person'),
-		'info' => gettext(''),
+		'info' => gettext('Add a person to the people list that is used for teachers and contacts'),
 		'buttons' => array(
-			'send' => gettext('Send Martial art'),
+			'send' => gettext('Send Person'),
 			'clear' => gettext('Clear')
 		),
 		'items' => array(
@@ -279,7 +299,7 @@ $lang['forms'] = array(
 	),
 	'login' => array(
 		'legend' => gettext('Login'),
-		'info' => gettext(''),
+		'info' => gettext('After logging in, the features of this site will be enriched'),
 		'buttons' => array(
 			'send' => gettext('Login')
 		),
@@ -312,7 +332,7 @@ $lang['forms'] = array(
 	),
 	'user' => array(
 		'legend' => gettext('Profile'),
-		'info' => gettext(''),
+		'info' => gettext('Please keep your personal profile up to date and relevant'),
 		'buttons' => array(
 			'send' => gettext('Update profile')
 		),
@@ -337,7 +357,7 @@ $lang['forms'] = array(
 	),
 	'register' => array(
 		'legend' => gettext('Register'),
-		'info' => gettext(''),
+		'info' => gettext('Registration to this site enables to use all the features'),
 		'buttons' => array(
 			'send' => gettext('Register user'),
 			'clear' => gettext('Clear')
@@ -390,9 +410,12 @@ $lang['forms'] = array(
 				'type' => 'select',
 				'name' => 'language',
 				'options' => array(
-					'ja' => gettext('Japanese'),
-					'en' => gettext('English'),
+					'en' => gettext('English (British)'),
 					'fi' => gettext('Finnish')
+					'fr' => gettext('French'),
+					'it' => gettext('Italian'),
+					'ja' => gettext('Japanese'),
+					'sl' => gettext('Slovenian')
 				)
 			),
 			array(
@@ -400,11 +423,11 @@ $lang['forms'] = array(
 				'type' => 'select',
 				'name' => 'format',
 				'options' => array(
-					'png8' => gettext('png 8-bit'),
-					'png32' => gettext('png 32-bit'),
-					'gif' => gettext('gif'),
-					'jpg' => gettext('jpeg'),
-					'jpg-baseline' => gettext('jpeg baseline')
+					'png8' => 'png 8-bit',
+					'png32' => 'png 32-bit',
+					'gif' => 'gif',
+					'jpg' => 'jpeg',
+					'jpg-baseline' => 'jpeg baseline'
 				)
 			),
 			array(
@@ -420,7 +443,7 @@ $lang['forms'] = array(
 				'type' => 'text',
 				'name' => 'size',
 				'class' => 'short',
-				'after' => gettext(' (WxH)'),
+				'after' => gettext(' (Width x Height)'),
 				'value' => gettext('300x300')
 			),
 			array(

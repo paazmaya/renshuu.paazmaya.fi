@@ -1,16 +1,7 @@
-msgid ""
-msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Language: fi\n"
-"X-Source-Language: en\n"
-
-# SOME DESCRIPTIVE TITLE.
+# RESHUU.PAAZMAYA.COM Localisation
 # Copyright (C) 2010 Jukka Paasonen
 # This file is distributed under the same license as the RENSHUU.PAAZMAYA.COM package.
-# Jukka Paasonen <jukka.paasonen@kobudo.fi>, 2010.
+# Juga Paazmaya <olavic@gmail.com>, 2011
 #
 # File: locale.php, line: 119
 # File: locale.php, line: 139
@@ -24,53 +15,59 @@ msgstr ""
 # File: locale.php, line: 519
 # File: locale.php, line: 520
 # File: locale.php, line: 521
-#, fuzzy
 msgid ""
+msgstr ""
+"Project-Id-Version: RENSHUU.PAAZMAYA.COM 0.8.20110912\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-09-15 22:47+0300\n"
-"PO-Revision-Date: 2010-09-16 HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2011-09-14 13:42+0200\n"
+"Last-Translator: Juga Paazmaya <olavic@gmail.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-msgstr "Project-Id-Version: RENSHUU.PAAZMAYA.COM 0.8.11.452\n"
+"X-Poedit-Language: Finnish\n"
+"X-Poedit-Country: FINLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: fi_FI\n"
+"X-Source-Language: en_GB\n"
 
 #
 # File: locale.php, line: 409
 msgid " (0...16)"
-msgstr "(0 ... 16)"
+msgstr " (0...16)"
 
 #
 # File: locale.php, line: 417
 msgid " (WxH)"
-msgstr "(LxK)"
+msgstr " (LxK)"
 
 #
 # File: locale.php, line: 174
 msgid " (address from map position)"
-msgstr "(Osoite kartan sijainnista)"
+msgstr " (Osoite karttasijainnin)"
 
 #
 # File: locale.php, line: 328
 msgid " (fill if you wish to change, else leave empty)"
-msgstr "(Täytä jos haluat vaihtaa, muuten jätä tyhjäksi)"
+msgstr " (Täytä, jos haluat muuttaa, muuten jätä tyhjäksi)"
 
 #
 # File: locale.php, line: 425
 msgid " (hex value or a string)"
-msgstr "(Hex arvo tai merkkijono)"
+msgstr " (Hex arvo tai merkkijono)"
 
 #
 # File: locale.php, line: 298
 # File: locale.php, line: 360
 msgid " (making sure you are a real person)"
-msgstr "(Mikä varmasti on todellinen henkilö)"
+msgstr "(Varmista olet todellinen henkilö)"
 
 #
 # File: locale.php, line: 433
 msgid " (one character only)"
-msgstr "(Vain yksi kirjain)"
+msgstr "(Yksi merkki vain)"
 
 #
 # File: locale.php, line: 426
@@ -91,7 +88,7 @@ msgstr "300x300"
 # File: locale.php, line: 446
 # File: locale.php, line: 447
 msgid "A list of saved trainings"
-msgstr "Luettelo tallennetuista harjoituksista"
+msgstr "Luettelo tallennetaan koulutuksia"
 
 #
 # File: locale.php, line: 161
@@ -103,7 +100,7 @@ msgstr "Osoite (jos on)"
 # File: locale.php, line: 239
 # File: locale.php, line: 260
 msgid "Art"
-msgstr "Laji"
+msgstr "Taide"
 
 #
 # File: locale.php, line: 122
@@ -112,7 +109,7 @@ msgstr "Laji"
 # File: locale.php, line: 251
 # File: locale.php, line: 337
 msgid "Clear"
-msgstr "Tyhjennä"
+msgstr "Selkeä"
 
 #
 # File: locale.php, line: 421
@@ -122,12 +119,12 @@ msgstr "Väri"
 #
 # File: locale.php, line: 265
 msgid "Contact"
-msgstr "Yhteys"
+msgstr "Yhteystiedot"
 
 #
 # File: locale.php, line: 232
 msgid "Duration (minutes)"
-msgstr "Kesto (minuuteissa)"
+msgstr "Kesto (minuuttia)"
 
 #
 # File: locale.php, line: 284
@@ -150,12 +147,12 @@ msgstr "Englanti"
 # File: index.php, line: 282
 # File: locale.php, line: 365
 msgid "Export settings"
-msgstr "Vie asetukset"
+msgstr "Vie asetuksia"
 
 #
 # File: locale.php, line: 389
 msgid "Finnish"
-msgstr "Suomi"
+msgstr "Suomalainen"
 
 #
 # File: locale.php, line: 81
@@ -186,23 +183,23 @@ msgstr "Kuinka paljon on 3 + 2"
 #
 # File: locale.php, line: 378
 msgid "Hybdid (roadmap & satellite)"
-msgstr "Hybdid (etenemissuunnitelma ja satelliitti)"
+msgstr "Hybdid (tiekartta & satelliitti)"
 
 #
 # File: locale.php, line: 393
 msgid "Image format"
-msgstr "Kuvan muoto"
+msgstr "Kuvamuoto"
 
 #
 # File: locale.php, line: 413
 msgid "Image size"
-msgstr "Kuvan koko"
+msgstr "Kuvakoko"
 
 #
 # File: locale.php, line: 156
 # File: locale.php, line: 270
 msgid "Info"
-msgstr "Tiedot"
+msgstr "Info"
 
 #
 # File: locale.php, line: 464
@@ -212,7 +209,7 @@ msgstr "Käänteinen valinta"
 #
 # File: locale.php, line: 387
 msgid "Japanese"
-msgstr "Japani"
+msgstr "Japanilainen"
 
 #
 # File: locale.php, line: 429
@@ -233,7 +230,7 @@ msgstr "Leveysaste"
 # File: index.php, line: 313
 # File: locale.php, line: 518
 msgid "License information"
-msgstr "Lisenssi tiedot"
+msgstr "Lisenssitiedot"
 
 #
 # File: locale.php, line: 138
@@ -244,19 +241,19 @@ msgstr "Sijainti"
 #
 # File: locale.php, line: 482
 msgid "Location creation"
-msgstr "Sijainti luominen"
+msgstr "Location luominen"
 
 #
 # File: locale.php, line: 277
 # File: locale.php, line: 280
 # File: locale.php, line: 497
 msgid "Login"
-msgstr "Kirjaudu sisään"
+msgstr "Kirjautuminen"
 
 #
 # File: locale.php, line: 304
 msgid "Login via your Twitter account"
-msgstr "Kirjaudu Twitter-tilin kautta"
+msgstr "Kirjaudu via Twitter-tilille"
 
 #
 # File: locale.php, line: 507
@@ -286,7 +283,7 @@ msgstr "Kamppailulaji"
 #
 # File: locale.php, line: 487
 msgid "Martial art addition"
-msgstr "Kamppailulajin lisäys"
+msgstr "Kamppailulaji lisäksi"
 
 #
 # File: locale.php, line: 77
@@ -319,7 +316,7 @@ msgstr "Henkilö"
 #
 # File: index.php, line: 292
 msgid "Preview of the current settings affect on the resulting map"
-msgstr "Esikatselu nykyiset asetukset vaikuttavat tämän johdosta kartalla"
+msgstr "Esikatselu nykyiset asetukset vaikuttavat avautuvalla kartalla"
 
 #
 # File: locale.php, line: 308
@@ -329,13 +326,13 @@ msgstr "Profiili"
 #
 # File: locale.php, line: 492
 msgid "Profile editing"
-msgstr "Profiilin muokkaus"
+msgstr "Profile muokkaus"
 
 #
 # File: locale.php, line: 333
 # File: locale.php, line: 502
 msgid "Register"
-msgstr "Rekisteri"
+msgstr "Rekisteröidy"
 
 #
 # File: locale.php, line: 336
@@ -345,7 +342,7 @@ msgstr "Rekisteröidy käyttäjä"
 #
 # File: locale.php, line: 452
 msgid "Remove"
-msgstr "Poistaa"
+msgstr "Poista"
 
 #
 # File: locale.php, line: 376
@@ -375,26 +372,25 @@ msgstr "Valitse kaikki"
 #
 # File: locale.php, line: 463
 msgid "Select none"
-msgstr "Valitse yksikään"
+msgstr "Valitse none"
 
 #
 # File: locale.php, line: 141
 msgid "Send Location"
-msgstr "Lähetä Sijainti"
+msgstr "Lähetä sijainti"
 
 #
 # File: locale.php, line: 121
 # File: locale.php, line: 194
 # File: locale.php, line: 250
 msgid "Send Martial art"
-msgstr "Lähetä Itsepuolustuslaji"
+msgstr "Lähetä kamppailulaji"
 
 #
 # File: locale.php, line: 366
 msgid "Set here the properties for the output of your list of saved trainings"
 msgstr ""
-"Aseta täällä ominaisuudet tuotoksen teidän luettelon tallennetuista "
-"koulutuksia"
+"Aseta tässä ominaisuudet äänilähtö luettelon tallennetuista koulutuksia"
 
 #
 # File: locale.php, line: 220
@@ -445,7 +441,7 @@ msgstr "Koulutus luominen"
 #
 # File: index.php, line: 212
 msgid "Training locations"
-msgstr "Harjoittelupaikkojen"
+msgstr "Koulutus paikoissa"
 
 #
 # File: locale.php, line: 78
@@ -461,7 +457,7 @@ msgstr "URI"
 #
 # File: locale.php, line: 311
 msgid "Update profile"
-msgstr "Päivitä profiili"
+msgstr "Päivitä profiiliasi"
 
 #
 # File: locale.php, line: 368
@@ -516,7 +512,7 @@ msgstr "väri"
 #
 # File: locale.php, line: 267
 msgid "contact"
-msgstr "yhteys"
+msgstr "Yhteystiedot"
 
 #
 # File: locale.php, line: 234
@@ -533,12 +529,12 @@ msgstr "email"
 #
 # File: locale.php, line: 64
 msgid "en"
-msgstr "en"
+msgstr "fi"
 
 #
 # File: locale.php, line: 228
 msgid "endtime"
-msgstr "Endtime"
+msgstr "lopetusaikana"
 
 #
 # File: locale.php, line: 473
@@ -553,7 +549,7 @@ msgstr "muoto"
 #
 # File: locale.php, line: 168
 msgid "geocode"
-msgstr "Geocode"
+msgstr "geocode"
 
 #
 # File: locale.php, line: 399
@@ -564,7 +560,7 @@ msgstr "gif"
 # File: locale.php, line: 158
 # File: locale.php, line: 272
 msgid "info"
-msgstr "tiedot"
+msgstr "info"
 
 #
 # File: locale.php, line: 400
@@ -574,7 +570,7 @@ msgstr "jpeg"
 #
 # File: locale.php, line: 401
 msgid "jpeg baseline"
-msgstr "jpeg lähtötilanteessa"
+msgstr "JPEG baseline"
 
 #
 # File: locale.php, line: 431
@@ -600,7 +596,7 @@ msgstr "sijainti"
 #
 # File: locale.php, line: 498
 msgid "login"
-msgstr "Kirjaudu sisään"
+msgstr "Kirjautuminen"
 
 #
 # File: locale.php, line: 508
@@ -647,7 +643,7 @@ msgstr "png 8-bittinen"
 #
 # File: locale.php, line: 172
 msgid "position"
-msgstr "sijainti"
+msgstr "asema"
 
 #
 # File: locale.php, line: 493
@@ -662,7 +658,7 @@ msgstr "radio"
 #
 # File: locale.php, line: 503
 msgid "register"
-msgstr "rekisteri"
+msgstr "Rekisteröidy"
 
 #
 # File: locale.php, line: 210
@@ -745,7 +741,7 @@ msgstr "otsikko"
 #
 # File: index.php, line: 220
 msgid "toggle SV"
-msgstr "Vaihda SV"
+msgstr "toggle SV"
 
 #
 # File: locale.php, line: 478
