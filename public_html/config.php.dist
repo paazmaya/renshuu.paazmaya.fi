@@ -7,19 +7,11 @@ $cf = array();
 // Is the current server the one I am using for testing?
 $cf['isdevserver'] = false;
 
-/**
- * Current version of this web site project. See how it is build based on time.
- *
- * Minor changes every 5 months
- * Patch changes every 2 weeks
- * Sub patch first number, changes every ~4 hours
- * If sub patch is 3 numbers long, its last changes every ~2 minutes
- * If sub patch is 4 numbers long, its last changes every ~10 seconds
- *
- * 1285881911 (Fri, 01 Oct 2010 06:25:11 +0900) --> 0.8.5.881
- */
+// Current time
 $cf['now'] = strval(time());
-$cf['version'] = '0.' . substr($cf['now'], 2, 2) . '.' . substr($cf['now'], 3, 1) . '.' . substr($cf['now'], 4, 3);
+
+// Current version of this web site project. 
+$cf['version'] = '0.8.20110912';
 
 // PHP error log
 $cf['error_log'] = '/domains/php_renshuu.log';
