@@ -128,12 +128,12 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.6.3 (2011-08-31), http://jquery.com/
+	'jquery.js', // 1.7.0 (2011-11-03), http://jquery.com/
 	
 	'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 	'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 	
-	'jquery.ui.core.js', // 1.8.15 (2011-08-08), http://jqueryui.com/
+	'jquery.ui.core.js', // 1.8.16 (2011-08-18), http://jqueryui.com/
 	'jquery.ui.widget.js',
 	'jquery.ui.button.js', // depends ui.core and ui.widget
 	'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
