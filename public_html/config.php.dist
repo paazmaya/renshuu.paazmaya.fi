@@ -11,7 +11,7 @@ $cf['isdevserver'] = false;
 $cf['now'] = strval(time());
 
 // Current version of this web site project. 
-$cf['version'] = '0.8.20110912';
+$cf['version'] = '0.8.20111206';
 
 // PHP error log
 $cf['error_log'] = '/domains/php_renshuu.log';
@@ -113,6 +113,7 @@ date_default_timezone_set($cf['timezone']);
 mb_internal_encoding('UTF-8');
 
 // SQLite 3 via PDO
+// http://php.net/pdo
 try
 {
 	$link = new PDO('sqlite:' . realpath($cf['db']['address']));

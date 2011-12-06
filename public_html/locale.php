@@ -27,12 +27,12 @@ xgettext \
 --from-code=UTF-8 \
 --copyright-holder="Jukka Paasonen" \
 --package-name=RENSHUU.PAAZMAYA.COM \
---package-version=0.8.20110912 \
+--package-version=0.8.20111206 \
 --strict \
 --debug \
 index.php locale.php
 
-"C:\Program Files\Poedit\bin\xgettext.exe" --default-domain=renshuuSuruToki --indent --sort-output --no-wrap --language=PHP --from-code=UTF-8 --copyright-holder="Jukka Paasonen" --package-name=RENSHUU.PAAZMAYA.COM --package-version=0.8.20110912 --strict --debug index.php locale.php
+"C:\Program Files\Poedit\bin\xgettext.exe" --default-domain=renshuuSuruToki --indent --sort-output --no-wrap --language=PHP --from-code=UTF-8 --copyright-holder="Jukka Paasonen" --package-name=RENSHUU.PAAZMAYA.COM --package-version=0.8.20111206 --strict --debug index.php locale.php
 
 mv renshuuSuruToki.po renshuuSuruToki.pot
 

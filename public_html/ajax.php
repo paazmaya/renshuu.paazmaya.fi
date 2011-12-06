@@ -101,7 +101,7 @@ $page = ''; // get/set/form + keepalive
 $pages = array('get', 'set', 'form', 'keepalive');
 
 $pagetype = ''; // art/location/training/person + user/login/register
-$pagetypes = array('art', 'location', 'training', 'person', 'register', 'user', 'login');
+$pagetypes = array('art', 'location', 'training', 'person', 'register', 'user', 'login'); // keep login as last item of the list
 
 $getfilter = '';
 
@@ -220,9 +220,14 @@ if ($passcheck)
 		}
 
 		$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
-		$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id LEFT JOIN ren_art C ON A.art = C.id LEFT JOIN ren_person D ON D.id = A.person';
+		$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id 
+			LEFT JOIN ren_art C ON A.art = C.id 
+			LEFT JOIN ren_person D ON D.id = A.person';
 
-		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address, D.id AS personid, D.name AS personname, D.contact ' . $from . ' WHERE ' . $position . $art . $weekday;
+		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, 
+			B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address, 
+			D.id AS personid, D.name AS personname, D.contact ' . $from . ' 
+			WHERE ' . $position . $art . $weekday;
 		$results = array();
 		$run =  $link->query($sql);
 		if ($run)

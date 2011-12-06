@@ -128,33 +128,31 @@ header('Content-type: text/html; charset=utf-8');
 
 // Local javascript files should reside in public_html/js/..
 $javascript = array(
-	'jquery.js', // 1.7.0 (2011-11-03), http://jquery.com/
+	'jquery.js', // 1.7.1 (2011-11-03), http://jquery.com/
 	
 	'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 	'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 	
 	'jquery.ui.core.js', // 1.8.16 (2011-08-18), http://jqueryui.com/
 	'jquery.ui.widget.js',
-	'jquery.ui.button.js', // depends ui.core and ui.widget
-	'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
-	'jquery.ui.draggable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.position.js',
-	'jquery.ui.mouse.js', // depends ui.widget
-	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 	'jquery.ui.datepicker.js', // depends ui.core
+	'jquery.ui.mouse.js', // depends ui.widget
+	'jquery.ui.button.js', // depends ui.core and ui.widget
 	'jquery.ui.tabs.js', // depends ui.core and ui.widget
+	'jquery.ui.draggable.js', // depends ui.core, ui.mouse and ui.widget
+	'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
+	'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
 	
 	'ui.timepickr.js', // contains jquery.utils, jquery.strings
 	
 	'jquery.timepicker.js', // 
 	'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
-	'jquery.cookie.js', // (2011-07-08), https://github.com/carhartl/jquery-cookie/
 	'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 	'jquery.inputnotes-0.6.js', // 0.6 ()
 	'jquery.json-2.2.js', // ()
-	'jstorage.js', // ()
 	//'jquery.simplemodal.js', // 1.4.1 (2010-11-05), http://www.ericmmartin.com/projects/simplemodal/
-	'jquery.gomap.js', // 1.3.2 (2011-07-01), http://www.pittss.lv/jquery/gomap/
+	//'jquery.gomap.js', // 1.3.2 (2011-07-01), http://www.pittss.lv/jquery/gomap/
 	'jquery.hotkeys.js', // 0.8 (2010-03-10), https://github.com/tzuryby/jquery.hotkeys
 	'jquery.corner.js', // 2.12 (2011-05-23), http://jquery.malsup.com/corner/
 	'jquery.form.js', // 2.83 (2011-07-11), http://malsup.com/jquery/form/
@@ -162,6 +160,7 @@ $javascript = array(
 	'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
 	'jquery.ba-hashchange.js', // 1.3 (2010-07-21), http://benalman.com/projects/jquery-hashchange-plugin/
 	'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
+	
 	'renshuusurutoki.js'
 );
 

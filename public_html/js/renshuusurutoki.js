@@ -84,17 +84,9 @@
 
 		/**
 		 * Default map zoom,
-		 * overwritten on every zoom change event and/or by cookie
+		 * overwritten on every zoom change event and/or by local storage
 		 */
 		zoom: 8,
-
-		/**
-		 * Common settings for all cookies
-		 */
-		cookieSettings: {
-			expires: 3,
-			path: '/'
-		},
 
 		/**
 		 * Points of contact.
@@ -258,6 +250,13 @@
 		 * User specific data will be filled, in case logged in, via the bottom of index.php...
 		 */
 		userData: null,
+		
+		/**
+		 * Local storage as in local Web Storage. If not available using just plain object...
+		 * @see http://dev.w3.org/html5/webstorage/
+		 * @see http://dev.opera.com/articles/view/web-storage/
+		 */
+		storage: null,
 
 		/**
 		 * Please trigger this once document is ready, thus DOM has been loaded.
@@ -274,53 +273,59 @@
 		 * @see http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 		 */
 		ready: function () {
+			console.group('ready');
+			if (typeof(localStorage) == 'undefined' ) {
+				console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
+			}
+			$.renshuu.storage = window.localStorage ? window.localStorage : {};
+			$(window).bind('storage', $.renshuu.storageEvent);
+			
+			
 			$.renshuu.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 
 			// Remove default styling from blockUi.
 			$.blockUI.defaults.css = {};
 
-			// Check for a cookie in case the center would be some other.
+			// Check for a value in case the center would be some other.
 			var centre = $.renshuu.hikone;
-			if ($.cookie('mapCenter')) {
-				var arr = $.cookie('mapCenter').split(',');
+			if ($.renshuu.storage.getItem('mapCenter')) {
+				var arr = $.renshuu.storage.getItem('mapCenter').split(',');
 				if (arr && arr.length > 1) {
 					centre = new google.maps.LatLng(parseFloat(arr[0]), parseFloat(arr[1]));
 				}
-				console.log('mapCenter cookie existed. arr: ' + arr);
+				console.log('mapCenter storage item existed. arr: ' + arr);
 			}
 
 			// Would there be a zoom level set in the past?
-			if ($.cookie('mapZoom')) {
-				var zoom = parseInt($.cookie('mapZoom'), 10);
+			if ($.renshuu.storage.getItem('mapZoom')) {
+				var zoom = parseInt($.renshuu.storage.getItem('mapZoom'), 10);
 				if (zoom > -1 && zoom < 20) {
 					$.renshuu.zoom = zoom;
 				}
-				console.log('mapZoom cookie existed. zoom: ' + zoom);
+				console.log('mapZoom storage item existed. zoom: ' + zoom);
 			}
 
 			// Handler for the ability to toggle streetView viewing while marker click.
-			if ($.cookie('showInStreetView')) {
+			if ($.renshuu.storage.getItem('showInStreetView')) {
 				$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
 				$.renshuu.markers.showInStreetView = true;
 			}
+			// How about a existing value for the filter settings?
+			if ($.renshuu.storage.getItem('filterArts')) {
+				$.renshuu.filterSettings.arts = $.renshuu.storage.getItem('filterArts').split('.');
+				console.log('filterArts storage item existed. $.renshuu.filterSettings.arts: ' + $.renshuu.filterSettings.arts);
+			}
+			if ($.renshuu.storage.getItem('filterWeekdays')) {
+				$.renshuu.filterSettings.weekdays = $.renshuu.storage.getItem('filterWeekdays').split('.');
+				console.log('filterWeekdays storage item existed. $.renshuu.filterSettings.weekdays: ' + $.renshuu.filterSettings.weekdays);
+			}
 
 			// Set up the Google Map v3
-			$.renshuu.mapInit(
-				$('#map').get(0),
-				{
-					center: centre
-				}
-			);
+			$.renshuu.mapInit($('#map').get(0), {center: centre});
 
 			// and the Street View
 			if ($.renshuu.streetEnable) {
-				$.renshuu.streetInit(
-					$('#street').get(0),
-					{
-						enableCloseButton: true,
-						visible: true
-					}
-				);
+				$.renshuu.streetInit($('#street').get(0), {enableCloseButton: true, visible: true});
 			}
 
 
@@ -331,11 +336,10 @@
 			if ($.renshuu.streetEnable) {
 				$('input:checkbox[name=markerstreet]').change(function () {
 					$.renshuu.markers.showInStreetView = $(this).is(':checked');
-					console.log('markerstreet change. ' + $.renshuu.markers.showInStreetView);
-					$.cookie(
+					console.log('markerstreet checkbox change. $.renshuu.markers.showInStreetView: ' + $.renshuu.markers.showInStreetView);
+					$.renshuu.storage.setItem(
 						'showInStreetView',
-						$.renshuu.markers.showInStreetView,
-						$.renshuu.cookieSettings
+						$.renshuu.markers.showInStreetView
 					);
 				});
 			}
@@ -427,14 +431,6 @@
 					return false;
 				});
 			}
-			/*
-			$('').click(function () {
-				return false;
-			});
-			$('').click(function () {
-				return false;
-			});
-			*/
 
 			$('.modal-tools a[rel=savetolist]').live('click', function () {
 				var href = $(this).attr('href');
@@ -563,15 +559,6 @@
 			*/
 
 
-			// How about a cookie for the filter settings?
-			if ($.cookie('filterArts')) {
-				$.renshuu.filterSettings.arts = $.cookie('filterArts').split('.');
-				console.log('$.cookie filterArts existed. $.renshuu.filterSettings.arts: ' + $.renshuu.filterSettings.arts);
-			}
-			if ($.cookie('filterWeekdays')) {
-				$.renshuu.filterSettings.weekdays = $.cookie('filterWeekdays').split('.');
-				console.log('$.cookie filterWeekdays existed. $.renshuu.filterSettings.weekdays: ' + $.renshuu.filterSettings.weekdays);
-			}
 			$.renshuu.applyFilters();
 
 			// Save the initial filtering form.
@@ -579,7 +566,7 @@
 			//console.log('initial $.renshuu.filtersHtml: ' + $.renshuu.filtersHtml);
 
 			// If the current hash is something that would make filters invisible, store them now
-			console.log('on dom ready. location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
+			console.log('location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
 			if (location.hash !== '') {
 				var found = false;
 				var key = location.hash.substr(1);
@@ -601,6 +588,24 @@
 				}, 'json');
 			}, $.renshuu.keepAlive);
 
+			
+			console.groupEnd();
+		},
+		
+		
+		/**
+		 *
+		storageArea: Tells which kind of storage it is (Session or Local)
+		key: The key which is being changed.
+		oldValue: The old value of the key.
+		newValue: The new value of the key.
+		url: The URL of the page whose key is changed.
+		 * @see http://dev.w3.org/html5/webstorage/#the-storage-event
+		 */
+		storageEvent: function (event) {
+			console.group('storageEvent');
+			console.log('storageArea: ' + event.storageArea + ', key: ' + event.key);
+			console.groupEnd();
 		},
 
 		/**
@@ -608,6 +613,7 @@
 		 * @see
 		 */
 		showTabContent: function (key) {
+			console.group('showTabContent');
 			document.location = '#' + key;
 
 			// Remove and add "selected" class
@@ -642,6 +648,7 @@
 				}
 				console.log('locationMarker is now visible: ' + $.renshuu.locationMarker.getVisible());
 			}
+			console.groupEnd();
 		},
 
 		/**
@@ -649,9 +656,10 @@
 		 * @see
 		 */
 		addSavedList: function (id) {
+			console.group('addSavedList');
 			var inx = $.renshuu.savedList.indexOf(id);
 			var data = null;
-			console.log('addSavedList. id: ' + id + ', inx: ' + inx);
+			console.log('id: ' + id + ', inx: ' + inx);
 			if (inx === -1) {
 				$.renshuu.savedList.push(id);
 				var len = $.renshuu.trainingMarkersData.length;
@@ -659,12 +667,12 @@
 				for (var i = 0; i < len; ++i) {
 					data = $.renshuu.trainingMarkersData[i];
 					if (data && data.training.id == id) {
-						console.log('addSavedList. found matching data for addition, i: ' + i);
+						console.log('found matching data for addition, i: ' + i);
 						$.renshuu.savedListData.push(data);
 						break;
 					}
 				}
-				console.log('addSavedList. savedListData length before and after adding try: ' + savedlen + ' > ' + $.renshuu.savedListData.length);
+				console.log('savedListData length before and after adding try: ' + savedlen + ' > ' + $.renshuu.savedListData.length);
 
 				// Now add it to DOM... Should this be made as a table or a list? table.
 				// Use template "savedTemplate", but this is used only one way as a template.
@@ -683,6 +691,7 @@
 					$('#savedTemplate').tmpl(saved).prependTo('#savedlist tbody');
 				}
 			}
+			console.groupEnd();
 		},
 
 		/**
@@ -690,24 +699,26 @@
 		 * @see
 		 */
 		removeSavedList: function (id) {
+			console.group('removeSavedList');
 			var inx = $.renshuu.savedList.indexOf(id);
-			console.log('removeSavedList. id: ' + id + ', inx: ' + inx);
+			console.log('id: ' + id + ', inx: ' + inx);
 			if (inx !== -1) {
 				$.renshuu.savedList.splice(inx, 1);
 				var len = $.renshuu.savedListData.length;
 				for (var i = 0; i < len; ++i) {
 					var data = $.renshuu.savedListData[i];
 					if (data.training.id == id) {
-						console.log('removeSavedList. found matching data for removal, i: ' + i);
+						console.log('found matching data for removal, i: ' + i);
 						$.renshuu.savedListData.splice(i, 1);
 						break;
 					}
 				}
-				console.log('removeSavedList. savedListData length before and after removal try: ' + len + ' > ' + $.renshuu.savedListData.length);
+				console.log('savedListData length before and after removal try: ' + len + ' > ' + $.renshuu.savedListData.length);
 
 				// Now remove it from DOM
 				$('#bottom tbody tr[rel=' + id + ']').remove();
 			}
+			console.groupEnd();
 		},
 
 		/**
@@ -715,23 +726,24 @@
 		 * @see
 		 */
 		updateFilters: function () {
+			console.group('updateFilters');
 			var sets = ['arts', 'weekdays'];
 			var len = sets.length;
 			var lens = [];
-			console.log('updateFilters. len: ' + len + ', sets: ' + sets);
+			console.log('len: ' + len + ', sets: ' + sets);
 			for (var i = 0; i < len; ++i) {
 				var target = sets[i];
 				var list = [];
 				$('#' + target + ' input:checkbox').each(function (inx, elem) {
 					var id = $(this).attr('name').split('_').pop();
-					//console.log('updateFilters. inx: ' + inx + ', name: ' + $(this).attr('name') + ', id: ' + id + ', checked: ' + $(this).is(':checked'));
+					console.log('inx: ' + inx + ', name: ' + $(this).attr('name') + ', id: ' + id + ', checked: ' + $(this).is(':checked'));
 					if ($(this).is(':checked')) {
 						list.push(id);
 					}
 				});
 				lens.push(list.length);
 				$.renshuu.filterSettings[target] = list;
-				//console.log('updateFilters. target: ' + target + ' = ' + list);
+				console.log('target: ' + target + ' = ' + list);
 			}
 
 			// Make sure any of the selections was not empty
@@ -739,17 +751,16 @@
 				$.renshuu.updateTrainings();
 			}
 
-			// Cookie is updated every time
-			$.cookie(
+			// Storage is updated every time
+			$.renshuu.storage.setItem(
 				'filterArts',
-				$.renshuu.filterSettings.arts.join('.'),
-				$.renshuu.cookieSettings
+				$.renshuu.filterSettings.arts.join('.')
 			);
-			$.cookie(
+			$.renshuu.storage.setItem(
 				'filterWeekdays',
-				$.renshuu.filterSettings.weekdays.join('.'),
-				$.renshuu.cookieSettings
+				$.renshuu.filterSettings.weekdays.join('.')
 			);
+			console.groupEnd();
 		},
 
 		/**
@@ -757,17 +768,18 @@
 		 * @see
 		 */
 		applyFilters: function () {
+			console.group('applyFilters');
 			var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
 			var len = sets.length; // Should be 2
 			for (var i = 0; i < len; ++i) {
 				var target = sets[i];
 				var list = $.renshuu.filterSettings[target];
-				console.log('applyFilters. target: ' + target + ', list: ' + list);
+				console.log('target: ' + target + ', list: ' + list);
 				if (list) {
 					$('#' + target + ' input:checkbox').each(function (i, elem) {
 						var rel = $(this).attr('name').split('_').pop();
 						var inx = list.indexOf(rel);
-						//console.log('applyFilters. i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
+						console.log('i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
 						if (inx === -1) {
 							$(this).removeAttr('checked');
 						}
@@ -777,12 +789,14 @@
 					});
 				}
 			}
+			console.groupEnd();
 		},
 
 		/**
 		 * @see http://www.jlpt.jp/samples/forlearners.html
 		 */
 		updateTrainings: function () {
+			console.group('updateTrainings');
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
@@ -810,6 +824,7 @@
 					console.log('Seems AJAX failed. ' + status);
 				}
 			}, 'json');
+			console.groupEnd();
 		},
 
 		/**
@@ -818,6 +833,7 @@
 		 * As opposed to trainings.
 		 */
 		updateLocations: function () {
+			console.group('updateLocations');
 			var bounds = $.renshuu.map.getBounds();
 			var ne = bounds.getNorthEast();
 			var sw = bounds.getSouthWest();
@@ -843,12 +859,14 @@
 					console.log('Seems AJAX failed. ' + status);
 				}
 			}, 'json');
+			console.groupEnd();
 		},
 
 		/**
 		 * @see http://code.google.com/apis/maps/documentation/staticmaps/
 		 */
 		updateExportPreview: function () {
+			console.group('updateExportPreview');
 			var url = 'http://maps.google.com/maps/api/staticmap?';
 			var values = ['sensor=false'];
 			var fields = ['maptype', 'language', 'format', 'zoom', 'size'];
@@ -864,7 +882,7 @@
 				else {
 					val = items.filter('input[name=' + field + ']').val();
 				}
-				//console.log('val: ' + val);
+				console.log('val: ' + val);
 				values.push(field + '=' + val);
 			}
 			url += values.join('&');
@@ -873,16 +891,18 @@
 				'|label:' + $('#export_form input[name=label]').val() + '|' +
 				$.renshuu.hikone.lat() + ',' +$.renshuu.hikone.lng();
 
-			//console.log('updateExportPreview. url: ' + url);
+			console.log('url: ' + url);
 
 			// perhaps there could be some animation to show that something happened...
 			$('#exportpreview').attr('src', url);
+			console.groupEnd();
 		},
 
 		/**
 		 * Draw route between two spots, while using directions service.
 		 */
 		drawRoute: function (pos1, pos2) {
+			console.group('drawRoute');
 			var reg = {
 				avoidHighways: true,
 				destination: pos2,
@@ -893,7 +913,7 @@
 			// This request should not be made too often..
 			// Check for $.renshuu.dirRequestInterval
 			$.renshuu.dirService.route(reg, function (result, status) {
-				console.log(status);
+				console.log('route status: ' + status);
 				if (result && result.routes && result.routes[0]) {
 					var route = result.routes[0]; // DirectionsRoute  just one if provideRouteAlternatives == false
 					var lenl = route.legs.length;
@@ -909,6 +929,7 @@
 					}
 				}
 			});
+			console.groupEnd();
 		},
 
 		/**
@@ -918,6 +939,7 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
 		 */
 		drawPath: function (pos1, pos2, color) {
+			console.group('drawPath');
 			var opts = {
 				clickable: false,
 				geodesic: true,
@@ -941,6 +963,7 @@
 			google.maps.event.addListener(line, 'mouseout', function () {
 				line.setOptions(opts);
 			});
+			console.groupEnd();
 		},
 
 		/**
@@ -948,8 +971,10 @@
 		 * Once visibility set, the opening is taken care of by its event handler.
 		 */
 		showStreetView: function (position) {
+			console.group('showStreetView');
 			$.renshuu.streetView.setPosition(position);
 			$.renshuu.streetView.setVisible(true);
+			console.groupEnd();
 		},
 
 		/**
@@ -970,6 +995,7 @@
 		 * - Geocoder
 		 */
 		mapInit: function (elem, map_options) {
+			console.group('mapInit');
 			$.renshuu.geocoder = new google.maps.Geocoder();
 
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
@@ -1036,6 +1062,7 @@
 			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.map, 'resize');
 			});
+			console.groupEnd();
 		},
 
 		/**
@@ -1044,6 +1071,7 @@
 		 * - StreetViewService
 		 */
 		streetInit: function (street_element, street_options) {
+			console.group('streetInit');
 			$.renshuu.streetService = new google.maps.StreetViewService();
 			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
 
@@ -1110,6 +1138,7 @@
 			$(window).resize(function () {
 				google.maps.event.trigger($.renshuu.streetView, 'resize');
 			});
+			console.groupEnd();
 		},
 
 		/**
@@ -1117,29 +1146,32 @@
 		 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function (StreetViewPanoramaData, StreetViewStatus):void))
 		 */
 		getPanorama: function (pos, radius) {
+			console.group('getPanorama');
 			if (!radius) {
 				radius = 100; // Metres
 			}
 			$.renshuu.streetService.getPanoramaByLocation(pos, radius, function (data, status) {
-				console.log('getPanorama. status: ' + status);
+				console.log('status: ' + status);
 			});
+			console.groupEnd();
 		},
 
 		/**
 		 * Set the icon next to the radio buttons in the location form
 		 */
 		updateGeocodeSelectionIcon: function () {
+			console.group('updateGeocodeSelectionIcon');
 			if ($('#location_form').size() > 0) {
 				var val = $('#location_form input:radio[name=geocode]:checked').val();
-				console.log('updateGeocodeSelectionIcon. val: ' + val);
+				console.log('val: ' + val);
 				$('#location_form .radioset').attr('class', 'radioset').addClass('icon-' + $.renshuu.geocodeClass[val]); // remove icon-* and add icon-*
-				$.cookie(
+				$.renshuu.storage.setItem(
 					'locationGeocode',
-					val,
-					$.renshuu.cookieSettings
+					val
 				);
 				$.renshuu.geocodeBasedOn = val;
 			}
+			console.groupEnd();
 		}
 	};
 
@@ -1195,6 +1227,7 @@
 		 * @see
 		 */
 		createTrainingMarker: function (data) {
+			console.group('createTrainingMarker');
 			var icon = $.renshuu.pins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.renshuu.markers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
@@ -1209,6 +1242,7 @@
 
 			var len = $.renshuu.trainingMarkers.push(marker);
 			$.renshuu.trainingMarkersData[len - 1] = data;
+			console.groupEnd();
 		},
 
 		/**
@@ -1216,6 +1250,7 @@
 		 * @see
 		 */
 		createLocationMarker: function (data) {
+			console.group('createLocationMarker');
 			var icon = $.renshuu.pins.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
 			var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 			var marker = $.renshuu.markers.createMarker(pos, data.location.title, icon, false);
@@ -1229,6 +1264,7 @@
 
 			var len = $.renshuu.locationMarkers.push(marker);
 			$.renshuu.locationMarkersData[len - 1] = data;
+			console.groupEnd();
 		},
 
 		/**
@@ -1236,6 +1272,7 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#GeocoderResult
 		 */
 		createGeocodeMarker: function (res, i) {
+			console.group('createGeocodeMarker');
 
 			for (var j in res) {
 				if (res.hasOwnProperty(j)) {
@@ -1247,11 +1284,11 @@
 			for (var s in res.address_components) {
 				var a = res.address_components[s];
 				for (var c in a) {
-					console.log('address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
+					console.log('res.address_components: ' + s + ' --\> ' + c + ' = ' + a[c]);
 				}
 			}
 			for (var g in res.geometry) {
-				console.log('geometry: ' + g + ' = ' + res.geometry[g]);
+				console.log('res.geometry: ' + g + ' = ' + res.geometry[g]);
 			}
 
 			var marker = $.renshuu.markers.createMarker(
@@ -1278,6 +1315,7 @@
 				}
 			});
 
+			console.groupEnd();
 			return marker;
 		},
 
@@ -1286,13 +1324,14 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 		 */
 		createMarker: function (pos, title, icon, drag) {
+			console.group('createMarker');
 			if (!icon) {
 				icon = $.renshuu.pins.getIcon();
 			}
 			if (drag === null) {
 				drag = false;
 			}
-			console.log('createMarker. pos: ' + pos + ', title: ' + title + ', drag: ' + drag);
+			console.log('pos: ' + pos + ', title: ' + title + ', drag: ' + drag);
 			var marker = new google.maps.Marker({
 				position: pos,
 				title: title,
@@ -1327,6 +1366,7 @@
 				// This event is fired when the marker is right clicked on.
 			});
 
+			console.groupEnd();
 			return marker;
 		},
 
@@ -1335,15 +1375,16 @@
 		 * @see http://malsup.com/jquery/block/
 		 */
 		showInfo: function (marker) {
+			console.group('showInfo');
 			var inx = $.renshuu.trainingMarkers.indexOf(marker);
-			console.log('showInfo. marker.title: '+ marker.title + ', inx: ' + inx);
+			console.log('marker.title: '+ marker.title + ', inx: ' + inx);
 			var data;
 			if (inx !== -1) {
 				data = $.renshuu.trainingMarkersData[inx];
 			}
 
 			if (data) {
-				console.log('showInfo. data. ' + data);
+				console.log('data. ' + data);
 				// Get data
 				var info = $.renshuu.markers.buildInfoWindow(data);
 				// Create overlay
@@ -1355,6 +1396,7 @@
 				// Fill overlay with the data inserted to a template
 				$('#modalTemplate').tmpl(info).appendTo('div.blockMsg');
 			}
+			console.groupEnd();
 		},
 
 		/**
@@ -1362,6 +1404,7 @@
 		 * @see
 		 */
 		buildInfoWindow: function (data) {
+			console.group('buildInfoWindow');
 			/*
 			Marker data from the backend.
 			data: {
@@ -1418,8 +1461,9 @@
 				};
 			}
 
-			console.debug('buildInfoWindow. info. ' + info);
+			console.debug('info. ' + info);
 			//$(info).appendTo('body');
+			console.groupEnd();
 			return info;
 		}
 	};
@@ -1477,6 +1521,7 @@
 		 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Geocoder
 		 */
 		geocodePosition: function (data, callBack) {
+			console.group('geocodePosition');
 			if (!callBack) {
 				callBack = $.renshuu.data.addGeoMarkers;
 			}
@@ -1486,14 +1531,15 @@
 			$.renshuu.geocoder.geocode(
 				data,
 				function (results, status) {
-					//console.log('geocodePosition. results: ' + results + ', status: ' + status);
+					console.log('results: ' + results + ', status: ' + status);
 					if (results && status == google.maps.GeocoderStatus.OK) {
 						var key = data.address ? data.address : data.location.toString();
-						//console.log('geocodePosition. key: ' + key);
+						console.log('key: ' + key);
 						callBack.apply(this, [key, results, status]);
 					}
 				}
 			);
+			console.groupEnd();
 		},
 
 		/**
@@ -1527,17 +1573,18 @@
 		 * }
 		 */
 		addGeoMarkers: function (key, results, status) {
-			console.log('addGeoMarkers. key: ' + key + ', status: ' + status + ', results: ' + results);
+			console.group('addGeoMarkers');
+			console.log('key: ' + key + ', status: ' + status + ', results: ' + results);
 			var lenG = $.renshuu.geocodeMarkers.length;
 			var markers = [];
 			var len = Math.min(3, results.length); // Max three results
-			console.log('addGeoMarkers. len: ' + len);
+			console.log('len: ' + len);
 
 			for (var i = 0; i < len; ++i) {
 				// Should check that each address has only one marker.
 				markers.push($.renshuu.markers.createGeocodeMarker(results[i], i));
 
-				console.log('addGeoMarkers. i: ' + i);
+				console.log('i: ' + i);
 
 			}
 			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
@@ -1546,8 +1593,9 @@
 				markers: markers
 			});
 			//$('input[name=address]').val(results[0].formatted_address);
-				//$('input[name=address]').val('Cannot determine address at this location.');
+			//$('input[name=address]').val('Cannot determine address at this location.');
 
+			console.groupEnd();
 		},
 
 		/**
@@ -1556,6 +1604,7 @@
 		 * @see
 		 */
 		removeGeoMarker: function (marker) {
+			console.group('removeGeoMarker');
 			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
 			var i = $.renshuu.geocodeMarkers.length;
 			while (0 < i) {
@@ -1571,6 +1620,7 @@
 				}
 			}
 			marker.setMap(null);
+			console.groupEnd();
 		},
 
 		/**
@@ -1579,7 +1629,6 @@
 		 */
 		removeAllGeoMarkers: function () {
 			// { key:"address or lat/lng that was tried to be geocoded", markers: [] }
-			var lenG = $.renshuu.geocodeMarkers.length;
 			var len = $.renshuu.geocodeMarkers.length;
 			while (len > 0) {
 				len--;
@@ -1593,29 +1642,24 @@
 
 	$.renshuu.callbacks = {
 		/**
-		 *
+		 * Save the zoom level in the local storage
 		 * @see
 		 */
-		updateZoomCookie: function () {
+		updateZoom: function () {
 			var zoom = $.renshuu.map.getZoom();
-			$.cookie(
+			$.renshuu.storage.setItem(
 				'mapZoom',
-				zoom,
-				$.renshuu.cookieSettings
+				zoom
 			);
 			$.renshuu.zoom = zoom;
 		},
 		/**
-		 *
+		 * Save the center location in the local storage
 		 * @see
 		 */
-		updateCenterCookie: function () {
-			var center = $.renshuu.map.getCenter();
-			$.cookie(
-				'mapCenter',
-				center.lat() + ',' + center.lng(),
-				$.renshuu.cookieSettings
-			);
+		updateCenter: function () {
+			var c = $.renshuu.map.getCenter();
+			$.renshuu.storage.setItem('mapCenter', c.lat() + ',' + c.lng());
 		},
 
 		/**
@@ -1642,8 +1686,9 @@
 		},
 		center_changed: function () {
 			// This event is fired when the map center property changes.
-			$.renshuu.callbacks.updateCenterCookie();
+			$.renshuu.callbacks.updateCenter();
 		},
+		/*
 		maptypeid_changed: function () {
 			// This event is fired when the mapTypeId property changes.
 		},
@@ -1662,9 +1707,10 @@
 		rightclick: function (event) {
 			// This event is fired when the DOM contextmenu event is fired on the map container.
 		},
+		*/
 		zoom_changed: function () {
 			// This event is fired when the map zoom property changes.
-			$.renshuu.callbacks.updateZoomCookie();
+			$.renshuu.callbacks.updateZoom();
 		}
 	};
 
@@ -1899,9 +1945,9 @@
 			$($.renshuu.tabContentElement).html(form);
 
 			// If location form is used, check the possible cookie.
-			if (type == 'location' && $.cookie('locationGeocode')) {
+			if (type == 'location' && $.renshuu.storage.getItem('locationGeocode')) {
 				$('#location_form input:radio[name=geocode]').removeAttr('checked');
-				$('#location_form input:radio[name=geocode][value=' + $.cookie('locationGeocode') + ']').attr('checked', 'checked');
+				$('#location_form input:radio[name=geocode][value=' + $.renshuu.storage.getItem('locationGeocode') + ']').attr('checked', 'checked');
 			}
 			else if (type == 'user') {
 				// Data should be prefilled in "$.renshuu.userData" object.
