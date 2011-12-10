@@ -1,6 +1,7 @@
 <?php
 /*******************
 RENSHUU.PAAZMAYA.COM
+http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 /**
 * Possible commands as the first part of the url after "ajax":

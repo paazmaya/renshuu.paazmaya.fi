@@ -1,6 +1,7 @@
 <?php
 /*******************
 RENSHUU.PAAZMAYA.COM
+http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
 /*
@@ -193,7 +194,7 @@ $gzipped = ''; //'.gz';
 // Create iconset css file
 $iconcss = '@charset "UTF-8";' . "\n";
 $iconcss .= '/*******************' . "\n";
-$iconcss .= 'RENSHUU.PAAZMAYA.COM' . "\n";
+$iconcss .= 'RENSHUU.PAAZMAYA.COM' . "\n" . 'http://creativecommons.org/licenses/by-nc-sa/3.0/' . "\n";
 $iconcss .= '*******************/' . "\n";
 $iconcss .= '/*' . "\n";
 $iconcss .= $cf['iconset'] . "\n";
@@ -492,7 +493,7 @@ $jslang = array(
 );
 echo ' $.renshuu.lang = ' . json_encode($jslang) . ';' . "\n"; // JSON_FORCE_OBJECT
 
-// List weekdays. Sunday is at 0 index
+// List weekday localisations. Sunday is at 0 index
 echo ' $.renshuu.weekdays = ' . json_encode($lang['weekdays']) . ';' . "\n";
 
 // User specific data in case they would be logged in. Used for prefilling the forms.

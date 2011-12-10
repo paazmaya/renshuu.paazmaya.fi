@@ -1,6 +1,7 @@
 <?php
 /*******************
 RENSHUU.PAAZMAYA.COM
+http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 /**
 * Authentication when it is done elsewhere, such as via OAuth in Twitter...

@@ -1076,6 +1076,7 @@
 			$.renshuu.streetView = new google.maps.StreetViewPanorama(street_element, street_options);
 
 
+			// Check local storage for street marker position.
 
 
 			// The marker which can be dragged on a spot which is should be revealed in Street View
