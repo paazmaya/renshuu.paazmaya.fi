@@ -278,7 +278,7 @@
 				console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
 			}
 			$.renshuu.storage = window.localStorage ? window.localStorage : {};
-			$(window).bind('storage', $.renshuu.storageEvent);
+			$(window).on('storage', $.renshuu.storageEvent);
 			
 			
 			$.renshuu.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
