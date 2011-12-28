@@ -4,7 +4,7 @@
  * @package Minify
  */
 
-require_once 'minify/Minify/Controller/Base.php';
+require_once 'Minify/Controller/Base.php';
 
 /**
  * Controller class for serving predetermined groups of minimized sets, selected
