@@ -876,7 +876,7 @@
 			for (var i = 0; i < len; ++i) {
 				var field = fields[i];
 				var val = '';
-				if (items.filter('select[name=' + field + ']').size() > 0) {
+				if (items.filter('select[name=' + field + ']').length > 0) {
 					val = items.filter('select[name=' + field + ']').val();
 				}
 				else {
@@ -1162,7 +1162,7 @@
 		 */
 		updateGeocodeSelectionIcon: function () {
 			console.group('updateGeocodeSelectionIcon');
-			if ($('#location_form').size() > 0) {
+			if ($('#location_form').length > 0) {
 				var val = $('#location_form input:radio[name=geocode]:checked').val();
 				console.log('val: ' + val);
 				$('#location_form .radioset').attr('class', 'radioset').addClass('icon-' + $.renshuu.geocodeClass[val]); // remove icon-* and add icon-*
