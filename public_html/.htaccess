@@ -14,8 +14,26 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ index.php?page=$1 [L,QSA]
 
+# Removal of www.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+
 # last|L (last rule)
 # qsappend|QSA (query string append)
+
+# Use UTF-8 encoding for anything served text/plain or text/html
+AddDefaultCharset utf-8
+
+# Javascript is not text/plain
+AddType application/javascript js
+AddType application/json json
+
+# Application cache as in HTML5
+AddType text/cache-manifest .appcache
+
+# Force UTF-8 for a number of file formats
+AddCharset utf-8 .css .js .xml .json .rss .atom
 
 # make markup strict
 php_value arg_separator.output "&amp;"

@@ -319,13 +319,6 @@ $lang['forms'] = array(
 				'type' => 'text',
 				'name' => 'password',
 				'required' => true
-			),
-			array(
-				'label' => gettext('How much is 2 + 3'), // always total 5
-				'type' => 'text',
-				'class' => 'short',
-				'name' => 'answer',
-				'after' => gettext(' (making sure you are a real person)')
 			)
 		),
 		'links' => array(
@@ -381,13 +374,6 @@ $lang['forms'] = array(
 				'label' => gettext('Password'),
 				'type' => 'text',
 				'name' => 'password'
-			),
-			array(
-				'label' => gettext('How much is 3 + 2'), // always total 5
-				'type' => 'text',
-				'class' => 'short',
-				'name' => 'answer',
-				'after' => gettext(' (making sure you are a real person)')
 			)
 		)
 	),

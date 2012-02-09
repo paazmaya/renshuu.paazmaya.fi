@@ -14,7 +14,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 */
 
 require './config.php';
-require './functions.php';
 require './locale.php';
 
 header('Content-type: text/plain; charset=utf-8');

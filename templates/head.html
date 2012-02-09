@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="##lang##">
+<head>
+	<title>##title##</title>
+	<meta name="description" content="##description##" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1, user-scalable=no, width=device-width" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="author" href="http://paazio.nanbudo.fi" />
+	<link rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/" />
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="icon" type="image/ico" href="/favicon.ico" />
+	<link type="text/css" href="##stylesheetmain##" rel="stylesheet" />
+	<link type="text/css" href="##stylesheeticon##" rel="stylesheet" />
+
+	<script id="savedTemplate" type="text/x-jquery-tmpl">
+		<tr rel="${id}">
+			<td>${artTitle}</td>
+			<td>${weekDay}/td>
+			<td>${startTime} - ${endTime}/td>
+			<td><a href="#remove-${id}" rel="remove" title="${removeTitle} - ${weekDayInt}">
+				<img src="/img/sanscons/png/green/32x32/close.png" alt="${removeTitle}" />
+			</a></td>
+		</tr>
+	</script>
+		
+	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
+		<h1 title="${message}">${message}</h1>
+		{{if title}}
+			<p>${title}</p>
+		{{/if}}
+		<p>
+			<a href="#insert-0" rel="clear" title="${$.renshuu.lang.form.createnew}">
+				${$.renshuu.lang.form.createnew} / ${$.renshuu.lang.form.clear}
+			</a>
+		</p>
+		<p>
+			<a href="#update-${id}" rel="keep" title="${$.renshuu.lang.form.modify}">
+				${$.renshuu.lang.form.modify}
+			</a>
+		</p>
+	</script>
+	
+	<script id="modalTemplate" type="text/x-jquery-tmpl">
+		<div class="modal-info vevent">
+			{{if (artId && artTitle)}}
+				<h2 class="summary" rel="art-${artId}">
+					<a href="#training-${trainingId}" class="modal-close uid icon-close" title="${artTitle}">${artTitle}</a>
+				</h2>
+			{{/if}}
+			{{if weekDay}}
+				<p class="modal-time" rel="training-${trainingId}">${weekDay}
+				{{if trainingStime && trainingEtime}}
+					<span class="dtstart" title="${trainingStime}">${trainingStime}</span>
+					-<span class="dtend" title="${trainingEtime}">${trainingEtime}</span>
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if personId && personTitle}}
+				<p class="modal-contact" rel="person-${personId}">${personTitle}
+				{{if personContact}}
+					 ( ${personContact})
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if locationId && locationTitle}}
+				<p class="modal-location" rel="location-${locationId}">${locationTitle}
+				{{if locationUrl}}
+					<a href="${locationUrl}" title="${locationTitle}"> ${locationUrl}</a>
+				{{/if}}
+				</p>
+			{{/if}}
+			{{if locationLat && locationLng}}
+				<address class="geo">
+					{{if locationAddr}}
+						${locationAddr}
+					{{/if}}
+					<span>
+						<abbr class="latitude" title="${locationLat}">${$.renshuu.data.deg2dms(locationLat, true)}</abbr>
+						<abbr class="longitude" title="${locationLng}">${$.renshuu.data.deg2dms(locationLng, false)}</abbr>
+					</span>
+				</address>
+			{{/if}}
+			{{if trainingId}}
+				<p class="modal-tools">
+					<a href="#training-${trainingId}" title="${langSave}" rel="savetolist">${langSave}</a>
+					<a href="#training-${trainingId}" title="${langRemove}" rel="removefromlist" style="display:none;">${langRemove}</a>
+				</p>
+			{{/if}}
+		</div>
+	</script>
+
+</head>

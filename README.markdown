@@ -1,5 +1,6 @@
 RENSHUU.PAAZMAYA.COM
 ====================
+Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
 
 A training timetable
 ---------------------
