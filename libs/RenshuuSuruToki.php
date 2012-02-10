@@ -14,10 +14,10 @@ class RenshuuSuruToki extends RenshuuBase
 	 */
 	public $scripts = array(
 		'jquery.js', // 1.7.1 (2011-11-03), http://jquery.com/
-		
+
 		'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 		'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
-		
+
 		'jquery.ui.core.js', // 1.8.16 (2011-08-18), http://jqueryui.com/
 		'jquery.ui.widget.js',
 		'jquery.ui.position.js',
@@ -28,10 +28,12 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.ui.draggable.js', // depends ui.core, ui.mouse and ui.widget
 		'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
 		'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
-		
+
 		'ui.timepickr.js', // contains jquery.utils, jquery.strings
-		
-		'jquery.timepicker.js', // 
+
+		'jquery.outerhtml.js', //
+		'jquery.clearform.js',
+		'jquery.timepicker.js', //
 		'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
 		'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 		'jquery.inputnotes-0.6.js', // 0.6 ()
@@ -45,24 +47,26 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
 		'jquery.ba-hashchange.js', // 1.3 (2010-07-21), http://benalman.com/projects/jquery-hashchange-plugin/
 		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
-		
+
 		'renshuusurutoki.js'
 	);
-	
+
 	/**
 	 * Stylesheets that should be in public_html/css/...
 	 */
 	public $styles = array(
+		'common.css',
+		'public.css',
 		'main.css',
-		
+
 		'jquery.ui.button.css',
 		'jquery.ui.core.css',
 		'jquery.ui.datepicker.css',
 		'jquery.ui.dialog.css',
 		'jquery.ui.rezisable.css',
 		'jquery.ui.tabs.css',
-		
-		'jquery-ui-timepicker-addon.css',		
+
+		'jquery-ui-timepicker-addon.css',
 		'jquery.clockpick.css',
 		'ui.timepickr.css',
 		'autoSuggest.css'
@@ -77,37 +81,31 @@ class RenshuuSuruToki extends RenshuuBase
 	 * public_html
 	 */
 	public $htmlDir;
-	
+
 	/**
 	 * Two character language code
 	 */
 	public $language = 'en';
-	
+
 	/**
-	 * Translated language arrays
-	 */
-	public $lang;
-	
-	/**
-	 * 
+	 *
 	 */
 	private $gzipped;
-	
+
 	/**
 	 * Constructor takes care of having database connection available
 	 */
-	function __construct($config)
+	function __construct($config, $lang)
 	{
-		parent::__construct($config);
-		
-		header('Content-type: text/html; charset=utf-8');
-		
-		$this->templateDir = realpath(__DIR__ . '/../templates') . '/';
-		
-		$this->removeUnwantedUrl();
-		
+		parent::__construct($config, $lang);
 
-		
+		header('Content-type: text/html; charset=utf-8');
+
+		$this->templateDir = realpath(__DIR__ . '/../templates') . '/';
+
+		$this->removeUnwantedUrl();
+
+
 		// What should be done is to create one javascript file of the local files and minify it followed by gzipping.
 		//$this->minify('js', $this->scripts);
 
@@ -116,27 +114,16 @@ class RenshuuSuruToki extends RenshuuBase
 
 		// Append with gzip if supported.
 		$this->gzipped = ''; //'.gz';
-		
-		// Clean the possible incoming data.
-		if (isset($_GET) && is_array($_GET))
-		{
-			$this->getted = $this->helper->cleanerlady($_GET);
-		}
-		// Same for post.
-		if (isset($_POST) && is_array($_POST))
-		{
-			$this->posted = $this->helper->cleanerlady($_POST);
-		}
-		
+
 		$this->handleUrl();
 	}
-	
+
 	/**
 	 * Remove unwanted items from the URL
 	 */
 	public function removeUnwantedUrl()
 	{
-		
+
 		// Remove www from the url and redirect.
 		if (substr($_SERVER['HTTP_HOST'], 0, 3) == 'www')
 		{
@@ -156,27 +143,26 @@ class RenshuuSuruToki extends RenshuuBase
 			exit();
 		}
 	}
-	
+
 	/**
 	 * Handle redirection of the given url.
 	 */
 	public function handleUrl()
 	{
-		
+
 		// As per .htaccess, all requests are redirected to index.php with one GET variable.
 		if (isset($this->getted['page']) && strlen($this->getted['page']) > 0)
 		{
 			$uri = '';
 			$getted['page'] = strtolower($this->getted['page']);
 
-			// Try to login or logout the user if so requested
+			// Try to login the user if so requested
 			if ($this->getted['page'] == 'login')
 			{
-				// How much is 2 + 3 --> answer
-				if (isset($this->posted['email']) && $this->posted['email'] != '' && 
+				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
 					isset($this->posted['password']) && $this->posted['password'] != '')
 				{
-					$sql = 'SELECT id, name, email, access FROM ren_user WHERE email = \'' . 
+					$sql = 'SELECT id, name, email, access FROM renshuu_user WHERE email = \'' .
 						$this->posted['email'] . '\' AND password = \'' . sha1($this->posted['password']) . '\' AND access > 0';
 					$run = $this->pdo->query($sql);
 					if ($run->columnCount() > 0)
@@ -185,7 +171,7 @@ class RenshuuSuruToki extends RenshuuBase
 						$_SESSION['userid'] = intval($res['id']);
 						$_SESSION['email'] = $res['email'];
 						$_SESSION['username'] = $res['name'];
-						$_SESSION['access'] = intval($res['access']);
+						$_SESSION['access'] = intval($res['access']); // use as binary
 
 						$uri = '/#user';
 					}
@@ -195,10 +181,6 @@ class RenshuuSuruToki extends RenshuuBase
 					}
 				}
 			}
-			else if ($this->getted['page'] == 'logout')
-			{
-				session_destroy();
-			}
 			else if (strlen($this->getted['page']) == 2 && array_key_exists($this->getted['page'], $this->config['languages']))
 			{
 				$_SESSION['lang'] = $this->getted['page'];
@@ -206,11 +188,10 @@ class RenshuuSuruToki extends RenshuuBase
 			}
 			else
 			{
-				$uri = '/#' . urize($this->getted['page']);
+				$uri = '/#' . $this->urize($this->getted['page']);
 				header('HTTP/1.1 301 Moved Permanently');
 			}
-			//print_r($this->getted);
-			//print_r($this->posted);
+			
 			header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
 			exit();
 		}
@@ -222,7 +203,7 @@ class RenshuuSuruToki extends RenshuuBase
 	public function createHead()
 	{
 		$out = file_get_contents($this->templateDir . 'head.html');
-		
+
 		$list = array(
 			'lang' => $this->language, // $_SESSION['lang']
 			'title' => $this->config['title'] . ' | ' . $this->lang['title'],
@@ -230,34 +211,82 @@ class RenshuuSuruToki extends RenshuuBase
 			'stylesheetmain' => '/css/' . $this->config['minified'] . $this->gzipped . '.css',
 			'stylesheeticon' => '/css/iconset-' . $this->config['iconset'] . '.css',
 		);
-		
+
 		//mixed str_replace ( mixed $needle , mixed $replace , mixed $haystack [, int &$count ] )
 		foreach ($list as $key => $value)
 		{
 			$out = str_replace('##' . $key . '##', $value, $out);
 		}
+
+		return $out;
+	}
+	
+	/**
+	 * Create public HTML5 body from a template.
+	 * #_# eguals a gettext call.
+	 */
+	public function createBodyPublic()
+	{
+		$out = file_get_contents($this->templateDir . 'body-public.html');
+		
+		$copyright = '<div id="copyright">
+			<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
+				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
+			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
+			</div>';
+
+		$list = '<nav id="loginlist"><ul>';
+		foreach ($this->lang['loginlist'] as $type => $item)
+		{
+			$list .= '<li>';
+			$list .= '<a href="' . $item['href'] . '" title="' . $item['title'] . '" class="' . $type . '">';
+			$list .= '<img src="/img/hand-drawn-social/' . $type . '-64x64.png" alt="' . $item['title'] . '" />';
+			$list .= '</a>';
+			$list .= '</li>';
+		}
+		$list .= '</ul></nav>';
+		
+		$list = array(
+			'loginlist' => $list,
+			'copyright' => $copyright
+		);
+		
+		foreach ($list as $key => $value)
+		{
+			$out = str_replace('##' . $key . '##', $value, $out);
+		}
+
+		$out = preg_replace_callback(
+			'/#_#(.*)#_#/',
+			create_function(
+				'$matches',
+				'return gettext($matches[1]);'
+			),
+			$out
+		);
 		
 		return $out;
+
 	}
 
 	/**
 	 * Create HTML5 body from a template.
 	 * #_# eguals a gettext call.
 	 */
-	public function createBody()
+	public function createBodyLoggedin()
 	{
 		$out = file_get_contents($this->templateDir . 'body.html');
-		
+
 		$artlist = '<ul id="arts">';
 		// Filter based on the user access if any...
-		$sql = 'SELECT id, name FROM ren_art ORDER BY name';
+		$sql = 'SELECT id, name FROM renshuu_art ORDER BY name';
 		$run = $this->pdo->query($sql);
 		while($res = $run->fetch(PDO::FETCH_ASSOC))
 		{
 			$artlist .= '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
 		}
 		$artlist .= '</ul>';
-		
+
 		$weekdaylist = '<ul id="weekdays">';
 		// Zero index Sunday.
 		foreach($this->lang['weekdays'] as $key => $val)
@@ -265,13 +294,13 @@ class RenshuuSuruToki extends RenshuuBase
 			$weekdaylist .= '<li title="' . $val . '"><label><input type="checkbox" name="day_' . $key . '" checked="checked" /> ' . $val . '</label></li>';
 		}
 		$weekdaylist .= '</ul>';
-		
+
 		$copyright = '<div id="copyright">
 			<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
 				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
 			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
 			</div>';
-		
+
 		$list = array(
 			'savedlist' => $this->helper->createTable($this->lang['savedtable']),
 			'navigation' => $this->helper->createNavigation($this->lang['navigation'], $_SESSION['access']), // Navigation based on the current access level
@@ -283,23 +312,23 @@ class RenshuuSuruToki extends RenshuuBase
 			'staticmap' => $this->helper->createStaticMapUrl(),
 			'copyright' => $copyright
 		);
-		
+
 		foreach ($list as $key => $value)
 		{
 			$out = str_replace('##' . $key . '##', $value, $out);
 		}
-				
+
 		$out = preg_replace_callback(
-			'/#_#(.*)#_#/', 
+			'/#_#(.*)#_#/',
 			create_function(
 				'$matches',
 				'return gettext($matches[1]);'
 			),
 			$out
 		);
-		
+
 		// Javascript section
-		
+
 		// http://code.google.com/apis/maps/documentation/javascript/basics.html#Versioning
 		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] . '&amp;sensor=false&amp;language=' . $_SESSION['lang']);
 		//$out .= scriptElement($this->config['minified'] . $this->gzipped . '.js');
@@ -312,7 +341,7 @@ class RenshuuSuruToki extends RenshuuBase
 		// Add localisation to the date picker
 		$out .= $this->helper->scriptElement('jquery.ui.datepicker-' . ($_SESSION['lang'] == 'en' ? 'en-GB' : $_SESSION['lang']) . '.js');
 
-		
+
 		// Translations and user data if any...
 		$out .= '<script type="text/javascript">' . "\n";
 		$out .= '$(document).ready(function() {' . "\n";
@@ -354,7 +383,7 @@ class RenshuuSuruToki extends RenshuuBase
 
 		// User specific data in case they would be logged in. Used for prefilling the forms.
 		$out .= ' $.renshuu.userData = {';
-		$out .= '  loggedIn: ' . ($_SESSION['access'] > 0 ? 'true' : 'false') . ',';
+		$out .= '  loggedIn: ' . ($_SESSION['access'] > 1 ? 'true' : 'false') . ',';
 		$out .= '  name: "' . $_SESSION['username'] . '",';
 		$out .= '  email: "' . $_SESSION['email'] . '"';
 		$out .= ' };' . "\n";
@@ -367,15 +396,32 @@ class RenshuuSuruToki extends RenshuuBase
 
 		$out .= '});' . "\n";
 		$out .= '</script>';
+
+		// http://www.w3.org/html/logo/#the-technology
+		/*
+		$out .= '<a href="http://www.w3.org/html/logo/">';
+		$out .= '<img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-semantics-storage.png" 
+			width="229" height="64" alt="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline
+			&amp; Storage" title="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage">';
+		$out .= '</a>';
+		*/
+	
+		if (!$this->config['isdevserver'])
+		{
+			$out .= file_get_contents($this->templateDir . 'google-analytics.html');
+		}
 		
-		
+		$out .= '</body>';
+		$out .= '</html>';
+
 		return $out;
 	}
 
-
+	/**
+	 *
+	 */
 	public function createIconsCSSFile()
 	{
-				
 		// -----------------
 		// Create iconset css file
 		$iconcss = '@charset "UTF-8";' . "\n";
@@ -445,9 +491,9 @@ class RenshuuSuruToki extends RenshuuBase
 		$mail->WordWrap = 50;
 		$mail->AddAttachment($this->htmlDir . '/img/favicon64x64.png');
 		$mail->IsHTML(false);
-		
+
 		$signature = "\n\n-------------------\nRenshuuSuruToki\nhttp://renshuu.paazmaya.com/\nv" . self::VERSION;
-		
+
 		$mail->Subject = $subject;
 		$mail->Body = $message . $signature;
 
@@ -455,10 +501,10 @@ class RenshuuSuruToki extends RenshuuBase
 		// $mail->ErrorInfo;
 	}
 
-
-	// http://www.icanlocalize.com/tools/php_scanner
-
-	// http://www.php.net/manual/en/function.bind-textdomain-codeset.php
+	/**
+	 * http://www.icanlocalize.com/tools/php_scanner
+	 * http://www.php.net/manual/en/function.bind-textdomain-codeset.php
+	 */
 	private function languageInit()
 	{
 		// set the LANGUAGE environmental variable
@@ -469,7 +515,7 @@ class RenshuuSuruToki extends RenshuuBase
 		{
 			echo sprintf("Could not set the ENV variable LANGUAGE = %s", $this->language);
 		}
-		
+
 		// set the LANG environmental variable
 		if ( false == putenv("LANG=" . $this->language ) )
 		{

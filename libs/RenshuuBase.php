@@ -26,6 +26,11 @@ class RenshuuBase
 	 * Configuration loaded from config.php
 	 */
 	public $config;
+
+	/**
+	 * Translated language arrays
+	 */
+	public $lang;
 	
 	/**
 	 * Database connection, initiated in constructor.
@@ -50,35 +55,124 @@ class RenshuuBase
 	/**
 	 * Constructor takes care of having database connection available
 	 */
-	function __construct($config)
+	function __construct($config, $lang)
 	{
 		$this->config = $config;
+		$this->lang = $lang;
+		
 		$this->setupSession();
 		$this->setupLocale();
 		$this->setupPDO();
 		
+		// Clean the possible incoming data.
+		if (isset($_GET) && is_array($_GET))
+		{
+			$this->getted = $this->cleanerlady($_GET);
+		}
+		// Same for post.
+		if (isset($_POST) && is_array($_POST))
+		{
+			$this->posted = $this->cleanerlady($_POST);
+		}
+		
 		$this->helper = new RenshuuHelper();
 		
 	}
+
+	/**
+	 * Encode HTML entities for a block of text
+	 *
+	 * @param	string	$str
+	 * @return	string
+	 */
+	public function htmlenc($str)
+	{
+		return htmlentities(trim($str), ENT_QUOTES, 'UTF-8');
+	}
+
+	/**
+	 * Decode HTML entities from a block of text
+	 *
+	 * @param	string	$str
+	 * @return	string
+	 */
+	public function htmldec($str)
+	{
+		return html_entity_decode(trim($str), ENT_QUOTES, 'UTF-8');
+	}
+
+	/**
+	 * A function for get/post variables cleanup
+	 * 
+	 * INPUT_GET, INPUT_POST, INPUT_COOKIE, INPUT_SERVER, or INPUT_ENV
+	 * filter_input_array(); // should be used to sanitate the incoming data
+	 *
+	 * @param array $dirty
+	 * @return array
+	 */
+	public function cleanerlady($dirty)
+	{
+		$clean = array();
+		foreach ($dirty as $key => $val)
+		{
+			// Clean the key by taking white space out.
+			$key = preg_replace('/\s/', '', $key);
+			if (is_array($val))
+			{
+				$clean[$key] = $this->cleanerlady($val);
+			}
+			else
+			{
+				$clean[$key] = $this->htmlenc($val);
+			}
+		}
+		return $clean;
+	}
+
+	/**
+	 * Converts a block of text to be suitable for the use in URI.
+	 *
+	 * @param	string	$str
+	 * @return string
+	 */
+	public function urize($str)
+	{
+		$str = mb_strtolower($str, 'UTF-8');
+		$str = $this->htmldec($str);
+		$str = str_replace(array(' ', ',', '@', '$', '/', '\\', '&', '!', '='), '-', $str);
+		$str = str_replace(array('--', '---'), '-', $str);
+		// a...z = ASCII table values 97...122
+		$str = str_replace(array('?', '"', '\'', ':', '(', ')', '*', '[', ']', '{', '}'), '', $str);
+		$str = str_replace(array('ä', 'æ', 'å'), 'a', $str);
+		$str = str_replace(array('ō', 'ö', 'ø'), 'o', $str);
+		$str = str_replace(array('š', 'ß'), 's', $str);
+		$str = str_replace(array('ć', 'č'), 'c', $str);
+		$str = str_replace(array('ž'), 'z', $str);
+		$str = str_replace(array('--', '---', '----'), '-', $str);
+		$str = trim($str, ' -');
+		return $str;
+	}
 	
+	/**
+	 * http://php.net/pdo
+	 */
 	private function setupPDO()
 	{
 		
-		// SQLite 3 via PDO
-		// http://php.net/pdo
 		try
 		{
-			$this->pdo = new PDO('sqlite:' . realpath($this->config['db']['address']));
-			/*
+			//$this->pdo = new PDO($this->config['db']['type'] . ':' . realpath($this->config['db']['address']));
+			
 			$this->pdo = new PDO(
-				'mysql:dbname=' . $this->config['db']['database'] . ';host=' . $this->config['db']['address'] . ';port=' . $this->config['db']['port'] . ';charset=UTF-8',
+				$this->config['db']['type'] . ':dbname=' . $this->config['db']['database'] . ';host=' . $this->config['db']['address'] . ';port=' . $this->config['db']['port'],
 				$this->config['db']['username'],
-				$this->config['db']['password']
+				$this->config['db']['password'],
+				array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')
 			);
-			*/
+			
 			/*
 			$this->pdo = new PDO(
-				'pgsql:dbname=' . $this->config['db']['database'] . ';host=' . $this->config['db']['address'] . ';port=' . $this->config['db']['port'] . ';charset=UTF-8',
+				'pgsql:dbname=' . $this->config['db']['database'] . ';host=' . $this->config['db']['address'] . ';port=' . $this->config['db']['port'] . ';charset=utf-8',
 				$this->config['db']['username'],
 				$this->config['db']['password']
 			);
@@ -114,7 +208,7 @@ class RenshuuBase
 			!isset($_SESSION['email']))
 		{
 			$_SESSION['lang'] = 'en';
-			$_SESSION['access'] = 0;
+			$_SESSION['access'] = 1; // to enable login form
 			$_SESSION['browser'] = sha1($_SERVER['HTTP_USER_AGENT'] . session_id());
 			$_SESSION['userid'] = 0;
 			$_SESSION['username'] = '';

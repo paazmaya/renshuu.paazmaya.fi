@@ -67,8 +67,8 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 * While in "form" mode, the output is a html string containing <form>
 * with all the requested components, in a "form" key.
 *
-* Additional "form" options are: login, register and user.
-* Those two will use index.php directly as their counter parts, so there is no need 
+* Additional "form" options are: login and user.
+* Those two will use index.php directly as their counter parts, so there is no need
 * to set up an "set" options for them.
 *
 * As for the "set" mode, the output is simply to return the id and the title
@@ -102,58 +102,71 @@ class RenshuuAjax extends RenshuuBase
 	 * get/set/form + keepalive
 	 */
 	private $page = '';
+
 	/**
-	 * 
+	 *
 	 */
 	private $pages = array(
-		'get', 'set', 'form', 'keepalive'
+		'get',
+		'set', 
+		'form', 
+		'keepalive'
 	);
 
 	/**
-	 * art/location/training/person + user/login/register
+	 * art/location/training/person + user/login
 	 */
 	private $pagetype = '';
-	
+
 	/**
 	 * keep login as last item of the list
 	 */
 	private $pagetypes = array(
-		'art', 'location', 'training', 'person', 'register', 'user', 'login'
+		'art', 
+		'location', 
+		'training', 
+		'person', 
+		'user',
+		'login'
 	);
 
 	/**
-	 * 
+	 *
 	 */
 	private $getfilter = '';
 
 	/**
-	 * 
+	 *
 	 */
 	private $id = 0;
+
 	/**
-	 * 
+	 *
 	 */
 	private $passcheck = false;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private $loggedin = true; // for testing...
 
-	function __construct($config)
+	/**
+	 *
+	 */
+	function __construct($config, $lang)
 	{
-		parent::__construct($config);
-		
+		parent::__construct($config, $lang);
+
 		// http://marcgrabanski.com/articles/jquery-ajax-content-type
 		header('Content-type: application/json; charset=utf-8');
-		
-				
+
+
 		if ($this->config['isdevserver'])
 		{
 			$this->out['post'] = $this->posted;
 			$this->out['get'] = $this->getted;
 		}
-		
+
 		$this->checkPage();
 
 		if ($this->passcheck)
@@ -171,13 +184,13 @@ class RenshuuAjax extends RenshuuBase
 		echo json_encode(array('response' => $this->out));
 
 	}
-	
+
 	/**
 	 * Check if the request makes sense and set properties of this call accordingly
 	 */
 	private function checkPage()
 	{
-		
+
 		// This should always be set anyhow due to mod_rewrite...
 		if (isset($this->getted['page']))
 		{
@@ -191,7 +204,7 @@ class RenshuuAjax extends RenshuuBase
 				{
 					$this->passcheck = true;
 				}
-				
+
 				if ($this->page != 'form')
 				{
 					// Remove "login" option.
@@ -202,7 +215,7 @@ class RenshuuAjax extends RenshuuBase
 				{
 					$this->pagetype = $parts['2'];
 					$this->passcheck = true;
-					
+
 					// Since here, should there be a keyword for filtering the results available?
 					if ($this->page == 'get' && $this->count > 3)
 					{
@@ -216,415 +229,473 @@ class RenshuuAjax extends RenshuuBase
 			}
 		}
 	}
-	
-	
+
+	/**
+	 *
+	 */
 	private function createOutput()
 	{
-		
-			// Check for map boundaries, used in two place, for getting trainings and locations.
-			$area_existed = false;
-			if (isset($posted['area']) && is_array($posted['area']))
-			{
-				$ne_lat = 0;
-				$ne_lng = 0;
-				$sw_lat = 0;
-				$sw_lng = 0;
-				
-				if (isset($posted['area']['northeast']['0']) && is_numeric($posted['area']['northeast']['0']))
-				{
-					$ne_lat = floatval($posted['area']['northeast']['0']);
-				}
-				if (isset($posted['area']['northeast']['1']) && is_numeric($posted['area']['northeast']['1']))
-				{
-					$ne_lng = floatval($posted['area']['northeast']['1']);
-				}
-				if (isset($posted['area']['southwest']['0']) && is_numeric($posted['area']['southwest']['0']))
-				{
-					$sw_lat = floatval($posted['area']['southwest']['0']);
-				}
-				if (isset($posted['area']['southwest']['1']) && is_numeric($posted['area']['southwest']['1']))
-				{
-					$sw_lng = floatval($posted['area']['southwest']['1']);
-				}
-				$area_existed = true;
-			}
-			
-			// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
-			if ($page == 'get' && $pagetype == '' && $area_existed && isset($posted['filter']) && is_array($posted['filter']))
-			{
-				$arts = array();
-				if (isset($posted['filter']['arts']) && is_array($posted['filter']['arts']))
-				{
-					$arts = $posted['filter']['arts'];
-				}
 
-				$weekdays = array();
-				if (isset($posted['filter']['weekdays']) && is_array($posted['filter']['weekdays']))
-				{
-					$weekdays = $posted['filter']['weekdays'];
-				}
-				
-				$at = array();
-				$art = '';
-				if (count($arts) > 0)
-				{
-					foreach($arts as $a)
-					{
-						$at[] = 'A.art = ' . intval($a);
-					}
-					$art = ' AND (' . implode(' OR ', $at) . ')';
-				}
+		// Check for map boundaries, used in two place, for getting trainings and locations.
+		$area_existed = false;
+		if (isset($this->posted['area']) && is_array($this->posted['area']))
+		{
+			$area = array(
+				'ne_lat' => 0,
+				'ne_lng' => 0,
+				'sw_lat' => 0,
+				'sw_lng' => 0
+			);
 
-				$wk = array();
-				$weekday = '';
-				if (count($weekdays) > 0)
-				{
-					foreach($weekdays as $day)
-					{
-						$wk[] = 'A.weekday = ' . intval($day);
-					}
-					$weekday = ' AND (' . implode(' OR ', $wk) . ')';
-				}
-
-				$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
-				$from = 'FROM ren_training A LEFT JOIN ren_location B ON A.location = B.id 
-					LEFT JOIN ren_art C ON A.art = C.id 
-					LEFT JOIN ren_person D ON D.id = A.person';
-
-				$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime, 
-					B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address, 
-					D.id AS personid, D.name AS personname, D.contact ' . $from . ' 
-					WHERE ' . $position . $art . $weekday;
-				$results = array();
-				$run =  $this->pdo->query($sql);
-				if ($run)
-				{
-					while($res = $run->fetch(PDO::FETCH_ASSOC))
-					{
-						$results[] = array(
-							'training' => array(
-								'id' => $res['trainingid'],
-								'art' => array(
-									'id' => $res['artid'],
-									'title' => $res['artname']
-								),
-								'weekday' => $res['weekday'],
-								'starttime' => $res['starttime'],
-								'endtime' => $res['endtime'],
-							),
-							'location' => array(
-								'id' => $res['locationid'],
-								'latitude' => $res['latitude'],
-								'longitude' => $res['longitude'],
-								'title' => $res['locationname'],
-								'url' => $res['url'],
-								'address' => $res['address'],
-							),
-							'person' => array(
-								'id' => $res['personid'],
-								'title' => $res['personname'],
-								'contact' => $res['contact']
-							)
-						);
-					}
-					unset($out['error']);
-					$out['result'] = $results;
-				}
-				else
-				{
-					if ($this->config['isdevserver'])
-					{
-						$out['errorInfo'] = $this->pdo->errorInfo();
-					}
-				}
-				if ($this->config['isdevserver'])
-				{
-					$out['sql'] = $sql;
-				}
-			}
-			else if ($page == 'get' && $pagetype == 'location' && $area_existed)
+			if (isset($this->posted['area']['northeast']['0']) && is_numeric($this->posted['area']['northeast']['0']))
 			{
-				$position = 'B.latitude > ' . $sw_lat . ' AND B.latitude < ' . $ne_lat . ' AND B.longitude > ' . $sw_lng . ' AND B.longitude < ' . $ne_lng;
-				$from = 'FROM ren_location B';
+				$area['ne_lat'] = floatval($this->posted['area']['northeast']['0']);
+			}
+			if (isset($this->posted['area']['northeast']['1']) && is_numeric($this->posted['area']['northeast']['1']))
+			{
+				$area['ne_lng'] = floatval($this->posted['area']['northeast']['1']);
+			}
+			if (isset($this->posted['area']['southwest']['0']) && is_numeric($this->posted['area']['southwest']['0']))
+			{
+				$area['sw_lat'] = floatval($this->posted['area']['southwest']['0']);
+			}
+			if (isset($this->posted['area']['southwest']['1']) && is_numeric($this->posted['area']['southwest']['1']))
+			{
+				$area['sw_lng'] = floatval($this->posted['area']['southwest']['1']);
+			}
+			$area_existed = true;
+		}
 
-				$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address ' . $from . ' WHERE ' . $position;
-				$results = array();
-				$run =  $this->pdo->query($sql);
-				if ($run)
-				{
-					while($res = $run->fetch(PDO::FETCH_ASSOC))
-					{
-						$results[] = array(
-							'location' => array(
-								'id' => $res['locationid'],
-								'latitude' => $res['latitude'],
-								'longitude' => $res['longitude'],
-								'title' => $res['locationname'],
-								'url' => $res['url'],
-								'address' => $res['address'],
-							)
-						);
-					}
-					unset($out['error']);
-					$out['result'] = $results;
-				}
-				else
-				{
-					if ($this->config['isdevserver'])
-					{
-						$out['errorInfo'] = $this->pdo->errorInfo();
-					}
-				}
-				if ($this->config['isdevserver'])
-				{
-					$out['sql'] = $sql;
-				}
-			}
-			else if ($page == 'get' && $pagetype != '')
-			{
-				// If art id is not set, then fetch all the trainings...
-				$where_art = '';
-				if (isset($posted['art']) && is_numeric($posted['art']))
-				{
-					$where_art = ' WHERE art = ' . intval($posted['art']);
-				}
-				$where_filter = '';
-				if ($getfilter != '')
-				{	
-					$where_filter = 'name LIKE \'%' . $getfilter . '%\'';
-				}
-				$queries = array(
-					'art' => 'SELECT id, name FROM ren_art ORDER BY name',
-					'location' => 'SELECT id, name FROM ren_location ORDER BY name',
-					'training' => 'SELECT id, name FROM ren_training ORDER BY name' . $where_art,
-					'person' => 'SELECT id, name FROM ren_person ORDER BY name'
-				);
-
-				$sql = $queries[$pagetype];
-				$results = array();
-				$run = $this->pdo->query($sql);
-				if ($run)
-				{
-					while($res = $run->fetch(PDO::FETCH_ASSOC))
-					{
-						$results[] = array(
-							'id' => $res['id'],
-							'title' => $res['name']
-						);
-					}
-					unset($out['error']);
-					$out[$pagetype] = $results;
-				}
-				else
-				{
-					if ($this->config['isdevserver'])
-					{
-						$out['errorInfo'] = $this->pdo->errorInfo();
-					}
-				}
-				if ($this->config['isdevserver'])
-				{
-					$out['sql'] = $sql;
-				}
-			}
-			else if ($page == 'set' && $loggedin) // login should not require to be logged in...
-			{
-				// Data availalable is dependant of the form used
-				// Key in the form matches the value of the table row name.
-				// The object named after the $pagetype should include the data that is to be updated.
-				// Keys should match the ones used in $map below, available in $posted['items'] as an array.
-				$map = array(
-					'art' => array(
-						'uri' => 'A.uri'
-					),
-					'location' => array(
-						'uri' => '',
-						'info' => '',
-						'address' => '',
-						//'addr_autofill' => '',
-						'latitude' => '',
-						'longitude' => ''
-					),
-					'training' => array(
-						'location' => '',
-						'weekday' => '',
-						'occurance' => '',
-						'starttime' => '',
-						'endtime' => '',
-						//'duration' => '',
-						'art' => ''
-					),
-					'person' => array(
-						'art' => '',
-						'contact' => '',
-						'info' => '',
-					),
-					'user' => array(
-						'email' => '',
-						'password' => ''
-					),
-					'register' => array(
-						'email' => ''
-					)
-				);
-				$always = array_merge($map[$pagetype], array(
-					'title' => 'name'
-				));
-				// Are all the posted keys set which are needed for that type?
-				$trimmed = array();
-				$missing = array();
-				foreach($always as $key => $value)
-				{
-					if (isset($posted['items'][$key]))
-					{
-						$trimmed[$key] = htmlenc($posted['items'][$key]);
-					}
-					else
-					{
-						$missing[] = $key;
-					}
-				}
-				if (!isset($posted['update']) && !isset($posted['insert']))
-				{
-					$missing[] = 'main parametre';
-				}
-
-				if (count($missing) == 0)
-				{
-					$sql = '';
-					
-					// Each of the given tables have a field for modified time
-					$trimmed['modified'] = time();
-					$keys = implode(', ', array_keys($trimmed));
-					$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
-					
-					// For testing only...
-					$out['sql_build'] = array(
-						'keys' => $keys,
-						'values' => $values
-					);
-					
-					// This should include the id of that item which is currently being updated.
-					if (isset($posted['update']) && is_numeric($posted['update']) && $pagetype != 'register')
-					{
-						$id = intval($posted['update']);
-						
-						$sets = array();
-						foreach($trimmed as $key => $val)
-						{
-							$sets[] = $key . ' = \'' . $val . '\'';
-						}
-						
-						// http://sqlite.org/lang_update.html
-						$sql = 'UPDATE ren_' . $pagetype . ' SET ' . implode(', ', $sets) . ' WHERE id = ' . $id;
-					}
-					else if (isset($posted['insert']) && $posted['insert'] == '0')
-					{
-						// Value of "insert" should be 0
-						
-						// http://sqlite.org/lang_insert.html
-						$sql = 'INSERT INTO ren_' . $pagetype . ' (' . $keys . ') VALUES (' . $values . ')';
-						/*
-						Return Values
-							If a sequence name was not specified for the name parameter, 
-							PDO::lastInsertId() returns a string representing the row ID of 
-							the last row that was inserted into the database. 
-							
-							If a sequence name was specified for the name parameter, PDO::lastInsertId() 
-							returns a string representing the last value retrieved from the specified sequence object. 
-							
-							If the PDO driver does not support this capability, 
-							PDO::lastInsertId() triggers an IM001 SQLSTATE. 
-						*/
-						if ($pagetype == 'register')
-						{
-							sendEmail($trimmed['email'], $trimmed['title'], 'Hello there', 'Ciao ciao');
-						}
-					}
-					else
-					{
-						// Harms way...
-					}
-					
-					if ($sql != '') 
-					{
-						$affected = $this->pdo->exec($sql);
-						
-						if (isset($posted['insert']))
-						{
-							try 
-							{
-								$id = $this->pdo->lastInsertId('id'); // should the "id" be used here as a parametre
-							}
-							catch (PDOException $error)
-							{
-								$out['errorInfo'] = $this->pdo->errorInfo();
-							}
-						}
-						
-						$out['result'] = array(
-							'id' => $id,
-							'title' => $trimmed['title'],
-							'message' => 'New data inserted...'
-						);
-						unset($out['error']);
-					}
-				}
-				else 
-				{
-					$out['error'] = 'Missing: ' . implode(', ', $missing);
-				}
-			}
-			else if ($page == 'form')
-			{
-				// $lang['forms'] variable available in the translations_xx.php,
-				// $lang['weekdays'] too..
-				
-				$data = $lang['forms'][$pagetype];
-				$items = array();
-				foreach($data['items'] as $item)
-				{
-					if ($item['type'] == 'select')
-					{
-						if ($item['name'] == 'weekday')
-						{
-							$item['options'] = $lang['weekdays'];
-						}
-						else if ($item['name'] == 'art')
-						{
-							$results = array();
-							$sql = 'SELECT id, name FROM ren_art ORDER BY name ASC';
-							$run =  $this->pdo->query($sql);
-							if ($run)
-							{
-								while($res = $run->fetch(PDO::FETCH_ASSOC))
-								{
-									$results[$res['id']] = $res['name'];
-								}
-							}
-							$item['options'] = $results;
-						}
-					}
-					$items[] = $item;
-				}
-				$data['items'] = $items;
-				
-				$action = null;
-				if ($pagetype == 'login')
-				{
-					$action = '/login';
-				}
-				$out['form'] = createForm($pagetype, $data, $action);
-				unset($out['error']);
-			}
-			else if ($page == 'keepalive')
-			{
-				$out['keepalive'] = time();
-				unset($out['error']);
-			}
+		/*
+		array(
+			'get' => 'pageGetFilter',
+			'get' => 'pageGetLocation',
+			'get' => 'pageGet',
+			'set' => 'pageSet',
+			'form' => 'pageForm',
+			'keepalive' => 'pageKeepAlive'
+		);
+		*/
+		// In get mode, the parametres should always be set, thus the limit can be set already here without a failsafe.
+		if ($this->page == 'get' && $this->pagetype == '' && $area_existed && 
+			isset($this->posted['filter']) && is_array($this->posted['filter']))
+		{
+			$this->pageGetFilter($area);
+		}
+		else if ($this->page == 'get' && $this->pagetype == 'location' && $area_existed)
+		{
+			$this->pageGetLocation($area);
+		}
+		else if ($this->page == 'get' && $this->pagetype != '')
+		{
+			$this->pageGet();
+		}
+		else if ($this->page == 'set' && $loggedin) // login should not require to be logged in...
+		{
+			$this->pageSet();
+		}
+		else if ($this->page == 'form')
+		{
+			$this->pageForm();
+		}
+		else if ($this->page == 'keepalive')
+		{
+			$this->pageKeepAlive();
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	private function pageGetFilter($area)
+	{
+		$arts = array();
+		if (isset($this->posted['filter']['arts']) && is_array($this->posted['filter']['arts']))
+		{
+			$arts = $this->posted['filter']['arts'];
+		}
+
+		$weekdays = array();
+		if (isset($this->posted['filter']['weekdays']) && is_array($this->posted['filter']['weekdays']))
+		{
+			$weekdays = $this->posted['filter']['weekdays'];
+		}
+
+		$at = array();
+		$art = '';
+		if (count($arts) > 0)
+		{
+			foreach($arts as $a)
+			{
+				$at[] = 'A.art = ' . intval($a);
+			}
+			$art = ' AND (' . implode(' OR ', $at) . ')';
+		}
+
+		$wk = array();
+		$weekday = '';
+		if (count($weekdays) > 0)
+		{
+			foreach($weekdays as $day)
+			{
+				$wk[] = 'A.weekday = ' . intval($day);
+			}
+			$weekday = ' AND (' . implode(' OR ', $wk) . ')';
+		}
+
+		$position = 'B.latitude > ' . $area['sw_lat'] . ' AND B.latitude < ' . $area['ne_lat'] .
+			' AND B.longitude > ' . $area['sw_lng'] . ' AND B.longitude < ' . $area['ne_lng'];
+		$from = 'FROM renshuu_training A LEFT JOIN renshuu_location B ON A.location = B.id
+			LEFT JOIN renshuu_art C ON A.art = C.id
+			LEFT JOIN renshuu_person D ON D.id = A.person';
+
+		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime,
+			B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address,
+			D.id AS personid, D.name AS personname, D.contact ' . $from . '
+			WHERE ' . $position . $art . $weekday;
+		$results = array();
+		$run =  $this->pdo->query($sql);
+		if ($run)
+		{
+			while($res = $run->fetch(PDO::FETCH_ASSOC))
+			{
+				$results[] = array(
+					'training' => array(
+						'id' => $res['trainingid'],
+						'art' => array(
+							'id' => $res['artid'],
+							'title' => $res['artname']
+						),
+						'weekday' => $res['weekday'],
+						'starttime' => $res['starttime'],
+						'endtime' => $res['endtime'],
+					),
+					'location' => array(
+						'id' => $res['locationid'],
+						'latitude' => $res['latitude'],
+						'longitude' => $res['longitude'],
+						'title' => $res['locationname'],
+						'url' => $res['url'],
+						'address' => $res['address'],
+					),
+					'person' => array(
+						'id' => $res['personid'],
+						'title' => $res['personname'],
+						'contact' => $res['contact']
+					)
+				);
+			}
+			unset($this->out['error']);
+			$this->out['result'] = $results;
+		}
+		else
+		{
+			if ($this->config['isdevserver'])
+			{
+				$this->out['errorInfo'] = $this->pdo->errorInfo();
+			}
+		}
+		if ($this->config['isdevserver'])
+		{
+			$this->out['sql'] = $sql;
+		}
+	}
 	
+	/**
+	 * 
+	 */
+	private function pageGetLocation($area)
+	{
+		$position = 'B.latitude > ' . $area['sw_lat'] . ' AND B.latitude < ' . $area['ne_lat'] .
+			' AND B.longitude > ' . $area['sw_lng'] . ' AND B.longitude < ' . $area['ne_lng'];
+		$from = 'FROM renshuu_location B';
+
+		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, ' .
+			'B.url, B.address ' . $from . ' WHERE ' . $position;
+		$results = array();
+		$run =  $this->pdo->query($sql);
+		if ($run)
+		{
+			while($res = $run->fetch(PDO::FETCH_ASSOC))
+			{
+				$results[] = array(
+					'location' => array(
+						'id' => $res['locationid'],
+						'latitude' => $res['latitude'],
+						'longitude' => $res['longitude'],
+						'title' => $res['locationname'],
+						'url' => $res['url'],
+						'address' => $res['address'],
+					)
+				);
+			}
+			unset($this->out['error']);
+			$this->out['result'] = $results;
+		}
+		else
+		{
+			if ($this->config['isdevserver'])
+			{
+				$this->out['errorInfo'] = $this->pdo->errorInfo();
+			}
+		}
+		if ($this->config['isdevserver'])
+		{
+			$this->out['sql'] = $sql;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private function pageGet()
+	{
+		// If art id is not set, then fetch all the trainings...
+		$where_art = '';
+		if (isset($this->posted['art']) && is_numeric($this->posted['art']))
+		{
+			$where_art = ' WHERE art = ' . intval($this->posted['art']);
+		}
+		$where_filter = '';
+		if ($getfilter != '')
+		{
+			$where_filter = 'name LIKE \'%' . $getfilter . '%\'';
+		}
+		$queries = array(
+			'art' => 'SELECT id, name FROM renshuu_art ORDER BY name',
+			'location' => 'SELECT id, name FROM renshuu_location ORDER BY name',
+			'training' => 'SELECT id, name FROM renshuu_training ORDER BY name' . $where_art,
+			'person' => 'SELECT id, name FROM renshuu_person ORDER BY name'
+		);
+
+		$sql = $queries[$this->pagetype];
+		$results = array();
+		$run = $this->pdo->query($sql);
+		if ($run)
+		{
+			while($res = $run->fetch(PDO::FETCH_ASSOC))
+			{
+				$results[] = array(
+					'id' => $res['id'],
+					'title' => $res['name']
+				);
+			}
+			unset($this->out['error']);
+			$this->out[$this->pagetype] = $results;
+		}
+		else
+		{
+			if ($this->config['isdevserver'])
+			{
+				$this->out['errorInfo'] = $this->pdo->errorInfo();
+			}
+		}
+		if ($this->config['isdevserver'])
+		{
+			$this->out['sql'] = $sql;
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private function pageSet()
+	{
+		// Data availalable is dependant of the form used
+		// Key in the form matches the value of the table row name.
+		// The object named after the $this->pagetype should include the data that is to be updated.
+		// Keys should match the ones used in $map below, available in $this->posted['items'] as an array.
+		$map = array(
+			'art' => array(
+				'uri' => 'A.uri'
+			),
+			'location' => array(
+				'uri' => '',
+				'info' => '',
+				'address' => '',
+				//'addr_autofill' => '',
+				'latitude' => '',
+				'longitude' => ''
+			),
+			'training' => array(
+				'location' => '',
+				'weekday' => '',
+				'occurance' => '',
+				'starttime' => '',
+				'endtime' => '',
+				//'duration' => '',
+				'art' => ''
+			),
+			'person' => array(
+				'art' => '',
+				'contact' => '',
+				'info' => '',
+			),
+			'user' => array(
+				'email' => '',
+				'password' => ''
+			)
+		);
+		$always = array_merge($map[$this->pagetype], array(
+			'title' => 'name'
+		));
+		// Are all the posted keys set which are needed for that type?
+		$trimmed = array();
+		$missing = array();
+		foreach($always as $key => $value)
+		{
+			if (isset($this->posted['items'][$key]))
+			{
+				$trimmed[$key] = htmlenc($this->posted['items'][$key]);
+			}
+			else
+			{
+				$missing[] = $key;
+			}
+		}
+		if (!isset($this->posted['update']) && !isset($this->posted['insert']))
+		{
+			$missing[] = 'main parametre';
+		}
+
+		if (count($missing) == 0)
+		{
+			$sql = '';
+
+			// Each of the given tables have a field for modified time
+			$trimmed['modified'] = time();
+			$keys = implode(', ', array_keys($trimmed));
+			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
+
+			// For testing only...
+			$this->out['sql_build'] = array(
+				'keys' => $keys,
+				'values' => $values
+			);
+
+			// This should include the id of that item which is currently being updated.
+			if (isset($this->posted['update']) && is_numeric($this->posted['update']))
+			{
+				$id = intval($this->posted['update']);
+
+				$sets = array();
+				foreach($trimmed as $key => $val)
+				{
+					$sets[] = $key . ' = \'' . $val . '\'';
+				}
+
+				// http://sqlite.org/lang_update.html
+				$sql = 'UPDATE renshuu_' . $this->pagetype . ' SET ' . implode(', ', $sets) . ' WHERE id = ' . $id;
+			}
+			else if (isset($this->posted['insert']) && $this->posted['insert'] == '0')
+			{
+				// Value of "insert" should be 0
+
+				// http://sqlite.org/lang_insert.html
+				$sql = 'INSERT INTO renshuu_' . $this->pagetype . ' (' . $keys . ') VALUES (' . $values . ')';
+				/*
+				Return Values
+					If a sequence name was not specified for the name parameter,
+					PDO::lastInsertId() returns a string representing the row ID of
+					the last row that was inserted into the database.
+
+					If a sequence name was specified for the name parameter, PDO::lastInsertId()
+					returns a string representing the last value retrieved from the specified sequence object.
+
+					If the PDO driver does not support this capability,
+					PDO::lastInsertId() triggers an IM001 SQLSTATE.
+				*/
+			}
+			else
+			{
+				// Harms way...
+			}
+
+			if ($sql != '')
+			{
+				$affected = $this->pdo->exec($sql);
+
+				if (isset($this->posted['insert']))
+				{
+					try
+					{
+						$id = $this->pdo->lastInsertId('id'); // should the "id" be used here as a parametre
+					}
+					catch (PDOException $error)
+					{
+						$this->out['errorInfo'] = $this->pdo->errorInfo();
+					}
+				}
+
+				$this->out['result'] = array(
+					'id' => $id,
+					'title' => $trimmed['title'],
+					'message' => 'New data inserted...'
+				);
+				unset($this->out['error']);
+			}
+		}
+		else
+		{
+			$this->out['error'] = 'Missing: ' . implode(', ', $missing);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private function pageForm()
+	{
+		
+		// $this->lang['forms'] variable available in the translations_xx.php,
+		// $this->lang['weekdays'] too..
+
+		$data = $this->lang['forms'][$this->pagetype];
+		$items = array();
+		foreach($data['items'] as $item)
+		{
+			if ($item['type'] == 'select')
+			{
+				if ($item['name'] == 'weekday')
+				{
+					$item['options'] = $this->lang['weekdays'];
+				}
+				else if ($item['name'] == 'art')
+				{
+					$results = array();
+					$sql = 'SELECT id, name FROM renshuu_art ORDER BY name ASC';
+					$run =  $this->pdo->query($sql);
+					if ($run)
+					{
+						while($res = $run->fetch(PDO::FETCH_ASSOC))
+						{
+							$results[$res['id']] = $res['name'];
+						}
+					}
+					$item['options'] = $results;
+				}
+			}
+			$items[] = $item;
+		}
+		
+		$data['items'] = $items;
+
+		$action = null;
+		if ($this->pagetype == 'login')
+		{
+			$action = '/login';
+		}
+		$this->out['form'] = $this->helper->createForm($this->pagetype, $data, $action);
+		unset($this->out['error']);
+	}
+	
+	/**
+	 * 
+	 */
+	private function pageKeepAlive()
+	{
+		$this->out['keepalive'] = time();
+		unset($this->out['error']);
+	}
 }
 

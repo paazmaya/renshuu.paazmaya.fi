@@ -6,9 +6,9 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 /*
 Localisation / Internalisation.
 
-GNU gettext is designed to minimize the impact of internationalization on program sources, 
-keeping this impact as small and hardly noticeable as possible. 
-Internationalization has better chances of succeeding if it is very light weighted, 
+GNU gettext is designed to minimize the impact of internationalization on program sources,
+keeping this impact as small and hardly noticeable as possible.
+Internationalization has better chances of succeeding if it is very light weighted,
 or at least, appear to be so, when looking at program sources.
 
 With the following commands greate the .po file needed which in turn is copied
@@ -43,14 +43,14 @@ msgfmt --strict --check --verbose -o renshuuSuruToki.mo renshuuSuruToki.po
 "C:\Program Files\Poedit\bin\msgfmt.exe" --strict --check --verbose -o renshuuSuruToki.mo renshuuSuruToki.po
 
 
-The msgmerge program merges two Uniforum style .po files together. 
-The def.po file is an existing PO file with translations which will be taken over to the newly 
-created file as long as they still match; comments will be preserved, but extracted comments and 
-file positions will be discarded. The ref.pot file is the last created PO file with up-to-date 
-source references but old translations, or a PO Template file (generally created by xgettext); 
-any translations or comments in the file will be discarded, however dot comments and 
-file positions will be preserved. 
-Where an exact match cannot be found, fuzzy matching is used to produce better results. 
+The msgmerge program merges two Uniforum style .po files together.
+The def.po file is an existing PO file with translations which will be taken over to the newly
+created file as long as they still match; comments will be preserved, but extracted comments and
+file positions will be discarded. The ref.pot file is the last created PO file with up-to-date
+source references but old translations, or a PO Template file (generally created by xgettext);
+any translations or comments in the file will be discarded, however dot comments and
+file positions will be preserved.
+Where an exact match cannot be found, fuzzy matching is used to produce better results.
 
 msgmerge -U renshuuSuruToki.po renshuuSuruToki.pot
 
@@ -64,8 +64,8 @@ http://www.php.net/manual/en/function.sprintf.php
 * b - the argument is treated as an integer, and presented as a binary number.
 * c - the argument is treated as an integer, and presented as the character with that ASCII value.
 * d - the argument is treated as an integer, and presented as a (signed) decimal number.
-* e - the argument is treated as scientific notation (e.g. 1.2e+2). 
-	  The precision specifier stands for the number of digits after the decimal point since PHP 5.2.1. 
+* e - the argument is treated as scientific notation (e.g. 1.2e+2).
+	  The precision specifier stands for the number of digits after the decimal point since PHP 5.2.1.
 	  In earlier versions, it was taken as number of significant digits (one less).
 * E - like %e but uses uppercase letter (e.g. 1.2E+2).
 * u - the argument is treated as an integer, and presented as an unsigned decimal number.
@@ -97,12 +97,12 @@ $lang = array(
  * Zero indexed, starting from Sunday.
  */
 $lang['weekdays'] = array(
-	gettext('Sunday'), 
-	gettext('Monday'), 
+	gettext('Sunday'),
+	gettext('Monday'),
 	gettext('Tuesday'),
-	gettext('Wednesday'), 
+	gettext('Wednesday'),
 	gettext('Thursday'),
-	gettext('Friday'), 
+	gettext('Friday'),
 	gettext('Saturday')
 );
 
@@ -301,32 +301,6 @@ $lang['forms'] = array(
 			)
 		)
 	),
-	'login' => array(
-		'legend' => gettext('Login'),
-		'info' => gettext('After logging in, the features of this site will be enriched'),
-		'buttons' => array(
-			'send' => gettext('Login')
-		),
-		'items' => array(
-			array(
-				'label' => gettext('E-mail'),
-				'type' => 'email',
-				'name' => 'email',
-				'required' => true
-			),
-			array(
-				'label' => gettext('Password'),
-				'type' => 'text',
-				'name' => 'password',
-				'required' => true
-			)
-		),
-		'links' => array(
-			'facebook' => gettext('Login via Facebook account'),
-			'openid' => gettext('Login with OpenID'),
-			'twitter' => gettext('Login via Twitter account')
-		)
-	),
 	'user' => array(
 		'legend' => gettext('Profile'),
 		'info' => gettext('Please keep your personal profile up to date and relevant'),
@@ -475,6 +449,29 @@ $lang['savedtable'] = array(
 
 
 /**
+ * Front page when not logged in has several login options.
+ * These are translations for them.
+ */
+$lang['loginlist'] = array(
+	'facebook' => array(
+		'title' => gettext('Login via Facebook account'),
+		'href' => ''
+	),
+	'twitter' => array(
+		'title' =>  gettext('Login via Twitter account'),
+		'href' => ''
+	),
+	'google' => array(
+		'title' => gettext('Login via Google account'),
+		'href' => ''
+	),
+	'linkedin' => array(
+		'title' => gettext('Login via LinkedIn account'),
+		'href' => ''
+	)
+);
+
+/**
  * Shortcut links for selecting inverse, all or nothing of the checkboxes.
  */
 $lang['selectionshortcuts'] = array(
@@ -485,12 +482,13 @@ $lang['selectionshortcuts'] = array(
 
 /**
  * Links for navigation at the right side of the page.
+ * Access value is to be used as binary
  */
 $lang['navigation'] = array(
 	'filters' => array(
 		'title' => gettext('Map filters'),
 		'text' => gettext('filters'),
-		'access' => 0
+		'access' => 4
 	),
 	'training' => array(
 		'title' => gettext('Training creation'),
@@ -510,21 +508,6 @@ $lang['navigation'] = array(
 	'user' => array(
 		'title' => gettext('Profile editing'),
 		'text' => gettext('profile'),
-		'access' => 1
-	),
-	'login' => array(
-		'title' => gettext('Login'),
-		'text' => gettext('login'),
-		'access' => 0
-	),
-	'register' => array(
-		'title' => gettext('Register'),
-		'text' => gettext('register'),
-		'access' => 0
-	),
-	'logout' => array(
-		'title' => gettext('Logout'),
-		'text' => gettext('logout'),
-		'access' => 1
+		'access' => 2
 	)
 );

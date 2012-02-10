@@ -11,6 +11,9 @@ class RenshuuHelper
 {
 
 
+	/**
+	 *
+	 */
 	function __construct()
 	{
 		// Nothing for now...
@@ -30,20 +33,20 @@ class RenshuuHelper
 	 * 		'text' => '',
 	 * 		'access' => 0
 	 * 	)
-	 * @param int $access Current access level of the user
+	 * @param int $access Current access level of the user, used as binary
 	 * @return string As shown above
 	 */
-	public function createNavigation($data, $access = 1)
+	public function createNavigation($data, $access = 0)
 	{
-		$out = '<ul id="navigation">';
+		$out = '<nav><ul>';
 		foreach($data as $key => $val)
 		{
-			if ($val['access'] <= $access && ($access == 0 || $key != 'login'))
+			if ($val['access'] & $access)
 			{
 				$out .= '<li><a href="#' . $key . '" title="' . $val['title'] . '">' . $val['text'] . '</a></li>';
 			}
 		}
-		$out .= '</ul>';
+		$out .= '</ul></nav>';
 		return $out;
 	}
 
@@ -129,80 +132,6 @@ class RenshuuHelper
 		$out .= implode("\n", $rules);
 
 		return $out;
-	}
-
-	/**
-	 * Encode HTML entities for a block of text
-	 *
-	 * @param	string	$str
-	 * @return	string
-	 */
-	public function htmlenc($str)
-	{
-		return htmlentities(trim($str), ENT_QUOTES, 'UTF-8');
-	}
-
-	/**
-	 * Decode HTML entities from a block of text
-	 *
-	 * @param	string	$str
-	 * @return	string
-	 */
-	public function htmldec($str)
-	{
-		return html_entity_decode(trim($str), ENT_QUOTES, 'UTF-8');
-	}
-
-	/**
-	 * A function for get/post variables cleanup
-	 * 
-	 * INPUT_GET, INPUT_POST, INPUT_COOKIE, INPUT_SERVER, or INPUT_ENV
-	 * filter_input_array(); // should be used to sanitate the incoming data
-	 *
-	 * @param array $dirty
-	 * @return array
-	 */
-	public function cleanerlady($dirty)
-	{
-		$clean = array();
-		foreach ($dirty as $key => $val)
-		{
-			// Clean the key by taking white space out.
-			$key = preg_replace('/\s/', '', $key);
-			if (is_array($val))
-			{
-				$clean[$key] = $this->cleanerlady($val);
-			}
-			else
-			{
-				$clean[$key] = $this->htmlenc($val);
-			}
-		}
-		return $clean;
-	}
-
-	/**
-	 * Converts a block of text to be suitable for the use in URI.
-	 *
-	 * @param	string	$str
-	 * @return string
-	 */
-	public function urize($str)
-	{
-		$str = mb_strtolower($str, 'UTF-8');
-		$str = $this->htmldec($str);
-		$str = str_replace(array(' ', ',', '@', '$', '/', '\\', '&', '!', '='), '-', $str);
-		$str = str_replace(array('--', '---'), '-', $str);
-		// a...z = ASCII table values 97...122
-		$str = str_replace(array('?', '"', '\'', ':', '(', ')', '*', '[', ']', '{', '}'), '', $str);
-		$str = str_replace(array('ä', 'æ', 'å'), 'a', $str);
-		$str = str_replace(array('ō', 'ö', 'ø'), 'o', $str);
-		$str = str_replace(array('š', 'ß'), 's', $str);
-		$str = str_replace(array('ć', 'č'), 'c', $str);
-		$str = str_replace(array('ž'), 'z', $str);
-		$str = str_replace(array('--', '---', '----'), '-', $str);
-		$str = trim($str, ' -');
-		return $str;
 	}
 
 

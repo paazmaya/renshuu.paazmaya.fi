@@ -1,0 +1,52 @@
+@charset "UTF-8";
+/*******************
+RENSHUU.PAAZMAYA.COM
+*******************/
+
+
+
+/* public page with login options */
+
+#logo {
+	width: 50%;
+	height: 20%;
+	text-align: center;
+	vertical-align: middle;
+	margin-left: 25%;
+	margin-top: 20%;
+}
+#logo img {
+	width: 64px;
+	height: 64px;
+}
+#logo figcaption {
+	text-align: left;
+	display: inline-block;
+	margin-left: 2em;
+	width: 14em;
+	font-weight: bold;
+	color: #F9FBF7;
+}
+
+#loginlist {
+	width: 50%;
+	height: 20%;
+	text-align: center;
+	vertical-align: middle;
+	margin-left: 25%;
+	margin-top: 3%;
+}
+#loginlist ul {
+	display: block;
+}
+#loginlist li {
+	display: inline;
+	float: none;
+}
+#loginlist a {
+	
+}
+#loginlist img {
+	width: 64px;
+	height: 64px;
+}

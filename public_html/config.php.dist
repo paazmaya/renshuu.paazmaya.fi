@@ -42,7 +42,7 @@ $cf['languages'] = array(
 
 // SQLite, MySQL or even PostgreSQL database
 $cf['db'] = array(
-	//'address' => '../../renshuu.paazmaya.sqlite',
+	'type' => 'mysql',
 	'address' => 'localhost',
 	'port' => 3307, // mysql: 3307, postgresql: 5432
 	'database' => 'renshuu',

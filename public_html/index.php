@@ -55,35 +55,12 @@ require './config.php';
 require './locale.php';
 
 
-
-
-$renshuu = new RenshuuSuruToki($cf);
+$renshuu = new RenshuuSuruToki($cf, $lang);
 $renshuu->htmlDir = __DIR__;
 $renshuu->lang = $lang;
 echo $renshuu->createHead();
-echo $renshuu->createBody();
+echo $renshuu->createBodyLoggedin();
 
-?>
-
-	<?php
-
-
-	/*
-	<div id="bottom">
-		<div class="left-side">
-		</div>
-		<div class="right-side">
-		</div>
-	</div>
-	*/
-	
-
-	// http://www.w3.org/html/logo/#the-technology
-	/*
-	<a href="http://www.w3.org/html/logo/">
-<img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-semantics-storage.png" width="229" height="64" alt="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage" title="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage">
-</a>
-*/
 
 // -----
 echo '<pre>SESSION ';
@@ -91,35 +68,3 @@ print_r($_SESSION);
 echo '</pre>';
 // -----
 
-
-
-if (!$cf['isdevserver'])
-{
-	?>
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-2643697-11']);
-		_gaq.push(['_setSiteSpeedSampleRate', 10]);
-		_gaq.push(['_setDomainName', 'renshuu.paazmaya.com']);
-		_gaq.push(['_trackPageview']);
-
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			//ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			ga.src = 'http://www.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-
-		// http://cookbooks.adobe.com/post_How_to_use_Google_Analytics_in_Flash_the_easy_way_-18254.html
-		function gaTrack(trackName) {
-			_gaq.push(['_trackPageview', trackName]);
-		}
-		function gaTrackEvent(cat, act, id) {
-			_gaq.push(['_trackEvent', cat, act, id]);
-		}
-	</script>
-	<?php
-}
-?>
-</body>
-</html>

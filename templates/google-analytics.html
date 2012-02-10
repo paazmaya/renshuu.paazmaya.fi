@@ -1,0 +1,22 @@
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-2643697-11']);
+	_gaq.push(['_setSiteSpeedSampleRate', 10]);
+	_gaq.push(['_setDomainName', 'renshuu.paazmaya.com']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		//ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		ga.src = 'http://www.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+
+	// http://cookbooks.adobe.com/post_How_to_use_Google_Analytics_in_Flash_the_easy_way_-18254.html
+	function gaTrack(trackName) {
+		_gaq.push(['_trackPageview', trackName]);
+	}
+	function gaTrackEvent(cat, act, id) {
+		_gaq.push(['_trackEvent', cat, act, id]);
+	}
+</script>
