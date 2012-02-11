@@ -1,6 +1,35 @@
 /**
  * Renshuu Markers, as used in Google Maps
  */
+
+/*
+Marker data from the backend.
+data: {
+	training: {
+		id: 0,
+		art: {
+			id: 0,
+			title: ''
+		},
+		weekday: 0,
+		starttime: 0,
+		endtime: 0
+	},
+	location: {
+		id: 0,
+		latitude: 0.0,
+		longitude: 0.0,
+		title: '',
+		url: '',
+		address: ''
+	},
+	person: {
+		id: 0,
+		title: '',
+		contact: ''
+	}
+}
+*/
 var renshuuMarkers = {
 	
 	// As per marker double click, show its position in Street View

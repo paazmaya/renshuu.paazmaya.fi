@@ -48,7 +48,11 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.ba-hashchange.js', // 1.3 (2010-07-21), http://benalman.com/projects/jquery-hashchange-plugin/
 		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
 
-		'renshuusurutoki.js'
+		'renshuu-map.js',
+		'renshuu-markers.js',
+		'renshuu-forms.js',
+		'renshuu-pins.js',
+		'renshuu-main.js',
 	);
 
 	/**

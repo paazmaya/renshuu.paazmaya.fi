@@ -586,7 +586,7 @@ var renshuuMap = {
 		if (data) {
 			console.log('data. ' + data);
 			// Get data
-			var info = renshuuMap.buildInfoWindow(data);
+			var info = renshuuMain.buildInfoWindow(data);
 			// Create overlay
 			/*
 			$('#map').block();
