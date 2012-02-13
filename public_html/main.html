@@ -14,13 +14,35 @@
 </head>
 <body>
 	<div id="map">
-		<img src="img/renshuu-64x64.png" alt="練習" />
 	</div>
 	<div id="bottom">
 		<div id="left">
-			<div id="street">Google Maps Street View</div>
+			<div class="icon-list">
+				<nav><ul>
+					<li><a href="#" title="" data-tab-content="street"><img src="img/bitcons/png/brown/32x32/bstop.png" alt="" /></a></li>
+					<li><a href="#" title="" data-tab-content="cake" class="current"><img src="img/bitcons/png/brown/32x32/calday.png" alt="" /></a></li>
+					<li><a href="#" title="" data-tab-content="walk"><img src="img/bitcons/png/brown/32x32/calendar.png" alt="" /></a></li>
+				</ul></nav>
+			</div>
+			<div class="tab-title"><p>Street View</p></div>
+			<div class="tab-content">
+				<div id="street">Google Maps Street View</div>
+				<div id="cake">Chocolate Cake!</div>
+				<div id="walk">The Walking Dead - Season 2</div>
+			</div>
 		</div>
-		<div id="right"></div>
+		<div id="right">
+			<div class="icon-list">
+				<nav><ul>
+					<li><a href="#" title=""><img src="img/bitcons/png/brown/32x32/bstop.png" alt="" /></a></li>
+					<li><a href="#" title="" class="current"><img src="img/bitcons/png/brown/32x32/calday.png" alt="" /></a></li>
+					<li><a href="#" title=""><img src="img/bitcons/png/brown/32x32/calendar.png" alt="" /></a></li>
+				</ul></nav>
+			</div>
+			<div class="tab-title"><p>Weekdays</p></div>
+			<div class="tab-content">
+			</div>
+		</div>
 	</div>
 	
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.7&amp;sensor=false&amp;language=en"></script>
@@ -37,7 +59,7 @@
 			renshuuMain.lang = {"license":"License information","form":{"createnew":"Create new","clear":"Clear","modify":"Modify current","sending":"Sending data"},"list":{"removeitem":"Remove this item from the list"},"modal":{"savetolist":" Save to list","removefromlist":"Remove from list"},"suggest":{"art":"Type an art name","location":"Type a location name"},"validate":{"requiredfield":"This field is required!","minlength":"Minimum password length is 5 characters"}};
 			renshuuMain.weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 			renshuuMain.userData = {  loggedIn: false,  name: "",  email: "" };
-			renshuuMap.init();
+			//renshuuMap.init();
 			renshuuMain.ready();
 		});
 	</script>

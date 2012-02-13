@@ -20,3 +20,25 @@ How to detect a Ajax request?
 http://codeigniter.com/forums/viewthread/59450/
 $_SERVER['HTTP_X_REQUESTED_WITH']
 
+
+
+Code Structure
+--------------
+
+Javascript application logic files are all prefixed with `renshuu-`, of which `main` contains all the settings.
+
+Javascript libraries that are used in this project are:
+
+* jQuery 1.7.1 (http://jquery.com)
+* jQuery UI 1.7...: tabs and dialog (http://jqueryui.com/)
+* Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
+
+PHP libraries are:
+
+* minify (http://code.google.com/p/minify/)
+* LightOpenID ()
+* PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
+
+
+Markup *should* be completely valid HTML5 and CSS3 for styling.
+

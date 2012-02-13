@@ -57,9 +57,6 @@ fieldset {
 	border: 1px solid #05050D;
 }
 
-li {
-	padding: 0.3em;
-}
 address {
 	font-size: 85%;
 	font-style: normal;
@@ -97,17 +94,6 @@ th {
 }
 td {
 	padding: 0.5em;
-}
-
-nav a {
-	font-size: 85%;
-	padding-bottom: 0.3em;
-}
-
-nav a:hover {
-	border-bottom: 0.3em solid #AA1515;
-	color: #AA1515;
-	text-decoration: none;
 }
 /* IE will not show scrollbar */
 textarea{

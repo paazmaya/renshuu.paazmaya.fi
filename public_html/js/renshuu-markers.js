@@ -32,9 +32,6 @@ data: {
 */
 var renshuuMarkers = {
 	
-	// As per marker double click, show its position in Street View
-	showInStreetView: false,
-	
 	
 	/**
 	 * Store temporary geocoded location markers here.

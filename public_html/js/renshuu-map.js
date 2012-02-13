@@ -28,12 +28,14 @@ var renshuuMap = {
 	geocoder: null,
 
 	/**
+	 * Google Maps v3
 	 * http://code.google.com/apis/maps/documentation/javascript/reference.html
 	 */
 	map: null,
 
 	/**
 	 * google.maps.StreetViewPanorama
+	 * http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewPanorama
 	 */
 	streetView: null,
 
@@ -50,6 +52,11 @@ var renshuuMap = {
 	 * Memorised in LocalStorage.
 	 */
 	streetEnable: false,
+	
+	/**
+	 * As per marker double click, show its position in Street View
+	 */
+	showInStreetView: false,
 
 	/**
 	 * http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
@@ -75,17 +82,18 @@ var renshuuMap = {
 			center: renshuuMap.hikone,
 			zoom: renshuuMap.zoom
 		});
+		
+		// and the Street View
+		renshuuMap.streetInit($('#street').get(0), {
+			enableCloseButton: false,
+			visible: false
+		});
 
 		
 		// Handler for the ability to toggle streetView viewing while marker click.
 		if (localStorage.getItem('showInStreetView')) {
 			$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
 			renshuuMap.showInStreetView = true;
-		}
-
-		// and the Street View
-		if (renshuuMap.streetEnable) {
-			renshuuMap.streetInit($('#street').get(0), {enableCloseButton: true, visible: true});
 		}
 
 		// Toggle "street view position update based on the map position" setting.

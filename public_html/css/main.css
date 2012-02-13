@@ -81,7 +81,7 @@ td.even, tbody tr:nth-child(even) {
 
 
 
-
+/** upper area is map **/
 #map {
 	position: absolute;
 	top: 0;
@@ -90,30 +90,131 @@ td.even, tbody tr:nth-child(even) {
 	bottom: 35%;
 	height: 65%;
 	width: 100%;
+	
+	background-image: url(../img/renshuu-64x64.png);
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
+/** lower area is bottom **/
 #bottom {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 34%;
+	height: 35%;
 	width: 100%;
 }
 
+/** left and right are children of bottom **/
 #left {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	top: 0;
 	width: 60%;
-	float: left;
 }
 #right {
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	right: 0;
 	width: 40%;
-	float: left;
-	left: 60%;
 }
-#street {
+/** icon-list are children of left and right **/
+.icon-list {
+	position: absolute;
+	width: 40px;
+	top: 30px;
+	bottom: 0;
+	z-index: 111;
+}
+#left .icon-list {
+	right: 0;
+}
+#right .icon-list {
+	left: 0;
+}
+.icon-list ul {
+	display: inline;
+}
+.icon-list li {
+	display: block;
+	list-style: none;
+}
+.icon-list a {
+	background-color: #034A77;
+	padding: 4px;
+	display: block;
+}
+.icon-list a:hover {
+	background-color: #5E0202;
+}
+.icon-list img {
+	width: 32px;
+	height: 32px;
+}
+
+#left .icon-list a {
+	-moz-border-radius-bottomleft: 1em;
+	border-radius-bottomleft: 1em;
+}
+#right .icon-list a {
+	-moz-border-radius-bottomright: 1em;
+	border-radius-bottomright: 1em;
+	/* border-bottom-right-radius */
+}
+#bottom .current {
+	background-color: #67828A;
+}
+#bottom .current:hover {
+	background-color: #AA1515;
+}
+
+/** tab-title are children of left and right **/
+.tab-title {
+	position: absolute;
+	width: auto;
+	top: 0;
+	z-index: 112;
+	height: 30px;
+	background-color: #5E0202;
+}
+#left .tab-title {
+	right: 0;
+	-moz-border-radius-bottomleft: 1em;
+	border-radius-bottomleft: 1em;
+}
+#right .tab-title {
+	left: 0;
+	-moz-border-radius-bottomright: 1em;
+	border-radius-bottomright: 1em;
+}
+.tab-title  p {
+	padding: 4px 8px;
+}
+
+/** tab-content is a child of left or right **/
+.tab-content {
+	height: 100%;
+	width: 100%;
+	background-image: url(../img/renshuu-64x64.png);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.tab-content > div {
+	position: absolute;
 	height: 100%;
 	width: 100%;
 }
+
+/** street is a child of tab-content **/
+#street {
+}
+
+
+
+
 
 
 #copyright {
@@ -127,18 +228,10 @@ td.even, tbody tr:nth-child(even) {
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;
 }
-#left, .left-side {
-	width: 60%;
-	float: left;
-}
-#right, .right-side {
-	width: 40%;
-	float: left;
-	left: 60%;
-}
-#right > div, .right-side > div  {
-	padding-left: 1em;
-}
+
+
+
+
 #tools {
 
 }
@@ -148,6 +241,8 @@ td.even, tbody tr:nth-child(even) {
 #filtering a[rel] {
 	padding: 0.5em;
 }
+
+
 .header {
 	background-color: #0E3621;
 	padding-left: 2em;
@@ -265,18 +360,6 @@ ul.inputnotes li.note {
 	list-style: none;
 }
 
-#simplemodal-container a.modalCloseImg {
-	background:url(/img/x.png) no-repeat; /* adjust url as required */
-	width:25px;
-	height:29px;
-	display:inline;
-	z-index:3200;
-	position:absolute;
-	top:-15px;
-	right:-18px;
-	cursor:pointer;
-}
-
 .modal-info {
 	display: block;
 	background-color: #F9FBF7;
@@ -328,26 +411,6 @@ address.geo abbr {
 	display: none;
 }
 
-
-nav ul {
-	display: inline-block;
-	width: 90%;
-	padding: 0.5em;
-	font-weight: bold;
-	color: #F9FBF7;
-}
-
-nav li {
-	float: left;
-	display: inline;
-	list-style: none;
-	padding: 0 0.4em;
-}
-
-.selected a {
-	border-bottom: 0.3em solid #129EF7;
-	color: #129EF7;
-}
 
 /* http://www.1stwebdesigner.com/development/useful-css-snippets */
 .transparent {

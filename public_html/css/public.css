@@ -44,7 +44,12 @@ RENSHUU.PAAZMAYA.COM
 	float: none;
 }
 #loginlist a {
-	
+	padding-bottom: 0.3em;
+}
+#loginlist a:hover {
+	border-bottom: 0.3em solid #AA1515;
+	color: #AA1515;
+	text-decoration: none;
 }
 #loginlist img {
 	width: 64px;

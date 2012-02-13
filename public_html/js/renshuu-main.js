@@ -14,7 +14,8 @@
  */
 
 /**
- * Firebug console functions if they do not exist
+ * Firebug console functions if they do not exist.
+ * http://getfirebug.com/wiki/index.php/Console_API
  */
 (function (window) {
 	if (!('console' in window) || !('firebug' in console)) {
@@ -50,17 +51,7 @@ var renshuuMain = {
 	 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT
 	 */
 	dirRequestInterval: 1000, // 1 sec
-
-	/**
-	 * Tabs contain all the different forms.
-	 */
-	tabContentElement: '#tabcontent',
 	
-	/**
-	 *
-	 */
-	filtersHtml: null,
-
 	/**
 	 * Default filter settings. Make sure the values are always single strings.
 	 */
@@ -79,7 +70,9 @@ var renshuuMain = {
 		user: 'womanman'
 	},
 
-	// Icon used as a background for the geocode direction
+	/**
+	 * Icon used as a background for the geocode direction
+	 */
 	geocodeClass: {
 		none: 'denied',
 		address: 'arrow3_s',
@@ -132,20 +125,35 @@ var renshuuMain = {
 	 *
 	 */
 	ready: function () {
-		console.group('ready');
+		//console.group('ready');
 		if (typeof(localStorage) == 'undefined' ) {
 			console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
 		}
 
 		// How about a existing value for the filter settings?
-		if (localStorage.getItem('filterArts')) {
-			renshuuMain.filterSettings.arts = localStorage.getItem('filterArts').split('.');
+		var filterArts = localStorage.getItem('filterArts');
+		var filterWeekdays = localStorage.getItem('filterWeekdays');
+		var tabLeft = localStorage.getItem('tabLeft');
+		var tabRight = localStorage.getItem('tabRight');
+		
+		console.log('tabRight : ' + tabRight);
+		console.dir(localStorage);
+		/*
+		if (typeof filterArts !== 'undefined') {
+			renshuuMain.filterSettings.arts = filterArts.split('.');
 			console.log('filterArts storage item existed. renshuuMain.filterSettings.arts: ' + renshuuMain.filterSettings.arts);
 		}
-		if (localStorage.getItem('filterWeekdays')) {
-			renshuuMain.filterSettings.weekdays = localStorage.getItem('filterWeekdays').split('.');
+		if () {
+			renshuuMain.filterSettings.weekdays = filterWeekdays.split('.');
 			console.log('filterWeekdays storage item existed. renshuuMain.filterSettings.weekdays: ' + renshuuMain.filterSettings.weekdays);
 		}
+		if () {
+			renshuuMain.showTabContent($('#left .icon-list a[data-tab-content="' + tabLeft + '"]'));
+		}
+		if () {
+			renshuuMain.showTabContent($('#right .icon-list a[data-tab-content="' + tabRight + '"]'));
+		}
+		*/
 
 
 		// Triggers on individual change of the checkboxes
@@ -191,13 +199,6 @@ var renshuuMain = {
 			return false;
 		});
 
-		// http://benalman.com/projects/jquery-hashchange-plugin/
-		/*
-		$(window).hashchange(function () {
-			console.log('hashchange: ' + location.hash );
-		});
-		*/
-
 		// Open external links in a new window. Perhaps copyright is the only one...
 		$('a[href^="http://"]').live('click', function () {
 			var href = $(this).attr('href');
@@ -207,6 +208,19 @@ var renshuuMain = {
 		});
 
 
+		
+		// Change tab content
+		$('.icon-list a').on('click', function () {
+			renshuuMain.showTabContent($(this));
+			return false;
+		}).on('mouseover', function() {
+			var title = $(this).attr('title');
+		}).on('mouseout', function() {
+		});
+		
+		
+		
+		
 		// Toggle the visibility of each box
 		$('.header p a').click(function () {
 			var rel = $(this).attr('rel');
@@ -215,14 +229,7 @@ var renshuuMain = {
 			con.toggle(renshuuMain.animSpeed);
 			return false;
 		});
-		// Navigation to forms is done via tabs at the right
-		$('nav a').live('click', function () {
-			var href = $(this).attr('href');
-			var key = href.substr(href.indexOf('#') + 1);
-			console.log('nav a -- live click. key: ' + key);
-			renshuuMain.showTabContent(key);
-			return false;
-		});
+		
 
 
 		$('.modal-tools a[rel=savetolist]').live('click', function () {
@@ -335,7 +342,7 @@ var renshuuMain = {
 			renshuuMain.updateExportPreview();
 		});
 		// Initial load...
-		renshuuMain.updateExportPreview();
+		//renshuuMain.updateExportPreview();
 
 		// Dragging of the modal window.
 		$('h2.summary').live('mousedown', function () {
@@ -353,27 +360,8 @@ var renshuuMain = {
 		*/
 
 
-		renshuuMain.applyFilters();
+		//renshuuMain.applyFilters();
 
-		// Save the initial filtering form.
-		renshuuMain.filtersHtml = $('#filtering').outerHtml();
-		//console.log('initial renshuuMain.filtersHtml: ' + renshuuMain.filtersHtml);
-
-		// If the current hash is something that would make filters invisible, store them now
-		console.log('location.hash: ' + location.hash + ', location.pathname: ' + location.pathname);
-		if (location.hash !== '') {
-			var found = false;
-			var key = location.hash.substr(1);
-			console.log('key: ' + key);
-			// Check if the current hash exists in the list of forms if it was not the filter view.
-			if (key == 'filters' || renshuuForms.types.indexOf(key) !== -1) {
-				renshuuMain.showTabContent(key);
-			}
-		}
-		else {
-			location.hash = '#filters';
-			renshuuMain.showTabContent('filters');
-		}
 
 		// Finally, set the keepalive call
 		setInterval(function () {
@@ -383,28 +371,42 @@ var renshuuMain = {
 		}, renshuuMain.keepAlive);
 
 		
-		console.groupEnd();
+		//console.groupEnd();
 	},
 	
 
 	/**
 	 * Each tab has an individual content.
-	 * @see
+	 * key Which tab
+	 * side	left/right
 	 */
-	showTabContent: function (key) {
+	showTabContent: function ($elem) {
 		console.group('showTabContent');
-		document.location = '#' + key;
+		var key = $elem.attr('href').substr(1);
+		var title = $elem.attr('title');
+		var tab = $elem.data('tabContent');
+		console.log('key: ' + key + ', title: ' + title + ', tab: ' + tab);
 
-		// Remove and add "selected" class
-		$('nav li').removeClass('selected');
-		$('nav li:has(a[href=#' + key + '])').addClass('selected');
+		// Remove and add "current" class
+		$elem.parentsUntil('.icon-list').find('a').removeClass('current');
+		$elem.addClass('current');
+		
+		// Set title
+		$elem.closest('.tab-title p').text(title);
 
-		// Set icon. Initially the classes are: header icon icon-equalizer. This is the only reference to the id #right.
-		// $('nav').parent('.header')... ?
-		$('#right .header').attr('class', 'header icon icon-' + renshuuMain.menuicons[key]);
-
+		// Hide all that is visible
+		$elem.closest('.tab-content > div:visible').hide();
+		
+		// Show the requested one
+		$('#' + tab).show();
+		
+		// Save current view
+		localStorage.setItem('tabRight', $('#right .tab-content > div:visible').attr('id'));
+		localStorage.setItem('tabLeft', $('#left .tab-content > div:visible').attr('id'));
+		
+		
+		
 		if (key == 'filters') {
-			$(renshuuMain.tabContentElement).html(renshuuMain.filtersHtml);
 			renshuuMain.applyFilters();
 		}
 		else if (key == 'location') {
