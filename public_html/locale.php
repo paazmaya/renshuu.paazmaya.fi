@@ -129,8 +129,12 @@ Only non empty values will be used.
 			'disabled' => false, disabled="disabled" will be written if true
 			'after' => gettext(''), text after the element but before the label closes
 			'value' => gettext(''), value of the input element if any
+			'list' => 'listname', key of the list that is defined in the lists array
 			'options' => array() options used in the case of select: value => visible text
 		)
+	),
+	'lists' => array(
+		'listname' => SQL phrase with only one item per row with int key
 	),
 	'links' => array(
 		'twitter' => gettext('Login via your Twitter account')
@@ -267,7 +271,7 @@ $lang['forms'] = array(
 				'label' => gettext('Art'),
 				'type' => 'select',
 				'name' => 'art',
-				'options' => array()
+				'options' => 'SELECT id, name FROM renshuu_art ORDER BY name ASC'
 			)
 		)
 	),
@@ -287,7 +291,8 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Art'),
 				'type' => 'text',
-				'name' => 'art'
+				'name' => 'art',
+				'list' => 'artlist'
 			),
 			array(
 				'label' => gettext('Contact'),
@@ -299,9 +304,12 @@ $lang['forms'] = array(
 				'type' => 'text',
 				'name' => 'info'
 			)
+		),
+		'lists' => array(
+			'artlist' => 'SELECT name FROM renshuu_art ORDER BY 1 ASC'
 		)
 	),
-	'user' => array(
+	'profile' => array(
 		'legend' => gettext('Profile'),
 		'info' => gettext('Please keep your personal profile up to date and relevant'),
 		'buttons' => array(
@@ -323,31 +331,6 @@ $lang['forms'] = array(
 				'type' => 'text',
 				'name' => 'password',
 				'after' => gettext(' (fill if you wish to change, else leave empty)')
-			)
-		)
-	),
-	'register' => array(
-		'legend' => gettext('Register'),
-		'info' => gettext('Registration to this site enables to use all the features'),
-		'buttons' => array(
-			'send' => gettext('Register user'),
-			'clear' => gettext('Clear')
-		),
-		'items' => array(
-			array(
-				'label' => gettext('E-mail'),
-				'type' => 'email',
-				'name' => 'email'
-			),
-			array(
-				'label' => gettext('Full name'),
-				'type' => 'text',
-				'name' => 'title'
-			),
-			array(
-				'label' => gettext('Password'),
-				'type' => 'text',
-				'name' => 'password'
 			)
 		)
 	),
@@ -485,29 +468,62 @@ $lang['selectionshortcuts'] = array(
  * Access value is to be used as binary
  */
 $lang['navigation'] = array(
-	'filters' => array(
-		'title' => gettext('Map filters'),
-		'text' => gettext('filters'),
-		'access' => 4
+	'left' => array(
+		'street' => array(
+			'title' => gettext('Street View'),
+			'text' => gettext('street'),
+			'image' => 'camera.png',
+			'access' => 1
+		),
+		'weekdays' => array(
+			'title' => gettext('Weekday filter'),
+			'text' => gettext('weekdays'),
+			'image' => 'calendar.png',
+			'access' => 8
+		),
+		'arts' => array(
+			'title' => gettext('Martial art filter'),
+			'text' => gettext('arts'),
+			'image' => 'equalizer.png',
+			'access' => 256
+		),
+		'saved' => array(
+			'title' => gettext('Saved Trainings'),
+			'text' => gettext('saved'),
+			'image' => 'save.png',
+			'access' => 2
+		)
 	),
-	'training' => array(
-		'title' => gettext('Training creation'),
-		'text' => gettext('training'),
-		'access' => 8
-	),
-	'location' => array(
-		'title' => gettext('Location creation'),
-		'text' => gettext('location'),
-		'access' => 16
-	),
-	'art' => array(
-		'title' => gettext('Martial art addition'),
-		'text' => gettext('art'),
-		'access' => 32
-	),
-	'user' => array(
-		'title' => gettext('Profile editing'),
-		'text' => gettext('profile'),
-		'access' => 2
+	'right' => array(
+		'training' => array(
+			'title' => gettext('Training creation'),
+			'text' => gettext('training'),
+			'image' => 'calendar.png',
+			'access' => 16
+		),
+		'location' => array(
+			'title' => gettext('Location creation'),
+			'text' => gettext('location'),
+			'image' => 'target.png',
+			'access' => 32
+		),
+		'art' => array(
+			'title' => gettext('Martial art addition'),
+			'text' => gettext('art'),
+			'image' => 'add.png',
+			'access' => 64
+		),
+		'person' => array(
+			'title' => gettext('Person creation'),
+			'text' => gettext('person'),
+			'image' => 'man.png',
+			'access' => 128
+		),
+		'profile' => array(
+			'title' => gettext('Profile editing'),
+			'text' => gettext('profile'),
+			'image' => 'user.png',
+			'access' => 4
+		)
 	)
 );

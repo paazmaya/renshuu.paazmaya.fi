@@ -63,8 +63,58 @@ echo $renshuu->createBodyLoggedin();
 
 
 // -----
+/*
 echo '<pre>SESSION ';
 print_r($_SESSION);
 echo '</pre>';
+*/
 // -----
 
+
+
+	/**
+	 * 
+	 */
+	function pageForm()
+	{
+		
+		// $this->lang['forms'] variable available in the translations_xx.php,
+		// $this->lang['weekdays'] too..
+
+		$data = $this->lang['forms'][$this->pagetype];
+		$items = array();
+		foreach($data['items'] as $item)
+		{
+			if ($item['type'] == 'select')
+			{
+				if ($item['name'] == 'weekday')
+				{
+					$item['options'] = $this->lang['weekdays'];
+				}
+				else if ($item['name'] == 'art')
+				{
+					$results = array();
+					$sql = 'SELECT id, name FROM renshuu_art ORDER BY name ASC';
+					$run =  $this->pdo->query($sql);
+					if ($run)
+					{
+						while($res = $run->fetch(PDO::FETCH_ASSOC))
+						{
+							$results[$res['id']] = $res['name'];
+						}
+					}
+					$item['options'] = $results;
+				}
+			}
+			$items[] = $item;
+		}
+		
+		$data['items'] = $items;
+
+		$action = null;
+		if ($this->pagetype == 'login')
+		{
+			$action = '/login';
+		}
+		$this->out['form'] = $this->helper->createForm($this->pagetype, $data, $action);
+	}

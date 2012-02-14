@@ -99,3 +99,7 @@ td {
 textarea{
 	overflow: auto;
 }
+
+ul, ol {
+	list-style-position: inside;
+}

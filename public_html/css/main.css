@@ -112,14 +112,14 @@ td.even, tbody tr:nth-child(even) {
 	bottom: 0;
 	left: 0;
 	top: 0;
-	width: 60%;
+	width: 50%;
 }
 #right {
 	position: absolute;
 	bottom: 0;
 	top: 0;
 	right: 0;
-	width: 40%;
+	width: 50%;
 }
 /** icon-list are children of left and right **/
 .icon-list {
@@ -178,7 +178,9 @@ td.even, tbody tr:nth-child(even) {
 	top: 0;
 	z-index: 112;
 	height: 30px;
-	background-color: #5E0202;
+	background-color: #67828A;
+	color: #F9FBF7;
+	font-weight: bold;
 }
 #left .tab-title {
 	right: 0;
@@ -204,16 +206,37 @@ td.even, tbody tr:nth-child(even) {
 }
 .tab-content > div {
 	position: absolute;
-	height: 100%;
-	width: 100%;
+	top: 2em;
+	left: 2em;
+	right: 2em;
+	bottom: 1em;
+	overflow: auto;
 }
 
 /** street is a child of tab-content **/
 #street {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 
-
+/** oldies but goodies **/
+.tab-content ul { 
+	list-style: none; 
+	margin-left: 1em;
+}
+.tab-content a {
+	background-color: inherit;
+}
+.tab-content a:hover, .tab-content li:hover {
+	background-color: #129EF7;
+}
+.tab-content input[type="checkbox"] {
+	margin: 0.5em 1em; 
+}
+.tab-content a[rel] { font-size: smaller; }
 
 
 
@@ -260,27 +283,8 @@ td.even, tbody tr:nth-child(even) {
 	-webkit-border-radius: 0 0 1em 1em;
 	-moz-border-radius: 0 0 1em 1em;
 }
-.header p, .content p, #savedlist {
+#savedlist {
 	padding: 0.5em;
-}
-.header p {
-	font-weight: bold;
-}
-.header a {
-	width: 65%;
-	color: #F9FBF7;
-}
-.header span {
-	width: 35%;
-	float: right;
-	text-align: right;
-	font-size: 90%;
-}
-.content a {
-	background-color: inherit;
-}
-.content a:hover, .content li:hover {
-	background-color: #129EF7;
 }
 
 
@@ -289,19 +293,10 @@ td.even, tbody tr:nth-child(even) {
 	font-size: 90%;
 }
 
-.content ul { list-style: none; margin-left: 1em; }
 /*
 .content ul:nth-child(odd) li { background-color: #AA1515; }
 .content ul:nth-child(even) li { background-color: #5E0202; }
 */
-/*.content input { margin: 0.5em 1em; }*/
-.content a[rel] { font-size: smaller; }
-
-.round {
-	border-radius: 0.5em;
-	-webkit-border-radius: 0.5em;
-	-moz-border-radius: 0.5em;
-}
 
 
 .jquery-timepicker-mouseover { background-color: #5E0202; color: #F9FBF7; }

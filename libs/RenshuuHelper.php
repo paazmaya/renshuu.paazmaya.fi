@@ -5,12 +5,15 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
 /**
- * Plenty of functions for doing stuff that does not need any external info
+ * Plenty of functions for doing stuff that does not need any external info, except database
  */
 class RenshuuHelper
 {
-
-
+	/**
+	 * Shortcut to the database connection created in RenshuuBase
+	 */
+	public $pdo;
+	
 	/**
 	 *
 	 */
@@ -20,17 +23,17 @@ class RenshuuHelper
 	}
 
 	/**
-	 * <ul id="navigation">
-	 *   <li><a href="#filters" title="">filters</a></li>
+	 * <nav><ul>
 	 *   <li><a href="#location" title="">location</a></li>
 	 *   <li><a href="#art" title="">art</a></li>
-	 *   <li><a href="#user" title="">profile</a></li>
+	 *   <li><a href="#profile" title="">profile</a></li>
 	 *   <li><a href="#login" title="">login</a></li>
-	 * </ul>
+	 * </ul></nav>
 	 *
 	 * @param array $data = 'filters' => array(
 	 * 		'title' => '',
 	 * 		'text' => '',
+	 * 		'image' => '',
 	 * 		'access' => 0
 	 * 	)
 	 * @param int $access Current access level of the user, used as binary
@@ -43,7 +46,9 @@ class RenshuuHelper
 		{
 			if ($val['access'] & $access)
 			{
-				$out .= '<li><a href="#' . $key . '" title="' . $val['title'] . '">' . $val['text'] . '</a></li>';
+				$out .= '<li><a href="#' . $key . '" title="' . $val['title'] . '">';
+				$out .= '<img src="/img/bitcons/png/brown/32x32/' . $val['image'] . '" alt="' . $val['text'] . '" />';
+				$out .= '</a></li>';
 			}
 		}
 		$out .= '</ul></nav>';
@@ -172,8 +177,7 @@ class RenshuuHelper
 			$action = '/ajax/set/' . $id;
 		}
 
-		// rel=insert-0 makes it possible to use ajax on this.
-		$out = '<form id="' . $id . '_form" action="' . $action . '" method="post" rel="insert-0">';
+		$out = '<form id="' . $id . '_form" action="' . $action . '" method="post" data-ref="0" data-key="insert">';
 		$out .= '<fieldset>';
 		if (isset($data['legend']) && $data['legend'] != '')
 		{
@@ -223,11 +227,23 @@ class RenshuuHelper
 				if ($item['type'] == 'select')
 				{
 					$out .= '>';
-					if (isset($item['options']) && is_array($item['options']) && count($item['options']) > 0)
+					$out .= '<option value=""></option>'; // perhaps needs an option to be opt out?
+					if (isset($item['options']))
 					{
-						foreach($item['options'] as $k => $v)
+						if (is_array($item['options']) && count($item['options']) > 0)
 						{
-							$out .= '<option value="' . $k . '">' . $v . '</option>';
+							foreach($item['options'] as $k => $v)
+							{
+								$out .= '<option value="' . $k . '">' . $v . '</option>';
+							}
+						}
+						else if (is_string($item['options']) && strlen($item['options']) > 0)
+						{
+							$run = $this->pdo->query($item['options']);
+							while ($res = $run->fetch(PDO::FETCH_NUM))
+							{
+								$out .= '<option value="' . $res['0'] . '">' . $res['1'] . '</option>';
+							}
 						}
 					}
 					$out .= '</select>';
@@ -255,6 +271,12 @@ class RenshuuHelper
 					{
 						$out .= ' value="' . $item['value'] . '"';
 					}
+					
+					// Remember to define the given listat the bottom
+					if (isset($item['list']) && $item['list'] != '')
+					{
+						$out .= ' list="' . $item['list'] . '"';
+					}
 					$out .= ' />';
 				}
 			}
@@ -271,6 +293,19 @@ class RenshuuHelper
 			else
 			{
 				$out .= '</label></p>';
+			}
+		}
+		if (isset($data['lists']) && is_array($data['lists']))
+		{
+			foreach($data['lists'] as $k => $v)
+			{
+				$out .= '<datalist id="' . $k . '">';
+				$run = $this->pdo->query($v);
+				while ($res = $run->fetch(PDO::FETCH_NUM))
+				{
+					$out .= '<option value="' . $res['0'] . '" />';
+				}
+				$out .= '</datalist>';
 			}
 		}
 		if (isset($data['buttons']) && is_array($data['buttons']))

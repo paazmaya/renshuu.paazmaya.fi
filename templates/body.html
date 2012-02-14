@@ -1,62 +1,35 @@
 <body>
-	<div id="wrap">
-		<div id="left" class="left-side">
-			<div id="mapping">
-				<div class="header icon icon-tools">
-					<p><a href="#" rel="map">#_#Training locations#_#</a><span></span></p>
+	<div id="map"></div>
+	<div id="bottom">
+		<div id="left" class="bottom-tabs">
+			<div class="icon-list">
+				##leftnavigation##
+			</div>
+			<div class="tab-title"><p>Street View</p></div>
+			<div class="tab-content">
+				<div id="street">Google Maps Street View</div>
+				<div id="weekdays" style="display:none;">
+					##weekdayshortcuts##
+					##weekdaylist##
 				</div>
-				<div class="content">
-					<div id="map" class="stuff">Google Maps V3</div>
+				<div id="arts">
+					##artshortcuts##
+					##artlist##
 				</div>
-				<div class="header icon icon-search">
-					<p><a href="#" rel="street">#_#Street View#_#</a>
-						<span>
-							<label><input type="checkbox" name="markerstreet" /> #_#toggle SV#_#</label>
-						</span>
-					</p>
-				</div>
-				<div class="content">
-					<div id="street" class="stuff">Google Maps Street View</div>
-				</div>
-				<div class="header icon icon-calendar">
-					<p><a href="#" rel="savedlist">#_#Saved list#_#</a><span></span></p>
-				</div>
-				<div class="content">
-					<div id="savedlist" class="stuff">
-						##savedlist##
-					</div>
-				</div>
+				<div id="saved" style="display:none;">##saved_table##</div>
 			</div>
 		</div>
-
-		<div id="right" class="right-side">
-			<div>
-				<div class="header icon icon-equalizer">
-					##navigation##
-				</div>
-				<div class="content">
-					<div class="stuff" id="tabcontent">
-						<div id="filtering">
-							##artshortcuts##
-							##artlist##
-							##weekdayshortcuts##
-							##weekdaylist##
-						</div>
-					</div>
-				</div>
+		<div id="right" class="bottom-tabs">
+			<div class="icon-list">
+				##rightnavigation##
 			</div>
-			<div>
-				<div class="header icon icon-edit">
-					<p><a href="#" rel="export">#_#Export settings#_#</a><span></span></p>
-				</div>
-				<div class="content">
-					<div id="export" class="stuff">
-						##exportform##
-						<p><img id="exportpreview" src="##staticmap##" alt="#_#Preview of the current settings affect on the resulting map#_#" /></p>
-					</div>
-				</div>
+			<div class="tab-title"><p>Martial Arts</p></div>
+			<div class="tab-content">
+				<div id="art" style="display:none;">##form_art##</div>
+				<div id="training" style="display:none;">##form_training##</div>
+				<div id="location" style="display:none;">##form_location##</div>
+				<div id="person" style="display:none;">##form_person##</div>
+				<div id="profile" style="display:none;">##form_profile##</div>
 			</div>
 		</div>
-
 	</div>
-	##copyright##

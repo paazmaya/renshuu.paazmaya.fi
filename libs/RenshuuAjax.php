@@ -7,7 +7,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 * Possible commands as the first part of the url after "ajax":
 * - get		Get public data while not logged in
 * - set		Accessable only when logged in
-* - form	Can be accessed anytime but useless if not logged in
 * - keepalive	Used for keeping the session alive.
 *
 * In all of the cases, the keyword followed must be one of the following,
@@ -64,13 +63,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 * Note that "get" and "location" with "area" in the POST will return a list of locations
 * within the given boundaries.
 *
-* While in "form" mode, the output is a html string containing <form>
-* with all the requested components, in a "form" key.
-*
-* Additional "form" options are: login and user.
-* Those two will use index.php directly as their counter parts, so there is no need
-* to set up an "set" options for them.
-*
 * As for the "set" mode, the output is simply to return the id and the title
 * for the data which was successfuly inserted. In any other case "error" will be present.
 *	result: { id: 0, title: '', message: '' }
@@ -99,7 +91,7 @@ class RenshuuAjax extends RenshuuBase
 	);
 
 	/**
-	 * get/set/form + keepalive
+	 * get/set + keepalive
 	 */
 	private $page = '';
 
@@ -108,13 +100,12 @@ class RenshuuAjax extends RenshuuBase
 	 */
 	private $pages = array(
 		'get',
-		'set', 
-		'form', 
+		'set',  
 		'keepalive'
 	);
 
 	/**
-	 * art/location/training/person + user/login
+	 * art/location/training/person + profile/login
 	 */
 	private $pagetype = '';
 
@@ -126,7 +117,7 @@ class RenshuuAjax extends RenshuuBase
 		'location', 
 		'training', 
 		'person', 
-		'user',
+		'profile',
 		'login'
 	);
 
@@ -205,12 +196,6 @@ class RenshuuAjax extends RenshuuBase
 					$this->passcheck = true;
 				}
 
-				if ($this->page != 'form')
-				{
-					// Remove "login" option.
-					array_splice($this->pagetypes, -1);
-				}
-
 				if ($count > 2 && in_array($parts['2'], $this->pagetypes))
 				{
 					$this->pagetype = $parts['2'];
@@ -272,7 +257,6 @@ class RenshuuAjax extends RenshuuBase
 			'get' => 'pageGetLocation',
 			'get' => 'pageGet',
 			'set' => 'pageSet',
-			'form' => 'pageForm',
 			'keepalive' => 'pageKeepAlive'
 		);
 		*/
@@ -293,10 +277,6 @@ class RenshuuAjax extends RenshuuBase
 		else if ($this->page == 'set' && $loggedin) // login should not require to be logged in...
 		{
 			$this->pageSet();
-		}
-		else if ($this->page == 'form')
-		{
-			$this->pageForm();
 		}
 		else if ($this->page == 'keepalive')
 		{
@@ -531,7 +511,7 @@ class RenshuuAjax extends RenshuuBase
 				'contact' => '',
 				'info' => '',
 			),
-			'user' => array(
+			'profile' => array(
 				'email' => '',
 				'password' => ''
 			)
@@ -641,53 +621,6 @@ class RenshuuAjax extends RenshuuBase
 		}
 	}
 	
-	/**
-	 * 
-	 */
-	private function pageForm()
-	{
-		
-		// $this->lang['forms'] variable available in the translations_xx.php,
-		// $this->lang['weekdays'] too..
-
-		$data = $this->lang['forms'][$this->pagetype];
-		$items = array();
-		foreach($data['items'] as $item)
-		{
-			if ($item['type'] == 'select')
-			{
-				if ($item['name'] == 'weekday')
-				{
-					$item['options'] = $this->lang['weekdays'];
-				}
-				else if ($item['name'] == 'art')
-				{
-					$results = array();
-					$sql = 'SELECT id, name FROM renshuu_art ORDER BY name ASC';
-					$run =  $this->pdo->query($sql);
-					if ($run)
-					{
-						while($res = $run->fetch(PDO::FETCH_ASSOC))
-						{
-							$results[$res['id']] = $res['name'];
-						}
-					}
-					$item['options'] = $results;
-				}
-			}
-			$items[] = $item;
-		}
-		
-		$data['items'] = $items;
-
-		$action = null;
-		if ($this->pagetype == 'login')
-		{
-			$action = '/login';
-		}
-		$this->out['form'] = $this->helper->createForm($this->pagetype, $data, $action);
-		unset($this->out['error']);
-	}
 	
 	/**
 	 * 

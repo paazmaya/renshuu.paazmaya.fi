@@ -32,17 +32,15 @@ class RenshuuSuruToki extends RenshuuBase
 		'ui.timepickr.js', // contains jquery.utils, jquery.strings
 
 		'jquery.outerhtml.js', //
-		'jquery.clearform.js',
+		
 		'jquery.timepicker.js', //
 		'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
 		'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 		'jquery.inputnotes-0.6.js', // 0.6 ()
 		
-		//'jquery.gomap.js', // 1.3.2 (2011-07-01), http://www.pittss.lv/jquery/gomap/
 		'jquery.hotkeys.js', // 0.8 (2010-03-10), https://github.com/tzuryby/jquery.hotkeys
 		'jquery.corner.js', // 2.12 (2011-05-23), http://jquery.malsup.com/corner/
 		'jquery.form.js', // 2.83 (2011-07-11), http://malsup.com/jquery/form/
-		'jquery.autoSuggest.js', // 1.4 (2010-03-23), http://code.drewwilson.com/entry/autosuggest-jquery-plugin
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
 		
 		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
@@ -59,7 +57,7 @@ class RenshuuSuruToki extends RenshuuBase
 	 */
 	public $styles = array(
 		'common.css',
-		'public.css',
+		//'public.css',
 		'main.css',
 
 		'jquery.ui.button.css',
@@ -113,7 +111,7 @@ class RenshuuSuruToki extends RenshuuBase
 		//$this->minify('js', $this->scripts);
 
 		// Same thing for cascaded style sheet, in public_html/css/..
-		$this->minify('css', $this->styles);
+		//$this->minify('css', $this->styles);
 
 		// Append with gzip if supported.
 		$this->gzipped = ''; //'.gz';
@@ -176,7 +174,7 @@ class RenshuuSuruToki extends RenshuuBase
 						$_SESSION['username'] = $res['name'];
 						$_SESSION['access'] = intval($res['access']); // use as binary
 
-						$uri = '/#user';
+						$uri = '/#profile';
 					}
 					else
 					{
@@ -207,11 +205,18 @@ class RenshuuSuruToki extends RenshuuBase
 	{
 		$out = file_get_contents($this->templateDir . 'head.html');
 
+		$stylesheetmain = '';
+		foreach ($this->styles as $style)
+		{
+			$stylesheetmain .= '<link type="text/css" href="/css/' . $style . '" rel="stylesheet" />';
+		}
+		
 		$list = array(
 			'lang' => $this->language, // $_SESSION['lang']
 			'title' => $this->config['title'] . ' | ' . $this->lang['title'],
 			'description' => $this->lang['description'],
-			'stylesheetmain' => '/css/' . $this->config['minified'] . $this->gzipped . '.css',
+			//'stylesheetmain' => '/css/' . $this->config['minified'] . $this->gzipped . '.css',
+			'stylesheetmain' => $stylesheetmain,
 			'stylesheeticon' => '/css/iconset-' . $this->config['iconset'] . '.css',
 		);
 
@@ -290,7 +295,7 @@ class RenshuuSuruToki extends RenshuuBase
 		}
 		$artlist .= '</ul>';
 
-		$weekdaylist = '<ul id="weekdays">';
+		$weekdaylist = '<ul>';
 		// Zero index Sunday.
 		foreach($this->lang['weekdays'] as $key => $val)
 		{
@@ -305,15 +310,23 @@ class RenshuuSuruToki extends RenshuuBase
 			</div>';
 
 		$list = array(
-			'savedlist' => $this->helper->createTable($this->lang['savedtable']),
-			'navigation' => $this->helper->createNavigation($this->lang['navigation'], $_SESSION['access']), // Navigation based on the current access level
+			'leftnavigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
+			'rightnavigation' => $this->helper->createNavigation($this->lang['navigation']['right'], $_SESSION['access']),
 			'artshortcuts' => $this->helper->createSelectionShortcuts('rel_arts', $this->lang['selectionshortcuts']),
 			'artlist' => $artlist,
 			'weekdayshortcuts' => $this->helper->createSelectionShortcuts('rel_weekdays', $this->lang['selectionshortcuts']),
 			'weekdaylist' => $weekdaylist,
 			'exportform' => $this->helper->createForm('export', $this->lang['forms']['export']),
 			'staticmap' => $this->helper->createStaticMapUrl(),
-			'copyright' => $copyright
+			'copyright' => $copyright,
+			
+			'saved_table' => $this->helper->createTable($this->lang['savedtable']),
+			
+			'form_training' => $this->helper->createForm('training', $this->lang['forms']['training']),
+			'form_location' => $this->helper->createForm('location', $this->lang['forms']['location']),
+			'form_art' => $this->helper->createForm('art', $this->lang['forms']['art']),
+			'form_person' => $this->helper->createForm('person', $this->lang['forms']['person']),
+			'form_profile' => $this->helper->createForm('profile', $this->lang['forms']['profile']),
 		);
 
 		foreach ($list as $key => $value)
@@ -348,7 +361,7 @@ class RenshuuSuruToki extends RenshuuBase
 		// Translations and user data if any...
 		$out .= '<script type="text/javascript">' . "\n";
 		$out .= '$(document).ready(function() {' . "\n";
-		$out .= ' $.renshuu.locale = "' . $this->config['languages'][$_SESSION['lang']] . '";' . "\n";
+		$out .= ' renshuuMain.locale = "' . $this->config['languages'][$_SESSION['lang']] . '";' . "\n";
 
 		// Translations based on the current locale
 		$jslang = array(
@@ -379,20 +392,20 @@ class RenshuuSuruToki extends RenshuuBase
 				'minlength' => gettext('Minimum password length is 5 characters')
 			)
 		);
-		$out .= ' $.renshuu.lang = ' . json_encode($jslang) . ';' . "\n"; // JSON_FORCE_OBJECT
+		$out .= ' renshuuMain.lang = ' . json_encode($jslang) . ';' . "\n"; // JSON_FORCE_OBJECT
 
 		// List weekday localisations. Sunday is at 0 index
-		$out .= ' $.renshuu.weekdays = ' . json_encode($this->lang['weekdays']) . ';' . "\n";
+		$out .= ' renshuuMain.weekdays = ' . json_encode($this->lang['weekdays']) . ';' . "\n";
 
 		// User specific data in case they would be logged in. Used for prefilling the forms.
-		$out .= ' $.renshuu.userData = {';
+		$out .= ' renshuuMain.userData = {';
 		$out .= '  loggedIn: ' . ($_SESSION['access'] > 1 ? 'true' : 'false') . ',';
 		$out .= '  name: "' . $_SESSION['username'] . '",';
 		$out .= '  email: "' . $_SESSION['email'] . '"';
 		$out .= ' };' . "\n";
 
 		// Now that the final variables have been set, it is ok to initiate the site.
-		$out .= ' $.renshuu.ready();' . "\n";
+		$out .= ' renshuuMain.ready();' . "\n";
 
 		// http://twitter.com/#!/cowboy/status/42753115878989824
 		//$out .= ' (function n(e){e.eq(0).fadeIn(99,function(){n(e.slice(1))})})($(":visible").hide()) ' . "\n";

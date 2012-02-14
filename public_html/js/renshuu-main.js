@@ -17,20 +17,7 @@
  * Firebug console functions if they do not exist.
  * http://getfirebug.com/wiki/index.php/Console_API
  */
-(function (window) {
-	if (!('console' in window) || !('firebug' in console)) {
-		var names = [
-			'log', 'debug', 'info', 'warn', 'error', 'assert',
-			'dir', 'dirxml', 'group', 'groupEnd', 'time',
-			'timeEnd', 'count', 'trace', 'profile', 'profileEnd'
-		];
-		var len = names.length;
-		window.console = {};
-		for (var i = 0; i < len; ++i) {
-			window.console[names[i]] = function () {};
-		}
-	}
-})(window);
+
 
 
 var renshuuMain = {
@@ -67,7 +54,7 @@ var renshuuMain = {
 		filters: 'equalizer',
 		location: 'addressbook',
 		art: 'smirk',
-		user: 'womanman'
+		profile: 'womanman'
 	},
 
 	/**
@@ -125,10 +112,12 @@ var renshuuMain = {
 	 *
 	 */
 	ready: function () {
-		//console.group('ready');
+		console.group('ready');
 		if (typeof(localStorage) == 'undefined' ) {
 			console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
 		}
+		
+		console.dir(localStorage);
 
 		// How about a existing value for the filter settings?
 		var filterArts = localStorage.getItem('filterArts');
@@ -136,24 +125,23 @@ var renshuuMain = {
 		var tabLeft = localStorage.getItem('tabLeft');
 		var tabRight = localStorage.getItem('tabRight');
 		
-		console.log('tabRight : ' + tabRight);
-		console.dir(localStorage);
-		/*
-		if (typeof filterArts !== 'undefined') {
+		if (filterArts !== null) {
 			renshuuMain.filterSettings.arts = filterArts.split('.');
 			console.log('filterArts storage item existed. renshuuMain.filterSettings.arts: ' + renshuuMain.filterSettings.arts);
 		}
-		if () {
+		if (filterWeekdays !== null) {
 			renshuuMain.filterSettings.weekdays = filterWeekdays.split('.');
 			console.log('filterWeekdays storage item existed. renshuuMain.filterSettings.weekdays: ' + renshuuMain.filterSettings.weekdays);
 		}
-		if () {
-			renshuuMain.showTabContent($('#left .icon-list a[data-tab-content="' + tabLeft + '"]'));
+		if (tabLeft !== null) {
+			console.log('tabLeft : ' + tabLeft);
+			renshuuMain.showTabContent($('#left .icon-list a[href="#' + tabLeft + '"]'));
 		}
-		if () {
-			renshuuMain.showTabContent($('#right .icon-list a[data-tab-content="' + tabRight + '"]'));
+		if (tabRight !== null) {
+			console.log('tabRight : ' + tabRight);
+			renshuuMain.showTabContent($('#right .icon-list a[href="#' + tabRight + '"]'));
 		}
-		*/
+		
 
 
 		// Triggers on individual change of the checkboxes
@@ -168,6 +156,7 @@ var renshuuMain = {
 		// Triggers on a click to any of the shortcuts for selection manipulation
 		$('#filtering p[class^=rel_] a').live('click', function () {
 			var action = $(this).attr('rel');
+			
 			var target = $(this).parent('p').attr('class');
 			target = target.substr(target.indexOf('_') + 1);
 
@@ -215,20 +204,14 @@ var renshuuMain = {
 			return false;
 		}).on('mouseover', function() {
 			var title = $(this).attr('title');
+			var $tab = $(this).parents('.bottom-tabs').find('.tab-title p');
+			$tab.data('title', $tab.text()).text(title);			
 		}).on('mouseout', function() {
+			var $tab = $(this).parents('.bottom-tabs').find('.tab-title p');
+			$tab.text($tab.data('title'));
+			$tab.data('title', null);
 		});
 		
-		
-		
-		
-		// Toggle the visibility of each box
-		$('.header p a').click(function () {
-			var rel = $(this).attr('rel');
-			var con = $(this).parent('p').parent('div').next('.content').children('.stuff');
-			console.log('rel: ' + rel + ', con.length: ' + con.length);
-			con.toggle(renshuuMain.animSpeed);
-			return false;
-		});
 		
 
 
@@ -257,92 +240,7 @@ var renshuuMain = {
 			renshuuMain.removeSavedList(id);
 			return false;
 		});
-		$('p.login a').live('click', function () {
-			var href = $(this).attr('href').substr(1);
-			console.log('href: ' + href);
-			renshuuMain.openAuthModal(href);
-			return false;
-		});
 
-		// Note that either "insert" = 0 or "update" = id must be set in the root data...
-		$('form').live('submit', function () {
-			var id = $(this).attr('id');
-			console.log('submit. id: ' + id);
-			if (id === 'login_form') {
-				return true;
-			}
-			// http://api.jquery.com/serializeArray/
-			var serialized = $(this).serializeArray();
-			console.log('form submit. serialized: ' + serialized);
-
-			var len = serialized.length;
-			var items = {};
-			for (var i = 0; i < len; ++i) {
-				items[serialized[i].name] = serialized[i].value;
-			}
-			var post = { items: items };
-			var rel = $(this).attr('rel').split('-'); // insert-0 or update-8
-			post[rel[0]] = rel[1];
-
-			// Change temporarily the layout of the submit button / form for visual feedback
-			/*
-			$('#' + id).block({
-				message: '<div id="formfeedback"><h1 title="' +
-					renshuuMain.lang.form.sending + '">' +
-					renshuuMain.lang.form.sending + '</h1></div>'
-			});
-			*/
-			// When this AJAX call returns, it will replace the content of the above created div.
-			$.post($(this).attr('action'), post, function (data, status) {
-				console.log('form submit. status: ' + status);
-				console.dir(data);
-				var res = {};
-				if (data.response && data.response.result) {
-					res = data.response.result;
-				}
-
-				var classes = 'icon error icon-alert';
-				$('#formfeedback').attr('class', classes);
-
-				$('#feedbackTemplate').tmpl(res).replaceAll('#formfeedback');
-
-				$('#formfeedback a[rel]').one('click', function () {
-					var rel = $(this).attr('rel');
-					var href = $(this).attr('href').substr(1);
-					if (rel == 'clear') {
-						//$('#' + id).clearForm();
-						$('#' + id).get(0).reset();
-					}
-					$('#' + id).attr('rel', href);
-					$('#' + id).unblock(); // Should destroy #formfeedback...
-					return false;
-				});
-			}, 'json');
-
-			return false;
-		});
-
-		$('form input:button[name=send]').live('click', function () {
-			$(this).parents('form').first().submit();
-			return false;
-		});
-
-		$('form input:button[name=clear]').live('click', function () {
-			$(this).parents('form').first().reset();
-			return false;
-		});
-
-		// Change icon based on geocode direction
-		$('#location_form input:radio[name=geocode]').live('change', function () {
-			renshuuMain.updateGeocodeSelectionIcon();
-		});
-
-		// Special care for the export settings form, in order to update its preview
-		$('#export_form input, #export_form select').live('change', function (){
-			renshuuMain.updateExportPreview();
-		});
-		// Initial load...
-		//renshuuMain.updateExportPreview();
 
 		// Dragging of the modal window.
 		$('h2.summary').live('mousedown', function () {
@@ -360,7 +258,7 @@ var renshuuMain = {
 		*/
 
 
-		//renshuuMain.applyFilters();
+		renshuuMain.applyFiltersToHtml();
 
 
 		// Finally, set the keepalive call
@@ -371,9 +269,8 @@ var renshuuMain = {
 		}, renshuuMain.keepAlive);
 
 		
-		//console.groupEnd();
+		console.groupEnd();
 	},
-	
 
 	/**
 	 * Each tab has an individual content.
@@ -381,33 +278,46 @@ var renshuuMain = {
 	 * side	left/right
 	 */
 	showTabContent: function ($elem) {
-		console.group('showTabContent');
-		var key = $elem.attr('href').substr(1);
+		var href = $elem.attr('href');
+		
+		// No point of continuing further...
+		if (typeof href === 'undefined' ) {
+			return false;
+		}
+		
+		var key = href.substr(1);
 		var title = $elem.attr('title');
-		var tab = $elem.data('tabContent');
-		console.log('key: ' + key + ', title: ' + title + ', tab: ' + tab);
+		var description = $elem.children('img').attr('alt');
+		console.log('key: ' + key + ', title: ' + title + ', description: ' + description);
+		
+		var $tabs = $elem.parents('.bottom-tabs');
 
 		// Remove and add "current" class
-		$elem.parentsUntil('.icon-list').find('a').removeClass('current');
+		$tabs.find('.icon-list a').removeClass('current');
 		$elem.addClass('current');
 		
 		// Set title
-		$elem.closest('.tab-title p').text(title);
+		var p = $tabs.find('.tab-title p');
+		p.text(title);
+		p.data('title', title); // used on hover
 
 		// Hide all that is visible
-		$elem.closest('.tab-content > div:visible').hide();
+		$tabs.find('.tab-content > div:visible').hide();
 		
 		// Show the requested one
-		$('#' + tab).show();
+		$('#' + key).show();
 		
 		// Save current view
 		localStorage.setItem('tabRight', $('#right .tab-content > div:visible').attr('id'));
 		localStorage.setItem('tabLeft', $('#left .tab-content > div:visible').attr('id'));
-		
-		
-		
+	},
+	
+	/**
+	 * 
+	 */
+	applyKey: function (key) {
 		if (key == 'filters') {
-			renshuuMain.applyFilters();
+			renshuuMain.applyFiltersToHtml();
 		}
 		else if (key == 'location') {
 			renshuuMain.updateGeocodeSelectionIcon();
@@ -429,7 +339,6 @@ var renshuuMain = {
 			}
 			console.log('locationMarker is now visible: ' + renshuuMap.locationMarker.getVisible());
 		}
-		console.groupEnd();
 	},
 
 	/**
@@ -548,8 +457,8 @@ var renshuuMain = {
 	 * This applies the current filter settings to the html in the dom
 	 * @see
 	 */
-	applyFilters: function () {
-		console.group('applyFilters');
+	applyFiltersToHtml: function () {
+		console.group('applyFiltersToHtml');
 		var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
 		var len = sets.length; // Should be 2
 		for (var i = 0; i < len; ++i) {
@@ -641,36 +550,6 @@ var renshuuMain = {
 
 		// perhaps there could be some animation to show that something happened...
 		$('#exportpreview').attr('src', url);
-		console.groupEnd();
-	},
-
-	/**
-	 * http://getfirebug.com/wiki/index.php/Firebug_Extensions
-	 * http://getfirebug.com/wiki/index.php/Console_API
-	 */
-	openAuthModal: function (key) {
-		console.group('openAuthModal');
-
-		// ...
-
-		console.groupEnd();
-	},
-
-	/**
-	 * Set the icon next to the radio buttons in the location form
-	 */
-	updateGeocodeSelectionIcon: function () {
-		console.group('updateGeocodeSelectionIcon');
-		if ($('#location_form').length > 0) {
-			var val = $('#location_form input:radio[name=geocode]:checked').val();
-			console.log('val: ' + val);
-			$('#location_form .radioset').attr('class', 'radioset').addClass('icon-' + renshuuMain.geocodeClass[val]); // remove icon-* and add icon-*
-			localStorage.setItem(
-				'locationGeocode',
-				val
-			);
-			renshuuMain.geocodeBasedOn = val;
-		}
 		console.groupEnd();
 	},
 

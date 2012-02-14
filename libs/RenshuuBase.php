@@ -76,7 +76,7 @@ class RenshuuBase
 		}
 		
 		$this->helper = new RenshuuHelper();
-		
+		$this->helper->pdo = $this->pdo;
 	}
 
 	/**
@@ -214,6 +214,10 @@ class RenshuuBase
 			$_SESSION['username'] = '';
 			$_SESSION['email'] = '';
 		}
+		
+		
+		// For testing purposes...
+		$_SESSION['access'] = bindec(1111111111);
 	}
 	
 	/**
