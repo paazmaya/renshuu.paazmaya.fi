@@ -65,12 +65,13 @@ var renshuuMain = {
 		address: 'arrow3_s',
 		position: 'arrow3_n'
 	},
-
+	
 	/**
-	 * If this value is 'address' and a marker is clicked, its position will be place in the form.
+	 * Which tabs are visible
 	 */
-	geocodeBasedOn: 'none',
-
+	tabLeft: '',
+	tabRight: '',
+	
 	/**
 	 * List of trainings which are saved for the purpose of exporting them as a list later on.
 	 * Only the id of the training is saved, rest of the data is available in trainingMarkersData...
@@ -78,7 +79,7 @@ var renshuuMain = {
 	 */
 	savedList: [],
 	savedListData: [],
-
+	
 	/**
 	 * The current locale, filled from the bottom of index.php... Something like ja_JP or sl_SI
 	 */
@@ -117,7 +118,9 @@ var renshuuMain = {
 			console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
 		}
 		
-		console.dir(localStorage);
+		
+		// Intiate Maps
+		renshuuMap.init();
 
 		// How about a existing value for the filter settings?
 		var filterArts = localStorage.getItem('filterArts');
@@ -271,9 +274,6 @@ var renshuuMain = {
 		
 		console.groupEnd();
 		
-		// Intiate Maps
-		renshuuMap.init();
-		
 		// Handlers for forms
 		renshuuForms.init();
 	},
@@ -314,8 +314,25 @@ var renshuuMain = {
 		$('#' + key).show();
 		
 		// Save current view
-		localStorage.setItem('tabRight', $('#right .tab-content > div:visible').attr('id'));
-		localStorage.setItem('tabLeft', $('#left .tab-content > div:visible').attr('id'));
+		renshuuMain.tabLeft = $('#left .tab-content > div:visible').attr('id');
+		renshuuMain.tabRight = $('#right .tab-content > div:visible').attr('id');
+		localStorage.setItem('tabRight', renshuuMain.tabRight);
+		localStorage.setItem('tabLeft', renshuuMain.tabLeft);
+		
+		// Now handle any special cases
+		if (typeof renshuuMarkers.locationMarker !== 'undefined') {
+			if (key == 'location') {
+				var pos = renshuuMap.map.getCenter();
+				renshuuMarkers.locationMarker.setPosition(pos);
+				renshuuMarkers.locationMarker.setVisible(true);
+				console.log('locationMarker set visible and to pos: ' + pos);
+			}
+			else {
+				renshuuMarkers.locationMarker.setVisible(false);
+			}
+			
+			console.log('locationMarker is now visible: ' + renshuuMarkers.locationMarker.getVisible());
+		}
 	},
 	
 	/**
@@ -329,23 +346,7 @@ var renshuuMain = {
 			renshuuForms.updateGeocodeSelectionIcon();
 			// begin to show location markers...
 		}
-		
-		if (renshuuForms.types.indexOf(key) !== -1) {
-			renshuuForms.setForm(key);
-		}
 
-		if (typeof renshuuMap.locationMarker !== 'undefined') {
-			if (key == 'location') {
-				var pos = renshuuMap.map.getCenter();
-				renshuuMap.locationMarker.setPosition(pos);
-				renshuuMap.locationMarker.setVisible(true);
-				console.log('locationMarker set visible and to pos: ' + pos);
-			}
-			else {
-				renshuuMap.locationMarker.setVisible(false);
-			}
-			console.log('locationMarker is now visible: ' + renshuuMap.locationMarker.getVisible());
-		}
 	},
 
 	/**
@@ -521,109 +522,5 @@ var renshuuMain = {
 			}
 		}, 'json');
 		console.groupEnd();
-	},
-
-	/**
-	 * @see http://code.google.com/apis/maps/documentation/staticmaps/
-	 */
-	updateExportPreview: function () {
-		console.group('updateExportPreview');
-		var url = 'http://maps.google.com/maps/api/staticmap?';
-		var values = ['sensor=false'];
-		var fields = ['maptype', 'language', 'format', 'zoom', 'size'];
-		var items = $('#export_form input, #export_form select');
-		var len = fields.length;
-		// Should there be additional checks for allowed values...
-		for (var i = 0; i < len; ++i) {
-			var field = fields[i];
-			var val = '';
-			if (items.filter('select[name="' + field + '"]').length > 0) {
-				val = items.filter('select[name="' + field + '"]').val();
-			}
-			else {
-				val = items.filter('input[name="' + field + '"]').val();
-			}
-			console.log('val: ' + val);
-			values.push(field + '=' + val);
-		}
-		url += values.join('&');
-		// marker requires special attention
-		url += '&markers=color:' + $('#export_form input[name="color"]').val() +
-			'|label:' + $('#export_form input[name="label"]').val() + '|' +
-			renshuuMap.centre.lat() + ',' +renshuuMap.centre.lng();
-
-		console.log('url: ' + url);
-
-		// perhaps there could be some animation to show that something happened...
-		$('#exportpreview').attr('src', url);
-		console.groupEnd();
-	},
-
-	/**
-	 *
-	 * @see
-	 */
-	buildInfoWindow: function (data) {
-		console.group('buildInfoWindow');
-		/*
-		Marker data from the backend.
-		data: {
-			training: {
-				id: 0,
-				art: {
-					id: 0,
-					title: ''
-				},
-				weekday: 0,
-				starttime: 0,
-				endtime: 0
-			},
-			location: {
-				id: 0,
-				latitude: 0.0,
-				longitude: 0.0,
-				title: '',
-				url: '',
-				address: ''
-			},
-			person: {
-				id: 0,
-				title: '',
-				contact: ''
-			}
-		}
-		*/
-
-		// Had too many checks for existing variables,
-		// which should be taken care of at the backend.
-		var info = {};
-
-		if (data.training && data.training.art && data.training.id) {
-			info = {
-				trainingId: data.training.id,
-				trainingTitle: (data.training.title ? data.training.title : null),
-				trainingStime: data.training.starttime ? data.training.starttime : null,
-				trainingEtime: data.training.endtime ? data.training.endtime : null,
-				weekDay: (renshuuMain.weekdays.length > data.training.weekday ? renshuuMain.weekdays[data.training.weekday] : ''),
-				artId: (data.training.art.id ? data.training.art.id : null),
-				artTitle: (data.training.art.title ? data.training.art.title : null),
-				personId: (data.person && data.person.id) ? data.person.id : null,
-				personTitle: (data.person && data.person.title) ? data.person.title : null,
-				personContact: (data.person && data.person.contact) ? data.person.contact : null,
-				locationId: (data.location && data.location.id) ? data.location.id : null,
-				locationTitle: (data.location && data.location.title) ? data.location.title : null,
-				locationUrl: (data.location && data.location.url) ? data.location.url : null,
-				locationLat: (data.location && data.location.latitude) ? data.location.latitude : null,
-				locationLng: (data.location && data.location.longitude) ? data.location.longitude : null,
-				locationAddr: (data.location && data.location.address) ? data.location.address : null,
-				langSave: renshuuMain.lang.modal.savetolist,
-				langRemove: renshuuMain.lang.modal.removefromlist
-			};
-		}
-
-		console.debug('info. ' + info);
-		//$(info).appendTo('body');
-		console.groupEnd();
-		return info;
 	}
 };

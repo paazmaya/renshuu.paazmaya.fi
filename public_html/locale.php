@@ -214,14 +214,14 @@ $lang['forms'] = array(
 				'type' => 'number',
 				'required' => true,
 				'name' => 'latitude',
-				'disabled' => true
+				'disabled' => false
 			),
 			array(
 				'label' => gettext('Longitude'),
 				'type' => 'number',
 				'required' => true,
 				'name' => 'longitude',
-				'disabled' => true
+				'disabled' => false
 			)
 		)
 	),
@@ -280,7 +280,7 @@ $lang['forms'] = array(
 				'type' => 'select',
 				'name' => 'art',
 				'required' => true,
-				'options' => 'SELECT id, name FROM renshuu_art ORDER BY name ASC'
+				'options' => 'SELECT id, title FROM renshuu_art ORDER BY title ASC'
 			)
 		)
 	),
@@ -317,7 +317,7 @@ $lang['forms'] = array(
 			)
 		),
 		'lists' => array(
-			'artlist' => 'SELECT name FROM renshuu_art ORDER BY 1 ASC'
+			'artlist' => 'SELECT title FROM renshuu_art ORDER BY 1 ASC'
 		)
 	),
 	'profile' => array(

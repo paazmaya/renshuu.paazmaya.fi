@@ -236,8 +236,12 @@ td.even, tbody tr:nth-child(even) {
 .tab-content input[type="checkbox"] {
 	margin: 0.5em 1em; 
 }
-.tab-content a[rel] { font-size: smaller; }
-
+.tab-content a[rel] {
+	font-size: smaller;
+}
+.filters a[rel] {
+	padding: 0.5em;
+}
 
 
 #copyright {
@@ -253,17 +257,6 @@ td.even, tbody tr:nth-child(even) {
 }
 
 
-
-
-#tools {
-
-}
-#filtering {
-
-}
-#filtering a[rel] {
-	padding: 0.5em;
-}
 
 
 .header {

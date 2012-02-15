@@ -20,6 +20,22 @@ var renshuuMap = {
 	 * Google Maps Geocoder
 	 */
 	geocoder: null,
+	
+	/**
+	 * When was the most recent geocoding done?
+	 */
+	lastGeocoding: 0,
+	
+	/**
+	 * How much time needs to be inbetween consecutive geocodings?
+	 * Milliseconds
+	 */
+	geocodeTimeout: 800,
+
+	/**
+	 * If this value is 'address' and a marker is clicked, its position will be place in the form.
+	 */
+	geocodeBasedOn: 'none',
 
 	/**
 	 * Google Maps v3
@@ -173,7 +189,7 @@ var renshuuMap = {
 				southwest: [sw.lat(), sw.lng()]
 			}
 		};
-		renshuuMarkers.clearMarkers(renshuuMap.locationMarkers);
+		renshuuMarkers.clearMarkers(renshuuMarkers.locationMarkers);
 		renshuuMarkers.locationMarkersData = [];
 
 		$.post('/ajax/get/location', para, function (data, status) {
@@ -210,7 +226,7 @@ var renshuuMap = {
 	},
 	bounds_changed: function () {
 		// This event is fired when the viewport bounds have changed
-		if (location.hash == '#location' || location.hash == '#training') {
+		if (renshuuMain.tabRight == 'location' || renshuuMain.tabRight == 'training') {
 			renshuuMap.updateLocations();
 		}
 	},
@@ -384,7 +400,7 @@ var renshuuMap = {
 				// Clear earlier geocode markers
 				renshuuMarkers.removeAllGeoMarkers();
 
-				renshuuMarkers.geocodePosition(
+				renshuuMap.geocodePosition(
 					{ location: pos },
 					renshuuMarkers.addGeoMarkers
 				);
@@ -554,6 +570,7 @@ var renshuuMap = {
 		renshuuMap.geocoder.geocode(
 			data,
 			function (results, status) {
+				renshuuMap.lastGeocoding = $.now();
 				console.log('results: ' + results + ', status: ' + status);
 				if (results && status == google.maps.GeocoderStatus.OK) {
 					var key = data.address ? data.address : data.location.toString();
@@ -583,15 +600,15 @@ var renshuuMap = {
 		if (data) {
 			console.log('data. ' + data);
 			// Get data
-			var info = renshuuMain.buildInfoWindow(data);
+			var info = renshuuMarkers.buildInfoWindow(data);
 			// Create overlay
-			/*
+			
 			$('#map').block();
 			$('.modal-close').one('click', function () {
 				$('#map').unblock();
 				return false;
 			});
-			*/
+			
 			// Fill overlay with the data inserted to a template
 			$('#modalTemplate').tmpl(info).appendTo('div.blockMsg');
 		}

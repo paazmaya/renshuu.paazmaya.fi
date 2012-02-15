@@ -46,6 +46,7 @@ class RenshuuSuruToki extends RenshuuBase
 		'renshuu-markers.js',
 		'renshuu-forms.js',
 		'renshuu-pins.js',
+		'renshuu-export.js',
 		'renshuu-main.js',
 	);
 
@@ -155,13 +156,14 @@ class RenshuuSuruToki extends RenshuuBase
 			$getted['page'] = strtolower($this->getted['page']);
 
 			// Try to login the user if so requested
+			// TODO: OpenID
 			if ($this->getted['page'] == 'login')
 			{
 				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
 					isset($this->posted['password']) && $this->posted['password'] != '')
 				{
 					$sql = 'SELECT id, name, email, access FROM renshuu_user WHERE email = \'' .
-						$this->posted['email'] . '\' AND password = \'' . sha1($this->posted['password']) . '\' AND access > 0';
+						$this->posted['email'] . '\' AND access > 0';
 					$run = $this->pdo->query($sql);
 					if ($run->columnCount() > 0)
 					{
@@ -284,11 +286,11 @@ class RenshuuSuruToki extends RenshuuBase
 
 		$artlist = '<ul id="arts">';
 		// Filter based on the user access if any...
-		$sql = 'SELECT id, name FROM renshuu_art ORDER BY name';
+		$sql = 'SELECT id, title FROM renshuu_art ORDER BY title';
 		$run = $this->pdo->query($sql);
 		while($res = $run->fetch(PDO::FETCH_ASSOC))
 		{
-			$artlist .= '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['name'] . '</label></li>';
+			$artlist .= '<li><label><input type="checkbox" name="art_' . $res['id'] . '" /> ' . $res['title'] . '</label></li>';
 		}
 		$artlist .= '</ul>';
 

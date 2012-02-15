@@ -274,7 +274,7 @@ class RenshuuAjax extends RenshuuBase
 		{
 			$this->pageGet();
 		}
-		else if ($this->page == 'set' && $loggedin) // login should not require to be logged in...
+		else if ($this->page == 'set' && $this->loggedin) // login should not require to be logged in...
 		{
 			$this->pageSet();
 		}
@@ -329,8 +329,8 @@ class RenshuuAjax extends RenshuuBase
 			LEFT JOIN renshuu_art C ON A.art = C.id
 			LEFT JOIN renshuu_person D ON D.id = A.person';
 
-		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.name AS artname, A.weekday, A.starttime, A.endtime,
-			B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, B.url, B.address,
+		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.title AS artname, A.weekday, A.starttime, A.endtime,
+			B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, B.url, B.address,
 			D.id AS personid, D.name AS personname, D.contact ' . $from . '
 			WHERE ' . $position . $art . $weekday;
 		$results = array();
@@ -390,7 +390,7 @@ class RenshuuAjax extends RenshuuBase
 			' AND B.longitude > ' . $area['sw_lng'] . ' AND B.longitude < ' . $area['ne_lng'];
 		$from = 'FROM renshuu_location B';
 
-		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.name AS locationname, ' .
+		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, ' .
 			'B.url, B.address ' . $from . ' WHERE ' . $position;
 		$results = array();
 		$run =  $this->pdo->query($sql);
@@ -442,8 +442,8 @@ class RenshuuAjax extends RenshuuBase
 			$where_filter = 'name LIKE \'%' . $getfilter . '%\'';
 		}
 		$queries = array(
-			'art' => 'SELECT id, name FROM renshuu_art ORDER BY name',
-			'location' => 'SELECT id, name FROM renshuu_location ORDER BY name',
+			'art' => 'SELECT id, title FROM renshuu_art ORDER BY title',
+			'location' => 'SELECT id, title FROM renshuu_location ORDER BY title',
 			'training' => 'SELECT id, name FROM renshuu_training ORDER BY name' . $where_art,
 			'person' => 'SELECT id, name FROM renshuu_person ORDER BY name'
 		);
@@ -547,14 +547,7 @@ class RenshuuAjax extends RenshuuBase
 			$keys = implode(', ', array_keys($trimmed));
 			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
 
-			// For testing only...
-			if ($this->config['isdevserver'])
-			{
-				$this->out['sql_build'] = array(
-					'keys' => $keys,
-					'values' => $values
-				);
-			}
+			
 
 			// This should include the id of that item which is currently being updated.
 			if (isset($this->posted['update']) && is_numeric($this->posted['update']))
@@ -593,16 +586,27 @@ class RenshuuAjax extends RenshuuBase
 			{
 				// Harms way...
 			}
+			
+			// For testing only...
+			if ($this->config['isdevserver'])
+			{
+				$this->out['sql_build'] = array(
+					'keys' => $keys,
+					'values' => $values,
+					'sql' => $sql
+				);
+			}
 
 			if ($sql != '')
 			{
 				$affected = $this->pdo->exec($sql);
+				$this->out['errorInfo'] = $this->pdo->errorInfo();
 
 				if (isset($this->posted['insert']))
 				{
 					try
 					{
-						$id = $this->pdo->lastInsertId('id'); // should the "id" be used here as a parametre
+						$id = $this->pdo->lastInsertId();
 					}
 					catch (PDOException $error)
 					{

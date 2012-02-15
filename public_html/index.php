@@ -94,13 +94,13 @@ echo '</pre>';
 				else if ($item['name'] == 'art')
 				{
 					$results = array();
-					$sql = 'SELECT id, name FROM renshuu_art ORDER BY name ASC';
+					$sql = 'SELECT id, title FROM renshuu_art ORDER BY title ASC';
 					$run =  $this->pdo->query($sql);
 					if ($run)
 					{
 						while($res = $run->fetch(PDO::FETCH_ASSOC))
 						{
-							$results[$res['id']] = $res['name'];
+							$results[$res['id']] = $res['title'];
 						}
 					}
 					$item['options'] = $results;

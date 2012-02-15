@@ -155,7 +155,9 @@ var renshuuMarkers = {
 			len--;
 			var marker = renshuuMarkers.geocodeMarkers[len];
 			renshuuMarkers.geocodeMarkers.splice(len, 1);
-			marker.setMap(null);
+			if (typeof marker !== 'undefined') {
+				marker.setMap(null);
+			}
 		}
 		renshuuMarkers.geocodeMarkers = [];
 	},
@@ -212,7 +214,7 @@ var renshuuMarkers = {
 		var marker = renshuuMarkers.createMarker(
 			res.geometry.location,
 			res.formatted_address,
-			renshuuMap.getLetter(i + 1),
+			renshuuPins.getLetter(i + 1),
 			false
 		);
 		// Right click will be used for deleting...
@@ -224,12 +226,14 @@ var renshuuMarkers = {
 			var title = marker.getTitle();
 			var pos = marker.getPosition();
 			console.log('clicking geocode marker. title: ' + title + ', pos: ' + pos);
+			
+			$('#location_form input[name="address"]').val(title);
+			$('#location_form input[name="latitude"]').val(pos.lat());
+			$('#location_form input[name="longitude"]').val(pos.lng());
+			
 			if (renshuuMap.geocodeBasedOn == 'position') {
-				$('input[name="address"]').val(title);
 			}
 			else if (renshuuMap.geocodeBasedOn == 'address') {
-				$('input[name="latitude"]').val(pos.lat());
-				$('input[name="longitude"]').val(pos.lng());
 			}
 		});
 
@@ -276,12 +280,6 @@ var renshuuMarkers = {
 		google.maps.event.addListener(marker, 'mouseover', function (event) {
 			// This event is fired when the mouse enters the area of the marker icon.
 		});
-		/*
-		google.maps.event.addListener(marker, 'position_changed', function () {
-			// This event is fired when the marker position property changes.
-			console.log('marker. position_changed - ' + marker.title);
-		});
-		*/
 		google.maps.event.addListener(marker, 'rightclick', function (event) {
 			// This event is fired when the marker is right clicked on.
 		});
@@ -311,7 +309,7 @@ var renshuuMarkers = {
 	 */
 	createTrainingMarker: function (data) {
 		console.group('createTrainingMarker');
-		var icon = renshuuMap.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
+		var icon = renshuuPins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
 
@@ -340,6 +338,74 @@ var renshuuMarkers = {
 		return new google.maps.MarkerImage(
 			'http://chart.apis.google.com/chart?' + image, size, origin, anchor, size
 		);
+	},
+	
+	/**
+	 *
+	 * @see
+	 */
+	buildInfoWindow: function (data) {
+		console.group('buildInfoWindow');
+		/*
+		Marker data from the backend.
+		data: {
+			training: {
+				id: 0,
+				art: {
+					id: 0,
+					title: ''
+				},
+				weekday: 0,
+				starttime: 0,
+				endtime: 0
+			},
+			location: {
+				id: 0,
+				latitude: 0.0,
+				longitude: 0.0,
+				title: '',
+				url: '',
+				address: ''
+			},
+			person: {
+				id: 0,
+				title: '',
+				contact: ''
+			}
+		}
+		*/
+
+		// Had too many checks for existing variables,
+		// which should be taken care of at the backend.
+		var info = {};
+
+		if (data.training && data.training.art && data.training.id) {
+			info = {
+				trainingId: data.training.id,
+				trainingTitle: (data.training.title ? data.training.title : null),
+				trainingStime: data.training.starttime ? data.training.starttime : null,
+				trainingEtime: data.training.endtime ? data.training.endtime : null,
+				weekDay: (renshuuMain.weekdays.length > data.training.weekday ? renshuuMain.weekdays[data.training.weekday] : ''),
+				artId: (data.training.art.id ? data.training.art.id : null),
+				artTitle: (data.training.art.title ? data.training.art.title : null),
+				personId: (data.person && data.person.id) ? data.person.id : null,
+				personTitle: (data.person && data.person.title) ? data.person.title : null,
+				personContact: (data.person && data.person.contact) ? data.person.contact : null,
+				locationId: (data.location && data.location.id) ? data.location.id : null,
+				locationTitle: (data.location && data.location.title) ? data.location.title : null,
+				locationUrl: (data.location && data.location.url) ? data.location.url : null,
+				locationLat: (data.location && data.location.latitude) ? data.location.latitude : null,
+				locationLng: (data.location && data.location.longitude) ? data.location.longitude : null,
+				locationAddr: (data.location && data.location.address) ? data.location.address : null,
+				langSave: renshuuMain.lang.modal.savetolist,
+				langRemove: renshuuMain.lang.modal.removefromlist
+			};
+		}
+
+		console.debug('info. ' + info);
+		//$(info).appendTo('body');
+		console.groupEnd();
+		return info;
 	}
 
 

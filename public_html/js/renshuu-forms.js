@@ -2,59 +2,95 @@
  * Renshuu Forms
  */
 var renshuuForms = {
-	
+
 	/**
 	 * Form types
 	 */
 	types: ['art', 'location', 'training', 'person', 'profile'],
-	
+
 	/**
 	 * Event listener setup
 	 */
 	init: function() {
 
 		// Note that either "insert" = 0 or "update" = id must be set in the root data...
-		$('form').live('submit', function () {
+		$('form').on('submit', function () {
 			renshuuForms.submitForm($(this));
 			return false;
 		});
 
-		$('form input:button[name="send"]').live('click', function () {
+		$('form input:button[name="send"]').on('click', function () {
 			$(this).parents('form').first().submit();
 			return false;
 		});
 
-		$('form input:button[name="clear"]').live('click', function () {
+		$('form input:button[name="clear"]').on('click', function () {
 			$(this).parents('form').first().reset();
 			return false;
 		});
-		
-		// Change icon based on geocode direction
-		$('#location_form input:radio[name="geocode"]').live('change', function () {
-			renshuuForms.updateGeocodeSelectionIcon();
+
+		// http://code.google.com/p/jquerytimepicker/
+		$('form input[name="starttime"]').timePicker();
+
+		// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
+		$('form input[name="endtime"]').clockpick();
+
+		var userData = renshuuMain.userData;
+		if (userData) {
+			$('#profile_form input[name="email"]').val(userData.email);
+			$('#profile_form input[name="title"]').val(userData.name);
+		}
+
+		// http://fredibach.ch/jquery-plugins/inputnotes.php
+		/*
+		$(form).find('input[name="title"]').inputNotes({
+			config: {
+				containerTag: 'ul',
+				noteTag: 'li'
+			},
+			minlength: {
+				pattern: /^(.){0,4}$/i,
+				type: 'info',
+				text: renshuuMain.lang.validate.minlength
+			},
+
+			requiredfield: {
+				pattern: /(^(\s)+$)|(^$)/,
+				type: 'warning',
+				text: renshuuMain.lang.validate.requiredfield
+			},
+
+			email: {
+				pattern: /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+$/,
+				type: 'info',
+				text: 'Yes, that\'s a valid email address!'
+			}
 		});
 
-		// Special care for the export settings form, in order to update its preview
-		$('#export_form input, #export_form select').live('change', function (){
-			renshuuMain.updateExportPreview();
+		*/
+
+		// Change icon based on geocode direction
+		$('#location_form input:radio[name="geocode"]').on('change', function () {
+			renshuuForms.updateGeocodeSelectionIcon();
 		});
-		
-		// Initial load...
-		//renshuuMain.updateExportPreview();
+		if (localStorage.getItem('locationGeocode')) {
+			$('#location_form input:radio[name="geocode"]').removeAttr('checked');
+			$('#location_form input:radio[name="geocode"][value="' + localStorage.getItem('locationGeocode') + '"]').attr('checked', 'checked');
+		}
 	},
-	
+
 	/**
 	 * Form submission via AJAX
 	 */
 	submitForm: function($form) {
 		console.group('submitForm');
-		
+
 		var id = $form.attr('id');
 		console.log('submit. id: ' + id);
-		
+
 		// http://api.jquery.com/serializeArray/
 		var serialized = $form.serializeArray();
-		console.log('serialized: ' + serialized);
+		console.dir(serialized);
 
 		var len = serialized.length;
 		var items = {};
@@ -89,81 +125,20 @@ var renshuuForms = {
 			$('#feedbackTemplate').tmpl(res).replaceAll('#formfeedback');
 
 			$('#formfeedback a[rel]').one('click', function () {
-				var dattr = $(this).data();		
+				var dattr = $(this).data();
 				if (dattr.action == 'clear') {
 					$('#' + id).get(0).reset();
 				}
-					
+
 				$('#' + id).data('ref', dattr.ref);
 				$('#' + id).data('key', dattr.key);
-	
+
 				$('#' + id).unblock(); // Should destroy #formfeedback...
 				return false;
 			});
 		}, 'json');
-		
+
 		console.groupEnd();
-	},
-
-	/**
-	 * Form contains the form element with the requested input fields.
-	 * @see http://code.drewwilson.com/entry/autosuggest-jquery-plugin
-	 */
-	setForm: function (type) {
-		var form = '#' + type + '_form';
-		
-		// Always empty and ready to insert a new.
-		$(form).data('ref', 0);
-		$(form).data('key', 'insert');
-
-		// If location form is used, check the possible cookie.
-		if (type == 'location' && localStorage.getItem('locationGeocode')) {
-			$(form + ' input:radio[name="geocode"]').removeAttr('checked');
-			$(form + ' input:radio[name="geocode"][value="' + localStorage.getItem('locationGeocode') + '"]').attr('checked', 'checked');
-		}
-		else if (type == 'profile') {
-			// Data should be prefilled in "renshuuMain.userData" object.
-			var userData = renshuuMain.userData;
-			if (userData) {
-				$(form + ' input[name="email"]').val(userData.email);
-				$(form + ' input[name="title"]').val(userData.name);
-			}
-		}
-
-		// http://fredibach.ch/jquery-plugins/inputnotes.php
-		/*
-		$(form).find('input[name="title"]').inputNotes({
-			config: {
-				containerTag: 'ul',
-				noteTag: 'li'
-			},
-			minlength: {
-				pattern: /^(.){0,4}$/i,
-				type: 'info',
-				text: renshuuMain.lang.validate.minlength
-			},
-
-			requiredfield: {
-				pattern: /(^(\s)+$)|(^$)/,
-				type: 'warning',
-				text: renshuuMain.lang.validate.requiredfield
-			},
-
-			email: {
-				pattern: /^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+$/,
-				type: 'info',
-				text: 'Yes, that\'s a valid email address!'
-			}
-		});
-
-		*/
-
-
-		// http://code.google.com/p/jquerytimepicker/
-		$(form).find('input[name="starttime"]').timePicker();
-
-		// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
-		$(form).find('input[name="endtime"]').clockpick();
 	},
 
 	/**
@@ -171,15 +146,12 @@ var renshuuForms = {
 	 */
 	updateGeocodeSelectionIcon: function () {
 		console.group('updateGeocodeSelectionIcon');
-		if ($('#location_form').length > 0) {
+		if ($('#location_form').size() > 0) {
 			var val = $('#location_form input:radio[name="geocode"]:checked').val();
 			console.log('val: ' + val);
 			$('#location_form .radioset').attr('class', 'radioset').addClass('icon-' + renshuuMain.geocodeClass[val]); // remove icon-* and add icon-*
-			localStorage.setItem(
-				'locationGeocode',
-				val
-			);
-			renshuuMain.geocodeBasedOn = val;
+			localStorage.setItem('locationGeocode', val);
+			renshuuMap.geocodeBasedOn = val;
 		}
 		console.groupEnd();
 	}
