@@ -8,18 +8,6 @@ A training timetable
 This code is used to run the site available at renshuu.paazmaya.com, which offers an easy way to build a training timetable within the Japanese martial arts.
 
 
-References
-
-Making AJAX Applications Crawlable
-http://code.google.com/web/ajaxcrawling/docs/specification.html
-
-Overcoming shebang (#!) without Javascript
-http://www.bigspaceship.com/blog/labs/overcoming-shebang-without-javascript
-
-How to detect a Ajax request?
-http://codeigniter.com/forums/viewthread/59450/
-$_SERVER['HTTP_X_REQUESTED_WITH']
-
 
 
 Code Structure
@@ -29,9 +17,10 @@ Javascript application logic files are all prefixed with `renshuu-`, of which `m
 
 Javascript libraries that are used in this project are:
 
-* jQuery 1.7.1 (http://jquery.com)
-* jQuery UI 1.7...: tabs and dialog (http://jqueryui.com/)
 * Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
+* jQuery 1.7.1 (http://jquery.com)
+* jQuery blockUI 2.39 (http://malsup.com/jquery/block/)
+* jQuery Templates 1.0.0pre (http://github.com/jquery/jquery-tmpl)
 
 PHP libraries are:
 
@@ -44,3 +33,12 @@ TODO
 
 * Markup *should* be completely valid HTML5 and CSS3 for styling.
 * SQL table creation script is only compatible with MySQL...
+
+
+References
+----------
+
+* Making AJAX Applications Crawlable (http://code.google.com/web/ajaxcrawling/docs/specification.html)
+* Overcoming shebang (#!) without Javascript (http://www.bigspaceship.com/blog/labs/overcoming-shebang-without-javascript)
+* How to detect a Ajax request? `$_SERVER['HTTP_X_REQUESTED_WITH']` (http://codeigniter.com/forums/viewthread/59450/)
+* Font-Embedding Icons: This Is a Big Deal (http://somerandomdude.com/articles/design-technology/font-embedding-icons/)

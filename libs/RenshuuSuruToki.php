@@ -18,17 +18,6 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 		'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 
-		'jquery.ui.core.js', // 1.8.16 (2011-08-18), http://jqueryui.com/
-		'jquery.ui.widget.js',
-		'jquery.ui.position.js',
-		'jquery.ui.datepicker.js', // depends ui.core
-		'jquery.ui.mouse.js', // depends ui.widget
-		'jquery.ui.tabs.js', // depends ui.core and ui.widget
-		'jquery.ui.button.js', // depends ui.core and ui.widget
-		'jquery.ui.draggable.js', // depends ui.core, ui.mouse and ui.widget
-		'jquery.ui.resizable.js', // depends ui.core, ui.mouse and ui.widget
-		'jquery.ui.dialog.js', // depends ui.core, ui.widget, ui.button, ui.draggable, ui.mouse, ui.position and ui.resizable
-
 		'ui.timepickr.js', // contains jquery.utils, jquery.strings
 
 		'jquery.outerhtml.js', //
@@ -58,17 +47,9 @@ class RenshuuSuruToki extends RenshuuBase
 		//'public.css',
 		'main.css',
 
-		'jquery.ui.button.css',
-		'jquery.ui.core.css',
-		'jquery.ui.datepicker.css',
-		'jquery.ui.dialog.css',
-		'jquery.ui.rezisable.css',
-		'jquery.ui.tabs.css',
-
 		'jquery-ui-timepicker-addon.css',
 		'jquery.clockpick.css',
-		'ui.timepickr.css',
-		'autoSuggest.css'
+		'ui.timepickr.css'
 	);
 
 	/**
