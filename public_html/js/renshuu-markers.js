@@ -61,7 +61,6 @@ var renshuuMarkers = {
 	 * Marker for positioning location while in location form filling.
 	 */
 	locationMarker: null,
-	
 
 	/**
 	 * Based on the geocode results, add max three markers.

@@ -29,13 +29,13 @@
 			<p>${title}</p>
 		{{/if}}
 		<p>
-			<a href="#" data-key="insert" data-ref="0" data-action="clear" title="${$.renshuu.lang.form.createnew}">
-				${$.renshuu.lang.form.createnew} / ${$.renshuu.lang.form.clear}
+			<a href="#" data-key="insert" data-ref="0" data-action="clear" title="${renshuuMain.lang.form.createnew}">
+				${renshuuMain.lang.form.createnew} / ${renshuuMain.lang.form.clear}
 			</a>
 		</p>
 		<p>
-			<a href="#" data-key="update" data-ref="${id}" data-action="keep" title="${$.renshuu.lang.form.modify}">
-				${$.renshuu.lang.form.modify}
+			<a href="#" data-key="update" data-ref="${id}" data-action="keep" title="${renshuuMain.lang.form.modify}">
+				${renshuuMain.lang.form.modify}
 			</a>
 		</p>
 	</script>
@@ -75,8 +75,8 @@
 						${locationAddr}
 					{{/if}}
 					<span>
-						<abbr class="latitude" title="${locationLat}">${$.renshuu.data.deg2dms(locationLat, true)}</abbr>
-						<abbr class="longitude" title="${locationLng}">${$.renshuu.data.deg2dms(locationLng, false)}</abbr>
+						<abbr class="latitude" title="${locationLat}">${renshuuMap.deg2dms(locationLat, true)}</abbr>
+						<abbr class="longitude" title="${locationLng}">${renshuuMap.deg2dms(locationLng, false)}</abbr>
 					</span>
 				</address>
 			{{/if}}

@@ -135,10 +135,10 @@ class RenshuuSuruToki extends RenshuuBase
 		// Clear out of the session ids.
 		if (isset($getted['RE']))
 		{
-			$uri = preg_replace('/?RE=[^&]+/', '', $_SERVER['REQUEST_URI']);
-			$uri = preg_replace('/&RE=[^&]+/', '', $uri);
+			$url = preg_replace('/?RE=[^&]+/', '', $_SERVER['REQUEST_URI']);
+			$url = preg_replace('/&RE=[^&]+/', '', $url);
 			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
+			header('Location: http://' . $_SERVER['HTTP_HOST'] . $url);
 			exit();
 		}
 	}
@@ -152,7 +152,7 @@ class RenshuuSuruToki extends RenshuuBase
 		// As per .htaccess, all requests are redirected to index.php with one GET variable.
 		if (isset($this->getted['page']) && strlen($this->getted['page']) > 0)
 		{
-			$uri = '';
+			$url = '';
 			$getted['page'] = strtolower($this->getted['page']);
 
 			// Try to login the user if so requested
@@ -173,26 +173,26 @@ class RenshuuSuruToki extends RenshuuBase
 						$_SESSION['username'] = $res['name'];
 						$_SESSION['access'] = intval($res['access']); // use as binary
 
-						$uri = '/#profile';
+						$url = '/#profile';
 					}
 					else
 					{
-						$uri = '/#login';
+						$url = '/#login';
 					}
 				}
 			}
 			else if (strlen($this->getted['page']) == 2 && array_key_exists($this->getted['page'], $this->config['languages']))
 			{
 				$_SESSION['lang'] = $this->getted['page'];
-				$uri = '/';
+				$url = '/';
 			}
 			else
 			{
-				$uri = '/#' . $this->urize($this->getted['page']);
+				$url = '/#' . $this->urize($this->getted['page']);
 				header('HTTP/1.1 301 Moved Permanently');
 			}
 			
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . $uri);
+			header('Location: http://' . $_SERVER['HTTP_HOST'] . $url);
 			exit();
 		}
 	}

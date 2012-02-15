@@ -39,6 +39,8 @@ PHP libraries are:
 * LightOpenID ()
 * PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
 
+TODO
+----
 
-Markup *should* be completely valid HTML5 and CSS3 for styling.
-
+* Markup *should* be completely valid HTML5 and CSS3 for styling.
+* SQL table creation script is only compatible with MySQL...

@@ -202,7 +202,7 @@ class RenshuuAjax extends RenshuuBase
 					$this->passcheck = true;
 
 					// Since here, should there be a keyword for filtering the results available?
-					if ($this->page == 'get' && $this->count > 3)
+					if ($this->page == 'get' && $count > 3)
 					{
 						$this->getfilter = trim($parts['3']);
 					}
@@ -487,10 +487,10 @@ class RenshuuAjax extends RenshuuBase
 		// Keys should match the ones used in $map below, available in $this->posted['items'] as an array.
 		$map = array(
 			'art' => array(
-				'uri' => 'A.uri'
+				'url' => 'A.url'
 			),
 			'location' => array(
-				'uri' => '',
+				'url' => '',
 				'info' => '',
 				'address' => '',
 				//'addr_autofill' => '',
@@ -526,7 +526,7 @@ class RenshuuAjax extends RenshuuBase
 		{
 			if (isset($this->posted['items'][$key]))
 			{
-				$trimmed[$key] = $this->htmlenc($this->posted['items'][$key]);
+				$trimmed[$key] = $this->posted['items'][$key];
 			}
 			else
 			{

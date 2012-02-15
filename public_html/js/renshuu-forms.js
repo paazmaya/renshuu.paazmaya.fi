@@ -12,6 +12,7 @@ var renshuuForms = {
 	 * Event listener setup
 	 */
 	init: function() {
+		$.blockUI.defaults.css.width = '50%';
 
 		// Note that either "insert" = 0 or "update" = id must be set in the root data...
 		$('form').on('submit', function () {
@@ -25,7 +26,7 @@ var renshuuForms = {
 		});
 
 		$('form input:button[name="clear"]').on('click', function () {
-			$(this).parents('form').first().reset();
+			$(this).parents('form').get(0).reset();
 			return false;
 		});
 
@@ -97,19 +98,23 @@ var renshuuForms = {
 		for (var i = 0; i < len; ++i) {
 			items[serialized[i].name] = serialized[i].value;
 		}
+		// http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
+		$form.find(':disabled').each(function () {
+			items[$(this).attr('name')] = $(this).val();
+		});
 		var post = { items: items };
 		var ref = $form.data('ref'); // 0 = inserting new, any other = update
 		var key = $form.data('key'); // insert or update
 		post[key] = ref;
 
 		// Change temporarily the layout of the submit button / form for visual feedback
-		/*
-		$('#' + id).block({
+		
+		$form.block({
 			message: '<div id="formfeedback"><h1 title="' +
 				renshuuMain.lang.form.sending + '">' +
 				renshuuMain.lang.form.sending + '</h1></div>'
 		});
-		*/
+		
 		// When this AJAX call returns, it will replace the content of the above created div.
 		$.post($form.attr('action'), post, function (data, status) {
 			console.log('form submit. status: ' + status);
@@ -122,18 +127,22 @@ var renshuuForms = {
 			var classes = 'icon error icon-alert';
 			$('#formfeedback').attr('class', classes);
 
-			$('#feedbackTemplate').tmpl(res).replaceAll('#formfeedback');
+			$('#formfeedback').html($('#feedbackTemplate').tmpl(res));
 
-			$('#formfeedback a[rel]').one('click', function () {
-				var dattr = $(this).data();
+			$('#formfeedback a').live('click', function () {
+				var dattr = $(this).data(); // the data that came via response
+				console.dir(dattr);
+				
 				if (dattr.action == 'clear') {
-					$('#' + id).get(0).reset();
+					$form.get(0).reset();
 				}
+				else if (dattr.action == 'keep') {
+				}
+				$form.data('ref', dattr.ref);
+				$form.data('key', dattr.key);
 
-				$('#' + id).data('ref', dattr.ref);
-				$('#' + id).data('key', dattr.key);
-
-				$('#' + id).unblock(); // Should destroy #formfeedback...
+				$('#formfeedback a').die('click');
+				$form.unblock(); // Should destroy #formfeedback...
 				return false;
 			});
 		}, 'json');

@@ -161,9 +161,9 @@ $lang['forms'] = array(
 				'placeholder' => gettext('Name of the martial art')
 			),
 			array(
-				'label' => gettext('URI'),
+				'label' => gettext('URL'),
 				'type' => 'url',
-				'name' => 'uri',
+				'name' => 'url',
 				'placeholder' => gettext('eg. martial-art.org')
 			)
 		)
@@ -184,9 +184,9 @@ $lang['forms'] = array(
 				'name' => 'title'
 			),
 			array(
-				'label' => gettext('URI'),
+				'label' => gettext('URL'),
 				'type' => 'url',
-				'name' => 'uri'
+				'name' => 'url'
 			),
 			array(
 				'label' => gettext('Info'),
@@ -214,14 +214,14 @@ $lang['forms'] = array(
 				'type' => 'number',
 				'required' => true,
 				'name' => 'latitude',
-				'disabled' => false
+				'disabled' => true
 			),
 			array(
 				'label' => gettext('Longitude'),
 				'type' => 'number',
 				'required' => true,
 				'name' => 'longitude',
-				'disabled' => false
+				'disabled' => true
 			)
 		)
 	),
