@@ -145,7 +145,7 @@ var renshuuMain = {
 
 
 		// Triggers on individual change of the checkboxes
-		$('#filtering input:checkbox').live('change', function () {
+		$('.filters input:checkbox').live('change', function () {
 			var name = $(this).attr('name');
 			var check = $(this).is(':checked');
 			console.log('change. name: ' + name + ', check: ' + check);
@@ -154,7 +154,7 @@ var renshuuMain = {
 		});
 
 		// Triggers on a click to any of the shortcuts for selection manipulation
-		$('#filtering p[class^=rel_] a').live('click', function () {
+		$('.filters p[class^=rel_] a').live('click', function () {
 			var action = $(this).attr('rel');
 			
 			var target = $(this).parent('p').attr('class');
@@ -270,6 +270,12 @@ var renshuuMain = {
 
 		
 		console.groupEnd();
+		
+		// Intiate Maps
+		renshuuMap.init();
+		
+		// Handlers for forms
+		renshuuForms.init();
 	},
 
 	/**
@@ -320,16 +326,17 @@ var renshuuMain = {
 			renshuuMain.applyFiltersToHtml();
 		}
 		else if (key == 'location') {
-			renshuuMain.updateGeocodeSelectionIcon();
+			renshuuForms.updateGeocodeSelectionIcon();
 			// begin to show location markers...
 		}
+		
 		if (renshuuForms.types.indexOf(key) !== -1) {
-			renshuuForms.getForm(key);
+			renshuuForms.setForm(key);
 		}
 
 		if (typeof renshuuMap.locationMarker !== 'undefined') {
 			if (key == 'location') {
-				var pos = renshuuMain.map.getCenter();
+				var pos = renshuuMap.map.getCenter();
 				renshuuMap.locationMarker.setPosition(pos);
 				renshuuMap.locationMarker.setVisible(true);
 				console.log('locationMarker set visible and to pos: ' + pos);
@@ -352,10 +359,10 @@ var renshuuMain = {
 		console.log('id: ' + id + ', inx: ' + inx);
 		if (inx === -1) {
 			renshuuMain.savedList.push(id);
-			var len = renshuuMain.trainingMarkersData.length;
+			var len = renshuuMarkers.trainingMarkersData.length;
 			var savedlen = renshuuMain.savedListData.length; // only for debugging
 			for (var i = 0; i < len; ++i) {
-				data = renshuuMain.trainingMarkersData[i];
+				data = renshuuMarkers.trainingMarkersData[i];
 				if (data && data.training.id == id) {
 					console.log('found matching data for addition, i: ' + i);
 					renshuuMain.savedListData.push(data);
@@ -487,7 +494,7 @@ var renshuuMain = {
 	 */
 	updateTrainings: function () {
 		console.group('updateTrainings');
-		var bounds = renshuuMain.map.getBounds();
+		var bounds = renshuuMap.map.getBounds();
 		var ne = bounds.getNorthEast();
 		var sw = bounds.getSouthWest();
 		var para = {
@@ -498,11 +505,10 @@ var renshuuMain = {
 			filter: renshuuMain.filterSettings
 		};
 
-		renshuuMarkers.clearMarkers(renshuuMain.trainingMarkers);
-		renshuuMain.trainingMarkersData = [];
+		renshuuMarkers.clearMarkers(renshuuMarkers.trainingMarkers);
+		renshuuMarkers.trainingMarkersData = [];
 
 		$.post('/ajax/get/', para, function (data, status) {
-			//console.dir(data);
 			if (data.response && data.response.result) {
 				var res = data.response.result;
 				var len = res.length;
@@ -531,20 +537,20 @@ var renshuuMain = {
 		for (var i = 0; i < len; ++i) {
 			var field = fields[i];
 			var val = '';
-			if (items.filter('select[name=' + field + ']').length > 0) {
-				val = items.filter('select[name=' + field + ']').val();
+			if (items.filter('select[name="' + field + '"]').length > 0) {
+				val = items.filter('select[name="' + field + '"]').val();
 			}
 			else {
-				val = items.filter('input[name=' + field + ']').val();
+				val = items.filter('input[name="' + field + '"]').val();
 			}
 			console.log('val: ' + val);
 			values.push(field + '=' + val);
 		}
 		url += values.join('&');
 		// marker requires special attention
-		url += '&markers=color:' + $('#export_form input[name=color]').val() +
-			'|label:' + $('#export_form input[name=label]').val() + '|' +
-			renshuuMap.hikone.lat() + ',' +renshuuMap.hikone.lng();
+		url += '&markers=color:' + $('#export_form input[name="color"]').val() +
+			'|label:' + $('#export_form input[name="label"]').val() + '|' +
+			renshuuMap.centre.lat() + ',' +renshuuMap.centre.lng();
 
 		console.log('url: ' + url);
 

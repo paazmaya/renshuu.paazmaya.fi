@@ -10,17 +10,11 @@ var renshuuMap = {
 	zoom: 8,
 	
 	/**
-	 * Center position, if any
-	 */
-	centre: null,
-
-	/**
-	 * Default map center will be in the most beautiful castle of Japan,
-	 * based on personal opinion.
-	 * Hikone Castle & Town.
+	 * Center position, if any.
+	 * Defaults to Hikone Castle.
 	 * @see http://www.flickr.com/photos/rekishinotabi/sets/72157618241282853/
 	 */
-	hikone: null,
+	centre: null,
 
 	/**
 	 * Google Maps Geocoder
@@ -68,7 +62,7 @@ var renshuuMap = {
 	init: function() {
 		
 		// Setup the default center if nothing is found from localStorage
-		renshuuMap.hikone = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
+		renshuuMap.centre = new google.maps.LatLng(35.27655600992416, 136.25263971710206);
 		
 		// Set up the directions service
 		renshuuMap.dirService = new google.maps.DirectionsService();
@@ -78,10 +72,7 @@ var renshuuMap = {
 		renshuuMap.loadMapCenter();
 
 		// Set up the Google Map v3
-		renshuuMap.mapInit($('#map').get(0), {
-			center: renshuuMap.hikone,
-			zoom: renshuuMap.zoom
-		});
+		renshuuMap.mapInit($('#map').get(0));
 		
 		// and the Street View
 		renshuuMap.streetInit($('#street').get(0), {
@@ -92,13 +83,13 @@ var renshuuMap = {
 		
 		// Handler for the ability to toggle streetView viewing while marker click.
 		if (localStorage.getItem('showInStreetView')) {
-			$('input:checkbox[name=markerstreet]').attr('checked', 'checked');
+			$('input:checkbox[name="markerstreet"]').attr('checked', 'checked');
 			renshuuMap.showInStreetView = true;
 		}
 
 		// Toggle "street view position update based on the map position" setting.
 		if (renshuuMap.streetEnable) {
-			$('input:checkbox[name=markerstreet]').change(function () {
+			$('input:checkbox[name="markerstreet"]').change(function () {
 				renshuuMap.showInStreetView = $(this).is(':checked');
 				console.log('markerstreet checkbox change. renshuuMap.showInStreetView: ' + renshuuMap.showInStreetView);
 				localStorage.setItem(
@@ -108,7 +99,7 @@ var renshuuMap = {
 			});
 		}
 		if (renshuuMap.streetEnable) {
-			$('#mapping .header a[rel=street]').click(function () {
+			$('#mapping .header a[rel="street"]').click(function () {
 				var visible = renshuuMap.streetView.getVisible();
 				renshuuMap.streetView.setVisible(!visible);
 				return false;
@@ -147,15 +138,13 @@ var renshuuMap = {
 	 * @see
 	 */
 	loadMapCenter: function () {
-		var centre = renshuuMap.hikone; // default
 		if (localStorage.getItem('mapCenter')) {
 			var arr = localStorage.getItem('mapCenter').split(',');
 			if (arr && arr.length > 1) {
-				centre = new google.maps.LatLng(parseFloat(arr[0]), parseFloat(arr[1]));
+				renshuuMap.centre = new google.maps.LatLng(parseFloat(arr[0]), parseFloat(arr[1]));
 			}
 			console.log('mapCenter storage item existed. arr: ' + arr);
 		}
-		renshuuMap.centre = centre;
 	},
 	
 	/**
@@ -346,7 +335,7 @@ var renshuuMap = {
 
 		// http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 		var opts = {
-			center: renshuuMap.hikone,
+			center: renshuuMap.centre,
 			mapTypeId: google.maps.MapTypeId.ROADMAP,
 			mapTypeControl: true,
 			mapTypeControlOptions: {
@@ -380,8 +369,8 @@ var renshuuMap = {
 		google.maps.event.addListener(renshuuMarkers.locationMarker, 'drag', function (event) {
 			// update position info in the form
 			var pos = renshuuMarkers.locationMarker.getPosition();
-			$('input[name=latitude]').val(pos.lat());
-			$('input[name=longitude]').val(pos.lng());
+			$('input[name="latitude"]').val(pos.lat());
+			$('input[name="longitude"]').val(pos.lng());
 		});
 		google.maps.event.addListener(renshuuMarkers.locationMarker, 'dragstart', function (event) {
 			// This event is fired when the user starts dragging the marker.
@@ -389,7 +378,7 @@ var renshuuMap = {
 		google.maps.event.addListener(renshuuMarkers.locationMarker, 'dragend', function (event) {
 			// geocode current position if the form setting allows.
 			// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
-			if ($('input[name=geocode][value=position]').is(':checked')) {
+			if ($('input[name="geocode"][value="position"]').is(':checked')) {
 				var pos = renshuuMarkers.locationMarker.getPosition();
 
 				// Clear earlier geocode markers
@@ -584,11 +573,11 @@ var renshuuMap = {
 	 */
 	showInfo: function (marker) {
 		console.group('showInfo');
-		var inx = renshuuMap.trainingMarkers.indexOf(marker);
+		var inx = renshuuMarkers.trainingMarkers.indexOf(marker);
 		console.log('marker.title: '+ marker.title + ', inx: ' + inx);
 		var data;
 		if (inx !== -1) {
-			data = renshuuMap.trainingMarkersData[inx];
+			data = renshuuMarkers.trainingMarkersData[inx];
 		}
 
 		if (data) {

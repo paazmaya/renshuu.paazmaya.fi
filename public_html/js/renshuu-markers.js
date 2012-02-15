@@ -113,8 +113,8 @@ var renshuuMarkers = {
 			key: key,
 			markers: markers
 		});
-		//$('input[name=address]').val(results[0].formatted_address);
-		//$('input[name=address]').val('Cannot determine address at this location.');
+		//$('input[name="address"]').val(results[0].formatted_address);
+		//$('input[name="address"]').val('Cannot determine address at this location.');
 
 		console.groupEnd();
 	},
@@ -225,11 +225,11 @@ var renshuuMarkers = {
 			var pos = marker.getPosition();
 			console.log('clicking geocode marker. title: ' + title + ', pos: ' + pos);
 			if (renshuuMap.geocodeBasedOn == 'position') {
-				$('input[name=address]').val(title);
+				$('input[name="address"]').val(title);
 			}
 			else if (renshuuMap.geocodeBasedOn == 'address') {
-				$('input[name=latitude]').val(pos.lat());
-				$('input[name=longitude]').val(pos.lng());
+				$('input[name="latitude"]').val(pos.lat());
+				$('input[name="longitude"]').val(pos.lng());
 			}
 		});
 

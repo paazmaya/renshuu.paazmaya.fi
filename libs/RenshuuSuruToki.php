@@ -38,9 +38,6 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 		'jquery.inputnotes-0.6.js', // 0.6 ()
 		
-		'jquery.hotkeys.js', // 0.8 (2010-03-10), https://github.com/tzuryby/jquery.hotkeys
-		'jquery.corner.js', // 2.12 (2011-05-23), http://jquery.malsup.com/corner/
-		'jquery.form.js', // 2.83 (2011-07-11), http://malsup.com/jquery/form/
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
 		
 		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/

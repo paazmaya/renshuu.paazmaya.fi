@@ -156,11 +156,13 @@ $lang['forms'] = array(
 				'label' => gettext('Name'),
 				'type' => 'text',
 				'name' => 'title',
+				'autofocus' => true,
+				'required' => true,
 				'placeholder' => gettext('Name of the martial art')
 			),
 			array(
 				'label' => gettext('URI'),
-				'type' => 'text',
+				'type' => 'url',
 				'name' => 'uri',
 				'placeholder' => gettext('eg. martial-art.org')
 			)
@@ -177,6 +179,8 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Title'),
 				'type' => 'text',
+				'autofocus' => true,
+				'required' => true,
 				'name' => 'title'
 			),
 			array(
@@ -190,7 +194,7 @@ $lang['forms'] = array(
 				'name' => 'info'
 			),
 			array(
-				'label' => gettext('Address(if any)'),
+				'label' => gettext('Address (if any)'),
 				'type' => 'text',
 				'name' => 'address'
 			),
@@ -208,12 +212,14 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Latitude'),
 				'type' => 'number',
+				'required' => true,
 				'name' => 'latitude',
 				'disabled' => true
 			),
 			array(
 				'label' => gettext('Longitude'),
 				'type' => 'number',
+				'required' => true,
 				'name' => 'longitude',
 				'disabled' => true
 			)
@@ -230,6 +236,8 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Title'),
 				'type' => 'text',
+				'required' => true,
+				'autofocus' => true,
 				'name' => 'title'
 			),
 			array(
@@ -271,6 +279,7 @@ $lang['forms'] = array(
 				'label' => gettext('Art'),
 				'type' => 'select',
 				'name' => 'art',
+				'required' => true,
 				'options' => 'SELECT id, name FROM renshuu_art ORDER BY name ASC'
 			)
 		)
@@ -286,6 +295,8 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Name'),
 				'type' => 'text',
+				'required' => true,
+				'autofocus' => true,
 				'name' => 'title'
 			),
 			array(
@@ -319,18 +330,16 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('E-mail'),
 				'type' => 'email',
+				'required' => true,
+				'disabled' => true, // should be prefilled from OpenID
 				'name' => 'email'
 			),
 			array(
 				'label' => gettext('Full name'),
 				'type' => 'text',
+				'required' => true,
+				'autofocus' => true,
 				'name' => 'title'
-			),
-			array(
-				'label' => gettext('Password'),
-				'type' => 'text',
-				'name' => 'password',
-				'after' => gettext(' (fill if you wish to change, else leave empty)')
 			)
 		)
 	),
@@ -344,6 +353,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Map type'),
 				'type' => 'select',
+				'required' => true,
 				'name' => 'maptype',
 				'options' => array(
 					'roadmap' => gettext('Roadmap'),
@@ -355,6 +365,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Language'),
 				'type' => 'select',
+				'required' => true,
 				'name' => 'language',
 				'options' => array(
 					'en' => gettext('English (British)'),
@@ -368,6 +379,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Image format'),
 				'type' => 'select',
+				'required' => true,
 				'name' => 'format',
 				'options' => array(
 					'png8' => 'png 8-bit',
@@ -380,6 +392,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Zoom level'),
 				'type' => 'text',
+				'required' => true,
 				'name' => 'zoom',
 				'class' => 'short',
 				'after' => gettext(' (0...16)'),
@@ -388,6 +401,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Image size'),
 				'type' => 'text',
+				'required' => true,
 				'name' => 'size',
 				'class' => 'short',
 				'after' => gettext(' (Width x Height)'),
@@ -396,6 +410,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Colour'),
 				'type' => 'text',
+				'required' => true,
 				'name' => 'color',
 				'class' => 'short',
 				'after' => gettext(' (hex value or a string)'),
@@ -404,6 +419,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Label'),
 				'type' => 'text',
+				'required' => true,
 				'name' => 'label',
 				'class' => 'short',
 				'after' => gettext(' (one character only)'),

@@ -526,7 +526,7 @@ class RenshuuAjax extends RenshuuBase
 		{
 			if (isset($this->posted['items'][$key]))
 			{
-				$trimmed[$key] = htmlenc($this->posted['items'][$key]);
+				$trimmed[$key] = $this->htmlenc($this->posted['items'][$key]);
 			}
 			else
 			{
@@ -548,10 +548,13 @@ class RenshuuAjax extends RenshuuBase
 			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
 
 			// For testing only...
-			$this->out['sql_build'] = array(
-				'keys' => $keys,
-				'values' => $values
-			);
+			if ($this->config['isdevserver'])
+			{
+				$this->out['sql_build'] = array(
+					'keys' => $keys,
+					'values' => $values
+				);
+			}
 
 			// This should include the id of that item which is currently being updated.
 			if (isset($this->posted['update']) && is_numeric($this->posted['update']))

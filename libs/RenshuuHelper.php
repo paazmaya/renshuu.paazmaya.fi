@@ -271,6 +271,10 @@ class RenshuuHelper
 					{
 						$out .= ' value="' . $item['value'] . '"';
 					}
+					if (isset($item['autofocus']) && $item['autofocus'])
+					{
+						$out .= ' autofocus="autofocus"';
+					}
 					
 					// Remember to define the given listat the bottom
 					if (isset($item['list']) && $item['list'] != '')
