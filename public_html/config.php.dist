@@ -22,9 +22,12 @@ $cf['referer_check'] = 'renshuu.paazmaya.com';
 // PHP libraries
 $cf['libdir'] = '../../libs/';
 
-// Google Maps API version
+/ Google Maps API version
 // http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog
-$cf['gmapsver'] = '3.5'; // 3.5 was released 2011-05-07
+$cf['gmapsver'] = '3.7'; // 3.7 was released 2011-11-07
+
+//http://code.google.com/apis/maps/documentation/javascript/tutorial.html
+$cf['gmapskey'] = '';
 
 // Translations
 $cf['gettextdomain'] = 'renshuuSuruToki';

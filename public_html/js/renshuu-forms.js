@@ -30,12 +30,6 @@ var renshuuForms = {
 			return false;
 		});
 
-		// http://code.google.com/p/jquerytimepicker/
-		$('form input[name="starttime"]').timePicker();
-
-		// http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
-		$('form input[name="endtime"]').clockpick();
-
 		var userData = renshuuMain.userData;
 		if (userData) {
 			$('#profile_form input[name="email"]').val(userData.email);

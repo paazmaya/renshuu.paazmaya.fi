@@ -18,13 +18,8 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
 		'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 
-		'ui.timepickr.js', // contains jquery.utils, jquery.strings
-
 		'jquery.outerhtml.js', //
 		
-		'jquery.timepicker.js', //
-		'jquery-ui-timepicker-addon.js', // 0.9.6 (2011-07-20), http://trentrichardson.com/examples/timepicker/
-		'jquery.clockpick.js', // 1.2.9 (2011-01-09), http://www.jnathanson.com/index.cfm?page=jquery/clockpick/ClockPick
 		'jquery.inputnotes-0.6.js', // 0.6 ()
 		
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
@@ -288,7 +283,7 @@ class RenshuuSuruToki extends RenshuuBase
 				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
 			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
 			</div>';
-
+		
 		$list = array(
 			'leftnavigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
 			'rightnavigation' => $this->helper->createNavigation($this->lang['navigation']['right'], $_SESSION['access']),
@@ -326,17 +321,14 @@ class RenshuuSuruToki extends RenshuuBase
 		// Javascript section
 
 		// http://code.google.com/apis/maps/documentation/javascript/basics.html#Versioning
-		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] . '&amp;sensor=false&amp;language=' . $_SESSION['lang']);
+		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] . 
+			'&amp;key=' . $this->config['gmapskey'] . '&amp;sensor=false&amp;language=ja');// . $_SESSION['lang']);
 		//$out .= scriptElement($this->config['minified'] . $this->gzipped . '.js');
 
 		foreach($this->scripts as $js)
 		{
 			$out .= $this->helper->scriptElement($js);
 		}
-
-		// Add localisation to the date picker
-		$out .= $this->helper->scriptElement('jquery.ui.datepicker-' . ($_SESSION['lang'] == 'en' ? 'en-GB' : $_SESSION['lang']) . '.js');
-
 
 		// Translations and user data if any...
 		$out .= '<script type="text/javascript">' . "\n";

@@ -564,9 +564,6 @@ var renshuuMap = {
 		if (!callBack) {
 			callBack = renshuuMarkers.addGeoMarkers;
 		}
-		if (!data.language) {
-			data.language = 'ja';
-		}
 		renshuuMap.geocoder.geocode(
 			data,
 			function (results, status) {

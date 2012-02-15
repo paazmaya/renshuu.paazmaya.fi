@@ -242,14 +242,15 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Location'),
-				'type' => 'text',
-				'name' => 'location'
+				'type' => 'select',
+				'name' => 'location',
+				'options' => 'SELECT id, CONCAT(title, \', \', address) FROM renshuu_location ORDER BY title ASC'
 			),
 			array(
 				'label' => gettext('Weekday'),
 				'type' => 'select',
 				'name' => 'weekday',
-				'options' => array()
+				'options' => $lang['weekdays'] 
 			),
 			array(
 				'label' => gettext('Occurance'),
@@ -258,13 +259,13 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Start time'),
-				'type' => 'text',
+				'type' => 'time',
 				'name' => 'starttime',
 				'class' => 'short'
 			),
 			array(
 				'label' => gettext('End time'),
-				'type' => 'text',
+				'type' => 'time',
 				'name' => 'endtime',
 				'class' => 'short'
 			),
@@ -273,7 +274,7 @@ $lang['forms'] = array(
 				'type' => 'number',
 				'name' => 'duration',
 				'class' => 'short',
-				'disabled' => true
+				'disabled' => false
 			),
 			array(
 				'label' => gettext('Art'),
@@ -301,9 +302,9 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Art'),
-				'type' => 'text',
+				'type' => 'select',
 				'name' => 'art',
-				'list' => 'artlist'
+				'options' => 'SELECT id, title FROM renshuu_art ORDER BY title ASC'
 			),
 			array(
 				'label' => gettext('Contact'),
@@ -315,9 +316,6 @@ $lang['forms'] = array(
 				'type' => 'text',
 				'name' => 'info'
 			)
-		),
-		'lists' => array(
-			'artlist' => 'SELECT title FROM renshuu_art ORDER BY 1 ASC'
 		)
 	),
 	'profile' => array(
