@@ -263,12 +263,12 @@ var renshuuMain = {
 
 		renshuuMain.applyFiltersToHtml();
 
+		// Get the user data
+		renshuuMain.aliveKeeper();
 
 		// Finally, set the keepalive call
 		setInterval(function () {
-			$.get('/ajax/keepalive', function (data) {
-				//console.log(data);
-			}, 'json');
+			renshuuMain.aliveKeeper();
 		}, renshuuMain.keepAlive);
 
 		
@@ -276,6 +276,16 @@ var renshuuMain = {
 		
 		// Handlers for forms
 		renshuuForms.init();
+	},
+	
+	/** 
+	 * Keep alive call
+	 */
+	aliveKeeper: function () {
+		$.get('/ajax/keepalive', function (data) {
+			userData.email = data.user.email;
+			userData.name = data.user.name;
+		}, 'json');
 	},
 
 	/**
@@ -332,6 +342,9 @@ var renshuuMain = {
 			}
 			
 			console.log('locationMarker is now visible: ' + renshuuMarkers.locationMarker.getVisible());
+		}
+		if (key == 'street') {
+			renshuuMap.streetView.setVisible(true);
 		}
 	},
 	

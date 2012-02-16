@@ -117,8 +117,16 @@ Only non empty values will be used.
 	'legend' => gettext(''),
 	'info' => gettext(''),
 	'buttons' => array(
-		'send' => gettext(''),
-		'clear' => gettext('') If empty, no button will be shown
+		array(
+			'type' => 'submit',
+			'value' => gettext('Send Location'),
+			'name' => 'send'
+		),
+		array(
+			'type' => 'reset',
+			'value' => gettext('Clear'),
+			'name' => 'clear'
+		)
 	),
 	'items' => array(
 		array(
@@ -126,11 +134,14 @@ Only non empty values will be used.
 			'type' => '', input types or select
 			'name' => '', name of the field
 			'class' => '' style class
+			'autofocus' => true,
+			'required' => true,
+			'placeholder' => gettext('')
 			'disabled' => false, disabled="disabled" will be written if true
 			'after' => gettext(''), text after the element but before the label closes
 			'value' => gettext(''), value of the input element if any
 			'list' => 'listname', key of the list that is defined in the lists array
-			'options' => array() options used in the case of select: value => visible text
+			'options' => array() options used in the case of select: value => visible text, or a string containing SQL phrase
 		)
 	),
 	'lists' => array(
@@ -148,8 +159,16 @@ $lang['forms'] = array(
 		'legend' => gettext('Art'),
 		'info' => gettext('Add a martial art to the arts listed'),
 		'buttons' => array(
-			'send' => gettext('Send Martial art'),
-			'clear' => gettext('Clear')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Send Martial art'),
+				'name' => 'send'
+			),
+			array(
+				'type' => 'reset',
+				'value' => gettext('Clear'),
+				'name' => 'clear'
+			)
 		),
 		'items' => array(
 			array(
@@ -172,21 +191,29 @@ $lang['forms'] = array(
 		'legend' => gettext('Location'),
 		'info' => gettext('Add a location to the available locations'),
 		'buttons' => array(
-			'send' => gettext('Send Location'),
-			'clear' => gettext('Clear')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Send Location'),
+				'name' => 'send'
+			),
+			array(
+				'type' => 'reset',
+				'value' => gettext('Clear'),
+				'name' => 'clear'
+			)
 		),
 		'items' => array(
 			array(
-				'label' => gettext('Title'),
+				'label' => gettext('Place name'),
 				'type' => 'text',
 				'autofocus' => true,
 				'required' => true,
 				'name' => 'title'
 			),
 			array(
-				'label' => gettext('URL'),
-				'type' => 'url',
-				'name' => 'url'
+				'label' => gettext('Search place'),
+				'type' => 'button',
+				'name' => 'search'
 			),
 			array(
 				'label' => gettext('Info'),
@@ -194,7 +221,7 @@ $lang['forms'] = array(
 				'name' => 'info'
 			),
 			array(
-				'label' => gettext('Address (if any)'),
+				'label' => gettext('Address'),
 				'type' => 'text',
 				'name' => 'address'
 			),
@@ -214,6 +241,7 @@ $lang['forms'] = array(
 				'type' => 'number',
 				'required' => true,
 				'name' => 'latitude',
+				'class' => 'short',
 				'disabled' => true
 			),
 			array(
@@ -221,6 +249,7 @@ $lang['forms'] = array(
 				'type' => 'number',
 				'required' => true,
 				'name' => 'longitude',
+				'class' => 'short',
 				'disabled' => true
 			)
 		)
@@ -229,8 +258,16 @@ $lang['forms'] = array(
 		'legend' => gettext('Training'),
 		'info' => gettext('Add a training event on the selected martial art'),
 		'buttons' => array(
-			'send' => gettext('Send Training'),
-			'clear' => gettext('Clear')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Send Training'),
+				'name' => 'send'
+			),
+			array(
+				'type' => 'reset',
+				'value' => gettext('Clear'),
+				'name' => 'clear'
+			)
 		),
 		'items' => array(
 			array(
@@ -289,8 +326,16 @@ $lang['forms'] = array(
 		'legend' => gettext('Person'),
 		'info' => gettext('Add a person to the people list that is used for teachers and contacts'),
 		'buttons' => array(
-			'send' => gettext('Send Person'),
-			'clear' => gettext('Clear')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Send Person'),
+				'name' => 'send'
+			),
+			array(
+				'type' => 'reset',
+				'value' => gettext('Clear'),
+				'name' => 'clear'
+			)
 		),
 		'items' => array(
 			array(
@@ -322,7 +367,11 @@ $lang['forms'] = array(
 		'legend' => gettext('Profile'),
 		'info' => gettext('Please keep your personal profile up to date and relevant'),
 		'buttons' => array(
-			'send' => gettext('Update profile')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Update profile'),
+				'name' => 'send'
+			)
 		),
 		'items' => array(
 			array(
@@ -345,7 +394,11 @@ $lang['forms'] = array(
 		'legend' => gettext('Export settings'),
 		'info' => gettext('Set here the properties for the output of your list of saved trainings'),
 		'buttons' => array(
-			'send' => gettext('Update settings')
+			array(
+				'type' => 'submit',
+				'value' => gettext('Update settings'),
+				'name' => 'send'
+			)
 		),
 		'items' => array(
 			array(

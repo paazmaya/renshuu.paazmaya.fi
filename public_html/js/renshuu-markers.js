@@ -168,7 +168,7 @@ var renshuuMarkers = {
 	 */
 	createLocationMarker: function (data) {
 		console.group('createLocationMarker');
-		var icon = renshuuMap.getBubble('glyphish_flag', data.location.title, '0E3621', '05050D');
+		var icon = renshuuPins.getBubble('d_bubble_text_small', data.location.title, 'F9FBF7', '5E0202');
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.location.title, icon, false);
 
@@ -324,9 +324,6 @@ var renshuuMarkers = {
 		renshuuMarkers.trainingMarkersData[len - 1] = data;
 		console.groupEnd();
 	},
-	
-	
-		
 
 	/**
 	 * MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
@@ -335,7 +332,7 @@ var renshuuMarkers = {
 	getMarkerImage: function (image, size, origin, anchor) {
 		console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
 		return new google.maps.MarkerImage(
-			'http://chart.apis.google.com/chart?' + image, size, origin, anchor, size
+			'http://chart.apis.google.com/chart?' + image, null, origin, anchor
 		);
 	},
 	
@@ -384,7 +381,7 @@ var renshuuMarkers = {
 				trainingTitle: (data.training.title ? data.training.title : null),
 				trainingStime: data.training.starttime ? data.training.starttime : null,
 				trainingEtime: data.training.endtime ? data.training.endtime : null,
-				weekDay: (renshuuMain.weekdays.length > data.training.weekday ? renshuuMain.weekdays[data.training.weekday] : ''),
+				weekDay: (renshuuMain.weekdays.length > data.training.weekday ? renshuuMain.weekdays[data.training.weekday] : ''), // todo: get weekday string from backend
 				artId: (data.training.art.id ? data.training.art.id : null),
 				artTitle: (data.training.art.title ? data.training.art.title : null),
 				personId: (data.person && data.person.id) ? data.person.id : null,

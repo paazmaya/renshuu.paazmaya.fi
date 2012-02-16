@@ -369,13 +369,6 @@ class RenshuuSuruToki extends RenshuuBase
 		// List weekday localisations. Sunday is at 0 index
 		$out .= ' renshuuMain.weekdays = ' . json_encode($this->lang['weekdays']) . ';' . "\n";
 
-		// User specific data in case they would be logged in. Used for prefilling the forms.
-		$out .= ' renshuuMain.userData = {';
-		$out .= '  loggedIn: ' . ($_SESSION['access'] > 1 ? 'true' : 'false') . ',';
-		$out .= '  name: "' . $_SESSION['username'] . '",';
-		$out .= '  email: "' . $_SESSION['email'] . '"';
-		$out .= ' };' . "\n";
-
 		// Now that the final variables have been set, it is ok to initiate the site.
 		$out .= ' renshuuMain.ready();' . "\n";
 

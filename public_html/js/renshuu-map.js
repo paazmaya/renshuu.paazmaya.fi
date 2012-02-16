@@ -30,12 +30,23 @@ var renshuuMap = {
 	 * How much time needs to be inbetween consecutive geocodings?
 	 * Milliseconds
 	 */
-	geocodeTimeout: 800,
+	geocodeTimeout: 1200,
 
 	/**
 	 * If this value is 'address' and a marker is clicked, its position will be place in the form.
 	 */
 	geocodeBasedOn: 'none',
+	
+	/**
+	 * When was the most recent location marker update done?
+	 */
+	lastLocationUpdate: 0,
+	
+	/**
+	 * How much time needs to be inbetween consecutive location marker updates?
+	 * Milliseconds
+	 */
+	locationUpdateInterval: 1200,
 
 	/**
 	 * Google Maps v3
@@ -66,7 +77,7 @@ var renshuuMap = {
 	/**
 	 * As per marker double click, show its position in Street View
 	 */
-	showInStreetView: false,
+	showInStreetView: true,
 
 	/**
 	 * http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsService
@@ -97,30 +108,6 @@ var renshuuMap = {
 		});
 
 		
-		// Handler for the ability to toggle streetView viewing while marker click.
-		if (localStorage.getItem('showInStreetView')) {
-			$('input:checkbox[name="markerstreet"]').attr('checked', 'checked');
-			renshuuMap.showInStreetView = true;
-		}
-
-		// Toggle "street view position update based on the map position" setting.
-		if (renshuuMap.streetEnable) {
-			$('input:checkbox[name="markerstreet"]').change(function () {
-				renshuuMap.showInStreetView = $(this).is(':checked');
-				console.log('markerstreet checkbox change. renshuuMap.showInStreetView: ' + renshuuMap.showInStreetView);
-				localStorage.setItem(
-					'showInStreetView',
-					renshuuMap.showInStreetView
-				);
-			});
-		}
-		if (renshuuMap.streetEnable) {
-			$('#mapping .header a[rel="street"]').click(function () {
-				var visible = renshuuMap.streetView.getVisible();
-				renshuuMap.streetView.setVisible(!visible);
-				return false;
-			});
-		}
 
 	},
 	
@@ -179,7 +166,16 @@ var renshuuMap = {
 	 * As opposed to trainings.
 	 */
 	updateLocations: function () {
-		console.group('updateLocations');
+		var now = $.now();
+		var diff = now - renshuuMap.lastLocationUpdate;
+		if (renshuuMap.locationUpdateInterval > diff) {
+			console.log('skipping updateLocations. now: ' + now + ', diff: ' + diff);
+			return false;
+		}
+		console.group('updateLocations ' + now);
+		
+		renshuuMap.lastLocationUpdate = now;
+		
 		var bounds = renshuuMap.map.getBounds();
 		var ne = bounds.getNorthEast();
 		var sw = bounds.getSouthWest();
@@ -206,57 +202,6 @@ var renshuuMap = {
 			}
 		}, 'json');
 		console.groupEnd();
-	},
-
-	
-	/**
-	 *
-	 * @see
-	 */
-	initiate: function () {
-		var map = renshuuMap.map;
-		google.maps.event.addListener(map, 'bounds_changed', renshuuMap.bounds_changed);
-		google.maps.event.addListener(map, 'center_changed', renshuuMap.center_changed);
-		//google.maps.event.addListener(map, 'maptypeid_changed', renshuuMap.maptypeid_changed);
-		//google.maps.event.addListener(map, 'mousemove', renshuuMap.mousemove);
-		//google.maps.event.addListener(map, 'mouseout', renshuuMap.mouseout);
-		//google.maps.event.addListener(map, 'mouseover', renshuuMap.mouseover);
-		//google.maps.event.addListener(map, 'rightclick', renshuuMap.rightclick);
-		google.maps.event.addListener(map, 'zoom_changed', renshuuMap.zoom_changed);
-	},
-	bounds_changed: function () {
-		// This event is fired when the viewport bounds have changed
-		if (renshuuMain.tabRight == 'location' || renshuuMain.tabRight == 'training') {
-			renshuuMap.updateLocations();
-		}
-	},
-	center_changed: function () {
-		// This event is fired when the map center property changes.
-		renshuuMap.saveMapCenter();
-	},
-	/*
-	maptypeid_changed: function () {
-		// This event is fired when the mapTypeId property changes.
-	},
-	mousemove: function (event) {
-		// This event is fired whenever the user's mouse moves over the map container.
-	},
-	mouseout: function (event) {
-		// This event is fired when the user's mouse exits the map container.
-	},
-	mouseover: function (event) {
-		// This event is fired when the user's mouse enters the map container.
-	},
-	projection_changed: function () {
-		// This event is fired when the projection has changed.
-	},
-	rightclick: function (event) {
-		// This event is fired when the DOM contextmenu event is fired on the map container.
-	},
-	*/
-	zoom_changed: function () {
-		// This event is fired when the map zoom property changes.
-		renshuuMap.saveMapZoom();
 	},
 
 	/**
@@ -373,11 +318,27 @@ var renshuuMap = {
 
 		opts = $.extend(true, {}, opts, map_options);
 		renshuuMap.map = new google.maps.Map(elem, opts);
-
+		
+		google.maps.event.addListener(renshuuMap.map, 'bounds_changed', function () {
+			if (renshuuMain.tabRight == 'location' || renshuuMain.tabRight == 'training') {
+				renshuuMap.updateLocations();
+			}
+		});
+		
+		google.maps.event.addListener(renshuuMap.map, 'center_changed', function () {
+			renshuuMap.saveMapCenter();
+		});
+		
+		google.maps.event.addListener(renshuuMap.map, 'zoom_changed', function () {
+			renshuuMap.saveMapZoom();
+		});
+		
 		//var icon = renshuuPins.getBubble('glyphish_paperclip', 'Select+position');
-		var icon = renshuuPins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sright');
+		var icon = renshuuPins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sleft');
 		//var icon = 'http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D';
+		
 		console.log('Setting up locationMarker with opts.center: ' + opts.center.toString() + ', icon: ' + icon);
+		
 		renshuuMarkers.locationMarker = renshuuMarkers.createMarker(
 			opts.center, 'Choose position', icon, true
 		);
@@ -388,9 +349,7 @@ var renshuuMap = {
 			$('input[name="latitude"]').val(pos.lat());
 			$('input[name="longitude"]').val(pos.lng());
 		});
-		google.maps.event.addListener(renshuuMarkers.locationMarker, 'dragstart', function (event) {
-			// This event is fired when the user starts dragging the marker.
-		});
+		
 		google.maps.event.addListener(renshuuMarkers.locationMarker, 'dragend', function (event) {
 			// geocode current position if the form setting allows.
 			// propably should geocode anyway, and only until a click on those appearing marker the address would be filled...
@@ -407,8 +366,6 @@ var renshuuMap = {
 			}
 		});
 		renshuuMarkers.locationMarker.setVisible(false);
-
-		renshuuMap.initiate();
 
 		$(window).resize(function () {
 			google.maps.event.trigger(renshuuMap.map, 'resize');
@@ -440,6 +397,7 @@ var renshuuMap = {
 			var pos = renshuuMarkers.streetMarker.getPosition();
 			console.log('streetMarker dragend. pos: ' + pos);
 			renshuuMap.streetView.setPosition(pos);
+			
 			if (!renshuuMap.streetView.getVisible()) {
 				renshuuMap.streetView.setVisible(true);
 			}

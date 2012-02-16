@@ -634,6 +634,10 @@ class RenshuuAjax extends RenshuuBase
 	 */
 	private function pageKeepAlive()
 	{
+		$this->out['user'] = array(
+			'email' => ,
+			'name' => 
+		);
 		$this->out['keepalive'] = time();
 		unset($this->out['error']);
 	}

@@ -206,6 +206,12 @@ class RenshuuHelper
 					$out .= '';
 				}
 			}
+			else if ($item['type'] == 'button')
+			{
+				$out .= '<p>';
+				$out .= '<label><span>&nbsp;</span>';
+				$out .= '<input class="button" type="button" name="' . $item['name'] . '" value="' . $item['label'] . '" />';
+			}
 			else
 			{
 				$out .= '<p><label><span>' . $item['label'] . ':</span>';
@@ -315,9 +321,9 @@ class RenshuuHelper
 		if (isset($data['buttons']) && is_array($data['buttons']))
 		{
 			$out .= '<p>';
-			foreach($data['buttons'] as $k => $v)
+			foreach($data['buttons'] as $button)
 			{
-				$out .= '<input type="button" name="' . $k . '" value="' . $v . '" />';
+				$out .= '<input class="button" type="' . $button['type'] . '" name="' . $button['name'] . '" value="' . $button['value'] . '" />';
 			}
 			$out .= '</p>';
 		}

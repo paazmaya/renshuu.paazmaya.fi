@@ -71,21 +71,22 @@ var renshuuPins = {
 	},
 
 	/**
-	 *
-	 * @see
+	 * http://chart.googleapis.com/chart?chst=d_bubble_text_small&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
+	 * http://chart.googleapis.com/chart?chst=d_bubble_text_small_withshadow&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
+	 * @see http://code.google.com/apis/chart/infographics/docs/overview.html
 	 */
 	getBubble: function (icon, text, fill, color, type) {
 		if (!icon) {
-			icon = 'glyphish_paperclip';
+			icon = 'd_bubble_text_small';
 		}
 		if (!text) {
 			text = 'Select+position';
 		}
 		if (!fill) {
-			fill = 'B7B529';
+			fill = 'F9FBF7';
 		}
 		if (!color) {
-			color = '05050D';
+			color = '5E0202';
 		}
 		if (!type) {
 			type = 'bbtl';
@@ -93,10 +94,10 @@ var renshuuPins = {
 		var size = new google.maps.Size(41, 42);
 		var origin = new google.maps.Point(0, 0);
 		var anchor = new google.maps.Point(0, 0);
-		// http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D
+		
 		return renshuuMarkers.getMarkerImage(
-			'chst=d_bubble_icon_text_small&chld=' + icon + '|' + encodeURI(text) + '|' +
-			type + '|' + fill + '|' + color, size, origin, anchor
+			'chst=' + icon + '&chld=' + type + '|' + encodeURI(text) + '|' +
+			fill + '|' + color, size, origin, anchor
 		);
 	},
 

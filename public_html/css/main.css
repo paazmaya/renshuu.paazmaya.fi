@@ -20,15 +20,15 @@ input, select, form ul, form li {
 input:hover, select:hover {
 	background-color: #129EF7;
 }
-input[type=text], select {
+input[type="text"], select {
 	margin: 1px;
 }
-input[type=text]:focus, select:focus {
+input[type="text"]:focus, select:focus {
 	border: 2px solid #0E3621;
 	background-color: #67828A;
 	margin: 0;
 }
-input[type=checkbox], input[type=radio] {
+input[type="checkbox"], input[type="radio"] {
 	width: 1em;
 	vertical-align: middle;
 }
@@ -48,7 +48,7 @@ span.after {
 	float: none;
 	display: inline;
 }
-input[type=button] {
+input.button, input[type="submit"], input[type="clear"] {
 	width: 40%;
 	margin: 1em;
 	height: 2em;
@@ -56,13 +56,13 @@ input[type=button] {
 	color: #F9FBF7;
 	font-weight: bold;
 }
-input[type=button]:focus {
+input.button:hover {
+	background-color: #129EF7;
+}
+input.button:focus {
 	margin: 1em;
 	border-width: 1px;
 	background-color: #5E0202;
-}
-input[type=button]:hover {
-	background-color: #129EF7;
 }
 input[disabled] {
 	background-color: #5E0202;
@@ -200,9 +200,6 @@ td.even, tbody tr:nth-child(even) {
 .tab-content {
 	height: 100%;
 	width: 100%;
-	background-image: url(../img/renshuu-64x64.png);
-	background-position: center;
-	background-repeat: no-repeat;
 }
 .tab-content > div {
 	position: absolute;
@@ -219,6 +216,10 @@ td.even, tbody tr:nth-child(even) {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	
+	background-image: url(../img/renshuu-64x64.png);
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 

@@ -20,13 +20,8 @@ var renshuuForms = {
 			return false;
 		});
 
-		$('form input:button[name="send"]').on('click', function () {
-			$(this).parents('form').first().submit();
-			return false;
-		});
-
-		$('form input:button[name="clear"]').on('click', function () {
-			$(this).parents('form').get(0).reset();
+		$('form input:button[name="search"]').on('click', function () {
+			
 			return false;
 		});
 
