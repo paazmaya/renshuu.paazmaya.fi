@@ -487,7 +487,7 @@ var renshuuMain = {
 			var list = renshuuMain.filterSettings[target];
 			console.log('target: ' + target + ', list: ' + list);
 			if (list) {
-				$('#' + target + ' input:checkbox').each(function (i, elem) {
+				$('#filter_' + target + ' input:checkbox').each(function (i, elem) {
 					var rel = $(this).attr('name').split('_').pop();
 					var inx = list.indexOf(rel);
 					console.log('i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
@@ -523,8 +523,8 @@ var renshuuMain = {
 		renshuuMarkers.trainingMarkersData = [];
 
 		$.post('/ajax/get/', para, function (data, status) {
-			if (data.response && data.response.result) {
-				var res = data.response.result;
+			if (data && data.result) {
+				var res = data.result;
 				var len = res.length;
 				for (var i = 0; i < len; ++i) {
 					renshuuMarkers.createTrainingMarker(res[i]);

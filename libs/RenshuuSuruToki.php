@@ -260,7 +260,7 @@ class RenshuuSuruToki extends RenshuuBase
 	{
 		$out = file_get_contents($this->templateDir . 'body.html');
 
-		$artlist = '<ul id="arts">';
+		$artlist = '<ul id="filter_arts">';
 		// Filter based on the user access if any...
 		$sql = 'SELECT id, title FROM renshuu_art ORDER BY title';
 		$run = $this->pdo->query($sql);
@@ -270,7 +270,7 @@ class RenshuuSuruToki extends RenshuuBase
 		}
 		$artlist .= '</ul>';
 
-		$weekdaylist = '<ul>';
+		$weekdaylist = '<ul id="filter_weekdays">';
 		// Zero index Sunday.
 		foreach($this->lang['weekdays'] as $key => $val)
 		{
@@ -287,10 +287,13 @@ class RenshuuSuruToki extends RenshuuBase
 		$list = array(
 			'leftnavigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
 			'rightnavigation' => $this->helper->createNavigation($this->lang['navigation']['right'], $_SESSION['access']),
-			'artshortcuts' => $this->helper->createSelectionShortcuts('rel_arts', $this->lang['selectionshortcuts']),
+			
+			'artshortcuts' => $this->helper->createSelectionShortcuts('shortcuts arts', $this->lang['selectionshortcuts']),
 			'artlist' => $artlist,
-			'weekdayshortcuts' => $this->helper->createSelectionShortcuts('rel_weekdays', $this->lang['selectionshortcuts']),
+			
+			'weekdayshortcuts' => $this->helper->createSelectionShortcuts('shortcuts weekdays', $this->lang['selectionshortcuts']),
 			'weekdaylist' => $weekdaylist,
+			
 			'exportform' => $this->helper->createForm('export', $this->lang['forms']['export']),
 			'staticmap' => $this->helper->createStaticMapUrl(),
 			'copyright' => $copyright,

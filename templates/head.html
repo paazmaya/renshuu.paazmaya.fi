@@ -12,6 +12,18 @@
 	##stylesheetmain##
 	<link type="text/css" href="##stylesheeticon##" rel="stylesheet" />
 
+	<script id="unorderedTemplate" type="text/x-jquery-tmpl">
+		<li>
+			<label>
+				<input type="checkbox" name="art_${id}" /> ${title}
+			</label>
+		</li>
+	</script>
+	
+	<script id="selectTemplate" type="text/x-jquery-tmpl">
+		<option value="${id}"> ${title}</option>
+	</script>
+	
 	<script id="savedTemplate" type="text/x-jquery-tmpl">
 		<tr rel="${id}">
 			<td>${artTitle}</td>

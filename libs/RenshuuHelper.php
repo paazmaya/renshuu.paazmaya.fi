@@ -420,12 +420,12 @@ class RenshuuHelper
 
 
 	/**
-	 * <p class="rel_weekdays">
-	 * 	<a href="#" rel="all" title="Select all">Select all</a>
-	 * 	<a href="#" rel="none" title="Select none">Select none</a>
-	 * 	<a href="#" rel="inverse" title="Inverse selection">Inverse selection</a>
+	 * <p class="shortcuts arts">
+	 * 	<a href="#all" title="Select all">Select all</a>
+	 * 	<a href="#none" title="Select none">Select none</a>
+	 * 	<a href="#inverse" title="Inverse selection">Inverse selection</a>
 	 * </p>
-	 * @param string $class rel_weekdays
+	 * @param string $class shortcuts arts
 	 * @param array $data = array(
 	 * 		'all' => 'Select all'
 	 * 		'none' => 'Select none'
@@ -438,7 +438,7 @@ class RenshuuHelper
 		$out = '<p class="' . $class . '">';
 		foreach ($data as $key => $val)
 		{
-			$out .= '<a href="#" rel="' . $key . '" title="' . $val . '">' . $val . '</a>';
+			$out .= '<a href="#' . $key . '" title="' . $val . '">' . $val . '</a>';
 		}
 		$out .= '</p>';
 		return $out;

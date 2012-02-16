@@ -240,8 +240,9 @@ td.even, tbody tr:nth-child(even) {
 .tab-content a[rel] {
 	font-size: smaller;
 }
-.filters a[rel] {
+.shortcuts a {
 	padding: 0.5em;
+	text-decoration: none;
 }
 
 

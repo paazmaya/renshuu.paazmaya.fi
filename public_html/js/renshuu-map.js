@@ -190,8 +190,8 @@ var renshuuMap = {
 
 		$.post('/ajax/get/location', para, function (data, status) {
 			console.dir(data);
-			if (data.response && data.response.result) {
-				var res = data.response.result;
+			if (data && data.result) {
+				var res = data.result;
 				var len = res.length;
 				for (var i = 0; i < len; ++i) {
 					renshuuMarkers.createLocationMarker(res[i]);

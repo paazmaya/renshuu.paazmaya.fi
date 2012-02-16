@@ -22,8 +22,7 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 * - filter { arts [], weekdays [] }
 * This is when there is no additional keywork in the url.
 *
-* Output JSON is always contained in a "response" array,
-* which will contain "error" item in case such should have occurred.
+* Output JSON will contain "error" item in case such should have occurred.
 *
 * While responding to "get" mode request, the output is build as such:
 *	result: [
@@ -170,9 +169,10 @@ class RenshuuAjax extends RenshuuBase
 			$this->out['errorInfo'] = 'Wrong line at the passport control';
 		}
 
+		$this->out['type'] = $this->pagetype;
 		$this->out['created'] = date($this->config['datetime']);
 
-		echo json_encode(array('response' => $this->out));
+		echo json_encode($this->out);
 
 	}
 
@@ -617,7 +617,7 @@ class RenshuuAjax extends RenshuuBase
 				$this->out['result'] = array(
 					'id' => $id,
 					'title' => $trimmed['title'],
-					'message' => 'New data inserted...'
+					'message' => 'New ' . $this->pagetype . ' inserted...'
 				);
 				unset($this->out['error']);
 			}
@@ -635,8 +635,8 @@ class RenshuuAjax extends RenshuuBase
 	private function pageKeepAlive()
 	{
 		$this->out['user'] = array(
-			'email' => ,
-			'name' => 
+			'email' => $_SESSION['email'],
+			'name' => $_SESSION['username']
 		);
 		$this->out['keepalive'] = time();
 		unset($this->out['error']);

@@ -20,6 +20,7 @@ var renshuuForms = {
 			return false;
 		});
 
+		// Geocode 
 		$('form input:button[name="search"]').on('click', function () {
 			
 			return false;
@@ -108,15 +109,28 @@ var renshuuForms = {
 		$.post($form.attr('action'), post, function (data, status) {
 			console.log('form submit. status: ' + status);
 			console.dir(data);
-			var res = {};
-			if (data.response && data.response.result) {
-				res = data.response.result;
+			
+			// Insert/update the new data to any related lists...
+			if (data.type == 'art') {
+				var filterarts = $('#filter_arts input[name="art_' + data.result.id + '"]');
+				console.log('filterarts.size: ' + filterarts.size());
+				if (filterarts.size() == 1) {
+					// update
+					var checkbox = filterarts.outerHtml();
+					filterarts.parent('label').html(checkbox + data.result.title); // works
+					$('select[name="art"] > option[value="' + data.result.id + '"').html(data.result.title); // does not work
+				}
+				else {
+					// insert
+					$('#filter_arts').prepend($('#unorderedTemplate').tmpl(data.result)); // filter list
+					$('select[name="art"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
+				}
 			}
 
 			var classes = 'icon error icon-alert';
 			$('#formfeedback').attr('class', classes);
 
-			$('#formfeedback').html($('#feedbackTemplate').tmpl(res));
+			$('#formfeedback').html($('#feedbackTemplate').tmpl(data.result));
 
 			$('#formfeedback a').live('click', function () {
 				var dattr = $(this).data(); // the data that came via response
