@@ -1,6 +1,5 @@
 
 label, .label {
-	width: 100%;
 	display: block;
 }
 label span, .label span {
@@ -95,6 +94,30 @@ td.even, tbody tr:nth-child(even) {
 	background-position: center;
 	background-repeat: no-repeat;
 }
+/** session is on the corner of body **/
+#session {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 422;
+	-moz-border-radius-bottomleft: 1em;
+	border-radius-bottomleft: 1em;
+	background-color: #034A77;
+	color: #F9FBF7;
+	text-align: right;
+	font-size: smaller;
+	font-weight: bold;
+}
+#session  p, #session label {
+	padding: 0.5em;
+	margin: 0;
+}
+#session input[type="checkbox"] {
+	background-color: #5E0202;
+	color: #F9FBF7;
+	margin-left: 1em;
+}
+
 
 /** lower area is bottom **/
 #bottom {

@@ -278,9 +278,17 @@ $lang['forms'] = array(
 				'name' => 'title'
 			),
 			array(
+				'label' => gettext('Art'),
+				'type' => 'select',
+				'name' => 'art',
+				'required' => true,
+				'options' => 'SELECT id, title FROM renshuu_art ORDER BY title ASC'
+			),
+			array(
 				'label' => gettext('Location'),
 				'type' => 'select',
 				'name' => 'location',
+				'required' => true,
 				'options' => 'SELECT id, CONCAT(title, \', \', address) FROM renshuu_location ORDER BY title ASC'
 			),
 			array(
@@ -291,8 +299,9 @@ $lang['forms'] = array(
 			),
 			array(
 				'label' => gettext('Occurance'),
-				'type' => 'text',
-				'name' => 'occurance'
+				'type' => 'select',
+				'name' => 'occurance',
+				'options' => ''
 			),
 			array(
 				'label' => gettext('Start time'),
@@ -305,20 +314,6 @@ $lang['forms'] = array(
 				'type' => 'time',
 				'name' => 'endtime',
 				'class' => 'short'
-			),
-			array(
-				'label' => gettext('Duration (minutes)'),
-				'type' => 'number',
-				'name' => 'duration',
-				'class' => 'short',
-				'disabled' => false
-			),
-			array(
-				'label' => gettext('Art'),
-				'type' => 'select',
-				'name' => 'art',
-				'required' => true,
-				'options' => 'SELECT id, title FROM renshuu_art ORDER BY title ASC'
 			)
 		)
 	),
@@ -348,6 +343,7 @@ $lang['forms'] = array(
 			array(
 				'label' => gettext('Art'),
 				'type' => 'select',
+				'required' => true,
 				'name' => 'art',
 				'options' => 'SELECT id, title FROM renshuu_art ORDER BY title ASC'
 			),

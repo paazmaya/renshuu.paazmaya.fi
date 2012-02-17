@@ -33,6 +33,11 @@ var renshuuMain = {
 		arts: [],
 		weekdays: ['0', '1', '2', '3', '4', '5', '6'] // all weekdays are selected by default
 	},
+	
+	/**
+	 * Should the training markers which are found via filtered search be shown?
+	 */
+	showTrainings: 1,
 
 	/**
 	 * Icon used as a background for the geocode direction
@@ -73,26 +78,28 @@ var renshuuMain = {
 	weekdays: [],
 
 	/**
-	 * User specific data will be filled, in case logged in, via the bottom of index.php...
+	 * Email address of the user logged in.
+	 * Fetched from body data.
 	 */
-	userData: null,
+	userEmail: '',
+
+	/**
+	 * Nameof the user logged in.
+	 * Fetched from body data.
+	 */
+	userName: '',
 
 	/**
 	 * Please trigger this once document is ready, thus DOM has been loaded.
-	 * Assumes that there exists elements with the following ids:
-	 * - map
-	 * - street
-	 * - filtering
-	 * - navigation
-	 * - mapping
-	 * - savedlist
-	 * -
-	 *
 	 */
 	ready: function () {
+		var data = $('body').data();
+		renshuuMain.userEmail = data.email;
+		renshuuMain.userName = data.username;
+		
 		console.group('ready');
 		if (typeof(localStorage) == 'undefined' ) {
-			console.log('Your browser does not support HTML5 localStorage. Try upgrading.');
+			console.log('Your browser does not support HTML5 localStorage. Try upgrading. Your browser, that is.');
 		}
 		
 		
@@ -104,6 +111,7 @@ var renshuuMain = {
 		var filterWeekdays = localStorage.getItem('filterWeekdays');
 		var tabLeft = localStorage.getItem('tabLeft');
 		var tabForms = localStorage.getItem('tabForms');
+		var showTrainings = localStorage.getItem('showTrainings');
 		
 		if (filterArts !== null) {
 			renshuuMain.filterSettings.arts = filterArts.split('.');
@@ -121,8 +129,21 @@ var renshuuMain = {
 			console.log('tabForms : ' + tabForms);
 			renshuuMain.showTabContent($('#forms .icon-list a[href="#' + tabForms + '"]'));
 		}
+		if (showTrainings !== null) {
+			renshuuMain.showTrainings = parseInt(showTrainings);
+		}
 		
 
+		$('#session input:checkbox').on('change', function () {
+			var name = $(this).attr('name');
+			var check = $(this).is(':checked');
+			console.log('change. name: ' + name + ', check: ' + check);
+			
+			renshuuMain.showTrainings = check ? 1 : 0;
+			localStorage.getItem('showTrainings', renshuuMain.showTrainings);
+
+			renshuuMarkers.setTrainingMarkersVisibility();
+		});
 
 		// Triggers on individual change of the checkboxes
 		$('.filters input:checkbox').live('change', function () {
@@ -260,8 +281,7 @@ var renshuuMain = {
 	 */
 	aliveKeeper: function () {
 		$.get('/ajax/keepalive', function (data) {
-			userData.email = data.user.email;
-			userData.name = data.user.name;
+			//
 		}, 'json');
 	},
 

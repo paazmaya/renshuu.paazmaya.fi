@@ -138,37 +138,28 @@ class RenshuuSuruToki extends RenshuuBase
 				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
 					isset($this->posted['password']) && $this->posted['password'] != '')
 				{
-					$sql = 'SELECT id, name, email, access FROM renshuu_user WHERE email = \'' .
+					$sql = 'SELECT name, email, access FROM renshuu_user WHERE email = \'' .
 						$this->posted['email'] . '\' AND access > 0';
 					$run = $this->pdo->query($sql);
 					if ($run->columnCount() > 0)
 					{
 						$res = $run->fetch(PDO::FETCH_ASSOC);
-						$_SESSION['userid'] = intval($res['id']);
 						$_SESSION['email'] = $res['email'];
 						$_SESSION['username'] = $res['name'];
 						$_SESSION['access'] = intval($res['access']); // use as binary
-
-						$url = '/#profile';
-					}
-					else
-					{
-						$url = '/#login';
 					}
 				}
 			}
 			else if (strlen($this->getted['page']) == 2 && array_key_exists($this->getted['page'], $this->config['languages']))
 			{
 				$_SESSION['lang'] = $this->getted['page'];
-				$url = '/';
 			}
 			else
 			{
-				$url = '/#' . $this->urize($this->getted['page']);
 				header('HTTP/1.1 301 Moved Permanently');
 			}
 			
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . $url);
+			header('Location: http://' . $_SERVER['HTTP_HOST']);
 			exit();
 		}
 	}
@@ -285,8 +276,12 @@ class RenshuuSuruToki extends RenshuuBase
 			</div>';
 		
 		$list = array(
-			'leftnavigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
-			'formsnavigation' => $this->helper->createNavigation($this->lang['navigation']['forms'], $_SESSION['access']),
+			'user_email' => $_SESSION['email'],
+			'user_name' => $_SESSION['username'],
+			'show_trainings' => gettext('show training markers'),
+			
+			'left_navigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
+			'forms_navigation' => $this->helper->createNavigation($this->lang['navigation']['forms'], $_SESSION['access']),
 			
 			'artshortcuts' => $this->helper->createSelectionShortcuts('shortcuts arts', $this->lang['selectionshortcuts']),
 			'artlist' => $artlist,

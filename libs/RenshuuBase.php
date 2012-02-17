@@ -203,14 +203,12 @@ class RenshuuBase
 			!array_key_exists($_SESSION['lang'], $this->config['languages']) ||
 			!isset($_SESSION['access']) || 
 			!isset($_SESSION['browser']) || 
-			!isset($_SESSION['userid']) || 
 			!isset($_SESSION['username']) || 
 			!isset($_SESSION['email']))
 		{
 			$_SESSION['lang'] = 'en';
-			$_SESSION['access'] = 1; // to enable login form
+			$_SESSION['access'] = 0;
 			$_SESSION['browser'] = sha1($_SERVER['HTTP_USER_AGENT'] . session_id());
-			$_SESSION['userid'] = 0;
 			$_SESSION['username'] = '';
 			$_SESSION['email'] = '';
 		}
@@ -218,6 +216,8 @@ class RenshuuBase
 		
 		// For testing purposes...
 		$_SESSION['access'] = bindec(1111111111);
+		$_SESSION['username'] = 'Juga Paazmaya';
+		$_SESSION['email'] = 'olavic@gmail.com';
 	}
 	
 	/**

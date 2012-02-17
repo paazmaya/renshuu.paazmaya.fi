@@ -7,7 +7,7 @@ var renshuuPins = {
 	
 	/**
 	 *
-	 * @see http://chart.apis.google.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
+	 * @see http://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
 	 */
 	getIcon: function (icon, color) { // 21, 34
 		if (!icon) {
@@ -23,7 +23,7 @@ var renshuuPins = {
 
 	/**
 	 *
-	 * @see http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
+	 * @see http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=場|ADDE63|05050D
 	 */
 	getLetter: function (letter, fill, color) {
 		if (!letter) {
@@ -63,8 +63,8 @@ var renshuuPins = {
 		if (type == 'pin_sleft') {
 			anchor = new google.maps.Point(23, 33);
 		}
-		// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F9FBF7|ADDE63
-		// http://chart.apis.google.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_compass|F9FBF7|ADDE63
+		// http://chart.googleapis.com/chart?chst=d_map_xpin_icon&chld=pin_star|glyphish_compass|F9FBF7|ADDE63
+		// http://chart.googleapis.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_compass|F9FBF7|ADDE63
 		return renshuuMarkers.getMarkerImage(
 			'chst=d_map_xpin_icon&chld=' + type + '|' + icon + '|' + fill + '|' + star, size, origin, anchor
 		);

@@ -324,6 +324,20 @@ var renshuuMarkers = {
 		renshuuMarkers.trainingMarkersData[len - 1] = data;
 		console.groupEnd();
 	},
+	
+	/**
+	 * Show or hide the training markerks based on renshuuMain.showTrainings.
+	 */
+	setTrainingMarkersVisibility: function () {
+		var visible = renshuuMain.showTrainings;
+		var len = renshuuMarkers.trainingMarkers.length;
+		for (var i = 0; i < len; i++) {
+			var marker = renshuuMarkers.trainingMarkers[i];
+			if (marker !== null) {
+				marker.setVisible(visible);
+			}
+		}
+	},
 
 	/**
 	 * MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
@@ -332,7 +346,7 @@ var renshuuMarkers = {
 	getMarkerImage: function (image, size, origin, anchor) {
 		console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
 		return new google.maps.MarkerImage(
-			'http://chart.apis.google.com/chart?' + image, null, origin, anchor
+			'http://chart.googleapis.com/chart?' + image, null, origin, anchor
 		);
 	},
 	

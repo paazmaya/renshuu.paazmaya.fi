@@ -497,12 +497,11 @@ class RenshuuAjax extends RenshuuBase
 			),
 			'training' => array(
 				'location' => '',
+				'art' => '',
 				'weekday' => '',
 				'occurance' => '',
 				'starttime' => '',
-				'endtime' => '',
-				//'duration' => '',
-				'art' => ''
+				'endtime' => ''
 			),
 			'person' => array(
 				'art' => '',
@@ -515,7 +514,7 @@ class RenshuuAjax extends RenshuuBase
 			)
 		);
 		$always = array_merge($map[$this->pagetype], array(
-			'title' => 'name'
+			'title' => 'title'
 		));
 		// Are all the posted keys set which are needed for that type?
 		$trimmed = array();
@@ -539,13 +538,12 @@ class RenshuuAjax extends RenshuuBase
 		if (count($missing) == 0)
 		{
 			$sql = '';
+			$message = '';
 
 			// Each of the given tables have a field for modified time
 			$trimmed['modified'] = time();
 			$keys = implode(', ', array_keys($trimmed));
-			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';
-
-			
+			$values = '\'' . implode('\', \'', array_values($trimmed)) . '\'';			
 
 			// This should include the id of that item which is currently being updated.
 			if (isset($this->posted['update']) && is_numeric($this->posted['update']))
@@ -560,6 +558,7 @@ class RenshuuAjax extends RenshuuBase
 
 				// http://sqlite.org/lang_update.html
 				$sql = 'UPDATE renshuu_' . $this->pagetype . ' SET ' . implode(', ', $sets) . ' WHERE id = ' . $id;
+				$message = 'Given ' . $this->pagetype . ' updated...';
 			}
 			else if (isset($this->posted['insert']) && $this->posted['insert'] == '0')
 			{
@@ -567,6 +566,7 @@ class RenshuuAjax extends RenshuuBase
 
 				// http://sqlite.org/lang_insert.html
 				$sql = 'INSERT INTO renshuu_' . $this->pagetype . ' (' . $keys . ') VALUES (' . $values . ')';
+				$message = 'New ' . $this->pagetype . ' created...';
 				/*
 				Return Values
 					If a sequence name was not specified for the name parameter,
@@ -615,7 +615,7 @@ class RenshuuAjax extends RenshuuBase
 				$this->out['result'] = array(
 					'id' => $id,
 					'title' => $trimmed['title'],
-					'message' => 'New ' . $this->pagetype . ' inserted...'
+					'message' => $message
 				);
 				unset($this->out['error']);
 			}
@@ -632,10 +632,6 @@ class RenshuuAjax extends RenshuuBase
 	 */
 	private function pageKeepAlive()
 	{
-		$this->out['user'] = array(
-			'email' => $_SESSION['email'],
-			'name' => $_SESSION['username']
-		);
 		$this->out['keepalive'] = time();
 		unset($this->out['error']);
 	}

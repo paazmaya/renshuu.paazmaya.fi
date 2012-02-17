@@ -361,7 +361,7 @@ var renshuuMap = {
 		
 		//var icon = renshuuPins.getBubble('glyphish_paperclip', 'Select+position');
 		var icon = renshuuPins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sleft');
-		//var icon = 'http://chart.apis.google.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D';
+		//var icon = 'http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D';
 		
 		console.log('Setting up locationMarker with opts.center: ' + opts.center.toString() + ', icon: ' + icon);
 		
@@ -577,6 +577,7 @@ var renshuuMap = {
 		if (inx !== -1) {
 			data = renshuuMarkers.trainingMarkersData[inx];
 		}
+		console.dir(data);
 
 		if (data) {
 			console.log('data. ' + data);
@@ -591,7 +592,7 @@ var renshuuMap = {
 			});
 			
 			// Fill overlay with the data inserted to a template
-			$('#modalTemplate').tmpl(info).appendTo('div.blockMsg');
+			$('#trainingTemplate').tmpl(info).appendTo('div.blockMsg');
 		}
 		console.groupEnd();
 	}
