@@ -30,7 +30,7 @@ var renshuuMap = {
 	 * How much time needs to be inbetween consecutive geocodings?
 	 * Milliseconds
 	 */
-	geocodeTimeout: 1200,
+	geocodingInterval: 1200,
 
 	/**
 	 * If this value is 'address' and a marker is clicked, its position will be place in the form.
@@ -85,6 +85,24 @@ var renshuuMap = {
 	 */
 	dirService: null,
 	
+	/**
+	 * Polylines used by DirectionsService to show the path on the map.
+	 * Structure:
+	 *  { polyline: line, points: [pos0, pos1] }
+	 */
+	dirLines: [],
+
+	/**
+	 * When was the most recent request for direction service made?
+	 */
+	lastDirectionRequest: 0,
+	
+	/**
+	 * The time in milliseconds between consecutive call to the directions
+	 * service (google.maps.DirectionsRequest).
+	 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT
+	 */
+	directionRequestInterval: 1000, // 1 sec
 	
 	init: function() {
 		
@@ -208,7 +226,16 @@ var renshuuMap = {
 	 * Draw route between two spots, while using directions service.
 	 */
 	drawRoute: function (pos1, pos2) {
-		console.group('drawRoute');
+		var now = $.now();
+		var diff = now - renshuuMap.lastDirectionRequest;
+		if (renshuuMap.directionRequestInterval > diff) {
+			console.log('skipping drawRoute. now: ' + now + ', diff: ' + diff);
+			return false;
+		}
+		console.group('drawRoute ' + now);
+		
+		renshuuMap.lastDirectionRequest = now;
+		
 		var reg = {
 			avoidHighways: true,
 			destination: pos2,
@@ -216,8 +243,7 @@ var renshuuMap = {
 			provideRouteAlternatives: false,
 			travelMode: google.maps.DirectionsTravelMode.WALKING
 		};
-		// This request should not be made too often..
-		// Check for renshuuMap.dirRequestInterval
+		
 		renshuuMap.dirService.route(reg, function (result, status) {
 			console.log('route status: ' + status);
 			if (result && result.routes && result.routes[0]) {
@@ -320,7 +346,7 @@ var renshuuMap = {
 		renshuuMap.map = new google.maps.Map(elem, opts);
 		
 		google.maps.event.addListener(renshuuMap.map, 'bounds_changed', function () {
-			if (renshuuMain.tabRight == 'location' || renshuuMain.tabRight == 'training') {
+			if (renshuuMain.tabForms == 'location' || renshuuMain.tabForms == 'training') {
 				renshuuMap.updateLocations();
 			}
 		});
@@ -568,7 +594,7 @@ var renshuuMap = {
 			$('#modalTemplate').tmpl(info).appendTo('div.blockMsg');
 		}
 		console.groupEnd();
-	},
+	}
 
 	
 	

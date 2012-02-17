@@ -106,7 +106,7 @@ td.even, tbody tr:nth-child(even) {
 	width: 100%;
 }
 
-/** left and right are children of bottom **/
+/** left and forms are children of bottom **/
 #left {
 	position: absolute;
 	bottom: 0;
@@ -114,14 +114,14 @@ td.even, tbody tr:nth-child(even) {
 	top: 0;
 	width: 50%;
 }
-#right {
+#forms {
 	position: absolute;
 	bottom: 0;
 	top: 0;
 	right: 0;
 	width: 50%;
 }
-/** icon-list are children of left and right **/
+/** icon-list are children of left and forms **/
 .icon-list {
 	position: absolute;
 	width: 40px;
@@ -132,7 +132,7 @@ td.even, tbody tr:nth-child(even) {
 #left .icon-list {
 	right: 0;
 }
-#right .icon-list {
+#forms .icon-list {
 	left: 0;
 }
 .icon-list ul {
@@ -159,7 +159,7 @@ td.even, tbody tr:nth-child(even) {
 	-moz-border-radius-bottomleft: 1em;
 	border-radius-bottomleft: 1em;
 }
-#right .icon-list a {
+#forms .icon-list a {
 	-moz-border-radius-bottomright: 1em;
 	border-radius-bottomright: 1em;
 	/* border-bottom-right-radius */
@@ -187,7 +187,7 @@ td.even, tbody tr:nth-child(even) {
 	-moz-border-radius-bottomleft: 1em;
 	border-radius-bottomleft: 1em;
 }
-#right .tab-title {
+#forms .tab-title {
 	left: 0;
 	-moz-border-radius-bottomright: 1em;
 	border-radius-bottomright: 1em;

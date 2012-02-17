@@ -487,13 +487,11 @@ class RenshuuAjax extends RenshuuBase
 		// Keys should match the ones used in $map below, available in $this->posted['items'] as an array.
 		$map = array(
 			'art' => array(
-				'url' => 'A.url'
+				'url' => 'url'
 			),
 			'location' => array(
-				'url' => '',
 				'info' => '',
 				'address' => '',
-				//'addr_autofill' => '',
 				'latitude' => '',
 				'longitude' => ''
 			),

@@ -286,7 +286,7 @@ class RenshuuSuruToki extends RenshuuBase
 		
 		$list = array(
 			'leftnavigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
-			'rightnavigation' => $this->helper->createNavigation($this->lang['navigation']['right'], $_SESSION['access']),
+			'formsnavigation' => $this->helper->createNavigation($this->lang['navigation']['forms'], $_SESSION['access']),
 			
 			'artshortcuts' => $this->helper->createSelectionShortcuts('shortcuts arts', $this->lang['selectionshortcuts']),
 			'artlist' => $artlist,

@@ -25,19 +25,6 @@ var renshuuMain = {
 	keepAlive: 1000 * 60 * 5, // Every 5 minutes a keepalive call
 
 
-	/**
-	 * Polylines used by DirectionsService to show the path on the map.
-	 * Structure:
-	 *  { polyline: line, points: [pos0, pos1] }
-	 */
-	dirLines: [],
-
-	/**
-	 * The time in milliseconds between consecutive call to the directions
-	 * service (google.maps.DirectionsRequest).
-	 * It shall prevent of getting google.maps.DirectionsStatus.OVER_QUERY_LIMIT
-	 */
-	dirRequestInterval: 1000, // 1 sec
 	
 	/**
 	 * Default filter settings. Make sure the values are always single strings.
@@ -45,16 +32,6 @@ var renshuuMain = {
 	filterSettings: {
 		arts: [],
 		weekdays: ['0', '1', '2', '3', '4', '5', '6'] // all weekdays are selected by default
-	},
-
-	/**
-	 * Icons (css rules) to use for named menu items, prepended with "icon-"
-	 */
-	menuicons: {
-		filters: 'equalizer',
-		location: 'addressbook',
-		art: 'smirk',
-		profile: 'womanman'
 	},
 
 	/**
@@ -70,7 +47,7 @@ var renshuuMain = {
 	 * Which tabs are visible
 	 */
 	tabLeft: '',
-	tabRight: '',
+	tabForms: '',
 	
 	/**
 	 * List of trainings which are saved for the purpose of exporting them as a list later on.
@@ -126,7 +103,7 @@ var renshuuMain = {
 		var filterArts = localStorage.getItem('filterArts');
 		var filterWeekdays = localStorage.getItem('filterWeekdays');
 		var tabLeft = localStorage.getItem('tabLeft');
-		var tabRight = localStorage.getItem('tabRight');
+		var tabForms = localStorage.getItem('tabForms');
 		
 		if (filterArts !== null) {
 			renshuuMain.filterSettings.arts = filterArts.split('.');
@@ -140,9 +117,9 @@ var renshuuMain = {
 			console.log('tabLeft : ' + tabLeft);
 			renshuuMain.showTabContent($('#left .icon-list a[href="#' + tabLeft + '"]'));
 		}
-		if (tabRight !== null) {
-			console.log('tabRight : ' + tabRight);
-			renshuuMain.showTabContent($('#right .icon-list a[href="#' + tabRight + '"]'));
+		if (tabForms !== null) {
+			console.log('tabForms : ' + tabForms);
+			renshuuMain.showTabContent($('#forms .icon-list a[href="#' + tabForms + '"]'));
 		}
 		
 
@@ -291,7 +268,7 @@ var renshuuMain = {
 	/**
 	 * Each tab has an individual content.
 	 * key Which tab
-	 * side	left/right
+	 * side	left/forms
 	 */
 	showTabContent: function ($elem) {
 		var href = $elem.attr('href');
@@ -325,8 +302,8 @@ var renshuuMain = {
 		
 		// Save current view
 		renshuuMain.tabLeft = $('#left .tab-content > div:visible').attr('id');
-		renshuuMain.tabRight = $('#right .tab-content > div:visible').attr('id');
-		localStorage.setItem('tabRight', renshuuMain.tabRight);
+		renshuuMain.tabForms = $('#forms .tab-content > div:visible').attr('id');
+		localStorage.setItem('tabForms', renshuuMain.tabForms);
 		localStorage.setItem('tabLeft', renshuuMain.tabLeft);
 		
 		// Now handle any special cases

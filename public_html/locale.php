@@ -561,7 +561,7 @@ $lang['navigation'] = array(
 			'access' => 2
 		)
 	),
-	'right' => array(
+	'forms' => array(
 		'training' => array(
 			'title' => gettext('Training creation'),
 			'text' => gettext('training'),

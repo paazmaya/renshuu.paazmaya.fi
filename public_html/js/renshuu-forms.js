@@ -105,50 +105,82 @@ var renshuuForms = {
 				renshuuMain.lang.form.sending + '</h1></div>'
 		});
 		
+		// Just once, removed after
+		$('#formfeedback a').live('click', function () {
+			var dattr = $(this).data(); // the data that came via response
+			console.dir(dattr);
+			
+			if (dattr.action == 'clear') {
+				$form.get(0).reset();
+			}
+			else if (dattr.action == 'keep') {
+			}
+			$form.data('ref', dattr.ref);
+			$form.data('key', dattr.key);
+
+			$('#formfeedback a').die('click');
+			$form.unblock(); // Should destroy #formfeedback...
+			return false;
+		});
+		
 		// When this AJAX call returns, it will replace the content of the above created div.
 		$.post($form.attr('action'), post, function (data, status) {
 			console.log('form submit. status: ' + status);
 			console.dir(data);
-			
-			// Insert/update the new data to any related lists...
-			if (data.type == 'art') {
-				var filterarts = $('#filter_arts input[name="art_' + data.result.id + '"]');
-				console.log('filterarts.size: ' + filterarts.size());
-				if (filterarts.size() == 1) {
-					// update
-					var checkbox = filterarts.outerHtml();
-					filterarts.parent('label').html(checkbox + data.result.title); // works
-					$('select[name="art"] > option[value="' + data.result.id + '"').html(data.result.title); // does not work
-				}
-				else {
-					// insert
-					$('#filter_arts').prepend($('#unorderedTemplate').tmpl(data.result)); // filter list
-					$('select[name="art"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
-				}
+			if (data.error) {
 			}
-
-			var classes = 'icon error icon-alert';
-			$('#formfeedback').attr('class', classes);
-
-			$('#formfeedback').html($('#feedbackTemplate').tmpl(data.result));
-
-			$('#formfeedback a').live('click', function () {
-				var dattr = $(this).data(); // the data that came via response
-				console.dir(dattr);
-				
-				if (dattr.action == 'clear') {
-					$form.get(0).reset();
-				}
-				else if (dattr.action == 'keep') {
-				}
-				$form.data('ref', dattr.ref);
-				$form.data('key', dattr.key);
-
-				$('#formfeedback a').die('click');
-				$form.unblock(); // Should destroy #formfeedback...
-				return false;
-			});
+			else {
+				renshuuForms.afterSubmission(data);
+			}
 		}, 'json');
+
+		console.groupEnd();
+	},
+	
+	/**
+	 * After submitting a form, and once the data has been received at the back end,
+	 * there might be a need to touch the DOM based on insert or update action.
+	 */
+	afterSubmission: function (data) {
+		console.group('afterSubmission');
+		
+		// Insert/update the new data to any related lists...
+		if (data.type == 'art') {
+			var filterarts = $('#filter_arts input[name="art_' + data.result.id + '"]');
+			var selectarts = $('select[name="art"] option[value="' + data.result.id + '"');
+			console.log('filterarts.size: ' + filterarts.size() + ', selectarts.size: ' + selectarts.size());
+			if (filterarts.size() == 1 || selectarts.size() == 1) {
+				// update
+				var checkbox = filterarts.outerHtml();
+				filterarts.parent('label').html(checkbox + data.result.title); // works
+				selectarts.each(function () {
+					$(this).html(data.result.title);
+				});
+			}
+			else {
+				// insert
+				$('#filter_arts').prepend($('#unorderedTemplate').tmpl(data.result)); // filter list
+				$('select[name="art"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
+			}
+		}
+		else if (data.type == 'location' || data.type == 'person') {
+			var select = $('select[name="' + data.type + '"] > option[value="' + data.result.id + '"');
+			console.log('select.size: ' + select.size());
+			if (select.size() == 1) {
+				// update
+				select.each(function () {
+					$(this).html(data.result.title);
+				});
+			}
+			else {
+				// insert
+				$('select[name="' + data.type + '"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
+			}
+		}
+
+		$('#formfeedback').attr('class', 'icon icon-alert');
+
+		$('#formfeedback').html($('#feedbackTemplate').tmpl(data.result));
 
 		console.groupEnd();
 	},
