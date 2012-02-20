@@ -406,9 +406,7 @@ var renshuuMarkers = {
 				locationUrl: (data.location && data.location.url) ? data.location.url : null,
 				locationLat: (data.location && data.location.latitude) ? data.location.latitude : null,
 				locationLng: (data.location && data.location.longitude) ? data.location.longitude : null,
-				locationAddr: (data.location && data.location.address) ? data.location.address : null,
-				langSave: renshuuMain.lang.modal.savetolist,
-				langRemove: renshuuMain.lang.modal.removefromlist
+				locationAddr: (data.location && data.location.address) ? data.location.address : null
 			};
 		}
 

@@ -393,10 +393,9 @@ var renshuuMain = {
 					weekDay: (renshuuMain.weekdays.length > data.training.weekday ?
 						renshuuMain.weekdays[data.training.weekday] : ""),
 					startTime: data.training.starttime,
-					endTime: data.training.endtime,
-					removeTitle: renshuuMain.lang.list.removeitem
+					endTime: data.training.endtime
 				};
-				$('#savedTemplate').tmpl(saved).prependTo('#savedlist tbody');
+				$('#savedlist tbody').prepend($('#savedTemplate').render(saved));
 			}
 		}
 		console.groupEnd();

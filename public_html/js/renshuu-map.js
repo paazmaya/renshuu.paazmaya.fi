@@ -125,8 +125,10 @@ var renshuuMap = {
 			visible: false
 		});
 
-		
-
+		// jsrender templating
+		$.views.registerHelpers({
+			deg2dms: renshuuMap.deg2dms
+		});
 	},
 	
 	
@@ -582,7 +584,7 @@ var renshuuMap = {
 		if (data) {
 			console.log('data. ' + data);
 			// Get data
-			var info = renshuuMarkers.buildInfoWindow(data);
+			//var info = renshuuMarkers.buildInfoWindow(data);
 			// Create overlay
 			
 			$('#map').block();
@@ -592,7 +594,7 @@ var renshuuMap = {
 			});
 			
 			// Fill overlay with the data inserted to a template
-			$('#trainingTemplate').tmpl(info).appendTo('div.blockMsg');
+			$('div.blockMsg').append($('#trainingTemplate').render(data));
 		}
 		console.groupEnd();
 	}

@@ -11,93 +11,85 @@
 	<link rel="icon" type="image/ico" href="/favicon.ico" />
 	##stylesheetmain##
 	<link type="text/css" href="##stylesheeticon##" rel="stylesheet" />
-
+	
 	<script id="unorderedTemplate" type="text/x-jquery-tmpl">
 		<li>
 			<label>
-				<input type="checkbox" name="art_${id}" /> ${title}
+				<input type="checkbox" name="art_{{=id}}" /> {{=title}}
 			</label>
 		</li>
 	</script>
 	
 	<script id="selectTemplate" type="text/x-jquery-tmpl">
-		<option value="${id}"> ${title}</option>
+		<option value="{{=id}}"> {{=title}}</option>
 	</script>
 	
 	<script id="savedTemplate" type="text/x-jquery-tmpl">
-		<tr rel="${id}">
-			<td>${artTitle}</td>
-			<td>${weekDay}/td>
-			<td>${startTime} - ${endTime}/td>
-			<td><a href="#remove-${id}" rel="remove" title="${removeTitle} - ${weekDayInt}">
-				<img src="/img/sanscons/png/green/32x32/close.png" alt="${removeTitle}" />
+		<tr rel="{{=id}}">
+			<td>{{=artTitle}}</td>
+			<td>{{=weekDay}}</td>
+			<td>{{=startTime}} - {{=endTime}}</td>
+			<td><a href="#remove-{{=id}}" rel="remove" title="##tmpl_removeitem## - {{=weekDayInt}}">
+				<img src="/img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
 			</a></td>
 		</tr>
 	</script>
 		
 	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
-		<h1 title="${message}">${message}</h1>
+		<h1 title="{{=message}}">{{=message}}</h1>
 		{{if title}}
-			<p><strong>${title}</strong></p>
+			<p><strong>{{=title}}</strong></p>
 		{{/if}}
 		<p>
-			<a href="#" data-key="insert" data-ref="0" data-action="clear" title="${renshuuMain.lang.form.createnew}">
-				${renshuuMain.lang.form.createnew} / ${renshuuMain.lang.form.clear}
+			<a href="#insert" data-key="insert" data-ref="0" data-action="clear" title="##tmpl_createnew## / ##tmpl_clear##">
+				##tmpl_createnew## / ##tmpl_clear##
 			</a>
 		</p>
 		<p>
-			<a href="#" data-key="update" data-ref="${id}" data-action="keep" title="${renshuuMain.lang.form.modify}">
-				${renshuuMain.lang.form.modify}
+			<a href="#update" data-key="update" data-ref="{{=id}}" data-action="keep" title="##tmpl_modify##">
+				##tmpl_modify##
 			</a>
 		</p>
 	</script>
 	
 	<script id="trainingTemplate" type="text/x-jquery-tmpl">
 		<div class="modal-info vevent">
-			{{if (artId && artTitle)}}
-				<h2 class="summary" rel="art-${artId}">
-					<a href="#training-${trainingId}" class="modal-close uid icon-close" title="${artTitle}">${artTitle}</a>
-				</h2>
+			<h2 class="summary" rel="art-{{=training.art.id}}">
+				<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
+			</h2>
+			{{#if training.weekday}}
+				<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
+					<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
+					-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
+				</p>
 			{{/if}}
-			{{if weekDay}}
-				<p class="modal-time" rel="training-${trainingId}">${weekDay}
-				{{if trainingStime && trainingEtime}}
-					<span class="dtstart" title="${trainingStime}">${trainingStime}</span>
-					-<span class="dtend" title="${trainingEtime}">${trainingEtime}</span>
+			{{#if person.id}}
+				<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
+				{{#if person.contact}}
+					 ( {{=person.contact}})
 				{{/if}}
 				</p>
 			{{/if}}
-			{{if personId && personTitle}}
-				<p class="modal-contact" rel="person-${personId}">${personTitle}
-				{{if personContact}}
-					 ( ${personContact})
+			{{#if location.id}}
+				<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}
+				{{#if location.url}}
+					<a href="{{=location.url}}" title="{{=location.title}}"> {{=location.url}}</a>
 				{{/if}}
 				</p>
 			{{/if}}
-			{{if locationId && locationTitle}}
-				<p class="modal-location" rel="location-${locationId}">${locationTitle}
-				{{if locationUrl}}
-					<a href="${locationUrl}" title="${locationTitle}"> ${locationUrl}</a>
+			<address class="geo">
+				{{#if location.address}}
+					{{=location.address}}
 				{{/if}}
-				</p>
-			{{/if}}
-			{{if locationLat && locationLng}}
-				<address class="geo">
-					{{if locationAddr}}
-						${locationAddr}
-					{{/if}}
-					<span>
-						<abbr class="latitude" title="${locationLat}">${renshuuMap.deg2dms(locationLat, true)}</abbr>
-						<abbr class="longitude" title="${locationLng}">${renshuuMap.deg2dms(locationLng, false)}</abbr>
-					</span>
-				</address>
-			{{/if}}
-			{{if trainingId}}
-				<p class="modal-tools">
-					<a href="#training-${trainingId}" title="${langSave}" rel="savetolist">${langSave}</a>
-					<a href="#training-${trainingId}" title="${langRemove}" rel="removefromlist" style="display:none;">${langRemove}</a>
-				</p>
-			{{/if}}
+				<span>
+					<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
+					<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
+				</span>
+			</address>
+			<p class="modal-tools">
+				<a href="#training-{{=training.id}}" title="##tmpl_savetolist##" rel="savetolist">##tmpl_savetolist##</a>
+				<a href="#training-{{=training.id}}" title="##tmpl_removefromlist##" rel="removefromlist" style="display:none;">##tmpl_removefromlist##</a>
+			</p>
 		</div>
 	</script>
 

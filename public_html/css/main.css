@@ -112,9 +112,10 @@ td.even, tbody tr:nth-child(even) {
 	padding: 0.5em;
 	margin: 0;
 }
-#session input[type="checkbox"] {
-	background-color: #5E0202;
+#session label {
 	color: #F9FBF7;
+}
+#session input[type="checkbox"] {
 	margin-left: 1em;
 }
 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jsrender templates</title>
+	<script src="js/jquery.js" type="text/javascript"></script>
+	<script src="js/jsrender.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+		var renshuuMain = {};
+		renshuuMain.locale = "en_GB";
+		renshuuMain.lang = {"license":"License information","form":{"createnew":"Create new","clear":"Clear","modify":"Modify current","sending":"Sending data"},"list":{"removeitem":"Remove this item from the list"},"modal":{"savetolist":" Save to list","removefromlist":"Remove from list"},"suggest":{"art":"Type an art name","location":"Type a location name"},"validate":{"requiredfield":"This field is required!","minlength":"Minimum password length is 5 characters"}};
+		renshuuMain.weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+	</script>
+	
+	<script id="unorderedTemplate" type="text/x-jquery-tmpl">
+		<li>
+			<label>
+				<input type="checkbox" name="art_{{=id}}" /> {{=title}}
+			</label>
+		</li>
+	</script>
+	
+	<script id="selectTemplate" type="text/x-jquery-tmpl">
+		<option value="{{=id}}"> {{=title}}</option>
+	</script>
+	
+	<script id="savedTemplate" type="text/x-jquery-tmpl">
+		<tr rel="{{=id}}">
+			<td>{{=artTitle}}</td>
+			<td>{{=training.weekday}}</td>
+			<td>{{=startTime}} - {{=endTime}}</td>
+			<td><a href="#remove-{{=id}}" rel="remove" title="##tmpl_removeitem## - {{=training.weekdayInt}}">
+				<img src="/img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
+			</a></td>
+		</tr>
+	</script>
+		
+	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
+		<h1 title="{{=message}}">{{=message}}</h1>
+		{{#if title}}
+			<p><strong>{{=title}}</strong></p>
+		{{/if}}
+		<p>
+			<a href="#insert" data-key="insert" data-ref="0" data-action="clear" title="##tmpl_createnew## / ##tmpl_clear##">
+				##tmpl_createnew## / ##tmpl_clear##
+			</a>
+		</p>
+		<p>
+			<a href="#update" data-key="update" data-ref="{{=id}}" data-action="keep" title="##tmpl_modify##">
+				##tmpl_modify##
+			</a>
+		</p>
+	</script>
+	
+	<script id="trainingTemplate" type="text/x-jquery-tmpl">
+		<div class="modal-info vevent">
+			<h2 class="summary" rel="art-{{=training.art.id}}">
+				<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
+			</h2>
+			{{#if training.weekday}}
+				<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
+					<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
+					-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
+				</p>
+			{{/if}}
+			{{#if person.id}}
+				<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
+				{{#if person.contact}}
+					 ( {{=person.contact}})
+				{{/if}}
+				</p>
+			{{/if}}
+			{{#if location.id}}
+				<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}
+				{{#if location.url}}
+					<a href="{{=location.url}}" title="{{=location.title}}"> {{=location.url}}</a>
+				{{/if}}
+				</p>
+			{{/if}}
+			<address class="geo">
+				{{#if location.address}}
+					{{=location.address}}
+				{{/if}}
+				<span>
+					<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
+					<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
+				</span>
+			</address>
+			<p class="modal-tools">
+				<a href="#training-{{=training.id}}" title="##tmpl_savetolist##" rel="savetolist">##tmpl_savetolist##</a>
+				<a href="#training-{{=training.id}}" title="##tmpl_removefromlist##" rel="removefromlist" style="display:none;">##tmpl_removefromlist##</a>
+			</p>
+		</div>
+	</script>
+	
+</head>
+<body>
+	<div id="art"></div>
+	<hr />
+	<div id="location"></div>
+	<hr />
+	<div id="person"></div>
+	<hr />
+	<div id="training"></div>
+	<hr />
+	
+	
+	<script type="text/javascript">
+
+		var artInsert = {id:20,title:"hoplaa",message:"New art created..."};
+
+		var locationSearch = [{"location":{"id":"18","latitude":"34.240080","longitude":"135.185734","title":"Kushinkan Dojo","url":null,"address":"日本, 和歌山県和歌山市中之島１４７４"}},{"location":{"id":"17","latitude":"34.217363","longitude":"135.184135","title":"Seishinkan Dojo","url":null,"address":"日本, 和歌山県和歌山市手平６丁目１&minus;４"}},{"location":{"id":"15","latitude":"35.730781","longitude":"139.505359","title":"Kodaira Budokan","url":null,"address":"日本, 東京都小平市花小金井５丁目４６３"}},{"location":{"id":"14","latitude":"34.820171","longitude":"134.667088","title":"Himeji shiritsu sogo sports kaigan","url":"","address":"日本, 兵庫県姫路市中地４５３"}},{"location":{"id":"13","latitude":"34.854139","longitude":"134.671653","title":"Himeji Budokan","url":"","address":"日本, 兵庫県姫路市田寺１丁目１&minus;１５"}},{"location":{"id":"10","latitude":"35.657120","longitude":"139.706228","title":"Souhonbu Dojo","url":"","address":"日本, 東京都渋谷区渋谷３丁目４"}},{"location":{"id":"11","latitude":"34.682792","longitude":"135.174435","title":"Kobe Chuou Taiikukan","url":"","address":"日本, 兵庫県神戸市中央区楠町４丁目１&minus;１"}},{"location":{"id":"12","latitude":"34.819246","longitude":"134.674182","title":"Hyogo kenritsu budokan","url":"","address":"日本, 兵庫県姫路市西延末５０４"}},{"location":{"id":"19","latitude":"35.007210","longitude":"138.486362","title":"Shunseikan Dojo","url":null,"address":"日本, 静岡県静岡市清水区岡町７&minus;５"}},{"location":{"id":"20","latitude":"35.039606","longitude":"138.485509","title":"Shimizu shiritsu chugakkou","url":null,"address":"日本, 静岡県静岡市清水区西久保１２５"}},{"location":{"id":"21","latitude":"34.991388","longitude":"138.366333","title":"Shizuoka shiritsu chugakkou","url":null,"address":"日本, 静岡県静岡市葵区平和２丁目２"}}];
+
+
+		var trainings = {
+			training: {
+				id: 0,
+				art: {
+					id: 0,
+					title: ''
+				},
+				weekday: 0,
+				starttime: 0,
+				endtime: 0
+			},
+			location: {
+				id: 0,
+				latitude: 0.0,
+				longitude: 0.0,
+				title: '',
+				url: '',
+				address: ''
+			},
+			person: {
+				id: 0,
+				title: '',
+				contact: ''
+			}
+		};
+
+		$(document).ready(function() {
+			$.views.registerHelpers({
+			
+				deg2dms: function (degfloat, isLatitude) {
+					var letter = isLatitude ? 'NS' : 'EW';
+
+					if (degfloat < 0) {
+						degfloat = Math.abs(degfloat);
+						letter = letter.substr(1, 1);
+					}
+					else {
+						letter = letter.substr(0, 1);
+					}
+
+					//console.log('deg_to_dms. degfloat: ' + degfloat);
+
+					var deg = Math.floor(degfloat);
+					var minfloat = 60 * (degfloat - deg);
+					//console.log('deg_to_dms. minfloat: ' + minfloat);
+					var min = Math.floor(minfloat);
+					//console.log('deg_to_dms. min: ' + min);
+					var secfloat = 60 * (minfloat - min);
+					//console.log('deg_to_dms. secfloat: ' + secfloat);
+					secfloat = Math.round( secfloat );
+
+					if (secfloat == 60) {
+						min++;
+						secfloat = 0;
+					}
+					if (min == 60) {
+						deg++;
+						min = 0;
+					}
+					//W 87°43'41"
+
+					return (deg + '° ' + min + "' " + secfloat + '" ' + letter);
+				}
+			
+			});
+			
+			artInsert.lang = renshuuMain.lang;
+			var feedback = $('#feedbackTemplate').render(artInsert);
+			$('#art').html(feedback);
+			
+			var training = $('#trainingTemplate').render(trainings);
+			console.log('training: ' + training);
+		});
+	</script>
+
+</body>
+</html>
+
+

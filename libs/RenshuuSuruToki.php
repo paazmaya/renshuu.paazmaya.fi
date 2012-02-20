@@ -15,7 +15,8 @@ class RenshuuSuruToki extends RenshuuBase
 	public $scripts = array(
 		'jquery.js', // 1.7.1 (2011-11-03), http://jquery.com/
 
-		'jquery.tmpl.js', // 1.0.0pre (2011-06-10), https://github.com/jquery/jquery-tmpl
+		'jsrender.js', // JsRender v1.0pre (2011-11-13), https://github.com/BorisMoore/jsrender
+		
 		'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 
 		'jquery.outerhtml.js', //
@@ -40,11 +41,7 @@ class RenshuuSuruToki extends RenshuuBase
 	public $styles = array(
 		'common.css',
 		//'public.css',
-		'main.css',
-
-		'jquery-ui-timepicker-addon.css',
-		'jquery.clockpick.css',
-		'ui.timepickr.css'
+		'main.css'
 	);
 
 	/**
@@ -61,11 +58,6 @@ class RenshuuSuruToki extends RenshuuBase
 	 * Two character language code
 	 */
 	public $language = 'en';
-
-	/**
-	 *
-	 */
-	private $gzipped;
 
 	/**
 	 * Constructor takes care of having database connection available
@@ -86,9 +78,6 @@ class RenshuuSuruToki extends RenshuuBase
 
 		// Same thing for cascaded style sheet, in public_html/css/..
 		//$this->minify('css', $this->styles);
-
-		// Append with gzip if supported.
-		$this->gzipped = ''; //'.gz';
 
 		$this->handleUrl();
 	}
@@ -135,6 +124,14 @@ class RenshuuSuruToki extends RenshuuBase
 			// TODO: OpenID
 			if ($this->getted['page'] == 'login')
 			{
+				$this->authenticateLogin();
+				
+				
+				
+				
+				
+				
+				
 				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
 					isset($this->posted['password']) && $this->posted['password'] != '')
 				{
@@ -163,6 +160,20 @@ class RenshuuSuruToki extends RenshuuBase
 			exit();
 		}
 	}
+	
+	  /**
+     * Try to authenticate the user via OAuth.
+     * The email provider should tell if the user is who she/he/it claims to be.
+     * http://code.google.com/apis/accounts/docs/OpenID.html
+     * @return string/boolean
+     */
+    private function authenticateLogin()
+    {
+		require 'RenshuuAuth.php';
+
+		$auth = new RenshuuAuth($this->config, $this->pdo);
+		
+    }
 
 	/**
 	 * Create HTML5 head with doctype etc from a template
@@ -181,9 +192,17 @@ class RenshuuSuruToki extends RenshuuBase
 			'lang' => $this->language, // $_SESSION['lang']
 			'title' => $this->config['title'] . ' | ' . $this->lang['title'],
 			'description' => $this->lang['description'],
-			//'stylesheetmain' => '/css/' . $this->config['minified'] . $this->gzipped . '.css',
+			//'stylesheetmain' => '/css/' . $this->config['minified'] . '.css',
 			'stylesheetmain' => $stylesheetmain,
 			'stylesheeticon' => '/css/iconset-' . $this->config['iconset'] . '.css',
+			
+			'tmpl_createnew' => gettext('Create new'),
+			'tmpl_clear' => gettext('Clear'),
+			'tmpl_modify' => gettext('Modify current'),
+			'tmpl_sending' => gettext('Sending data'),
+			'tmpl_removeitem' => gettext('Remove this item from the list'),			
+			'tmpl_savetolist' => gettext(' Save to list'),
+			'tmpl_removefromlist' => gettext('Remove from list')
 		);
 
 		//mixed str_replace ( mixed $needle , mixed $replace , mixed $haystack [, int &$count ] )
@@ -299,7 +318,7 @@ class RenshuuSuruToki extends RenshuuBase
 			'form_location' => $this->helper->createForm('location', $this->lang['forms']['location']),
 			'form_art' => $this->helper->createForm('art', $this->lang['forms']['art']),
 			'form_person' => $this->helper->createForm('person', $this->lang['forms']['person']),
-			'form_profile' => $this->helper->createForm('profile', $this->lang['forms']['profile']),
+			'form_profile' => $this->helper->createForm('profile', $this->lang['forms']['profile'])
 		);
 
 		foreach ($list as $key => $value)
@@ -321,7 +340,7 @@ class RenshuuSuruToki extends RenshuuBase
 		// http://code.google.com/apis/maps/documentation/javascript/basics.html#Versioning
 		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] . 
 			'&amp;key=' . $this->config['gmapskey'] . '&amp;sensor=false&amp;language=ja');// . $_SESSION['lang']);
-		//$out .= scriptElement($this->config['minified'] . $this->gzipped . '.js');
+		//$out .= scriptElement($this->config['minified'] . '.js');
 
 		foreach($this->scripts as $js)
 		{
@@ -336,20 +355,6 @@ class RenshuuSuruToki extends RenshuuBase
 		// Translations based on the current locale
 		$jslang = array(
 			'license' => gettext('License information'),
-			'form' => array(
-				'createnew' => gettext('Create new'),
-				'clear' => gettext('Clear'),
-				'modify' => gettext('Modify current'),
-				'sending' => gettext('Sending data')
-			),
-			'list' => array(
-				'removeitem' => gettext('Remove this item from the list')
-			),
-			'modal' => array(
-				//'' => gettext(''),
-				'savetolist' => gettext(' Save to list'),
-				'removefromlist' => gettext('Remove from list')
-			),
 			'suggest' => array(
 				//'' => gettext(''),
 				//'' => gettext(''),

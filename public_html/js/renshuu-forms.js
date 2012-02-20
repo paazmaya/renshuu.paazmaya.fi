@@ -158,9 +158,9 @@ var renshuuForms = {
 				});
 			}
 			else {
-				// insert
-				$('#filter_arts').prepend($('#unorderedTemplate').tmpl(data.result)); // filter list
-				$('select[name="art"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
+				// insert		
+				$('#filter_arts').prepend($('#unorderedTemplate').render(data.result)); // filter list
+				$('select[name="art"] > option:first-child').after($('#selectTemplate').render(data.result)); // select option
 			}
 		}
 		else if (data.type == 'location' || data.type == 'person') {
@@ -174,13 +174,13 @@ var renshuuForms = {
 			}
 			else {
 				// insert
-				$('select[name="' + data.type + '"] > option:first-child').after($('#selectTemplate').tmpl(data.result)); // select option
+				$('select[name="' + data.type + '"] > option:first-child').after($('#selectTemplate').render(data.result)); // select option
 			}
 		}
 
 		$('#formfeedback').attr('class', 'icon icon-alert');
 
-		$('#formfeedback').html($('#feedbackTemplate').tmpl(data.result));
+		$('#formfeedback').html($('#feedbackTemplate').render(data.result));
 
 		console.groupEnd();
 	},
