@@ -25,19 +25,23 @@
 	</script>
 	
 	<script id="savedTemplate" type="text/x-jquery-tmpl">
-		<tr rel="{{=id}}">
-			<td>{{=artTitle}}</td>
+		<tr id="saved-{{=training.id}}">
+			<td>{{=training.art.title}}</td>
 			<td>{{=weekDay}}</td>
-			<td>{{=startTime}} - {{=endTime}}</td>
-			<td><a href="#remove-{{=id}}" rel="remove" title="##tmpl_removeitem## - {{=weekDayInt}}">
+			<td>{{=training.starttime}} - {{=training.endtime}}</td>
+			<td><a href="#remove-{{=training.id}}" title="##tmpl_removeitem## - {{=training.weekday}}">
 				<img src="/img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
 			</a></td>
 		</tr>
 	</script>
+	
+	<script id="sendingTemplate" type="text/x-jquery-tmpl">
+		<h1 title="##tmpl_sending##">##tmpl_sending##</h1>
+	</script>
 		
 	<script id="feedbackTemplate" type="text/x-jquery-tmpl">
 		<h1 title="{{=message}}">{{=message}}</h1>
-		{{if title}}
+		{{#if title}}
 			<p><strong>{{=title}}</strong></p>
 		{{/if}}
 		<p>
@@ -53,44 +57,38 @@
 	</script>
 	
 	<script id="trainingTemplate" type="text/x-jquery-tmpl">
-		<div class="modal-info vevent">
-			<h2 class="summary" rel="art-{{=training.art.id}}">
-				<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
-			</h2>
-			{{#if training.weekday}}
-				<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
-					<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
-					-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
-				</p>
-			{{/if}}
-			{{#if person.id}}
-				<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
-				{{#if person.contact}}
-					 ( {{=person.contact}})
-				{{/if}}
-				</p>
-			{{/if}}
-			{{#if location.id}}
-				<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}
-				{{#if location.url}}
-					<a href="{{=location.url}}" title="{{=location.title}}"> {{=location.url}}</a>
-				{{/if}}
-				</p>
-			{{/if}}
-			<address class="geo">
-				{{#if location.address}}
-					{{=location.address}}
-				{{/if}}
-				<span>
-					<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
-					<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
-				</span>
-			</address>
-			<p class="modal-tools">
-				<a href="#training-{{=training.id}}" title="##tmpl_savetolist##" rel="savetolist">##tmpl_savetolist##</a>
-				<a href="#training-{{=training.id}}" title="##tmpl_removefromlist##" rel="removefromlist" style="display:none;">##tmpl_removefromlist##</a>
+		<h2 class="summary" rel="art-{{=training.art.id}}">
+			<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
+		</h2>
+		{{#if training.weekday}}
+			<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
+				<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
+				-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
 			</p>
-		</div>
+		{{/if}}
+		{{#if person.id}}
+			<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
+			{{#if person.contact}}
+				 ( {{=person.contact}})
+			{{/if}}
+			</p>
+		{{/if}}
+		{{#if location.id}}
+			<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}</p>
+		{{/if}}
+		<address class="geo">
+			{{#if location.address}}
+				{{=location.address}}
+			{{/if}}
+			<span>
+				<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
+				<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
+			</span>
+		</address>
+		<p class="modal-tools">
+			<a href="#savetolist-{{=training.id}}" title="##tmpl_savetolist##">##tmpl_savetolist##</a>
+			<a href="#removefromlist-{{=training.id}}" title="##tmpl_removefromlist##" style="display:none;">##tmpl_removefromlist##</a>
+		</p>
 	</script>
 
 </head>

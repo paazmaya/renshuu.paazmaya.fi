@@ -42,7 +42,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 *				latitude: 0.0,
 *				longitude: 0.0,
 *				title: '',
-*				url: '',
 *				address: ''
 *			},
 *			person: {
@@ -90,26 +89,30 @@ class RenshuuAjax extends RenshuuBase
 	);
 
 	/**
-	 * get/set + keepalive
+	 * One of the values available in $pages
 	 */
 	private $page = '';
 
 	/**
-	 *
+	 * page must be one of these.
+	 * /ajax/*
 	 */
 	private $pages = array(
 		'get',
-		'set',  
+		'set',
 		'keepalive'
 	);
 
 	/**
-	 * art/location/training/person + profile/login
+	 * art/location/training/person + profile
+	 * Maybe one of the $pagetypes, if url is build that way.
 	 */
 	private $pagetype = '';
 
 	/**
-	 * keep login as last item of the list
+	 * Possible pagetypes for get and set.
+	 * @example /ajax/get/art
+	 * @example /ajax/set/savelist
 	 */
 	private $pagetypes = array(
 		'art', 
@@ -117,28 +120,13 @@ class RenshuuAjax extends RenshuuBase
 		'training', 
 		'person', 
 		'profile',
-		'login'
+		'savelist'
 	);
 
 	/**
-	 *
+	 * In case the $page is 'get', then there might come some filters in $posted.
 	 */
 	private $getfilter = '';
-
-	/**
-	 *
-	 */
-	private $id = 0;
-
-	/**
-	 *
-	 */
-	private $passcheck = false;
-
-	/**
-	 *
-	 */
-	private $loggedin = true; // for testing...
 
 	/**
 	 *
@@ -150,26 +138,31 @@ class RenshuuAjax extends RenshuuBase
 		// http://marcgrabanski.com/articles/jquery-ajax-content-type
 		header('Content-type: application/json; charset=utf-8');
 
-
 		if ($this->config['isdevserver'])
 		{
 			$this->out['post'] = $this->posted;
 			$this->out['get'] = $this->getted;
 		}
-
-		$this->checkPage();
-
-		if ($this->passcheck)
+		
+		if ($_SESSION['access'] > 0)
 		{
-			$this->createOutput();
+			if ($this->checkPage())
+			{
+				$this->createOutput();
+			}
+			else
+			{
+				// Failed to pass the checks
+				$this->out['errorInfo'] = 'Wrong line at the passport control';
+			}
+
+			$this->out['type'] = $this->pagetype;
 		}
 		else
 		{
-			// Failed to pass the checks
-			$this->out['errorInfo'] = 'Wrong line at the passport control';
+			$this->out['errorInfo'] = 'Not logged in';
 		}
-
-		$this->out['type'] = $this->pagetype;
+		
 		$this->out['created'] = date($this->config['datetime']);
 
 		echo json_encode($this->out);
@@ -181,25 +174,28 @@ class RenshuuAjax extends RenshuuBase
 	 */
 	private function checkPage()
 	{
+		$passcheck = false;
 
 		// This should always be set anyhow due to mod_rewrite...
 		if (isset($this->getted['page']))
 		{
+			// parts must be: ajax, one of $pages [, one of $pagetypes ]
 			$parts = explode('/', strtolower($this->getted['page']));
 			$count = count($parts);
+			
 			if ($count > 1 && $parts['0'] = 'ajax' && in_array($parts['1'], $this->pages))
 			{
 				$this->page = $parts['1'];
 
 				if ($this->page == 'get' || $this->page == 'keepalive')
 				{
-					$this->passcheck = true;
+					$passcheck = true;
 				}
 
 				if ($count > 2 && in_array($parts['2'], $this->pagetypes))
 				{
 					$this->pagetype = $parts['2'];
-					$this->passcheck = true;
+					$passcheck = true;
 
 					// Since here, should there be a keyword for filtering the results available?
 					if ($this->page == 'get' && $count > 3)
@@ -213,6 +209,7 @@ class RenshuuAjax extends RenshuuBase
 				// We are in the harms way...
 			}
 		}
+		return $passcheck;
 	}
 
 	/**
@@ -270,11 +267,16 @@ class RenshuuAjax extends RenshuuBase
 		{
 			$this->pageGetLocation($area);
 		}
+		else if ($this->pagetype == 'savelist')
+		{
+			// page can be set of get
+			$this->pageSavelist();
+		}		
 		else if ($this->page == 'get' && $this->pagetype != '')
 		{
 			$this->pageGet();
 		}
-		else if ($this->page == 'set' && $this->loggedin) // login should not require to be logged in...
+		else if ($this->page == 'set')
 		{
 			$this->pageSet();
 		}
@@ -301,26 +303,16 @@ class RenshuuAjax extends RenshuuBase
 			$weekdays = $this->posted['filter']['weekdays'];
 		}
 
-		$at = array();
 		$art = '';
 		if (count($arts) > 0)
 		{
-			foreach($arts as $a)
-			{
-				$at[] = 'A.art = ' . intval($a);
-			}
-			$art = ' AND (' . implode(' OR ', $at) . ')';
+			$art = ' AND A.art IN (' . implode(', ', $arts) . ')';
 		}
 
-		$wk = array();
 		$weekday = '';
 		if (count($weekdays) > 0)
 		{
-			foreach($weekdays as $day)
-			{
-				$wk[] = 'A.weekday = ' . intval($day);
-			}
-			$weekday = ' AND (' . implode(' OR ', $wk) . ')';
+			$weekday = ' AND A.weekday IN (' . implode(', ', $weekdays) . ')';
 		}
 
 		$position = 'B.latitude > ' . $area['sw_lat'] . ' AND B.latitude < ' . $area['ne_lat'] .
@@ -330,8 +322,8 @@ class RenshuuAjax extends RenshuuBase
 			LEFT JOIN renshuu_person D ON D.id = A.person';
 
 		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.title AS artname, A.weekday, A.starttime, A.endtime,
-			B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, B.url, B.address,
-			D.id AS personid, D.name AS personname, D.contact ' . $from . '
+			B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, B.address,
+			D.id AS personid, D.title AS personname, D.contact ' . $from . '
 			WHERE ' . $position . $art . $weekday;
 		$results = array();
 		$run =  $this->pdo->query($sql);
@@ -355,7 +347,6 @@ class RenshuuAjax extends RenshuuBase
 						'latitude' => $res['latitude'],
 						'longitude' => $res['longitude'],
 						'title' => $res['locationname'],
-						'url' => $res['url'],
 						'address' => $res['address'],
 					),
 					'person' => array(
@@ -391,7 +382,7 @@ class RenshuuAjax extends RenshuuBase
 		$from = 'FROM renshuu_location B';
 
 		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, ' .
-			'B.url, B.address ' . $from . ' WHERE ' . $position;
+			'B.address ' . $from . ' WHERE ' . $position;
 		$results = array();
 		$run =  $this->pdo->query($sql);
 		if ($run)
@@ -404,7 +395,6 @@ class RenshuuAjax extends RenshuuBase
 						'latitude' => $res['latitude'],
 						'longitude' => $res['longitude'],
 						'title' => $res['locationname'],
-						'url' => $res['url'],
 						'address' => $res['address'],
 					)
 				);
@@ -426,6 +416,99 @@ class RenshuuAjax extends RenshuuBase
 	}
 	
 	/**
+	 * Get or set training item to the saved list of the current user.
+	 */
+	private function pageSavelist()
+	{
+		// There must be posted training ID if page is "set"
+		if ($this->page == 'set' && isset($this->posted['training']) && is_numeric($this->posted['training']) && isset($this->posted['action']))
+		{
+			$training = intval($this->posted['training']);
+			$sql = '';
+			
+			// There also should be "action" which is either "save" or "delete"
+			if ($this->posted['action'] == 'save')
+			{
+				$sql = 'INSERT INTO renshuu_list (user, training, added) VALUES (' .
+					'(SELECT id FROM renshuu_user WHERE email = \'' . $_SESSION['email'] . '\'), ' . 
+					$training . ', ' . time() . ')';
+			}
+			else if ($this->posted['action'] == 'delete')
+			{
+				$sql = 'DELETE FROM renshuu_list WHERE training = ' . $training . 
+					' AND user = (SELECT id FROM renshuu_user WHERE email = \'' . $_SESSION['email'] . '\') LIMIT 1';
+			}
+			
+			if ($sql != '')
+			{
+				$run = $this->pdo->query($sql);
+				if ($run)
+				{
+					$this->out['affected'] = $run->rowCount();
+				}
+				else
+				{
+					if ($this->config['isdevserver'])
+					{
+						$this->out['errorInfo'] = $this->pdo->errorInfo();
+					}
+				}
+			}
+		}
+		else if ($this->page == 'get')
+		{
+			// get the whole list of saved items
+			/*
+			<tr id="saved-{{=training.id}}">
+				<td>{{=training.art.title}}</td>
+				<td>{{=weekDay}}</td>
+				<td>{{=training.starttime}} - {{=training.endtime}}</td>
+				<td><a href="#remove-{{=training.id}}" title="##tmpl_removeitem## - {{=training.weekday}}">
+					<img src="/img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
+				</a></td>
+			</tr>
+			*/
+			$sql = 'SELECT T.*, A.title AS arttitle FROM renshuu_list L, renshuu_user U, renshuu_training T LEFT JOIN renshuu_art A ON T.art = A.id WHERE L.user = U.id AND U.email = \'' . 
+				$_SESSION['email'] . '\' AND T.id = L.training ORDER BY L.added DESC';
+			$run = $this->pdo->query($sql);
+			if ($run)
+			{
+				$results = array();
+				while($res = $run->fetch(PDO::FETCH_ASSOC))
+				{
+					$results[] = array(
+						'training' => array(
+							'id' => $res['id'],
+							'art' => array(
+								'title' => $res['arttitle'],
+							),
+							'starttime' => $res['starttime'],
+							'endtime' => $res['endtime'],
+							'weekday' => $res['weekday'],
+						),
+						'weekDay' => $this->lang['weekdays'][$res['weekday']]
+					);
+					
+				}
+				unset($this->out['error']);
+				$this->out[$this->pagetype] = $results;
+			}
+			else
+			{
+				if ($this->config['isdevserver'])
+				{
+					$this->out['errorInfo'] = $this->pdo->errorInfo();
+				}
+			}
+		}
+		
+		if ($this->config['isdevserver'])
+		{
+			$this->out['sql'] = $sql;
+		}
+	}
+	
+	/**
 	 * 
 	 */
 	private function pageGet()
@@ -436,16 +519,11 @@ class RenshuuAjax extends RenshuuBase
 		{
 			$where_art = ' WHERE art = ' . intval($this->posted['art']);
 		}
-		$where_filter = '';
-		if ($getfilter != '')
-		{
-			$where_filter = 'name LIKE \'%' . $getfilter . '%\'';
-		}
 		$queries = array(
 			'art' => 'SELECT id, title FROM renshuu_art ORDER BY title',
 			'location' => 'SELECT id, title FROM renshuu_location ORDER BY title',
-			'training' => 'SELECT id, name FROM renshuu_training ORDER BY name' . $where_art,
-			'person' => 'SELECT id, name FROM renshuu_person ORDER BY name'
+			'training' => 'SELECT id, title FROM renshuu_training ORDER BY title' . $where_art,
+			'person' => 'SELECT id, title FROM renshuu_person ORDER BY title'
 		);
 
 		$sql = $queries[$this->pagetype];
@@ -457,7 +535,7 @@ class RenshuuAjax extends RenshuuBase
 			{
 				$results[] = array(
 					'id' => $res['id'],
-					'title' => $res['name']
+					'title' => $res['title']
 				);
 			}
 			unset($this->out['error']);
@@ -487,47 +565,49 @@ class RenshuuAjax extends RenshuuBase
 		// Keys should match the ones used in $map below, available in $this->posted['items'] as an array.
 		$map = array(
 			'art' => array(
-				'url' => 'url'
+				'title',
+				'url'
 			),
 			'location' => array(
-				'info' => '',
-				'address' => '',
-				'latitude' => '',
-				'longitude' => ''
+				'title',
+				'info',
+				'address',
+				'latitude',
+				'longitude'
 			),
 			'training' => array(
-				'location' => '',
-				'art' => '',
-				'weekday' => '',
-				'occurance' => '',
-				'starttime' => '',
-				'endtime' => ''
+				'location',
+				'art',
+				'weekday',
+				'occurance',
+				'starttime',
+				'endtime'
 			),
 			'person' => array(
-				'art' => '',
-				'contact' => '',
-				'info' => '',
+				'title',
+				'art',
+				'contact',
+				'info',
 			),
 			'profile' => array(
-				'email' => '',
-				'password' => ''
+				'email',
+				'password'
 			)
 		);
-		$always = array_merge($map[$this->pagetype], array(
-			'title' => 'title'
-		));
+		$always = $map[$this->pagetype];
+		
 		// Are all the posted keys set which are needed for that type?
 		$trimmed = array();
 		$missing = array();
-		foreach($always as $key => $value)
+		foreach($always as $item)
 		{
-			if (isset($this->posted['items'][$key]))
+			if (isset($this->posted['items'][$item]))
 			{
-				$trimmed[$key] = $this->posted['items'][$key];
+				$trimmed[$item] = $this->posted['items'][$item];
 			}
 			else
 			{
-				$missing[] = $key;
+				$missing[] = $item;
 			}
 		}
 		if (!isset($this->posted['update']) && !isset($this->posted['insert']))
@@ -611,10 +691,20 @@ class RenshuuAjax extends RenshuuBase
 						$this->out['errorInfo'] = $this->pdo->errorInfo();
 					}
 				}
+				
+				$title = '';
+				switch ($this->pagetype)
+				{
+					case 'training': $title = $trimmed['art'] . ' - ' . $trimmed['weekday']; break; // TODO: these are IDs...
+					case 'person': 
+					case 'location': 
+					case 'profile': 
+					case 'art': $title = $trimmed['title']; break;
+				}
 
 				$this->out['result'] = array(
 					'id' => $id,
-					'title' => $trimmed['title'],
+					'title' => $title,
 					'message' => $message
 				);
 				unset($this->out['error']);

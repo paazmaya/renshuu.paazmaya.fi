@@ -271,13 +271,6 @@ $lang['forms'] = array(
 		),
 		'items' => array(
 			array(
-				'label' => gettext('Title'),
-				'type' => 'text',
-				'required' => true,
-				'autofocus' => true,
-				'name' => 'title'
-			),
-			array(
 				'label' => gettext('Art'),
 				'type' => 'select',
 				'name' => 'art',
@@ -301,7 +294,7 @@ $lang['forms'] = array(
 				'label' => gettext('Occurance'),
 				'type' => 'select',
 				'name' => 'occurance',
-				'options' => ''
+				'options' => array()
 			),
 			array(
 				'label' => gettext('Start time'),
@@ -482,6 +475,7 @@ $lang['forms'] = array(
  * Bottom area table for saved items which then can be exported as a list with static maps.
  */
 $lang['savedtable'] = array(
+	'id' => 'savedlist',
 	'summary' => gettext('A list of saved trainings'),
 	'caption' => gettext('A list of saved trainings'),
 	'thead' => array (

@@ -73,6 +73,7 @@ var renshuuPins = {
 	/**
 	 * http://chart.googleapis.com/chart?chst=d_bubble_text_small&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
 	 * http://chart.googleapis.com/chart?chst=d_bubble_text_small_withshadow&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
+	 * 
 	 * @see http://code.google.com/apis/chart/infographics/docs/overview.html
 	 */
 	getBubble: function (icon, text, fill, color, type) {

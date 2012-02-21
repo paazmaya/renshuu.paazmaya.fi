@@ -563,40 +563,6 @@ var renshuuMap = {
 			}
 		);
 		console.groupEnd();
-	},
-
-
-
-	/**
-	 *
-	 * @see http://malsup.com/jquery/block/
-	 */
-	showInfo: function (marker) {
-		console.group('showInfo');
-		var inx = renshuuMarkers.trainingMarkers.indexOf(marker);
-		console.log('marker.title: '+ marker.title + ', inx: ' + inx);
-		var data;
-		if (inx !== -1) {
-			data = renshuuMarkers.trainingMarkersData[inx];
-		}
-		console.dir(data);
-
-		if (data) {
-			console.log('data. ' + data);
-			// Get data
-			//var info = renshuuMarkers.buildInfoWindow(data);
-			// Create overlay
-			
-			$('#map').block();
-			$('.modal-close').one('click', function () {
-				$('#map').unblock();
-				return false;
-			});
-			
-			// Fill overlay with the data inserted to a template
-			$('div.blockMsg').append($('#trainingTemplate').render(data));
-		}
-		console.groupEnd();
 	}
 
 	

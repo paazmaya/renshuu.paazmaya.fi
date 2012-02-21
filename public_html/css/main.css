@@ -374,20 +374,6 @@ ul.inputnotes li.note {
 	list-style: none;
 }
 
-.modal-info {
-	display: block;
-	background-color: #F9FBF7;
-	width: 30em;
-	float: left;
-	clear: both;
-	border: 2px solid Black;
-	border-radius: 1em;
-	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
-}
-.modal-info * {
-	padding: 0.5em;
-}
 .modal-time {
 	font-weight: bold;
 }

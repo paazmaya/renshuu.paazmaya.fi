@@ -14,7 +14,6 @@ var renshuuForms = {
 	init: function() {
 		$.blockUI.defaults.css.width = '50%';
 
-		// Note that either "insert" = 0 or "update" = id must be set in the root data...
 		$('form').on('submit', function () {
 			renshuuForms.submitForm($(this));
 			return false;
@@ -22,15 +21,12 @@ var renshuuForms = {
 
 		// Geocode 
 		$('form input:button[name="search"]').on('click', function () {
-			
+			console.log('Why not do some geocoding? TODO');
 			return false;
 		});
 
-		var userData = renshuuMain.userData;
-		if (userData) {
-			$('#profile_form input[name="email"]').val(userData.email);
-			$('#profile_form input[name="title"]').val(userData.name);
-		}
+		$('#profile_form input[name="email"]').val(renshuuMain.userEmail);
+		$('#profile_form input[name="title"]').val(renshuuMain.userName);
 
 		// http://fredibach.ch/jquery-plugins/inputnotes.php
 		/*
@@ -100,9 +96,7 @@ var renshuuForms = {
 		// Change temporarily the layout of the submit button / form for visual feedback
 		
 		$form.block({
-			message: '<div id="formfeedback"><h1 title="' +
-				renshuuMain.lang.form.sending + '">' +
-				renshuuMain.lang.form.sending + '</h1></div>'
+			message: '<div id="formfeedback">' + $('#sendingTemplate').render() + '</div>'
 		});
 		
 		// Just once, removed after
@@ -176,6 +170,11 @@ var renshuuForms = {
 				// insert
 				$('select[name="' + data.type + '"] > option:first-child').after($('#selectTemplate').render(data.result)); // select option
 			}
+		}
+		else if (data.type == 'training') {
+			// add to the map
+		}
+		else if (data.type == 'profile') {
 		}
 
 		$('#formfeedback').attr('class', 'icon icon-alert');

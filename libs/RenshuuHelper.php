@@ -377,6 +377,10 @@ class RenshuuHelper
 	public function createTable($data)
 	{
 		$out = '<table';
+		if (isset($data['id']) && $data['id'] != '')
+		{
+			$out .= ' id="' . $data['id'] . '"';
+		}
 		if (isset($data['summary']) && $data['summary'] != '')
 		{
 			$out .= ' summary="' . $data['summary'] . '"';

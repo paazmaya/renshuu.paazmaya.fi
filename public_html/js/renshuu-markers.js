@@ -175,8 +175,16 @@ var renshuuMarkers = {
 		google.maps.event.addListener(marker, 'click', function (event) {
 			// This event is fired when the marker icon was clicked.
 			var pos = marker.getPosition();
-			console.log('location marker. click - ' + marker.title + ', pos: ' + pos);
+			var inx = renshuuMarkers.locationMarkers.indexOf(marker);
+			var data = renshuuMarkers.locationMarkersData[inx];
+			console.log('location marker. click - ' + marker.title + ', pos: ' + pos + ', inx: ' + inx);
+			console.dir(data);
+			
 			// This should now fill the address in the "training" form...
+			if (renshuuMain.tabForms == 'training') {
+				console.log('setting select location val to be data.location.id: ' + data.location.id);
+				$('select[name="location"]').val(data.location.id);
+			}
 		});
 
 		var len = renshuuMarkers.locationMarkers.push(marker);
@@ -224,7 +232,7 @@ var renshuuMarkers = {
 			// This event is fired when the marker is right clicked on.
 			var title = marker.getTitle();
 			var pos = marker.getPosition();
-			console.log('clicking geocode marker. title: ' + title + ', pos: ' + pos);
+			console.log('geocode marker click. title: ' + title + ', pos: ' + pos);
 			
 			$('#location_form input[name="address"]').val(title);
 			$('#location_form input[name="latitude"]').val(pos.lat());
@@ -273,11 +281,9 @@ var renshuuMarkers = {
 				renshuuMap.showStreetView(marker.getPosition());
 			}
 		});
-		google.maps.event.addListener(marker, 'mouseout', function (event) {
-			// This event is fired when the mouse leaves the area of the marker icon.
-		});
 		google.maps.event.addListener(marker, 'mouseover', function (event) {
 			// This event is fired when the mouse enters the area of the marker icon.
+			marker.setZIndex(marker.getZIndex() + 10);
 		});
 		google.maps.event.addListener(marker, 'rightclick', function (event) {
 			// This event is fired when the marker is right clicked on.
@@ -304,11 +310,14 @@ var renshuuMarkers = {
 
 	/**
 	 *
+	 * http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_group|bb|Ryukyu Kobujutsu|129EF7|05050D
 	 * @see
 	 */
 	createTrainingMarker: function (data) {
 		console.group('createTrainingMarker');
-		var icon = renshuuPins.getLetter(data.training.art.title.substr(0, 1), '0E3621', '05050D');
+  
+		var icon = renshuuPins.getBubble('d_bubble_icon_text_small', data.training.art.title, '129EF7', '05050D', 'glyphish_group|bb');
+		
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
 
@@ -317,11 +326,64 @@ var renshuuMarkers = {
 			var pos = marker.getPosition();
 			console.log('training marker. click - ' + marker.title + ', pos: ' + pos);
 			// Show the blockUi over map with the details
-			renshuuMap.showInfo(marker);
+			renshuuMarkers.showInfo(marker);
 		});
 
 		var len = renshuuMarkers.trainingMarkers.push(marker);
 		renshuuMarkers.trainingMarkersData[len - 1] = data;
+		console.groupEnd();
+	},
+	
+
+	/**
+	 * Marker data from the backend.
+		data: {
+			training: {
+				id: 0,
+				art: {
+					id: 0,
+					title: ''
+				},
+				weekday: 0,
+				starttime: 0,
+				endtime: 0
+			},
+			location: {
+				id: 0,
+				latitude: 0.0,
+				longitude: 0.0,
+				title: '',
+				url: '',
+				address: ''
+			},
+			person: {
+				id: 0,
+				title: '',
+				contact: ''
+			}
+		}
+	 * @see http://malsup.com/jquery/block/
+	 */
+	showInfo: function (marker) {
+		console.group('showInfo');
+		var inx = renshuuMarkers.trainingMarkers.indexOf(marker);
+		console.log('marker.title: '+ marker.title + ', inx: ' + inx);
+		var data;
+		if (inx !== -1) {
+			data = renshuuMarkers.trainingMarkersData[inx];
+		}
+		console.dir(data);
+
+		if (data) {
+			$('#map').block();
+			$('.modal-close').one('click', function () {
+				$('#map').unblock();
+				return false;
+			});
+			
+			// Fill overlay with the data inserted to a template
+			$('div.blockMsg').html($('#trainingTemplate').render(data));
+		}
 		console.groupEnd();
 	},
 	
@@ -348,72 +410,6 @@ var renshuuMarkers = {
 		return new google.maps.MarkerImage(
 			'http://chart.googleapis.com/chart?' + image, null, origin, anchor
 		);
-	},
-	
-	/**
-	 *
-	 * @see
-	 */
-	buildInfoWindow: function (data) {
-		console.group('buildInfoWindow');
-		/*
-		Marker data from the backend.
-		data: {
-			training: {
-				id: 0,
-				art: {
-					id: 0,
-					title: ''
-				},
-				weekday: 0,
-				starttime: 0,
-				endtime: 0
-			},
-			location: {
-				id: 0,
-				latitude: 0.0,
-				longitude: 0.0,
-				title: '',
-				url: '',
-				address: ''
-			},
-			person: {
-				id: 0,
-				title: '',
-				contact: ''
-			}
-		}
-		*/
-
-		// Had too many checks for existing variables,
-		// which should be taken care of at the backend.
-		var info = {};
-
-		if (data.training && data.training.art && data.training.id) {
-			info = {
-				trainingId: data.training.id,
-				trainingTitle: (data.training.title ? data.training.title : null),
-				trainingStime: data.training.starttime ? data.training.starttime : null,
-				trainingEtime: data.training.endtime ? data.training.endtime : null,
-				weekDay: (renshuuMain.weekdays.length > data.training.weekday ? renshuuMain.weekdays[data.training.weekday] : ''), // todo: get weekday string from backend
-				artId: (data.training.art.id ? data.training.art.id : null),
-				artTitle: (data.training.art.title ? data.training.art.title : null),
-				personId: (data.person && data.person.id) ? data.person.id : null,
-				personTitle: (data.person && data.person.title) ? data.person.title : null,
-				personContact: (data.person && data.person.contact) ? data.person.contact : null,
-				locationId: (data.location && data.location.id) ? data.location.id : null,
-				locationTitle: (data.location && data.location.title) ? data.location.title : null,
-				locationUrl: (data.location && data.location.url) ? data.location.url : null,
-				locationLat: (data.location && data.location.latitude) ? data.location.latitude : null,
-				locationLng: (data.location && data.location.longitude) ? data.location.longitude : null,
-				locationAddr: (data.location && data.location.address) ? data.location.address : null
-			};
-		}
-
-		console.debug('info. ' + info);
-		//$(info).appendTo('body');
-		console.groupEnd();
-		return info;
 	}
 
 

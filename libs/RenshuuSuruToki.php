@@ -135,14 +135,14 @@ class RenshuuSuruToki extends RenshuuBase
 				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
 					isset($this->posted['password']) && $this->posted['password'] != '')
 				{
-					$sql = 'SELECT name, email, access FROM renshuu_user WHERE email = \'' .
+					$sql = 'SELECT title, email, access FROM renshuu_user WHERE email = \'' .
 						$this->posted['email'] . '\' AND access > 0';
 					$run = $this->pdo->query($sql);
 					if ($run->columnCount() > 0)
 					{
 						$res = $run->fetch(PDO::FETCH_ASSOC);
 						$_SESSION['email'] = $res['email'];
-						$_SESSION['username'] = $res['name'];
+						$_SESSION['username'] = $res['title'];
 						$_SESSION['access'] = intval($res['access']); // use as binary
 					}
 				}
@@ -293,6 +293,7 @@ class RenshuuSuruToki extends RenshuuBase
 				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
 			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
 			</div>';
+			
 		
 		$list = array(
 			'user_email' => $_SESSION['email'],

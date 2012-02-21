@@ -130,7 +130,9 @@ var renshuuMain = {
 			renshuuMain.showTabContent($('#forms .icon-list a[href="#' + tabForms + '"]'));
 		}
 		if (showTrainings !== null) {
+			console.log('showTrainings : ' + showTrainings);
 			renshuuMain.showTrainings = parseInt(showTrainings);
+			$('#session input:checkbox').attr('checked', (renshuuMain.showTrainings ? 'checked' : null));
 		}
 		
 
@@ -140,7 +142,7 @@ var renshuuMain = {
 			console.log('change. name: ' + name + ', check: ' + check);
 			
 			renshuuMain.showTrainings = check ? 1 : 0;
-			localStorage.getItem('showTrainings', renshuuMain.showTrainings);
+			localStorage.setItem('showTrainings', renshuuMain.showTrainings);
 
 			renshuuMarkers.setTrainingMarkersVisibility();
 		});
@@ -155,13 +157,13 @@ var renshuuMain = {
 		});
 
 		// Triggers on a click to any of the shortcuts for selection manipulation
-		$('.filters p[class^=rel_] a').live('click', function () {
-			var action = $(this).attr('rel');
+		$('.shortcuts a').on('click', function () {
+			var action = $(this).attr('href').substr(1);
 			
-			var target = $(this).parent('p').attr('class');
-			target = target.substr(target.indexOf('_') + 1);
+			var target = $(this).parent('p').attr('class').split(' ');
+			target = target.pop(); // assume the last class
 
-			//console.log('action: ' + action + ', target: ' + target);
+			console.log('action: ' + action + ', target: ' + target);
 
 			// Only update filters if anything changed.
 			//var changed = false;
@@ -170,7 +172,7 @@ var renshuuMain = {
 				//console.log('each. i: ' + i + ', name: ' + $(this).attr('name') + ', checked: ' + $(this).is(':checked'));
 				var checked = $(this).is(':checked');
 				var tobecheck = false;
-				switch(action) {
+				switch (action) {
 					case 'all' : $(this).attr('checked', 'checked'); break;
 					case 'none' : $(this).removeAttr('checked'); break;
 					case 'inverse' :
@@ -216,28 +218,29 @@ var renshuuMain = {
 		
 
 
-		$('.modal-tools a[rel=savetolist]').live('click', function () {
-			var href = $(this).attr('href');
-			var id = href.split('-').pop();
-			console.log('savetolist click. href: ' + href + ', id: ' + id);
-			renshuuMain.addSavedList(id);
-			$('.modal-tools a[rel=removefromlist][href=' + href + ']').show();
-			$(this).hide();
+		// Once a info windowfor a training is open, this handles the links on the bottom of it
+		$('.modal-tools a').live('click', function () {
+			var href = $(this).attr('href').substr(1).split('-');
+			var id = href.pop();
+			var action = href.shift();
+			console.log('modal-tools a click. action: ' + action + ', id: ' + id);
+			if (action == 'savetolist') {
+				renshuuMain.addSavedList(id);
+				$('.modal-tools a[href|="#removefromlist"]').show();
+				$(this).hide();
+			}
+			else {
+				renshuuMain.removeSavedList(id);
+				$('.modal-tools a[href|="#savetolist"]').show();
+				$(this).hide();
+			}
 			return false;
 		});
-		$('.modal-tools a[rel=removefromlist]').live('click', function () {
+		
+		$('#savedlist a[href|="#remove"]').live('click', function () {
 			var href = $(this).attr('href');
 			var id = href.split('-').pop();
-			console.log('removefromlist click. href: ' + href + ', id: ' + id);
-			renshuuMain.removeSavedList(id);
-			$('.modal-tools a[rel=savetolist][href=' + href + ']').show();
-			$(this).hide();
-			return false;
-		});
-		$('#savedlist a[rel=remove]').live('click', function () {
-			var href = $(this).attr('href');
-			var id = href.split('-').pop();
-			console.log('#savedlist a[remove] click. href: ' + href + ', id: ' + id);
+			console.log('#savedlist a click. href: ' + href + ', id: ' + id);
 			renshuuMain.removeSavedList(id);
 			return false;
 		});
@@ -258,11 +261,18 @@ var renshuuMain = {
 		});
 		*/
 
+		
+		// Get any possible existing data for saved list
+		$.post('/ajax/get/savelist', function (received, status) {
+			// data should be directly usable for the template...
+			var len = received.savelist.length;
+			for (var i = 0; i < len; i++) {
+				var data = received.savelist[i];
+				$('#savedlist tbody').prepend($('#savedTemplate').render(data));
+			}
+		});
 
 		renshuuMain.applyFiltersToHtml();
-
-		// Get the user data
-		renshuuMain.aliveKeeper();
 
 		// Finally, set the keepalive call
 		setInterval(function () {
@@ -386,16 +396,14 @@ var renshuuMain = {
 			// Use template "savedTemplate", but this is used only one way as a template.
 			// Removal is done via regular DOM removal actions.
 			if (data !== null) {
-				var saved = {
-					id: id,
-					artTitle: data.training.art.title,
-					weekDayInt: data.training.weekday,
-					weekDay: (renshuuMain.weekdays.length > data.training.weekday ?
-						renshuuMain.weekdays[data.training.weekday] : ""),
-					startTime: data.training.starttime,
-					endTime: data.training.endtime
-				};
-				$('#savedlist tbody').prepend($('#savedTemplate').render(saved));
+				data.weekDay = renshuuMain.weekdays[data.training.weekday];
+				$('#savedlist tbody').prepend($('#savedTemplate').render(data));
+				
+				// Finally send an update to the backend for saving this item
+				var post = {action: 'save', training: id};
+				$.post('/ajax/set/savelist', post, function (received, status) {
+					// the inserted id will be in returning data...
+				});
 			}
 		}
 		console.groupEnd();
@@ -423,7 +431,13 @@ var renshuuMain = {
 			console.log('savedListData length before and after removal try: ' + len + ' > ' + renshuuMain.savedListData.length);
 
 			// Now remove it from DOM
-			$('#bottom tbody tr[rel=' + id + ']').remove();
+			$('#saved-' + id).remove();
+			
+			// Finally send an update to the backend for removing this item
+			var post = {action: 'delete', training: id};
+			$.post('/ajax/set/savelist', post, function (received, status) {
+				// the inserted id will be in returning data...
+			});
 		}
 		console.groupEnd();
 	},
@@ -518,7 +532,7 @@ var renshuuMain = {
 		renshuuMarkers.clearMarkers(renshuuMarkers.trainingMarkers);
 		renshuuMarkers.trainingMarkersData = [];
 
-		$.post('/ajax/get/', para, function (data, status) {
+		$.post('/ajax/get', para, function (data, status) {
 			if (data && data.result) {
 				var res = data.result;
 				var len = res.length;

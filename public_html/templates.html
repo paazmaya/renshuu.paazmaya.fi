@@ -25,12 +25,12 @@
 	</script>
 	
 	<script id="savedTemplate" type="text/x-jquery-tmpl">
-		<tr rel="{{=id}}">
-			<td>{{=artTitle}}</td>
-			<td>{{=training.weekday}}</td>
-			<td>{{=startTime}} - {{=endTime}}</td>
-			<td><a href="#remove-{{=id}}" rel="remove" title="##tmpl_removeitem## - {{=training.weekdayInt}}">
-				<img src="/img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
+		<tr id="saved-{{=training.id}}">
+			<td>{{=training.art.title}}</td>
+			<td>{{=weekDay}}</td>
+			<td>{{=training.starttime}} - {{=training.endtime}}</td>
+			<td><a href="#remove-{{=training.id}}" title="##tmpl_removeitem## - {{=training.weekday}}">
+				<img src="img/sanscons/png/green/32x32/close.png" alt="##tmpl_removeitem##" />
 			</a></td>
 		</tr>
 	</script>
@@ -53,44 +53,38 @@
 	</script>
 	
 	<script id="trainingTemplate" type="text/x-jquery-tmpl">
-		<div class="modal-info vevent">
-			<h2 class="summary" rel="art-{{=training.art.id}}">
-				<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
-			</h2>
-			{{#if training.weekday}}
-				<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
-					<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
-					-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
-				</p>
-			{{/if}}
-			{{#if person.id}}
-				<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
-				{{#if person.contact}}
-					 ( {{=person.contact}})
-				{{/if}}
-				</p>
-			{{/if}}
-			{{#if location.id}}
-				<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}
-				{{#if location.url}}
-					<a href="{{=location.url}}" title="{{=location.title}}"> {{=location.url}}</a>
-				{{/if}}
-				</p>
-			{{/if}}
-			<address class="geo">
-				{{#if location.address}}
-					{{=location.address}}
-				{{/if}}
-				<span>
-					<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
-					<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
-				</span>
-			</address>
-			<p class="modal-tools">
-				<a href="#training-{{=training.id}}" title="##tmpl_savetolist##" rel="savetolist">##tmpl_savetolist##</a>
-				<a href="#training-{{=training.id}}" title="##tmpl_removefromlist##" rel="removefromlist" style="display:none;">##tmpl_removefromlist##</a>
+		<h2 class="summary" rel="art-{{=training.art.id}}">
+			<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
+		</h2>
+		{{#if training.weekday}}
+			<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}
+				<time class="dtstart" datetime="{{=training.starttime}}" title="{{=training.starttime}}">{{=training.starttime}}</time>
+				-<time class="dtend" datetime="{{=training.endtime}}" title="{{=training.endtime}}">{{=training.endtime}}</time>
 			</p>
-		</div>
+		{{/if}}
+		{{#if person.id}}
+			<p class="modal-contact" rel="person-{{=person.id}}">{{=person.title}}
+			{{#if person.contact}}
+				 {{=person.contact}}
+			{{/if}}
+			</p>
+		{{/if}}
+		{{#if location.id}}
+			<p class="modal-location" rel="location-{{=location.id}}">{{=location.title}}</p>
+		{{/if}}
+		<address class="geo">
+			{{#if location.address}}
+				{{=location.address}}
+			{{/if}}
+			<span>
+				<abbr class="latitude" title="{{=location.latitude}}">{{=$ctx.deg2dms(location.latitude, true)}}</abbr>
+				<abbr class="longitude" title="{{=location.longitude}}">{{=$ctx.deg2dms(location.longitude, false)}}</abbr>
+			</span>
+		</address>
+		<p class="modal-tools">
+			<a href="#savetolist-{{=training.id}}" title="##tmpl_savetolist##">##tmpl_savetolist##</a>
+			<a href="#removefromlist-{{=training.id}}" title="##tmpl_removefromlist##" style="display:none;">##tmpl_removefromlist##</a>
+		</p>
 	</script>
 	
 </head>
@@ -109,33 +103,11 @@
 
 		var artInsert = {id:20,title:"hoplaa",message:"New art created..."};
 
-		var locationSearch = [{"location":{"id":"18","latitude":"34.240080","longitude":"135.185734","title":"Kushinkan Dojo","url":null,"address":"日本, 和歌山県和歌山市中之島１４７４"}},{"location":{"id":"17","latitude":"34.217363","longitude":"135.184135","title":"Seishinkan Dojo","url":null,"address":"日本, 和歌山県和歌山市手平６丁目１&minus;４"}},{"location":{"id":"15","latitude":"35.730781","longitude":"139.505359","title":"Kodaira Budokan","url":null,"address":"日本, 東京都小平市花小金井５丁目４６３"}},{"location":{"id":"14","latitude":"34.820171","longitude":"134.667088","title":"Himeji shiritsu sogo sports kaigan","url":"","address":"日本, 兵庫県姫路市中地４５３"}},{"location":{"id":"13","latitude":"34.854139","longitude":"134.671653","title":"Himeji Budokan","url":"","address":"日本, 兵庫県姫路市田寺１丁目１&minus;１５"}},{"location":{"id":"10","latitude":"35.657120","longitude":"139.706228","title":"Souhonbu Dojo","url":"","address":"日本, 東京都渋谷区渋谷３丁目４"}},{"location":{"id":"11","latitude":"34.682792","longitude":"135.174435","title":"Kobe Chuou Taiikukan","url":"","address":"日本, 兵庫県神戸市中央区楠町４丁目１&minus;１"}},{"location":{"id":"12","latitude":"34.819246","longitude":"134.674182","title":"Hyogo kenritsu budokan","url":"","address":"日本, 兵庫県姫路市西延末５０４"}},{"location":{"id":"19","latitude":"35.007210","longitude":"138.486362","title":"Shunseikan Dojo","url":null,"address":"日本, 静岡県静岡市清水区岡町７&minus;５"}},{"location":{"id":"20","latitude":"35.039606","longitude":"138.485509","title":"Shimizu shiritsu chugakkou","url":null,"address":"日本, 静岡県静岡市清水区西久保１２５"}},{"location":{"id":"21","latitude":"34.991388","longitude":"138.366333","title":"Shizuoka shiritsu chugakkou","url":null,"address":"日本, 静岡県静岡市葵区平和２丁目２"}}];
-
-
+	
 		var trainings = {
-			training: {
-				id: 0,
-				art: {
-					id: 0,
-					title: ''
-				},
-				weekday: 0,
-				starttime: 0,
-				endtime: 0
-			},
-			location: {
-				id: 0,
-				latitude: 0.0,
-				longitude: 0.0,
-				title: '',
-				url: '',
-				address: ''
-			},
-			person: {
-				id: 0,
-				title: '',
-				contact: ''
-			}
+			location: {"id":"10","latitude":"35.657120","longitude":"139.706228","title":"Souhonbu Dojo","address":"日本, 東京都渋谷区渋谷３丁目４"},
+			training: {"id":"3","art":{"id":"2","title":"琉球古武術保存振興会"},"weekday":"3","starttime":"15:00","endtime":"17:00"},
+			person: {"id":null,"title":null,"contact":null}
 		};
 
 		$(document).ready(function() {
@@ -183,7 +155,9 @@
 			$('#art').html(feedback);
 			
 			var training = $('#trainingTemplate').render(trainings);
-			console.log('training: ' + training);
+			$('#training').html(training);
+			
+			//console.log('training: ' + training);
 		});
 	</script>
 

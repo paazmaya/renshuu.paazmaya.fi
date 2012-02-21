@@ -15,7 +15,7 @@ class RenshuuBase
     /**
      * What is the version of this class?
      */
-    const VERSION = '0.8.20120209';
+    const VERSION = '0.8.20120221';
 	
 	/**
 	 * Domain for gettext
