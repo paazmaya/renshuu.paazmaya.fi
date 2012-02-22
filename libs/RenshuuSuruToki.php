@@ -18,18 +18,18 @@ class RenshuuSuruToki extends RenshuuBase
 		'jsrender.js', // JsRender v1.0pre (2011-11-13), https://github.com/BorisMoore/jsrender
 
 		'jquery.outerhtml.js', //
-		
+
 		'jquery.inputnotes-0.6.js', // 0.6 ()
-		
+
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
-		
+
 		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
 
 		'renshuu-map.js',
 		'renshuu-markers.js',
 		'renshuu-forms.js',
 		//'renshuu-export.js',
-		'renshuu-main.js',
+		'renshuu-main.js'
 	);
 
 	/**
@@ -107,63 +107,63 @@ class RenshuuSuruToki extends RenshuuBase
 
 	/**
 	 * Handle redirection of the given url.
+	 * There should be no need for any specific URLs other than:
+	 *  - login via OpenID
+	 *  - changing language
 	 */
 	public function handleUrl()
 	{
-
 		// As per .htaccess, all requests are redirected to index.php with one GET variable.
 		if (isset($this->getted['page']) && strlen($this->getted['page']) > 0)
 		{
-			$url = '';
-			$getted['page'] = strtolower($this->getted['page']);
+			$url = explode('/', strtolower($this->getted['page']));
 
-			// Try to login the user if so requested
-			// TODO: OpenID
-			if ($this->getted['page'] == 'login')
+			if (count($url) == 2)
 			{
-				$this->authenticateLogin();
-			}
-			else if (strlen($this->getted['page']) == 2 && array_key_exists($this->getted['page'], $this->config['languages']))
-			{
-				$_SESSION['lang'] = $this->getted['page'];
+				// Try to login the user if so requested
+				if ($url['0'] == 'login')
+				{
+					$this->authenticateLogin($url['1']); // service provider
+				}
+				else if ($url['0'] == 'lang' && array_key_exists($url['1'], $this->config['languages']))
+				{
+					$_SESSION['lang'] = $url['1'];
+				}
+				else
+				{
+					header('HTTP/1.1 301 Moved Permanently');
+				}
 			}
 			else
 			{
 				header('HTTP/1.1 301 Moved Permanently');
 			}
-			
+
 			header('Location: http://' . $_SERVER['HTTP_HOST']);
 			exit();
 		}
 	}
-	
-	  /**
+
+	/**
      * Try to authenticate the user via OAuth.
      * The email provider should tell if the user is who she/he/it claims to be.
      * http://code.google.com/apis/accounts/docs/OpenID.html
      * @return string/boolean
      */
-    private function authenticateLogin()
+    private function authenticateLogin($provider)
     {
 		require 'RenshuuAuth.php';
 
-		$auth = new RenshuuAuth($this->config, $this->pdo);
-		
-				
-				
-				
-		if (isset($this->posted['email']) && $this->posted['email'] != '')
+		$auth = new RenshuuAuth($this->config, $this->pdo, $this->lang);
+		$auth->provider = $provider;
+
+        if (isset($getted['openid_mode']))
+        {
+			$auth->returningProvider();
+		}
+		else
 		{
-			$sql = 'SELECT title, email, access FROM renshuu_user WHERE email = \'' .
-				$this->posted['email'] . '\' AND access > 0';
-			$run = $this->pdo->query($sql);
-			if ($run->rowCount() > 0)
-			{
-				$res = $run->fetch(PDO::FETCH_ASSOC);
-				$_SESSION['email'] = $res['email'];
-				$_SESSION['username'] = $res['title'];
-				$_SESSION['access'] = intval($res['access']); // use as binary
-			}
+			$auth->goToProvider();
 		}
     }
 
@@ -179,7 +179,7 @@ class RenshuuSuruToki extends RenshuuBase
 		{
 			$stylesheetmain .= '<link type="text/css" href="/css/' . $style . '" rel="stylesheet" />';
 		}
-		
+
 		$list = array(
 			'lang' => $this->language, // $_SESSION['lang']
 			'title' => $this->config['title'] . ' | ' . $this->lang['title'],
@@ -187,12 +187,12 @@ class RenshuuSuruToki extends RenshuuBase
 			//'stylesheetmain' => '/css/' . $this->config['minified'] . '.css',
 			'stylesheetmain' => $stylesheetmain,
 			'stylesheeticon' => '/css/iconset-' . $this->config['iconset'] . '.css',
-			
+
 			'tmpl_createnew' => gettext('Create new'),
 			'tmpl_clear' => gettext('Clear'),
 			'tmpl_modify' => gettext('Modify current'),
 			'tmpl_sending' => gettext('Sending data'),
-			'tmpl_removeitem' => gettext('Remove this item from the list'),			
+			'tmpl_removeitem' => gettext('Remove this item from the list'),
 			'tmpl_savetolist' => gettext(' Save to list'),
 			'tmpl_removefromlist' => gettext('Remove from list')
 		);
@@ -205,7 +205,7 @@ class RenshuuSuruToki extends RenshuuBase
 
 		return $out;
 	}
-	
+
 	/**
 	 * Create public HTML5 body from a template.
 	 * #_# eguals a gettext call.
@@ -213,7 +213,7 @@ class RenshuuSuruToki extends RenshuuBase
 	public function createBodyPublic()
 	{
 		$out = file_get_contents($this->templateDir . 'body-public.html');
-		
+
 		$copyright = '<div id="copyright">
 			<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.' . $_SESSION['lang'] . '"
 				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
@@ -223,19 +223,22 @@ class RenshuuSuruToki extends RenshuuBase
 		$list = '<nav id="loginlist"><ul>';
 		foreach ($this->lang['loginlist'] as $type => $item)
 		{
-			$list .= '<li>';
-			$list .= '<a href="' . $item['href'] . '" title="' . $item['title'] . '" class="' . $type . '">';
-			$list .= '<img src="/img/hand-drawn-social/' . $type . '-64x64.png" alt="' . $item['title'] . '" />';
-			$list .= '</a>';
-			$list .= '</li>';
+			if ($item['enabled'])
+			{
+				$list .= '<li>';
+				$list .= '<a href="/login/' . $type . '" title="' . $item['title'] . '" class="' . $type . '">';
+				$list .= '<img src="/img/hand-drawn-social/' . $type . '-64x64.png" alt="' . $item['title'] . '" />';
+				$list .= '</a>';
+				$list .= '</li>';
+			}
 		}
 		$list .= '</ul></nav>';
-		
+
 		$list = array(
-			'loginlist' => $list,
+			'login_list' => $list,
 			'copyright' => $copyright
 		);
-		
+
 		foreach ($list as $key => $value)
 		{
 			$out = str_replace('##' . $key . '##', $value, $out);
@@ -249,7 +252,7 @@ class RenshuuSuruToki extends RenshuuBase
 			),
 			$out
 		);
-		
+
 		return $out;
 
 	}
@@ -285,28 +288,28 @@ class RenshuuSuruToki extends RenshuuBase
 				title="Creative Commons - Attribution-ShareAlike 3.0 Unported - License">' . gettext('License information') . '</a></p>
 			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
 			</div>';
-			
-		
+
+
 		$list = array(
 			'user_email' => $_SESSION['email'],
 			'user_name' => $_SESSION['username'],
 			'show_trainings' => gettext('show training markers'),
-			
+
 			'left_navigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
 			'forms_navigation' => $this->helper->createNavigation($this->lang['navigation']['forms'], $_SESSION['access']),
-			
+
 			'artshortcuts' => $this->helper->createSelectionShortcuts('shortcuts arts', $this->lang['selectionshortcuts']),
 			'artlist' => $artlist,
-			
+
 			'weekdayshortcuts' => $this->helper->createSelectionShortcuts('shortcuts weekdays', $this->lang['selectionshortcuts']),
 			'weekdaylist' => $weekdaylist,
-			
+
 			'exportform' => $this->helper->createForm('export', $this->lang['forms']['export']),
 			'staticmap' => $this->helper->createStaticMapUrl(),
 			'copyright' => $copyright,
-			
+
 			'saved_table' => $this->helper->createTable($this->lang['savedtable']),
-			
+
 			'form_training' => $this->helper->createForm('training', $this->lang['forms']['training']),
 			'form_location' => $this->helper->createForm('location', $this->lang['forms']['location']),
 			'form_art' => $this->helper->createForm('art', $this->lang['forms']['art']),
@@ -331,7 +334,7 @@ class RenshuuSuruToki extends RenshuuBase
 		// Javascript section
 
 		// http://code.google.com/apis/maps/documentation/javascript/basics.html#Versioning
-		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] . 
+		$out .= $this->helper->scriptElement('http://maps.google.com/maps/api/js?v=' . $this->config['gmapsver'] .
 			'&amp;key=' . $this->config['gmapskey'] . '&amp;sensor=false&amp;language=ja');// . $_SESSION['lang']);
 		//$out .= scriptElement($this->config['minified'] . '.js');
 
@@ -377,17 +380,17 @@ class RenshuuSuruToki extends RenshuuBase
 		// http://www.w3.org/html/logo/#the-technology
 		/*
 		$out .= '<a href="http://www.w3.org/html/logo/">';
-		$out .= '<img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-semantics-storage.png" 
+		$out .= '<img src="http://www.w3.org/html/logo/badge/html5-badge-h-css3-device-semantics-storage.png"
 			width="229" height="64" alt="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline
 			&amp; Storage" title="HTML5 Powered with CSS3 / Styling, Device Access, Semantics, and Offline &amp; Storage">';
 		$out .= '</a>';
 		*/
-	
+
 		if (!$this->config['isdevserver'])
 		{
 			$out .= file_get_contents($this->templateDir . 'google-analytics.html');
 		}
-		
+
 		$out .= '</body>';
 		$out .= '</html>';
 

@@ -315,8 +315,10 @@ var renshuuMarkers = {
 		var len = list.length;
 		for (var i = 0; i < len; ++i) {
 			var marker = list[i];
-			// API docs say: "If map is set to null, the marker will be removed."
-			marker.setMap(null);
+			if (typeof marker !== 'undefined' && marker != null) {
+				// API docs say: "If map is set to null, the marker will be removed."
+				marker.setMap(null);
+			}
 		}
 		list = [];
 	},
@@ -412,9 +414,11 @@ var renshuuMarkers = {
 	setTrainingMarkersVisibility: function () {
 		var visible = renshuuMain.showTrainings;
 		var len = renshuuMarkers.trainingMarkers.length;
+		console.log('setTrainingMarkersVisibility. visible: ' + visible + ', len: ' + len);
 		for (var i = 0; i < len; i++) {
 			var marker = renshuuMarkers.trainingMarkers[i];
-			if (marker !== null) {
+			console.log('setTrainingMarkersVisibility. marker.title: ' + marker.title);
+			if (typeof marker !== 'undefined' && marker !== null) {
 				marker.setVisible(visible);
 			}
 		}

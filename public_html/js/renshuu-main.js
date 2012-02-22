@@ -267,7 +267,7 @@ var renshuuMain = {
 		var one = setInterval(function () {
 			renshuuMain.updateTrainings();
 			clearInterval(one);
-		}, 1200);
+		}, 2200); // assume 2.2 sec is enough...
 	},
 	
 	/** 

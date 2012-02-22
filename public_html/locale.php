@@ -28,7 +28,7 @@ xgettext \
 --from-code=UTF-8 \
 --copyright-holder="Jukka Paasonen" \
 --package-name=RENSHUU.PAAZMAYA.COM \
---package-version=0.8.20111206 \
+--package-version=0.8.20120223 \
 --strict \
 --debug \
 index.php locale.php
@@ -495,19 +495,28 @@ $lang['savedtable'] = array(
 $lang['loginlist'] = array(
 	'facebook' => array(
 		'title' => gettext('Login via Facebook account'),
-		'href' => ''
+		'href' => '',
+		'enabled' => false
 	),
 	'twitter' => array(
 		'title' =>  gettext('Login via Twitter account'),
-		'href' => ''
+		'href' => '',
+		'enabled' => false
 	),
 	'google' => array(
 		'title' => gettext('Login via Google account'),
-		'href' => ''
+		'href' => 'https://www.google.com/accounts/o8/id',
+		'enabled' => true
 	),
 	'linkedin' => array(
 		'title' => gettext('Login via LinkedIn account'),
-		'href' => ''
+		'href' => '',
+		'enabled' => false
+	),
+	'yahoo' => array(
+		'title' => gettext('Login via Yahoo! account'),
+		'href' => 'http://me.yahoo.com/',
+		'enabled' => true
 	)
 );
 

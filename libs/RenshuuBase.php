@@ -15,7 +15,7 @@ class RenshuuBase
     /**
      * What is the version of this class?
      */
-    const VERSION = '0.8.20120221';
+    const VERSION = '0.8.20120223';
 	
 	/**
 	 * Domain for gettext
@@ -215,9 +215,9 @@ class RenshuuBase
 		
 		
 		// For testing purposes...
-		$_SESSION['access'] = bindec(1111111111);
-		$_SESSION['username'] = 'Juga Paazmaya';
-		$_SESSION['email'] = 'olavic@gmail.com';
+		//$_SESSION['access'] = bindec(1111111111);
+		//$_SESSION['username'] = 'Juga Paazmaya';
+		//$_SESSION['email'] = 'olavic@gmail.com';
 	}
 	
 	/**
