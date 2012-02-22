@@ -322,8 +322,8 @@ class RenshuuAjax extends RenshuuBase
 			LEFT JOIN renshuu_person D ON D.id = A.person';
 
 		$sql = 'SELECT A.id AS trainingid, A.art AS artid, C.title AS artname, A.weekday, A.starttime, A.endtime,
-			B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, B.address,
-			D.id AS personid, D.title AS personname, D.contact ' . $from . '
+			B.id AS location_id, B.latitude, B.longitude, B.title AS location_title, B.address,
+			D.id AS personid, D.title AS person_title, D.contact ' . $from . '
 			WHERE ' . $position . $art . $weekday;
 		$results = array();
 		$run =  $this->pdo->query($sql);
@@ -343,15 +343,15 @@ class RenshuuAjax extends RenshuuBase
 						'endtime' => $res['endtime'],
 					),
 					'location' => array(
-						'id' => $res['locationid'],
+						'id' => $res['location_id'],
 						'latitude' => $res['latitude'],
 						'longitude' => $res['longitude'],
-						'title' => $res['locationname'],
+						'title' => $res['location_title'],
 						'address' => $res['address'],
 					),
 					'person' => array(
 						'id' => $res['personid'],
-						'title' => $res['personname'],
+						'title' => $res['person_title'],
 						'contact' => $res['contact']
 					)
 				);
@@ -381,7 +381,7 @@ class RenshuuAjax extends RenshuuBase
 			' AND B.longitude > ' . $area['sw_lng'] . ' AND B.longitude < ' . $area['ne_lng'];
 		$from = 'FROM renshuu_location B';
 
-		$sql = 'SELECT B.id AS locationid, B.latitude, B.longitude, B.title AS locationname, ' .
+		$sql = 'SELECT B.id AS location_id, B.latitude, B.longitude, B.title AS location_title, ' .
 			'B.address ' . $from . ' WHERE ' . $position;
 		$results = array();
 		$run =  $this->pdo->query($sql);
@@ -391,10 +391,10 @@ class RenshuuAjax extends RenshuuBase
 			{
 				$results[] = array(
 					'location' => array(
-						'id' => $res['locationid'],
+						'id' => $res['location_id'],
 						'latitude' => $res['latitude'],
 						'longitude' => $res['longitude'],
-						'title' => $res['locationname'],
+						'title' => $res['location_title'],
 						'address' => $res['address'],
 					)
 				);
@@ -468,8 +468,17 @@ class RenshuuAjax extends RenshuuBase
 				</a></td>
 			</tr>
 			*/
-			$sql = 'SELECT T.*, A.title AS arttitle FROM renshuu_list L, renshuu_user U, renshuu_training T LEFT JOIN renshuu_art A ON T.art = A.id WHERE L.user = U.id AND U.email = \'' . 
-				$_SESSION['email'] . '\' AND T.id = L.training ORDER BY L.added DESC';
+			$sql = 'SELECT T.*, A.id AS art_id, A.title AS art_title, ' .
+				'L.id AS location_id, L.latitude, L.longitude, L.title AS location_title, L.address, ' .
+				'P.id AS person_id, P.title AS person_title, P.contact ' .
+				'FROM renshuu_list LI ' .
+				'LEFT JOIN renshuu_user U ON U.id = LI.user ' .
+				'LEFT JOIN renshuu_training T ON T.id = LI.training ' .
+				'LEFT JOIN renshuu_location L ON L.id = T.location ' .
+				'LEFT JOIN renshuu_art A ON A.id = T.art ' .
+				'LEFT JOIN renshuu_person P ON P.id = T.person ' .
+				'WHERE U.email = \'' . $_SESSION['email'] . '\' ' .
+				'ORDER BY LI.added DESC';
 			$run = $this->pdo->query($sql);
 			if ($run)
 			{
@@ -480,15 +489,27 @@ class RenshuuAjax extends RenshuuBase
 						'training' => array(
 							'id' => $res['id'],
 							'art' => array(
-								'title' => $res['arttitle'],
+								'id' => $res['art_id'],
+								'title' => $res['art_title'],
 							),
+							'weekday' => $res['weekday'],
 							'starttime' => $res['starttime'],
 							'endtime' => $res['endtime'],
-							'weekday' => $res['weekday'],
+						),
+						'location' => array(
+							'id' => $res['location_id'],
+							'latitude' => $res['latitude'],
+							'longitude' => $res['longitude'],
+							'title' => $res['location_title'],
+							'address' => $res['address'],
+						),
+						'person' => array(
+							'id' => $res['person_id'],
+							'title' => $res['person_title'],
+							'contact' => $res['contact']
 						),
 						'weekDay' => $this->lang['weekdays'][$res['weekday']]
 					);
-					
 				}
 				unset($this->out['error']);
 				$this->out[$this->pagetype] = $results;

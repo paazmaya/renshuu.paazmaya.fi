@@ -163,12 +163,19 @@ var renshuuMarkers = {
 	
 	
 	/**
-	 *
-	 * @see
+	 * Create a marker for existing location.
+	 * Clicking will set it as selected option in training form, if it is visible.
 	 */
 	createLocationMarker: function (data) {
 		console.group('createLocationMarker');
-		var icon = renshuuPins.getBubble('d_bubble_text_small', data.location.title, 'F9FBF7', '5E0202');
+		
+		// http://chart.googleapis.com/chart?chst=d_bubble_text_small&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
+		var icon = renshuuMarkers.getMarkerImage(
+			'd_bubble_text_small', 
+			'bbtl|' + data.location.title + '|F9FBF7|5E0202',
+			new google.maps.Point(0, 0)
+		);
+		
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.location.title, icon, false);
 
@@ -218,10 +225,15 @@ var renshuuMarkers = {
 			console.log('res.geometry: ' + g + ' = ' + res.geometry[g]);
 		}
 
+		// http://chart.googleapis.com/chart?chst=d_bubble_text_small&chld=bbtr|6|ADDE63|05050D
 		var marker = renshuuMarkers.createMarker(
 			res.geometry.location,
 			res.formatted_address,
-			renshuuPins.getLetter(i + 1),
+			renshuuMarkers.getMarkerImage(
+				'd_bubble_text_small',
+				'bbtr|' + (i + 1) + '|ADDE63|05050D', 
+				new google.maps.Point(42, 0)
+			),
 			false
 		);
 		// Right click will be used for deleting...
@@ -257,7 +269,8 @@ var renshuuMarkers = {
 	createMarker: function (pos, title, icon, drag) {
 		console.group('createMarker');
 		if (!icon) {
-			icon = renshuuMap.getIcon();
+			// http://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
+			icon = renshuuMarkers.getMarkerImage('d_map_pin_icon', 'fire|ADDE63');
 		}
 		if (drag === null) {
 			drag = false;
@@ -302,24 +315,30 @@ var renshuuMarkers = {
 		var len = list.length;
 		for (var i = 0; i < len; ++i) {
 			var marker = list[i];
-			// "If map is set to null, the marker will be removed."
+			// API docs say: "If map is set to null, the marker will be removed."
 			marker.setMap(null);
 		}
 		list = [];
 	},
 
 	/**
-	 *
-	 * http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_group|bb|Ryukyu Kobujutsu|129EF7|05050D
-	 * @see
+	 * Create a marker for a training. Clicking it opens a blockui info window.
 	 */
 	createTrainingMarker: function (data) {
 		console.group('createTrainingMarker');
-  
-		var icon = renshuuPins.getBubble('d_bubble_icon_text_small', data.training.art.title, '129EF7', '05050D', 'glyphish_group|bb');
+		
+		// http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_group|bb|Ryukyu Kobujutsu|129EF7|05050D
+		var icon = renshuuMarkers.getMarkerImage(
+			'd_bubble_icon_text_small', 
+			'glyphish_group|bb|' + data.training.art.title + '|129EF7|05050D',
+			new google.maps.Point(0, 42)
+		);
 		
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
+		
+		// Visibility based on current checkbox state
+		marker.setVisible(renshuuMain.showTrainings);
 
 		google.maps.event.addListener(marker, 'click', function (event) {
 			// This event is fired when the marker icon was clicked.
@@ -405,11 +424,10 @@ var renshuuMarkers = {
 	 * MarkerImage(url:string, size?:Size, origin?:Point, anchor?:Point, scaledSize?:Size)
 	 * @see http://code.google.com/apis/chart/docs/gallery/dynamic_icons.html#icon_list
 	 */
-	getMarkerImage: function (image, size, origin, anchor) {
-		console.log('getMarkerImage. image: ' + image + ', size: ' + size + ', origin: ' + origin + ' , anchor: ' + anchor);
-		return new google.maps.MarkerImage(
-			'http://chart.googleapis.com/chart?' + image, null, origin, anchor
-		);
+	getMarkerImage: function (chst, chld, anchor) {
+		var img = 'http://chart.googleapis.com/chart?chst=' + chst + '&chld=' + encodeURI(chld);
+		console.log('getMarkerImage. img: ' + img + ' , anchor: ' + anchor);
+		return new google.maps.MarkerImage(img, null, null, anchor);
 	}
 
 

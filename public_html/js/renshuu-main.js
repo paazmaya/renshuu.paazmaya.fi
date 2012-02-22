@@ -171,18 +171,10 @@ var renshuuMain = {
 			$('#' + target + ' input:checkbox').each(function (i, elem) {
 				//console.log('each. i: ' + i + ', name: ' + $(this).attr('name') + ', checked: ' + $(this).is(':checked'));
 				var checked = $(this).is(':checked');
-				var tobecheck = false;
 				switch (action) {
 					case 'all' : $(this).attr('checked', 'checked'); break;
 					case 'none' : $(this).removeAttr('checked'); break;
-					case 'inverse' :
-						if (checked) {
-							$(this).removeAttr('checked');
-						}
-						else {
-							$(this).attr('checked', 'checked');
-						}
-						break;
+					case 'inverse' : $(this).attr('checked', (checked ? null : 'checked')); break;
 				}
 			});
 			//if (changed) {
@@ -244,34 +236,20 @@ var renshuuMain = {
 			renshuuMain.removeSavedList(id);
 			return false;
 		});
-
-
-		// Dragging of the modal window.
-		$('h2.summary').live('mousedown', function () {
-		});
-		$('h2.summary').live('mouseup', function () {
-		});
-
-		// https://github.com/jquery/jquery-datalink
-		/*
-		// this could handle all the above...
-		$('#filter_form').link(renshuuMain.filterSettings, {
-			arts: [],
-			weekdays: [0, 1, 2, 3, 4, 5, 6]
-		});
-		*/
-
-		
+	
 		// Get any possible existing data for saved list
 		$.post('/ajax/get/savelist', function (received, status) {
 			// data should be directly usable for the template...
 			var len = received.savelist.length;
 			for (var i = 0; i < len; i++) {
 				var data = received.savelist[i];
+				var inx = renshuuMain.savedList.push(data.training.id);
+				renshuuMain.savedListData[inx] = data;
 				$('#savedlist tbody').prepend($('#savedTemplate').render(data));
 			}
 		});
 
+		// Update DOM based on localStorage memory
 		renshuuMain.applyFiltersToHtml();
 
 		// Finally, set the keepalive call
@@ -284,6 +262,12 @@ var renshuuMain = {
 		
 		// Handlers for forms
 		renshuuForms.init();
+		
+		// Fetch trainings available for current settings. Uses map, thus after map init
+		var one = setInterval(function () {
+			renshuuMain.updateTrainings();
+			clearInterval(one);
+		}, 1200);
 	},
 	
 	/** 
@@ -375,10 +359,10 @@ var renshuuMain = {
 	 */
 	addSavedList: function (id) {
 		console.group('addSavedList');
-		var inx = renshuuMain.savedList.indexOf(id);
-		var data = null;
+		var inx = renshuuMain.savedList.indexOf(id); // check for existense
 		console.log('id: ' + id + ', inx: ' + inx);
 		if (inx === -1) {
+			var data = null;
 			renshuuMain.savedList.push(id);
 			var len = renshuuMarkers.trainingMarkersData.length;
 			var savedlen = renshuuMain.savedListData.length; // only for debugging
@@ -387,6 +371,7 @@ var renshuuMain = {
 				if (data && data.training.id == id) {
 					console.log('found matching data for addition, i: ' + i);
 					renshuuMain.savedListData.push(data);
+					console.dir(data);
 					break;
 				}
 			}
@@ -402,7 +387,7 @@ var renshuuMain = {
 				// Finally send an update to the backend for saving this item
 				var post = {action: 'save', training: id};
 				$.post('/ajax/set/savelist', post, function (received, status) {
-					// the inserted id will be in returning data...
+					// nothing might be there...
 				});
 			}
 		}
@@ -422,7 +407,7 @@ var renshuuMain = {
 			var len = renshuuMain.savedListData.length;
 			for (var i = 0; i < len; ++i) {
 				var data = renshuuMain.savedListData[i];
-				if (data.training.id == id) {
+				if (data && data.training.id == id) {
 					console.log('found matching data for removal, i: ' + i);
 					renshuuMain.savedListData.splice(i, 1);
 					break;
@@ -490,23 +475,15 @@ var renshuuMain = {
 	 */
 	applyFiltersToHtml: function () {
 		console.group('applyFiltersToHtml');
-		var sets = ['arts', 'weekdays']; // for in object gives extra data, thus defining these here
-		var len = sets.length; // Should be 2
-		for (var i = 0; i < len; ++i) {
-			var target = sets[i];
-			var list = renshuuMain.filterSettings[target];
-			console.log('target: ' + target + ', list: ' + list);
-			if (list) {
-				$('#filter_' + target + ' input:checkbox').each(function (i, elem) {
+		for (var item in renshuuMain.filterSettings) {
+			if (renshuuMain.filterSettings.hasOwnProperty(item)) {
+				var list = renshuuMain.filterSettings[item];
+				console.log('item: ' + item + ', list: ' + list);
+				
+				$('#filter_' + item + ' input:checkbox').each(function (i, elem) {
 					var rel = $(this).attr('name').split('_').pop();
 					var inx = list.indexOf(rel);
-					console.log('i: ' + i + ', rel: ' + rel + ', inx: ' + inx);
-					if (inx === -1) {
-						$(this).removeAttr('checked');
-					}
-					else {
-						$(this).attr('checked', 'checked');
-					}
+					$(this).attr('checked', (inx !== -1 ? 'checked' : null));
 				});
 			}
 		}
@@ -518,6 +495,9 @@ var renshuuMain = {
 	 */
 	updateTrainings: function () {
 		console.group('updateTrainings');
+		if (typeof renshuuMap.map === 'undefined') {
+			return false;
+		}
 		var bounds = renshuuMap.map.getBounds();
 		var ne = bounds.getNorthEast();
 		var sw = bounds.getSouthWest();

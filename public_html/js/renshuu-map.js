@@ -361,14 +361,19 @@ var renshuuMap = {
 			renshuuMap.saveMapZoom();
 		});
 		
-		//var icon = renshuuPins.getBubble('glyphish_paperclip', 'Select+position');
-		var icon = renshuuPins.getPinStar('glyphish_paperclip', '5E0202', '05050D', 'pin_sleft');
-		//var icon = 'http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_paperclip|bbtl|Select+position|B7B529|05050D';
 		
-		console.log('Setting up locationMarker with opts.center: ' + opts.center.toString() + ', icon: ' + icon);
+		console.log('Setting up locationMarker with opts.center: ' + opts.center.toString());
 		
+		// http://chart.googleapis.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_paperclip|949494|050505
 		renshuuMarkers.locationMarker = renshuuMarkers.createMarker(
-			opts.center, 'Choose position', icon, true
+			opts.center,
+			'Choose position', 
+			renshuuMarkers.getMarkerImage(
+				'd_map_xpin_icon',
+				'pin_sright|glyphish_paperclip|949494|050505',
+				new google.maps.Point(0, 33)
+			),
+			true
 		);
 
 		google.maps.event.addListener(renshuuMarkers.locationMarker, 'drag', function (event) {
@@ -416,10 +421,18 @@ var renshuuMap = {
 
 
 		// The marker which can be dragged on a spot which is should be revealed in Street View
+		// http://chart.googleapis.com/chart?chst=d_map_xpin_icon&chld=pin_sright|glyphish_eye|F9FBF7|5E0202
 		renshuuMarkers.streetMarker = renshuuMarkers.createMarker(
-			renshuuMap.map.getCenter(), 'Street View', renshuuPins.getPinStar('glyphish_eye'), true
+			renshuuMap.map.getCenter(),
+			'Street View',
+			renshuuMarkers.getMarkerImage(
+				'd_map_xpin_icon',
+				'pin_sright|glyphish_eye|F9FBF7|5E0202',
+				new google.maps.Point(0, 33)
+			),
+			true
 		);
-
+		
 		// Marker draggin overrides the Street View position and makes it visible if hidden.
 		google.maps.event.addListener(renshuuMarkers.streetMarker, 'dragend', function () {
 			var pos = renshuuMarkers.streetMarker.getPosition();

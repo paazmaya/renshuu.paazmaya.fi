@@ -72,10 +72,10 @@ input.short {
 
 
 td.odd, tbody tr:nth-child(odd) {
-	background-color: #129EF7;
+	background-color: #F2F2F2;
 }
 td.even, tbody tr:nth-child(even) {
-	background-color: #0E3621;
+	background-color: #F4F4F4;
 }
 
 
@@ -254,6 +254,7 @@ td.even, tbody tr:nth-child(even) {
 }
 .tab-content a {
 	background-color: inherit;
+	display: inline-block;
 }
 .tab-content a:hover, .tab-content li:hover {
 	background-color: #129EF7;
@@ -265,8 +266,13 @@ td.even, tbody tr:nth-child(even) {
 	font-size: smaller;
 }
 .shortcuts a {
-	padding: 0.5em;
+	padding: 0.3em;
 	text-decoration: none;
+	background-color: #5E0202;
+	color: #F9FBF7;
+}
+.shortcuts a:not(:first-child) {
+	margin-left: 0.5em;
 }
 
 

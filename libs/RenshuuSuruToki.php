@@ -16,8 +16,6 @@ class RenshuuSuruToki extends RenshuuBase
 		'jquery.js', // 1.7.1 (2011-11-03), http://jquery.com/
 
 		'jsrender.js', // JsRender v1.0pre (2011-11-13), https://github.com/BorisMoore/jsrender
-		
-		'jquery.datalink.js', // 1.0.0pre (2011-06-01), https://github.com/jquery/jquery-datalink
 
 		'jquery.outerhtml.js', //
 		
@@ -30,8 +28,7 @@ class RenshuuSuruToki extends RenshuuBase
 		'renshuu-map.js',
 		'renshuu-markers.js',
 		'renshuu-forms.js',
-		'renshuu-pins.js',
-		'renshuu-export.js',
+		//'renshuu-export.js',
 		'renshuu-main.js',
 	);
 
@@ -125,27 +122,6 @@ class RenshuuSuruToki extends RenshuuBase
 			if ($this->getted['page'] == 'login')
 			{
 				$this->authenticateLogin();
-				
-				
-				
-				
-				
-				
-				
-				if (isset($this->posted['email']) && $this->posted['email'] != '' &&
-					isset($this->posted['password']) && $this->posted['password'] != '')
-				{
-					$sql = 'SELECT title, email, access FROM renshuu_user WHERE email = \'' .
-						$this->posted['email'] . '\' AND access > 0';
-					$run = $this->pdo->query($sql);
-					if ($run->columnCount() > 0)
-					{
-						$res = $run->fetch(PDO::FETCH_ASSOC);
-						$_SESSION['email'] = $res['email'];
-						$_SESSION['username'] = $res['title'];
-						$_SESSION['access'] = intval($res['access']); // use as binary
-					}
-				}
 			}
 			else if (strlen($this->getted['page']) == 2 && array_key_exists($this->getted['page'], $this->config['languages']))
 			{
@@ -173,6 +149,22 @@ class RenshuuSuruToki extends RenshuuBase
 
 		$auth = new RenshuuAuth($this->config, $this->pdo);
 		
+				
+				
+				
+		if (isset($this->posted['email']) && $this->posted['email'] != '')
+		{
+			$sql = 'SELECT title, email, access FROM renshuu_user WHERE email = \'' .
+				$this->posted['email'] . '\' AND access > 0';
+			$run = $this->pdo->query($sql);
+			if ($run->rowCount() > 0)
+			{
+				$res = $run->fetch(PDO::FETCH_ASSOC);
+				$_SESSION['email'] = $res['email'];
+				$_SESSION['username'] = $res['title'];
+				$_SESSION['access'] = intval($res['access']); // use as binary
+			}
+		}
     }
 
 	/**
