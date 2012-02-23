@@ -27,7 +27,7 @@ Javascript libraries that are used in this project are:
 * Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
 * jQuery 1.7.1 (http://jquery.com)
 * jQuery blockUI 2.39 (http://malsup.com/jquery/block/)
-* jQuery Templates 1.0.0pre (http://github.com/jquery/jquery-tmpl)
+* JsRender 1.0pre (https://github.com/BorisMoore/jsrender)
 
 PHP libraries are:
 

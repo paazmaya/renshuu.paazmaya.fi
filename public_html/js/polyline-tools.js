@@ -1,8 +1,8 @@
 /**
  * http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
- * $.renshuu.map
- * $.renshuu.dirLines = [];
- * $.renshuu.dirService = new google.maps.DirectionsService();
+ * renshuuMap.map
+ * renshuuMap.dirLines = [];
+ * renshuuMap.dirService = new google.maps.DirectionsService();
  */
 var lined = {
 
@@ -20,7 +20,7 @@ var lined = {
 			travelMode: google.maps.DirectionsTravelMode.DRIVING,
 			unitSystem: google.maps.DirectionsUnitSystem.METRIC
 		};
-		$.renshuu.dirService.route(request, function(results, status) {
+		renshuuMap.dirService.route(request, function(results, status) {
 			var route = result.routes[0];
 			var len = route.legs.length;
 			for (var i = 0; i < len; ++i) {
@@ -40,7 +40,7 @@ var lined = {
 		for (vat i = 0; i < len; ++i) {
 			// http://code.google.com/apis/maps/documentation/javascript/reference.html#DirectionsStep
 			var step = leg.steps[i];
-			var line = $.renshuu.createLine(step.start_location, step.end_location);
+			var line = renshuuMap.createLine(step.start_location, step.end_location);
 		}
 	},
 
@@ -51,7 +51,7 @@ var lined = {
 	createLine: function(pos0, pos1) {
 		var opts = {
 			clickable: false,
-			map: $.renshuu.map,
+			map: renshuuMap.map,
 			path: [pos0, pos1],
 			strokeColor: '#A3A3A3',
 			strokeOpacity: 0.6,
@@ -66,7 +66,7 @@ var lined = {
 			opts.strokeColor = '#A3A3A3';
 			line.setOptions(opts);
 		});
-		$.renshuu.dirLines.push( { polyline: line, points: [pos0, pos1] } );
+		renshuuMap.dirLines.push( { polyline: line, points: [pos0, pos1] } );
 		return line;
 	},
 	
@@ -75,10 +75,10 @@ var lined = {
 	 */
 	removeLine: function(pos0, pos1) {
 		//{polyline: line, points: [pos0, pos1]}
-		var len = $.renshuu.dirLines.length;
+		var len = renshuuMap.dirLines.length;
 		var inx = -1;
 		for (var i = 0; i < len; ++i) {
-			var points = $.renshuu.dirLines[i].points;
+			var points = renshuuMap.dirLines[i].points;
 			if (points.indexOf(pos0) && points.indexOf(pos0)) {
 				inx = i;
 				break;
@@ -86,9 +86,9 @@ var lined = {
 		}
 		console.log("removeLine. len: " + len + ", inx: " + inx);
 		if (inx != -1) {
-			var line = $.renshuu.dirLines[inx].polyline;
+			var line = renshuuMap.dirLines[inx].polyline;
 			line.setMap(null);
-			$.renshuu.dirLines.splice(inx, 1);
+			renshuuMap.dirLines.splice(inx, 1);
 		}
 	}
 
