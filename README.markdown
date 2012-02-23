@@ -7,7 +7,14 @@ A training timetable
 
 This code is used to run the site available at renshuu.paazmaya.com, which offers an easy way to build a training timetable within the Japanese martial arts.
 
+Screenshots
+-----------
 
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.hand-drawn-social.jpg)
+
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.handycons2.jpg)
+
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.social-icons-sketch-black.jpg)
 
 
 Code Structure
