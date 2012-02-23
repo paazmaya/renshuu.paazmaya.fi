@@ -131,7 +131,7 @@ var renshuuMain = {
 		}
 		if (showTrainings !== null) {
 			console.log('showTrainings : ' + showTrainings);
-			renshuuMain.showTrainings = parseInt(showTrainings);
+			renshuuMain.showTrainings = parseInt(showTrainings) == 1 ? true : false;
 			$('#session input:checkbox').attr('checked', (renshuuMain.showTrainings ? 'checked' : null));
 		}
 		
@@ -141,8 +141,8 @@ var renshuuMain = {
 			var check = $(this).is(':checked');
 			console.log('change. name: ' + name + ', check: ' + check);
 			
-			renshuuMain.showTrainings = check ? 1 : 0;
-			localStorage.setItem('showTrainings', renshuuMain.showTrainings);
+			renshuuMain.showTrainings = check;
+			localStorage.setItem('showTrainings', renshuuMain.showTrainings ? 1 : 0);
 
 			renshuuMarkers.setTrainingMarkersVisibility();
 		});

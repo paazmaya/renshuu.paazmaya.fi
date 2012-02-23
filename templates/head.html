@@ -58,7 +58,7 @@
 	
 	<script id="trainingTemplate" type="text/x-jquery-tmpl">
 		<h2 class="summary" rel="art-{{=training.art.id}}">
-			<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}}</a>
+			<a href="#training-{{=training.id}}" class="modal-close uid icon-close" title="{{=training.art.title}}">{{=training.art.title}} {{=weekDay}}</a>
 		</h2>
 		{{#if training.weekday}}
 			<p class="modal-time" rel="training-{{=training.id}}">{{=training.weekday}}

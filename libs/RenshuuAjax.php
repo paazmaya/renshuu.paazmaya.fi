@@ -48,7 +48,8 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 *				id: 0,
 *				title: '',
 *				contact: ''
-*			}
+*			},
+*			weekDay: ''
 *		}
 *	]
 *
@@ -353,7 +354,8 @@ class RenshuuAjax extends RenshuuBase
 						'id' => $res['personid'],
 						'title' => $res['person_title'],
 						'contact' => $res['contact']
-					)
+					),
+					'weekDay' => $this->lang['weekdays'][$res['weekday']]
 				);
 			}
 			unset($this->out['error']);

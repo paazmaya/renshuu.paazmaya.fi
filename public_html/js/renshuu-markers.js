@@ -296,10 +296,16 @@ var renshuuMarkers = {
 		});
 		google.maps.event.addListener(marker, 'mouseover', function (event) {
 			// This event is fired when the mouse enters the area of the marker icon.
-			marker.setZIndex(marker.getZIndex() + 10);
+			var z = marker.getZIndex();
+			if (isNaN(z)) {
+				z = 2;
+			}
+			marker.setZIndex(z + 10);
+			//console.log('marker mouseover increases z-index by 10, to: ' + marker.getZIndex());
 		});
 		google.maps.event.addListener(marker, 'rightclick', function (event) {
 			// This event is fired when the marker is right clicked on.
+			console.log('marker right click. marker.title: ' + marker.title);
 		});
 
 		console.groupEnd();
@@ -341,6 +347,7 @@ var renshuuMarkers = {
 		
 		// Visibility based on current checkbox state
 		marker.setVisible(renshuuMain.showTrainings);
+		console.log('visibility should be ' + renshuuMain.showTrainings + ', actual is ' + marker.getVisible());
 
 		google.maps.event.addListener(marker, 'click', function (event) {
 			// This event is fired when the marker icon was clicked.
