@@ -77,6 +77,7 @@ class RenshuuAuth
 			if ($openid->validate())
 			{
 				$_SESSION['email'] = $attr['contact/email'];
+				$_SESSION['username'] = $attr['namePerson/first'] . ' ' . $attr['namePerson/last'];
 				$_SESSION['identity'] = $openid->identity;
 				
 				// Check if the email has already existing access rights
@@ -94,6 +95,13 @@ class RenshuuAuth
 				else
 				{
 					// Insert
+					$sql = 'INSERT INTO renshuu_user (title, email, identity, modified, access) VALUES (\'' . 
+						$attr['namePerson/first'] . ' ' . $attr['namePerson/last'] . '\', \'' . 
+						$attr['contact/email'] . '\', \'' . $openid->identity . '\', ' . time() . ', 1)';
+					$run = $this->pdo->query($sql);
+					$_SESSION['access'] = 1;
+					
+					// Should you send an email telling about new user?
 				}
 			}
 

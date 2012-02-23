@@ -65,7 +65,8 @@ CREATE TABLE IF NOT EXISTS renshuu_user (
   id mediumint(6) unsigned NOT NULL AUTO_INCREMENT,
   email varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   title varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  modified int(11) unsigned NOT NULL DEFAULT '0',
+  identity varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'OpenID identity, might be something else than email',
+  modified int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Last modification of any value in this row',
   access smallint(4) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
 );

@@ -37,7 +37,7 @@ class RenshuuSuruToki extends RenshuuBase
 	 */
 	public $styles = array(
 		'common.css',
-		//'public.css',
+		'public.css',
 		'main.css'
 	);
 
@@ -165,6 +165,7 @@ class RenshuuSuruToki extends RenshuuBase
 		{
 			$auth->goToProvider();
 		}
+		exit(); // does not need to continue...
     }
 
 	/**
@@ -227,7 +228,7 @@ class RenshuuSuruToki extends RenshuuBase
 			{
 				$list .= '<li>';
 				$list .= '<a href="/login/' . $type . '" title="' . $item['title'] . '" class="' . $type . '">';
-				$list .= '<img src="/img/hand-drawn-social/' . $type . '-64x64.png" alt="' . $item['title'] . '" />';
+				$list .= '<img src="/img/handycons2/' . $type . '-64x64.png" alt="' . $item['title'] . '" />';
 				$list .= '</a>';
 				$list .= '</li>';
 			}
