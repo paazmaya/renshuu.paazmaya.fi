@@ -11,10 +11,10 @@ $cf['isdevserver'] = false;
 $cf['now'] = strval(time());
 
 // Current version of this web site project. 
-$cf['version'] = '0.8.20111206';
+$cf['version'] = '0.8.20120223';
 
 // PHP error log
-$cf['error_log'] = '/domains/php_renshuu.log';
+$cf['error_log'] = '/domains/renshuu.php.log';
 
 // Session validity referer check
 $cf['referer_check'] = 'renshuu.paazmaya.com';

@@ -40,7 +40,7 @@ php_value arg_separator.output "&amp;"
 
 php_flag log_errors 1
 php_flag html_errors 0
-php_value error_log "../php_renshuu.log"
+php_value error_log "../renshuu.php.log"
 
 # longer session, default 1440 seconds = 24 min, 86400 sec = 24 h
 php_value session.gc_maxlifetime 86400

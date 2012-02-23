@@ -1,5 +1,0 @@
-[10-Feb-2012 07:02:23] PHP Parse error:  syntax error, unexpected ']', expecting ')' in /stuff/www/renshuu.paazmaya.com/libs/RenshuuBase.php on line 170
-[10-Feb-2012 07:02:23] PHP Stack trace:
-[10-Feb-2012 07:02:23] PHP   1. {main}() /stuff/www/renshuu.paazmaya.com/public_html/index.php:0
-[10-Feb-2012 07:02:23] PHP   2. require() /stuff/www/renshuu.paazmaya.com/public_html/index.php:53
-[15-Feb-2012 06:59:34] PHP Parse error:  syntax error, unexpected T_PRIVATE in /stuff/www/renshuu.paazmaya.com/public_html/index.php on line 78
