@@ -32,7 +32,7 @@ Javascript libraries that are used in this project are:
 PHP libraries are:
 
 * minify (http://code.google.com/p/minify/)
-* LightOpenID ()
+* LightOpenID (https://gitorious.org/lightopenid/lightopenid)
 * PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
 
 TODO
