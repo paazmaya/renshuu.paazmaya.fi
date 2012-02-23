@@ -6,9 +6,9 @@ RENSHUU.PAAZMAYA.COM
 A tool for creating .MO files from .PO.
 */
 
-require './config.php';
-require './functions.php';
-require $cf['libdir'] . 'Pepipopum.php';
+$cf = array();
+$cf['gettextdomain'] = 'renshuuSuruToki';
+$cf['localedir'] = '../locale';
 
 header('Content-type: text/plain; charset=utf-8');
 
