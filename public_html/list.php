@@ -13,7 +13,6 @@ http://code.google.com/apis/maps/documentation/staticmaps/
 */
 
 require './config.php';
-require './functions.php';
 require './locale.php';
 
 header('Content-type: text/html; charset=utf-8');
@@ -49,7 +48,7 @@ $gmapoptions = array(
 // 0. Get the export settings
 // If not logged in, check "public" boolean...
 $options = array();
-$sql = 'SELECT * FROM ren_export WHERE id = ' . $id;
+$sql = 'SELECT * FROM renshuu_export WHERE id = ' . $id;
 $run =  $this->pdo->query($sql);
 if ($run)
 {

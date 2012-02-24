@@ -4,7 +4,7 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require 'RenshuuBase.php';
+require_once 'RenshuuBase.php';
 
 class RenshuuSuruToki extends RenshuuBase
 {
@@ -14,7 +14,6 @@ class RenshuuSuruToki extends RenshuuBase
 	 */
 	public $scripts = array(
 		'jquery.js', // 1.7.1 (2011-11-03), http://jquery.com/
-
 		'jsrender.js', // JsRender v1.0pre (2011-11-13), https://github.com/BorisMoore/jsrender
 
 		'jquery.outerhtml.js', //
@@ -23,7 +22,7 @@ class RenshuuSuruToki extends RenshuuBase
 
 		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
 
-		'jquery.clickoutside.js', // (2010-02-17), http://www.stoimen.com/blog/2010/02/17/clickoutside-jquery-plugin/
+		'jquery.cantipi.js', //
 
 		'renshuu-map.js',
 		'renshuu-markers.js',
@@ -64,8 +63,6 @@ class RenshuuSuruToki extends RenshuuBase
 		parent::__construct($config, $lang);
 
 		header('Content-type: text/html; charset=utf-8');
-
-		$this->templateDir = realpath(__DIR__ . '/../templates') . '/';
 
 		$this->removeUnwantedUrl();
 
@@ -152,12 +149,12 @@ class RenshuuSuruToki extends RenshuuBase
      */
     private function authenticateLogin($provider)
     {
-		require 'RenshuuAuth.php';
+		require_once 'RenshuuAuth.php';
 
 		$auth = new RenshuuAuth($this->config, $this->pdo, $this->lang);
 		$auth->provider = $provider;
 
-        if (isset($getted['openid_mode']))
+        if (isset($this->getted['openid_mode']))
         {
 			$auth->returningProvider();
 		}

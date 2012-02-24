@@ -5,8 +5,6 @@
 RewriteEngine on
 RewriteBase /
 
-RewriteRule ^(ajax/.*)$ ajax.php?page=$1 [L,QSA]
-RewriteRule ^(auth/.*)$ auth.php?page=$1 [L,QSA]
 RewriteRule ^(export/.*)$ list.php?page=$1 [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -36,42 +34,42 @@ AddType text/cache-manifest .appcache
 AddCharset utf-8 .css .js .xml .json .rss .atom
 
 # make markup strict
-php_value arg_separator.output "&amp;"
+##php_value arg_separator.output "&amp;"
 
-php_flag log_errors 1
-php_flag html_errors 0
-php_value error_log "../renshuu.php.log"
+#php_flag log_errors 1
+#php_flag html_errors 0
+##php_value error_log "../renshuu.php.log"
 
 # longer session, default 1440 seconds = 24 min, 86400 sec = 24 h
-php_value session.gc_maxlifetime 86400
+#php_value session.gc_maxlifetime 86400
 # default 180 minutes
-php_value session.cache_expire 1440
-php_value session.cookie_lifetime 86400
+#php_value session.cache_expire 1440
+#php_value session.cookie_lifetime 86400
 
 php_flag session.use_trans_sid 0
 php_flag session.use_only_cookies 1
-php_value session.name "RE"
+#php_value session.name "RE"
 
 # 日本標準時
-php_value date.timezone "Asia/Tokyo"
-php_value date.default_latitude "35.700556"
-php_value date.default_longitude "139.715"
+#php_value date.timezone "Asia/Tokyo"
+#php_value date.default_latitude "35.700556"
+#php_value date.default_longitude "139.715"
 
-php_value default_charset "UTF-8"
+#php_value default_charset "UTF-8"
 #php_admin_value mail.log "../renshuu.mail.log"
 
 # Defaults to 128M in 5.3, 16M in 5.2
-php_value memory_limit "256M"
-php_value sendmail_from "renshuu@paazmaya.com"
+#php_value memory_limit "256M"
+#php_value sendmail_from "renshuu@paazmaya.com"
 
 # Correct encoding for the multibyte operations
-php_value mbstring.internal_encoding "UTF-8"
+#php_value mbstring.internal_encoding "UTF-8"
 
 # User agent string that is sent while fetching data
-php_value user_agent "RenshuuSuruToki 0.8.429"
+#php_value user_agent "RenshuuSuruToki 0.8.20120223"
 
 
-php_value iconv.input_encoding "UTF-8"
-php_value iconv.internal_encoding "UTF-8"
-php_value iconv.output_encoding "UTF-8"
+#php_value iconv.input_encoding "UTF-8"
+#php_value iconv.internal_encoding "UTF-8"
+#php_value iconv.output_encoding "UTF-8"
 

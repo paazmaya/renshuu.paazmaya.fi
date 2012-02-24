@@ -50,24 +50,34 @@ Access to any non / url will be checked against a weekday or an art string,
 and in case matched, redirected to that prepended with a hash (#).
 
 */
-require '../libs/RenshuuSuruToki.php';
-require './config.php';
-require './locale.php';
+require_once './config.php';
+require_once './locale.php';
+require_once $cf['libdir'] . '/RenshuuSuruToki.php';
+require_once $cf['libdir'] . '/RenshuuAjax.php';
 
 
-$renshuu = new RenshuuSuruToki($cf, $lang);
-$renshuu->htmlDir = __DIR__;
-$renshuu->lang = $lang;
-echo $renshuu->createHead();
-if ($_SESSION['access'] > 0)
+if (isset($_GET['page']) && substr($_GET['page'], 0, 4) == 'ajax')
 {
-	echo $renshuu->createBodyLoggedin();
+	// Output is handled by the constructor.
+	$ajax = new RenshuuAjax($cf, $lang);
 }
 else
 {
-	echo $renshuu->createBodyPublic();
+	$renshuu = new RenshuuSuruToki($cf, $lang);
+	$renshuu->htmlDir = __DIR__;
+	$renshuu->templateDir = $cf['libdir'] . '/../templates' . '/';
+	$renshuu->lang = $lang;
+	echo $renshuu->createHead();
+	if ($_SESSION['access'] > 0)
+	{
+		echo $renshuu->createBodyLoggedin();
+	}
+	else
+	{
+		echo $renshuu->createBodyPublic();
+	}
 }
-
+	
 // -----
 /*
 echo '<pre>SESSION ';

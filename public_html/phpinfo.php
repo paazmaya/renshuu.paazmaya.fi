@@ -4,7 +4,7 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once './config.php';
+require './config.php';
 header('Content-type: text/html; charset=utf-8');
 
 phpinfo();
