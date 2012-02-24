@@ -55,8 +55,7 @@ class RenshuuAuth
 		$openid->returnUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/login/' . $this->provider;
 		$openid->required = array(
 			'contact/email',
-			'namePerson/first',
-			'namePerson/last'
+			'namePerson'
 		);
 		$openid->identity = $provider['href'];
 
@@ -77,7 +76,7 @@ class RenshuuAuth
 			if ($openid->validate())
 			{
 				$_SESSION['email'] = $attr['contact/email'];
-				$_SESSION['username'] = $attr['namePerson/first'] . ' ' . $attr['namePerson/last'];
+				$_SESSION['username'] = $attr['namePerson'];
 				$_SESSION['identity'] = $openid->identity;
 				
 				// Check if the email has already existing access rights
@@ -96,7 +95,7 @@ class RenshuuAuth
 				{
 					// Insert
 					$sql = 'INSERT INTO renshuu_user (title, email, identity, modified, access) VALUES (\'' . 
-						$attr['namePerson/first'] . ' ' . $attr['namePerson/last'] . '\', \'' . 
+						$attr['namePerson'] . '\', \'' . 
 						$attr['contact/email'] . '\', \'' . $openid->identity . '\', ' . time() . ', 1)';
 					$run = $this->pdo->query($sql);
 					$_SESSION['access'] = 1;
