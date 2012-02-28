@@ -219,6 +219,10 @@ class RenshuuHelper
 				{
 					$out .= '<select ';
 				}
+				else if ($item['type'] == 'textarea')
+				{
+					$out .= '<textarea ';
+				}
 				else
 				{
 					$out .= '<input type="' . $item['type'] . '" ';
@@ -228,6 +232,28 @@ class RenshuuHelper
 				if (isset($item['class']) && $item['class'] != '')
 				{
 					$out .= ' class="' . $item['class'] . '"';
+				}
+				
+				if (isset($item['disabled']) && $item['disabled'])
+				{
+					$out .= ' disabled="disabled"';
+				}
+
+				// http://developers.whatwg.org/common-input-element-attributes.html#the-placeholder-attribute
+				if (isset($item['placeholder']) && $item['placeholder'] != '')
+				{
+					$out .= ' placeholder="' . $item['placeholder'] . '"';
+				}
+
+				// http://developers.whatwg.org/common-input-element-attributes.html#attr-input-required
+				if (isset($item['required']) && $item['required'])
+				{
+					$out .= ' required="required"';
+				}
+				
+				if (isset($item['autofocus']) && $item['autofocus'])
+				{
+					$out .= ' autofocus="autofocus"';
 				}
 
 				if ($item['type'] == 'select')
@@ -254,32 +280,21 @@ class RenshuuHelper
 					}
 					$out .= '</select>';
 				}
-				else
+				else if ($item['type'] == 'textarea')
 				{
-					if (isset($item['disabled']) && $item['disabled'])
-					{
-						$out .= ' disabled="disabled"';
-					}
-
-					// http://developers.whatwg.org/common-input-element-attributes.html#the-placeholder-attribute
-					if (isset($item['placeholder']) && $item['placeholder'] != '')
-					{
-						$out .= ' placeholder="' . $item['placeholder'] . '"';
-					}
-
-					// http://developers.whatwg.org/common-input-element-attributes.html#attr-input-required
-					if (isset($item['required']) && $item['required'])
-					{
-						$out .= ' required="required"';
-					}
+					$out .= '>';
 
 					if (isset($item['value']) && $item['value'] != '')
 					{
-						$out .= ' value="' . $item['value'] . '"';
+						$out .= $item['value'];
 					}
-					if (isset($item['autofocus']) && $item['autofocus'])
+					$out .= '</textarea>';
+				}
+				else
+				{
+					if (isset($item['value']) && $item['value'] != '')
 					{
-						$out .= ' autofocus="autofocus"';
+						$out .= ' value="' . $item['value'] . '"';
 					}
 					
 					// Remember to define the given listat the bottom

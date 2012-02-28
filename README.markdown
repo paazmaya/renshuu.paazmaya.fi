@@ -49,3 +49,5 @@ References
 * Overcoming shebang (#!) without Javascript (http://www.bigspaceship.com/blog/labs/overcoming-shebang-without-javascript)
 * How to detect a Ajax request? `$_SERVER['HTTP_X_REQUESTED_WITH']` (http://codeigniter.com/forums/viewthread/59450/)
 * Font-Embedding Icons: This Is a Big Deal (http://somerandomdude.com/articles/design-technology/font-embedding-icons/)
+* Google Maps API v3, Per-User Limit is 1.0 requests/second/user
+
