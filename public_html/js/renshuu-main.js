@@ -93,7 +93,7 @@ var renshuuMain = {
 	 * Please trigger this once document is ready, thus DOM has been loaded.
 	 */
 	ready: function () {
-		var data = $('body').data();
+		var data = $.data('body');
 		renshuuMain.userEmail = data.email;
 		renshuuMain.userName = data.username;
 		

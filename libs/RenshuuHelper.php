@@ -177,7 +177,13 @@ class RenshuuHelper
 			$action = '/ajax/set/' . $id;
 		}
 
-		$out = '<form id="' . $id . '_form" action="' . $action . '" method="post" data-ref="0" data-key="insert">';
+		$out = '<form id="' . $id . '_form" action="' . $action . '" method="post" data-ref="0" data-key="insert"';
+		if (isset($data['enctype']) && $data['enctype'] != '')
+		{
+			$out .= ' enctype="' . $data['enctype'] . '"';
+		}
+		$out .= '>';
+		
 		$out .= '<fieldset>';
 		if (isset($data['legend']) && $data['legend'] != '')
 		{
@@ -297,6 +303,11 @@ class RenshuuHelper
 						$out .= ' value="' . $item['value'] . '"';
 					}
 					
+					if (isset($item['checked']) && $item['checked'])
+					{
+						$out .= ' checked="checked"';
+					}
+					
 					// Remember to define the given listat the bottom
 					if (isset($item['list']) && $item['list'] != '')
 					{
@@ -396,6 +407,10 @@ class RenshuuHelper
 		{
 			$out .= ' id="' . $data['id'] . '"';
 		}
+		if (isset($data['class']) && $data['class'] != '')
+		{
+			$out .= ' class="' . $data['class'] . '"';
+		}
 		if (isset($data['summary']) && $data['summary'] != '')
 		{
 			$out .= ' summary="' . $data['summary'] . '"';
@@ -410,7 +425,7 @@ class RenshuuHelper
 			$out .= '<thead><tr>';
 			foreach ($data['thead'] as $td)
 			{
-				$out .= '<th>' . $td . '</th>';
+				$out .= '<th title="' . $td . '">' . $td . '</th>';
 			}
 			$out .= '</tr></thead>';
 		}
@@ -425,12 +440,17 @@ class RenshuuHelper
 		}
 		if (isset($data['tbody']) && is_array($data['tbody']))
 		{
-			$out .= '<tbody><tr>';
-			foreach ($data['tbody'] as $td)
+			$out .= '<tbody>';
+			foreach ($data['tbody'] as $tr)
 			{
-				$out .= '<td>' . $td . '</td>';
+				$out .= '<tr>';
+				foreach ($tr as $td)
+				{
+					$out .= '<td>' . $td . '</td>';
+				}
+				$out .= '</tr>';
 			}
-			$out .= '</tr></tbody>';
+			$out .= '</tbody>';
 		}
 		$out .= '</table>';
 
