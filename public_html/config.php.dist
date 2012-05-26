@@ -20,7 +20,7 @@ $cf['error_log'] = '/domains/renshuu.php.log';
 $cf['referer_check'] = 'renshuu.paazmaya.com';
 
 // PHP libraries
-$cf['libdir'] = '../../libs/';
+$cf['libdir'] = '../../renshuu-libs/';
 
 / Google Maps API version
 // http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog

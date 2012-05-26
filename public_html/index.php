@@ -51,9 +51,9 @@ and in case matched, redirected to that prepended with a hash (#).
 
 */
 require_once './config.php';
-require_once 'locale.php';
-require_once $cf['libdir'] . '/RenshuuSuruToki.php';
-require_once $cf['libdir'] . '/RenshuuAjax.php';
+require_once './locale.php';
+require_once $cf['libdir'] . 'RenshuuSuruToki.php';
+require_once $cf['libdir'] . 'RenshuuAjax.php';
 
 
 if (isset($_GET['page']) && substr($_GET['page'], 0, 4) == 'ajax')

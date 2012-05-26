@@ -572,7 +572,6 @@ class RenshuuSuruToki extends RenshuuBase
 		$fail = false;
 		if ($type == 'js')
 		{
-			//require_once $this->config['libdir'] . 'jsmin.php';
 			require_once $this->config['libdir'] . 'minify/Minify/JS/ClosureCompiler.php';
 		}
 		else if ($type == 'css')

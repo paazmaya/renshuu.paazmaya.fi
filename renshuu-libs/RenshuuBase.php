@@ -208,7 +208,7 @@ class RenshuuBase
 		{
 			$_SESSION['lang'] = 'en';
 			$_SESSION['access'] = 0;
-			$_SESSION['browser'] = sha1($_SERVER['HTTP_USER_AGENT'] . session_id());
+			$_SESSION['browser'] = sha1((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : time()) . session_id());
 			$_SESSION['username'] = '';
 			$_SESSION['email'] = '';
 		}
