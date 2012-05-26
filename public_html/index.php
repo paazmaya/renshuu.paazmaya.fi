@@ -51,7 +51,7 @@ and in case matched, redirected to that prepended with a hash (#).
 
 */
 require_once './config.php';
-require_once './locale.php';
+require_once 'locale.php';
 require_once $cf['libdir'] . '/RenshuuSuruToki.php';
 require_once $cf['libdir'] . '/RenshuuAjax.php';
 
