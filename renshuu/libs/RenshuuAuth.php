@@ -4,7 +4,7 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once 'LightOpenID.php';
+require_once $cf['renshuubase'] . 'libs/LightOpenID.php';
 
 /**
  * Handle authentication without any output, just redirection.

@@ -4,7 +4,7 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once 'RenshuuBase.php';
+require_once $cf['renshuubase'] . 'libs/RenshuuBase.php';
 
 class RenshuuSuruToki extends RenshuuBase
 {
@@ -149,7 +149,7 @@ class RenshuuSuruToki extends RenshuuBase
      */
     private function authenticateLogin($provider)
     {
-		require_once 'RenshuuAuth.php';
+		require_once $cf['renshuubase'] . 'libs/RenshuuAuth.php';
 
 		$auth = new RenshuuAuth($this->config, $this->pdo, $this->lang);
 		$auth->provider = $provider;
@@ -439,7 +439,7 @@ class RenshuuSuruToki extends RenshuuBase
 	 */
 	public function sendEmail($toMail, $toName, $subject, $message)
 	{
-		require_once $this->config['libdir'] . 'phpmailer/class.phpmailer.php';
+		require_once $this->config['renshuubase'] . 'libs/phpmailer/class.phpmailer.php';
 
 		$mail = new PHPMailer();
 
@@ -572,11 +572,11 @@ class RenshuuSuruToki extends RenshuuBase
 		$fail = false;
 		if ($type == 'js')
 		{
-			require_once $this->config['libdir'] . 'minify/Minify/JS/ClosureCompiler.php';
+			require_once $this->config['renshuubase'] . 'libs/minify/Minify/JS/ClosureCompiler.php';
 		}
 		else if ($type == 'css')
 		{
-			require_once $this->config['libdir'] . 'minify/Minify/CSS/Compressor.php';
+			require_once $this->config['renshuubase'] . 'libs/minify/Minify/CSS/Compressor.php';
 		}
 		else
 		{

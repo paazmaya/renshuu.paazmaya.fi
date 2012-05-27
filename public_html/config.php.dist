@@ -19,19 +19,18 @@ $cf['error_log'] = '/domains/renshuu.php.log';
 // Session validity referer check
 $cf['referer_check'] = 'renshuu.paazmaya.com';
 
-// PHP libraries
-$cf['libdir'] = '../../renshuu-libs/';
+// Base for locale, libs and templates
+$cf['renshuubase'] = realpath(__DIR__ . '/../renshuu') . '/';
 
 / Google Maps API version
 // http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog
-$cf['gmapsver'] = '3.7'; // 3.7 was released 2011-11-07
+$cf['gmapsver'] = '3.9'; // 3.9 was released 2012-05-15
 
 //http://code.google.com/apis/maps/documentation/javascript/tutorial.html
 $cf['gmapskey'] = '';
 
 // Translations
 $cf['gettextdomain'] = 'renshuuSuruToki';
-$cf['localedir'] = '../../locale';
 
 // Languages supported
 $cf['languages'] = array(
@@ -114,6 +113,3 @@ date_default_timezone_set($cf['timezone']);
 
 // Correct encoding for the multibyte operations
 mb_internal_encoding('UTF-8');
-
-// Include path update so the tools are internally found.
-set_include_path(realpath($cf['libdir']));

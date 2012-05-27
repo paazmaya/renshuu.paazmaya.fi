@@ -4,7 +4,7 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once 'RenshuuHelper.php';
+require_once $cf['renshuubase'] . 'libs/RenshuuHelper.php';
 
 
 /**
@@ -247,7 +247,7 @@ class RenshuuBase
 			$_SESSION['lang']
 		);
 		setlocale(LC_ALL, $locales);
-		bindtextdomain(self::GT_DOMAIN, $this->config['localedir']);
+		bindtextdomain(self::GT_DOMAIN, $this->config['renshuubase'] . 'locale/');
 		bind_textdomain_codeset(self::GT_DOMAIN, 'UTF-8');
 		textdomain(self::GT_DOMAIN);
 	}
