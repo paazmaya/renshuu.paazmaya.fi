@@ -4,7 +4,6 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once $cf['renshuubase'] . 'libs/RenshuuHelper.php';
 
 
 /**

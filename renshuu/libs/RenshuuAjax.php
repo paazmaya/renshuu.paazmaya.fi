@@ -74,7 +74,6 @@ http://creativecommons.org/licenses/by-nc-sa/3.0/
 * Weekdays are zero indexed, starting from Sunday as in the Japanese calendar.
 */
 
-require_once $cf['renshuubase'] . 'libs/RenshuuBase.php';
 
 /**
  * Handle everything that is called via AJAX

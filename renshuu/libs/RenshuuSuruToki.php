@@ -4,7 +4,6 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once $cf['renshuubase'] . 'libs/RenshuuBase.php';
 
 class RenshuuSuruToki extends RenshuuBase
 {
@@ -149,7 +148,7 @@ class RenshuuSuruToki extends RenshuuBase
      */
     private function authenticateLogin($provider)
     {
-		require_once $cf['renshuubase'] . 'libs/RenshuuAuth.php';
+		require_once $this->config['renshuubase'] . 'libs/RenshuuAuth.php';
 
 		$auth = new RenshuuAuth($this->config, $this->pdo, $this->lang);
 		$auth->provider = $provider;

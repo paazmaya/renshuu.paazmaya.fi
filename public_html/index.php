@@ -52,6 +52,9 @@ and in case matched, redirected to that prepended with a hash (#).
 */
 require_once './config.php';
 require_once './locale.php';
+require_once $cf['renshuubase'] . 'libs/LightOpenID.php';
+require_once $cf['renshuubase'] . 'libs/RenshuuHelper.php';
+require_once $cf['renshuubase'] . 'libs/RenshuuBase.php';
 require_once $cf['renshuubase'] . 'libs/RenshuuSuruToki.php';
 require_once $cf['renshuubase'] . 'libs/RenshuuAjax.php';
 

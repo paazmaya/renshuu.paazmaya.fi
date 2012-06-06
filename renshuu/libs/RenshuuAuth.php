@@ -4,7 +4,6 @@ RENSHUU.PAAZMAYA.COM
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 *******************/
 
-require_once $cf['renshuubase'] . 'libs/LightOpenID.php';
 
 /**
  * Handle authentication without any output, just redirection.
@@ -76,7 +75,10 @@ class RenshuuAuth
 			if ($openid->validate())
 			{
 				$_SESSION['email'] = $attr['contact/email'];
-				$_SESSION['username'] = $attr['namePerson'];
+				
+				// Not always set, specially Google, even if required...
+				$_SESSION['username'] = isset($attr['namePerson']) ? $attr['namePerson'] : $attr['contact/email'];
+				
 				$_SESSION['identity'] = $openid->identity;
 				
 				// Check if the email has already existing access rights
