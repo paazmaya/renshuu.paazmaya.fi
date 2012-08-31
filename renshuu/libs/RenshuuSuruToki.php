@@ -12,14 +12,14 @@ class RenshuuSuruToki extends RenshuuBase
 	 * Local javascript files should reside in public_html/js/..
 	 */
 	public $scripts = array(
-		'jquery.js', // 1.7.2 (2013-04-), http://jquery.com/
-		'jsrender.js', // JsRender v1.0pre (2012-05-12), https://github.com/BorisMoore/jsrender
+		'jquery.js', // 1.8.1 (2012-08-30), http://jquery.com/
+		'jsrender.js', // JsRender v1.0pre (2012-08-04), https://github.com/BorisMoore/jsrender
 
 		'jquery.outerhtml.js', //
 
 		'jquery.inputnotes-0.6.js', // 0.6 ()
 
-		'jquery.blockUI.js', // 2.39 (2011-05-23), http://malsup.com/jquery/block/
+		'jquery.blockUI.js', // 2.43 (2012-07-29), http://malsup.com/jquery/block/
 
 		'jquery.cantipi.js', //
 

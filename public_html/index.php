@@ -70,7 +70,9 @@ else
 	$renshuu->htmlDir = __DIR__;
 	$renshuu->templateDir = $cf['renshuubase'] . 'templates/';
 	$renshuu->lang = $lang;
+	
 	echo $renshuu->createHead();
+	
 	if ($_SESSION['access'] > 0)
 	{
 		echo $renshuu->createBodyLoggedin();
