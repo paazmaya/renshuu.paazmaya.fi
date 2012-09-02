@@ -557,7 +557,7 @@ $lang['navigation'] = array(
 			'title' => gettext('Saved Trainings'),
 			'text' => gettext('saved'),
 			'image' => 'save.png',
-			'access' => 2
+			'access' => 4
 		)
 	),
 	'forms' => array(
@@ -589,7 +589,7 @@ $lang['navigation'] = array(
 			'title' => gettext('Profile editing'),
 			'text' => gettext('profile'),
 			'image' => 'user.png',
-			'access' => 4
+			'access' => 2
 		)
 	)
 );

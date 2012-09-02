@@ -126,9 +126,11 @@ var renshuuMap = {
 		});
 
 		// jsrender templating
-		$.views.registerHelpers({
+		$.views.helpers({
 			deg2dms: renshuuMap.deg2dms
 		});
+
+
 	},
 	
 	
