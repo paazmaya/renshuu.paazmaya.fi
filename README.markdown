@@ -10,6 +10,8 @@ This code is used to run the site available at renshuu.paazmaya.com, which offer
 Screenshots
 -----------
 
+Login page with three different icon sets.
+
 ![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.hand-drawn-social.jpg)
 
 ![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.handycons2.jpg)
@@ -25,9 +27,9 @@ Javascript application logic files are all prefixed with `renshuu-`, of which `m
 Javascript libraries that are used in this project are:
 
 * Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
-* jQuery 1.7.1 (http://jquery.com)
-* jQuery blockUI 2.39 (http://malsup.com/jquery/block/)
-* JsRender 1.0pre (https://github.com/BorisMoore/jsrender)
+* jQuery 1.8.1 (http://jquery.com)
+* jQuery blockUI 2.42 (http://malsup.com/jquery/block/)
+* JsRender recent Github version (https://github.com/BorisMoore/jsrender)
 
 PHP libraries are:
 
@@ -40,7 +42,7 @@ TODO
 
 * Markup *should* be completely valid HTML5 and CSS3 for styling.
 * SQL table creation script is only compatible with MySQL...
-
+* Compare Nokia Maps with Google Maps. Is it worth the effort to make them switchable?
 
 References
 ----------
