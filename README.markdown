@@ -33,8 +33,8 @@ Javascript libraries that are used in this project are:
 
 PHP libraries are:
 
-* minify (http://code.google.com/p/minify/)
-* LightOpenID (https://gitorious.org/lightopenid/lightopenid)
+* minify 2.1.5 (http://code.google.com/p/minify/)
+* LightOpenID 2011-08-17 (https://gitorious.org/lightopenid/lightopenid)
 * PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
 
 TODO
@@ -42,7 +42,7 @@ TODO
 
 * Markup *should* be completely valid HTML5 and CSS3 for styling.
 * SQL table creation script is only compatible with MySQL...
-* Compare Nokia Maps with Google Maps. Is it worth the effort to make them switchable?
+* Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable?
 
 References
 ----------
