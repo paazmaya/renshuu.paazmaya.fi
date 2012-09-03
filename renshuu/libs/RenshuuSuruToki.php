@@ -121,12 +121,6 @@ class RenshuuSuruToki extends RenshuuBase
 				{
 					$this->authenticateLogin($url['1']); // service provider
 				}
-				else if ($url['0'] == 'logout')
-				{
-					$_SESSION['username'] = '';
-					$_SESSION['email'] = '';
-					$_SESSION['access'] = 0;
-				}
 				else if ($url['0'] == 'lang' && array_key_exists($url['1'], $this->config['languages']))
 				{
 					$_SESSION['lang'] = $url['1'];
@@ -135,6 +129,12 @@ class RenshuuSuruToki extends RenshuuBase
 				{
 					header('HTTP/1.1 301 Moved Permanently');
 				}
+			}
+			else if ($url['0'] == 'logout')
+			{
+				$_SESSION['username'] = '';
+				$_SESSION['email'] = '';
+				$_SESSION['access'] = 0;
 			}
 			else
 			{
