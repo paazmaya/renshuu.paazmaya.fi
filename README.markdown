@@ -7,6 +7,24 @@ A training timetable
 
 This code is used to run the site available at renshuu.paazmaya.com, which offers an easy way to build a training timetable within the Japanese martial arts.
 
+The purpose oof this project is to create a site that enables its users to find and create martial art training sessions at different locations, and then combine these as a training schedule.
+It will try to calculate the time needed to travel in between each training location and finally allow to print a list of them.
+
+Initially I started to build this in the end of the Summer 2010, once I had returned from my first training adventure in Japan that took for one month.
+
+Despite the fact that this project is incomplete, I have done already another similar trip, for a bit over two months in the Summer 2011.
+
+Technical logic
+---------------
+
+* User logs in via OAuth provider
+* User searches for available trainings of the selected martial arts in the view area of the map
+* User can add new training location with training time table to the map
+* User can choose a training session to be added in users list of trainings
+* Once user has more than one training session in the list, distance calculation occurs
+* User can use export settings to 
+
+
 Screenshots
 -----------
 
