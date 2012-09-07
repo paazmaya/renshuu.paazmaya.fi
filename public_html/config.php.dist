@@ -28,6 +28,7 @@ $cf['gmapsver'] = '3.9'; // 3.9 was released 2012-05-15
 
 //http://code.google.com/apis/maps/documentation/javascript/tutorial.html
 $cf['gmapskey'] = '';
+$cf['streetview_enabled'] = false;
 
 // Translations
 $cf['gettextdomain'] = 'renshuuSuruToki';

@@ -96,6 +96,7 @@ var renshuuMain = {
 		var data = $('body').data();
 		renshuuMain.userEmail = data.email;
 		renshuuMain.userName = data.username;
+		renshuuMap.streetViewEnabled = data.streetViewEnabled;
 		
 		console.group('ready');
 		if (typeof(localStorage) == 'undefined' ) {
@@ -334,7 +335,7 @@ var renshuuMain = {
 			
 			console.log('locationMarker is now visible: ' + renshuuMarkers.locationMarker.getVisible());
 		}
-		if (key == 'street') {
+		if (key == 'street' && renshuuMap.streetViewEnabled) {
 			renshuuMap.streetView.setVisible(true);
 		}
 	},

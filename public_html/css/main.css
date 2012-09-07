@@ -1,10 +1,3 @@
-
-/** media queries for different screen sizes **/
-@import "red.css" (min-width: 400px);
-@import "green.css" (min-width: 600px);
-@import "blue.css" (min-width: 800px);
-
-
 label, .label {
 	display: block;
 }

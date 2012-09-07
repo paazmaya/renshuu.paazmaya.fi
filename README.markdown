@@ -22,7 +22,7 @@ Technical logic
 * User can add new training location with training time table to the map
 * User can choose a training session to be added in users list of trainings
 * Once user has more than one training session in the list, distance calculation occurs
-* User can use export settings to 
+* User can use export settings to change the static map layout which will be for each location in the printable output
 
 
 Screenshots

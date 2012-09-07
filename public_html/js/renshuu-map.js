@@ -59,6 +59,11 @@ var renshuuMap = {
 	 * http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewPanorama
 	 */
 	streetView: null,
+	
+	/**
+	 * Should the Google StreetView be enabled?
+	 */
+	streetViewEnabled: false,
 
 	/**
 	 * google.maps.StreetViewService
@@ -120,10 +125,12 @@ var renshuuMap = {
 		renshuuMap.mapInit($('#map').get(0));
 		
 		// and the Street View
-		renshuuMap.streetInit($('#street').get(0), {
-			enableCloseButton: false,
-			visible: false
-		});
+		if (renshuuMap.streetViewEnabled) {
+			renshuuMap.streetInit($('#street').get(0), {
+				enableCloseButton: false,
+				visible: false
+			});
+		}
 
 		// jsrender templating
 		$.views.helpers({
@@ -585,20 +592,4 @@ var renshuuMap = {
 	
 	
 };
- 
- 
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+

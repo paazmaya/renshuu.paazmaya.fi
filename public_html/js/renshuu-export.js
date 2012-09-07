@@ -3,7 +3,6 @@
  */
 var renshuuExport = {
 	
-
 	
 	init: function () {
 		
@@ -52,3 +51,4 @@ var renshuuExport = {
 		console.groupEnd();
 	}
 };
+

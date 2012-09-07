@@ -298,6 +298,8 @@ class RenshuuSuruToki extends RenshuuBase
 			'user_name' => $_SESSION['username'],
 			'user_logout' => gettext('logout'),
 			'show_trainings' => gettext('show training markers'),
+			
+			'streetview_enabled_setting' => ($this->config['streetview_enabled'] ? '1' : '0'),
 
 			'left_navigation' => $this->helper->createNavigation($this->lang['navigation']['left'], $_SESSION['access']),
 			'forms_navigation' => $this->helper->createNavigation($this->lang['navigation']['forms'], $_SESSION['access']),
