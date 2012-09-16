@@ -175,6 +175,7 @@ var renshuuForms = {
 			// add to the map
 		}
 		else if (data.type == 'profile') {
+			// Profile updated at _time_
 		}
 
 		$('#formfeedback').attr('class', 'icon icon-alert');
