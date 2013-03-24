@@ -56,6 +56,9 @@ legend {
 fieldset {
 	border: 1px solid #05050D;
 }
+template { 
+	display: none; 
+}
 
 address {
 	font-size: 85%;
