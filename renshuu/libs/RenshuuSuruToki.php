@@ -292,6 +292,10 @@ class RenshuuSuruToki extends RenshuuBase
 			<p>RenshuuSuruToki version ' . self::VERSION . '</p>
 			</div>';
 
+		if (!$this->config['streetview_enabled'])
+		{
+			unset($this->lang['navigation']['left']['street']);
+		}
 
 		$list = array(
 			'user_email' => $_SESSION['email'],
