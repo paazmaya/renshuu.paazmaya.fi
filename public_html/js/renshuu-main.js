@@ -114,23 +114,23 @@ var renshuuMain = {
 		var tabForms = localStorage.getItem('tabForms');
 		var showTrainings = localStorage.getItem('showTrainings');
 		
-		if (filterArts !== null) {
+		if (typeof filterArts !== 'undefined') {
 			renshuuMain.filterSettings.arts = filterArts.split('.');
 			console.log('filterArts storage item existed. renshuuMain.filterSettings.arts: ' + renshuuMain.filterSettings.arts);
 		}
-		if (filterWeekdays !== null) {
+		if (typeof filterWeekdays !== 'undefined') {
 			renshuuMain.filterSettings.weekdays = filterWeekdays.split('.');
 			console.log('filterWeekdays storage item existed. renshuuMain.filterSettings.weekdays: ' + renshuuMain.filterSettings.weekdays);
 		}
-		if (tabLeft !== null) {
+		if (typeof tabLeft !== 'undefined') {
 			console.log('tabLeft : ' + tabLeft);
 			renshuuMain.showTabContent($('#left .icon-list a[href="#' + tabLeft + '"]'));
 		}
-		if (tabForms !== null) {
+		if (typeof tabForms !== 'undefined') {
 			console.log('tabForms : ' + tabForms);
 			renshuuMain.showTabContent($('#forms .icon-list a[href="#' + tabForms + '"]'));
 		}
-		if (showTrainings !== null) {
+		if (typeof showTrainings !== 'undefined') {
 			console.log('showTrainings : ' + showTrainings);
 			renshuuMain.showTrainings = parseInt(showTrainings) == 1 ? true : false;
 			$('#session input:checkbox').attr('checked', (renshuuMain.showTrainings ? 'checked' : null));
@@ -381,7 +381,7 @@ var renshuuMain = {
 			// Now add it to DOM... Should this be made as a table or a list? table.
 			// Use template "savedTemplate", but this is used only one way as a template.
 			// Removal is done via regular DOM removal actions.
-			if (data !== null) {
+			if (typeof data !== 'undefined') {
 				data.weekDay = renshuuMain.weekdays[data.training.weekday];
 				$('#savedlist tbody').prepend($('#savedTemplate').render(data));
 				

@@ -272,7 +272,7 @@ var renshuuMarkers = {
 			// http://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=fire|ADDE63
 			icon = renshuuMarkers.getMarkerImage('d_map_pin_icon', 'fire|ADDE63');
 		}
-		if (drag === null) {
+		if (typeof drag !== 'boolean') {
 			drag = false;
 		}
 		console.log('pos: ' + pos + ', title: ' + title + ', drag: ' + drag);
