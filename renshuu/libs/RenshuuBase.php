@@ -160,6 +160,7 @@ class RenshuuBase
 		
 		try
 		{
+			// SQLite version
 			//$this->pdo = new PDO($this->config['db']['type'] . ':' . realpath($this->config['db']['address']));
 			
 			$this->pdo = new PDO(
@@ -179,7 +180,7 @@ class RenshuuBase
 		}
 		catch (PDOException $error)
 		{
-			exit('PDO Connection failed: ' . $error->getMessage());
+			exit('PDO Connection failed: ' . ($error->getCode() * 12));
 		}
 		$this->pdo->query('SET CHARACTER SET utf8');
 		$this->pdo->query('SET NAMES utf8');

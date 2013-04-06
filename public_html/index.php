@@ -50,6 +50,12 @@ Access to any non / url will be checked against a weekday or an art string,
 and in case matched, redirected to that prepended with a hash (#).
 
 */
+
+if (!file_exists('config.php'))
+{
+	exit('Configuration missing');
+}
+
 require_once './config.php';
 require_once './locale.php';
 require_once $cf['renshuubase'] . 'libs/LightOpenID.php';

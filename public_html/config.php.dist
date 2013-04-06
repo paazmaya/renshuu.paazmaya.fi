@@ -22,7 +22,7 @@ $cf['referer_check'] = 'renshuu.paazmaya.com';
 // Base for locale, libs and templates
 $cf['renshuubase'] = realpath(__DIR__ . '/../renshuu') . '/';
 
-/ Google Maps API version
+// Google Maps API version
 // http://code.google.com/p/gmaps-api-issues/wiki/JavascriptMapsAPIv3Changelog
 $cf['gmapsver'] = '3.9'; // 3.9 was released 2012-05-15
 
