@@ -367,15 +367,13 @@ var renshuuMain = {
 			renshuuMain.savedList.push(id);
 			var len = renshuuMarkers.trainingMarkersData.length;
 			var savedlen = renshuuMain.savedListData.length; // only for debugging
-			for (var i = 0; i < len; ++i) {
-				data = renshuuMarkers.trainingMarkersData[i];
-				if (data && data.training.id == id) {
-					console.log('found matching data for addition, i: ' + i);
+      renshuuMarkers.trainingMarkersData.some(function (data) {
+				if (data.training.id == id) {
 					renshuuMain.savedListData.push(data);
 					console.dir(data);
-					break;
-				}
-			}
+          return true;
+        }
+      });
 			console.log('savedListData length before and after adding try: ' + savedlen + ' > ' + renshuuMain.savedListData.length);
 
 			// Now add it to DOM... Should this be made as a table or a list? table.
@@ -405,15 +403,13 @@ var renshuuMain = {
 		console.log('id: ' + id + ', inx: ' + inx);
 		if (inx !== -1) {
 			renshuuMain.savedList.splice(inx, 1);
-			var len = renshuuMain.savedListData.length;
-			for (var i = 0; i < len; ++i) {
-				var data = renshuuMain.savedListData[i];
-				if (data && data.training.id == id) {
-					console.log('found matching data for removal, i: ' + i);
-					renshuuMain.savedListData.splice(i, 1);
-					break;
-				}
-			}
+			var len = renshuuMain.savedListData.length; // before length, remove once tested
+      renshuuMarkers.savedListData.some(function (data) {
+				if (data.training.id == id) {
+          renshuuMain.savedListData.splice(i, 1);
+          return true;
+        }
+      });
 			console.log('savedListData length before and after removal try: ' + len + ' > ' + renshuuMain.savedListData.length);
 
 			// Now remove it from DOM

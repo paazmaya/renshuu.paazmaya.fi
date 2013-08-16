@@ -26,8 +26,7 @@ var renshuuExport = {
 		var items = $('#export_form input, #export_form select');
 		var len = fields.length;
 		// Should there be additional checks for allowed values...
-		for (var i = 0; i < len; ++i) {
-			var field = fields[i];
+    fields.forEach(function(field) {
 			var val = '';
 			if (items.filter('select[name="' + field + '"]').size() > 0) {
 				val = items.filter('select[name="' + field + '"]').val();
@@ -37,7 +36,7 @@ var renshuuExport = {
 			}
 			console.log('val: ' + val);
 			values.push(field + '=' + val);
-		}
+		});
 		url += values.join('&');
 		// marker requires special attention
 		url += '&markers=color:' + $('#export_form input[name="color"]').val() +

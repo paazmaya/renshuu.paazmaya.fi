@@ -79,11 +79,10 @@ var renshuuForms = {
 		var serialized = $form.serializeArray();
 		console.dir(serialized);
 
-		var len = serialized.length;
 		var items = {};
-		for (var i = 0; i < len; ++i) {
-			items[serialized[i].name] = serialized[i].value;
-		}
+		serialized.forEach(function(serial) {
+			items[serial.name] = serial.value;
+		});
 		// http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
 		$form.find(':disabled').each(function () {
 			items[$(this).attr('name')] = $(this).val();
