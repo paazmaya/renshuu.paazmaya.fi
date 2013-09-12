@@ -149,7 +149,7 @@ var renshuuMain = {
 		});
 
 		// Triggers on individual change of the checkboxes
-		$('.filters input:checkbox').live('change', function () {
+		$(document).on('change', '.filters input:checkbox', function () {
 			var name = $(this).attr('name');
 			var check = $(this).is(':checked');
 			console.log('change. name: ' + name + ', check: ' + check);
@@ -158,7 +158,8 @@ var renshuuMain = {
 		});
 
 		// Triggers on a click to any of the shortcuts for selection manipulation
-		$('.shortcuts a').on('click', function () {
+		$('.shortcuts a').on('click', function (event) {
+      event.preventDefault();
 			var action = $(this).attr('href').substr(1);
 			
 			var target = $(this).parent('p').attr('class').split(' ');
@@ -181,23 +182,22 @@ var renshuuMain = {
 			//if (changed) {
 				renshuuMain.updateFilters();
 			//}
-			return false;
 		});
 
 		// Open external links in a new window. Perhaps copyright is the only one...
-		$('a[href^="http://"]').live('click', function () {
+		$(document).on('click', 'a[href^="http://"]', function (event) {
+      event.preventDefault();
 			var href = $(this).attr('href');
 			var now = new Date();
 			window.open(href, now.getMilliseconds());
-			return false;
 		});
 
 
 		
 		// Change tab content
-		$('.icon-list a').on('click', function () {
+		$('.icon-list a').on('click', function (event) {
+      event.preventDefault();
 			renshuuMain.showTabContent($(this));
-			return false;
 		}).on('mouseover', function() {
 			var title = $(this).attr('title');
 			var $tab = $(this).parents('.bottom-tabs').find('.tab-title p');
@@ -212,7 +212,8 @@ var renshuuMain = {
 
 
 		// Once a info windowfor a training is open, this handles the links on the bottom of it
-		$('.modal-tools a').live('click', function () {
+		$(document).on('click', '.modal-tools a', function (event) {
+      event.preventDefault();
 			var href = $(this).attr('href').substr(1).split('-');
 			var id = href.pop();
 			var action = href.shift();
@@ -227,15 +228,14 @@ var renshuuMain = {
 				$('.modal-tools a[href|="#savetolist"]').show();
 				$(this).hide();
 			}
-			return false;
 		});
 		
-		$('#savedlist a[href|="#remove"]').live('click', function () {
+		$(document).on('click', '#savedlist a[href|="#remove"]', function (event) {
+      event.preventDefault();
 			var href = $(this).attr('href');
 			var id = href.split('-').pop();
 			console.log('#savedlist a click. href: ' + href + ', id: ' + id);
 			renshuuMain.removeSavedList(id);
-			return false;
 		});
 	
 		// Get any possible existing data for saved list
@@ -284,6 +284,7 @@ var renshuuMain = {
 	 * Each tab has an individual content.
 	 * key Which tab
 	 * side	left/forms
+   * @param {jQuery} $elem
 	 */
 	showTabContent: function ($elem) {
 		var href = $elem.attr('href');
@@ -342,6 +343,7 @@ var renshuuMain = {
 	
 	/**
 	 * 
+   * @param {string} key
 	 */
 	applyKey: function (key) {
 		if (key == 'filters') {
@@ -356,6 +358,7 @@ var renshuuMain = {
 
 	/**
 	 * Add a training to the list of saved trainings if it is not there yet.
+   * @param {} id
 	 * @see
 	 */
 	addSavedList: function (id) {
@@ -395,6 +398,7 @@ var renshuuMain = {
 
 	/**
 	 * Remove from list, as a counter part of adding.
+   * @param {} id
 	 * @see
 	 */
 	removeSavedList: function (id) {

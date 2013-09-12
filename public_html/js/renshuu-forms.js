@@ -14,15 +14,15 @@ var renshuuForms = {
 	init: function() {
 		$.blockUI.defaults.css.width = '50%';
 
-		$('form').on('submit', function () {
+		$('form').on('submit', function (event) {
+      event.preventDefault();
 			renshuuForms.submitForm($(this));
-			return false;
 		});
 
 		// Geocode 
-		$('form input:button[name="search"]').on('click', function () {
+		$('form input:button[name="search"]').on('click', function (event) {
+      event.preventDefault();
 			console.log('Why not do some geocoding? TODO');
-			return false;
 		});
 
 		$('#profile_form input[name="email"]').val(renshuuMain.userEmail);
@@ -68,6 +68,7 @@ var renshuuForms = {
 
 	/**
 	 * Form submission via AJAX
+   * @param {jQuery} $form
 	 */
 	submitForm: function($form) {
 		console.group('submitForm');
@@ -99,7 +100,8 @@ var renshuuForms = {
 		});
 		
 		// Just once, removed after
-		$('#formfeedback a').live('click', function () {
+		$(document).on('click', '#formfeedback a', function (event) {
+      event.preventDefault();
 			var dattr = $(this).data(); // the data that came via response
 			console.dir(dattr);
 			
@@ -113,7 +115,6 @@ var renshuuForms = {
 
 			$('#formfeedback a').die('click');
 			$form.unblock(); // Should destroy #formfeedback...
-			return false;
 		});
 		
 		// When this AJAX call returns, it will replace the content of the above created div.
@@ -133,6 +134,7 @@ var renshuuForms = {
 	/**
 	 * After submitting a form, and once the data has been received at the back end,
 	 * there might be a need to touch the DOM based on insert or update action.
+   * @param {object} data
 	 */
 	afterSubmission: function (data) {
 		console.group('afterSubmission');

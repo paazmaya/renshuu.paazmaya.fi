@@ -7,7 +7,7 @@ var renshuuExport = {
 	init: function () {
 		
 		// Special care for the export settings form, in order to update its preview
-		$('#export_form input, #export_form select').live('change', function (){
+		$(document).on('change', '#export_form input, #export_form select', function (){
 			renshuuExport.updateExportPreview();
 		});
 		

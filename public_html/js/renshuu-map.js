@@ -235,6 +235,8 @@ var renshuuMap = {
 
 	/**
 	 * Draw route between two spots, while using directions service.
+   * @param {object} pos1
+   * @param {object} pos2
 	 */
 	drawRoute: function (pos1, pos2) {
 		var now = $.now();
@@ -278,6 +280,9 @@ var renshuuMap = {
 	/**
 	 * Draw a path between two positions by using tools in Google Maps.
 	 * pos1 and pos2 are type of google.maps.LatLng
+   * @param {} pos1
+   * @param {} pos2
+   * @param {} color
 	 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#LatLng
 	 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Polyline
 	 */
@@ -312,6 +317,7 @@ var renshuuMap = {
 	/**
 	 * Show the given position in the Street View.
 	 * Once visibility set, the opening is taken care of by its event handler.
+   * @param {} position
 	 */
 	showStreetView: function (position) {
 		console.group('showStreetView');
@@ -326,6 +332,8 @@ var renshuuMap = {
 	 * Initiate the following tools in Google Maps:
 	 * - Maps
 	 * - Geocoder
+   * @param {} elem
+   * @param {object} map_options
 	 */
 	mapInit: function (elem, map_options) {
 		console.group('mapInit');
@@ -419,6 +427,8 @@ var renshuuMap = {
 	 * Initiate the following tools related to Google Street View:
 	 * - StreetViewPanorama
 	 * - StreetViewService
+   * @param {} street_element
+   * @param {object} street_options
 	 */
 	streetInit: function (street_element, street_options) {
 		console.group('streetInit');
@@ -504,6 +514,7 @@ var renshuuMap = {
 	/**
 	 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#StreetViewService
 	 * getPanoramaByLocation(latlng:LatLng, radius:number, callback:function (StreetViewPanoramaData, StreetViewStatus):void))
+   * @param {} pos
 	 */
 	getPanorama: function (pos, radius) {
 		console.group('getPanorama');
