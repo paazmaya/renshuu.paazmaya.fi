@@ -1,0 +1,16 @@
+{
+    "name": "paazio/renshuu.paazmaya.com",
+    "description": "Training Planner",
+    "require": {
+        "phpmailer/phpmailer": "5.2.1",
+        "mrclay/minify": "2.1.7"
+    },
+    "license": "CreativeCommons Attribution-NonCommercial-ShareAlike 3.0 Unported",
+    "authors": [
+        {
+            "name": "Juga Paazmaya",
+            "email": "olavic@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta"
+}

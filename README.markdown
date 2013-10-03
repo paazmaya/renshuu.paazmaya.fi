@@ -53,7 +53,7 @@ PHP libraries are:
 
 * minify 2.1.5 (http://code.google.com/p/minify/)
 * LightOpenID 2011-08-17 (https://gitorious.org/lightopenid/lightopenid)
-* PHPMailer 5.2.1 (http://code.google.com/a/apache-extras.org/p/phpmailer/)
+* PHPMailer 5.2.1 (https://github.com/PHPMailer/PHPMailer)
 
 TODO
 ----
