@@ -45,7 +45,7 @@ Javascript application logic files are all prefixed with `renshuu-`, of which `m
 Javascript libraries that are used in this project are:
 
 * Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
-* jQuery 1.8.1 (http://jquery.com)
+* jQuery 1.9.1 (http://jquery.com)
 * jQuery blockUI 2.42 (http://malsup.com/jquery/block/)
 * JsRender recent Github version (https://github.com/BorisMoore/jsrender)
 
@@ -60,7 +60,7 @@ TODO
 
 * Markup *should* be completely valid HTML5 and CSS3 for styling.
 * SQL table creation script is only compatible with MySQL...
-* Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable?
+* Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable? http://www.developer.nokia.com/Community/Wiki/Converting_Google_Maps_for_JavaScript_to_HERE_Maps
 
 References
 ----------
