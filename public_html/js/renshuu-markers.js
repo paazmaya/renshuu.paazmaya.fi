@@ -62,11 +62,8 @@ var renshuuMarkers = {
 	 */
 	locationMarker: null,
 
-	/**
-	 * Based on the geocode results, add max three markers.
-	 * @param key		Must be a string, either location or address, used in geocode request.
-	 * @param results	An array of google.maps.GeocoderResult,
-	 * @param status	A constant from google.maps.GeocoderStatus...
+  /**
+   * Based on the geocode results, add max three markers.
 	 *   ERROR			 	There was a problem contacting the Google servers.
 	 *   INVALID_REQUEST 	This GeocoderRequest was invalid.
 	 *   OK 				The response contains a valid GeocoderResponse.
@@ -91,6 +88,9 @@ var renshuuMarkers = {
 	 *   types: [],
 	 *   formatted_address: "" (not documented)
 	 * }
+ * @param results
+ * @param status
+ * @param key
 	 */
 	addGeoMarkers: function (key, results, status) {
 		console.group('addGeoMarkers');
@@ -404,9 +404,9 @@ var renshuuMarkers = {
 
 		if (data) {
 			$('#map').block();
-			$('.modal-close').one('click', function () {
+			$('.modal-close').one('click', function (event) {
+        event.preventDefault();
 				$('#map').unblock();
-				return false;
 			});
 			
 			// Fill overlay with the data inserted to a template
