@@ -80,3 +80,7 @@ PHP libraries are:
 * Font-Embedding Icons: This Is a Big Deal (http://somerandomdude.com/articles/design-technology/font-embedding-icons/)
 * Google Maps API v3, Per-User Limit is 1.0 requests/second/user
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paazmaya/renshuu.paazmaya.com/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
