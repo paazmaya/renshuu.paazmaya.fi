@@ -2,6 +2,8 @@
 
 Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
 
+[![Dependency Status](https://www.versioneye.com/user/projects/526e500a632bac05a2000438/badge.png)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
+
 ## A training timetable
 
 
