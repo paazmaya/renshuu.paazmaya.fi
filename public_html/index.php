@@ -56,6 +56,8 @@ if (!file_exists('config.php'))
 	exit('Configuration missing');
 }
 
+require_once '../vendor/autoload.php';
+
 require_once './config.php';
 require_once './locale.php';
 require_once $cf['renshuubase'] . 'libs/LightOpenID.php';

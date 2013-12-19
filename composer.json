@@ -2,7 +2,7 @@
     "name": "paazio/renshuu.paazmaya.com",
     "description": "Training Planner",
     "require": {
-        "phpmailer/phpmailer": "5.2.1",
+        "phpmailer/phpmailer": "5.2.7",
         "mrclay/minify": "2.1.7"
     },
     "license": "CreativeCommons Attribution-NonCommercial-ShareAlike 3.0 Unported",
