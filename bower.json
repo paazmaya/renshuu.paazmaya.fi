@@ -1,0 +1,26 @@
+{
+  "name": "renshuubackbone",
+  "version": "0.0.1",
+  "authors": [
+    "Juga Paazmaya <olavic@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.3",
+    "backbone": "~1.1.0",
+    "underscore": "~1.5.2",
+    "requirejs": "~2.1.9",
+    "leaflet": "~0.7.1"
+  },
+  "devDependencies": {
+    "qunit": "~1.12.0"
+  }
+}
