@@ -3,11 +3,11 @@
 Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
 
 [![Dependency Status](https://www.versioneye.com/user/projects/526e500a632bac05a2000438/badge.png)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paazmaya/renshuu.paazmaya.com/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 ## A training timetable
 
-
-This code is used to run the site available at `renshuu.paazmaya.com`, 
+This code is used to run the site available at [`renshuu.paazmaya.com`](http://renshuu.paazmaya.com),
 which offers an easy way to build a training timetable within the 
 Japanese martial arts. 
 
@@ -71,6 +71,9 @@ PHP libraries are:
 * Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable? http://www.developer.nokia.com/Community/Wiki/Converting_Google_Maps_for_JavaScript_to_HERE_Maps
 * Backbone.js
 * Leaflet
+* Bower
+* gulp tasks
+* Sinatra instead of PHP
 
 ## References
 
@@ -82,5 +85,4 @@ PHP libraries are:
 
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paazmaya/renshuu.paazmaya.com/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
