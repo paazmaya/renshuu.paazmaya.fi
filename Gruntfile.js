@@ -41,10 +41,12 @@ module.exports = function(grunt) {
 
     eslint: {
       options: {
+        config: 'eslint.json'
       },
-      main: {
-        src: ['src/js/main.js']
-      }
+      target: [
+        'Gruntfile.js',
+        'src/js/main.js'
+      ]
     },
     
     connect: {
