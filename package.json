@@ -18,8 +18,10 @@
     "grunt-contrib-copy": "^0.5",
     "grunt-contrib-qunit": "^0.3",
     "grunt-contrib-requirejs": "^0.4",
-    "grunt-eslint": "^0.2",
+    "grunt-eslint": "^0.3",
     "gulp": "^3.3",
-    "gulp-uglify": "^0.1"
+    "gulp-eslint": "^0.1",
+    "gulp-copy": "^2.1",
+    "gulp-requirejs": "^0.1"
   }
 }
