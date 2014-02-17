@@ -4,3 +4,5 @@ renshuu.*.log
 /vendor/
 bower_components
 node_modules
+src/js/lib
+test/qunit
