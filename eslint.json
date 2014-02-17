@@ -87,7 +87,7 @@
     "no-underscore-dangle": 1,
     "no-unreachable": 2,
     "no-unused-expressions": 2,
-    "no-unused-vars": [2, "local"],
+    "no-unused-vars": [1, "local"],
     "no-use-before-define": 1,
     "no-with": 2,
     "no-wrap-func": 2,
@@ -118,6 +118,7 @@
     "location": false,
     "document": false,
     "window": false,
-    "process": false
+    "process": false,
+    "Backbone": true
   }
 }

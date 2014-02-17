@@ -1,5 +1,6 @@
-/*global module:false*/
+
 module.exports = function(grunt) {
+  'use strict';
 
   grunt.initConfig({
 
@@ -53,7 +54,7 @@ module.exports = function(grunt) {
       qunit: {
         options: {
           port: 9991,
-          base: '.',
+          base: '.'
           //keepalive: true
         }
       }
@@ -83,7 +84,7 @@ module.exports = function(grunt) {
           baseUrl: 'src/js/',
           mainConfigFile: 'src/js/main.js',
           out: 'src/js/optimized.js',
-          optimize: 'uglify2', // 116 KB
+          optimize: 'uglify2' // 116 KB
           //optimize: 'none' // 341 KB
         }
       }
