@@ -19,9 +19,10 @@
     "grunt-contrib-qunit": "^0.3",
     "grunt-contrib-requirejs": "^0.4",
     "grunt-eslint": "^0.3",
-    "gulp": "^3.3",
+    "gulp": "^3.5",
     "gulp-eslint": "^0.1",
-    "gulp-copy": "^2.1",
-    "gulp-requirejs": "^0.1"
+    "gulp-connect": "^0.9",
+    "gulp-requirejs": "^0.1",
+    "gulp-qunit": "~0.1.8"
   }
 }

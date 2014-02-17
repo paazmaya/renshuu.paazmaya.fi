@@ -1,24 +1,21 @@
 var gulp = require('gulp');
 var eslint = require('gulp-eslint');
-var copy = require('gulp-copy');
 var connect = require('gulp-connect');
 var qunit = require('gulp-qunit');
-var requirejs = require('gulp-requirejs');
+//var requirejs = require('gulp-requirejs');
 
 // How to?  grunt.loadNpmTasks('grunt-contrib-watch');
 
 
-gulp.task('scripts', function() {
-  gulp.src(['client/js/**/*.js', '!client/js/vendor/**'])
-    .pipe(uglify())
-    .pipe(gulp.dest('build/js'));
-
-  gulp.src('client/js/vendor/**')
-    .pipe(gulp.dest('build/js/vendor'));
-});
-
 gulp.task('copy', function() {
-
+  return gulp.src([
+    'bower_components/requirejs/require.js',
+    'bower_components/underscore/underscore.js',
+    'bower_components/jquery/jquery.js',
+    'bower_components/backbone/backbone.js',
+    'bower_components/leaflet/src/**/*.js'
+   ])
+   .pipe(gulp.dest('src/js/lib/'));
 });
 
 gulp.task('eslint', function () {
@@ -27,12 +24,23 @@ gulp.task('eslint', function () {
         'src/js/main.js'
       ])
     .pipe(eslint({config: 'eslint.json'}))
-    .pipe(eslint.format());
+    .pipe(eslint.format('compact'));
+});
+
+gulp.task('qunit', function() {
+  gulp.src(['bower_components/qunit/qunit/*.*'])
+   .pipe(gulp.dest('test/qunit'));
+  
+  connect.server({
+    root: ['app'],
+    port: 9991
+  });
+  return gulp.src('http://localhost:9991/test/index_spec.html')
+      .pipe(qunit());
 });
 
 gulp.task('test', function() {
   gulp.run('eslint');
-  gulp.run('connect');
   gulp.run('qunit');
 });
 
