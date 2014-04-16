@@ -1,6 +1,6 @@
 /**
- * grunt-togeojson
- * https://github.com/paazmaya/grunt-togeojson
+ * renshuu.paazmaya.com
+ * https://github.com/paazmaya/renshuu.paazmaya.com
  *
  * Copyright (c) Juga Paazmaya <olavic@gmail.com>
  * Licensed under the MIT license.
@@ -8,6 +8,7 @@
 'use strict';
 
 module.exports = function(grunt) {
+  require('time-grunt')(grunt); // Must be first item
 
   grunt.initConfig({
 
