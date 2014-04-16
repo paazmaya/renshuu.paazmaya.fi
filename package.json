@@ -28,6 +28,7 @@
     "gulp-eslint": "^0.1",
     "gulp-connect": "^0.9",
     "gulp-requirejs": "^0.1",
-    "gulp-qunit": "~0.1.8"
+    "gulp-qunit": "~0.1.8",
+    "jit-grunt": "^0.5"
   }
 }
