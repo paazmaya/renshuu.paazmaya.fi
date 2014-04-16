@@ -1,6 +1,13 @@
+/**
+ * grunt-togeojson
+ * https://github.com/paazmaya/grunt-togeojson
+ *
+ * Copyright (c) Juga Paazmaya <olavic@gmail.com>
+ * Licensed under the MIT license.
+ */
+'use strict';
 
 module.exports = function(grunt) {
-  'use strict';
 
   grunt.initConfig({
 
@@ -42,7 +49,8 @@ module.exports = function(grunt) {
 
     eslint: {
       options: {
-        config: 'eslint.json'
+        config: 'eslint.json',
+        format: 'stylish'
       },
       target: [
         'Gruntfile.js',
