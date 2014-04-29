@@ -1,6 +1,6 @@
 # RENSHUU.PAAZMAYA.COM
 
-Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
+> Plan your training journey
 
 [![Dependency Status](https://www.versioneye.com/user/projects/526e500a632bac05a2000438/badge.png)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paazmaya/renshuu.paazmaya.com/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
@@ -84,5 +84,8 @@ PHP libraries are:
 * Google Maps API v3, Per-User Limit is 1.0 requests/second/user
 
 
+## License
+
+Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
 
 
