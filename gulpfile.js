@@ -8,7 +8,7 @@ var less = require('gulp-less');
 // How to?  grunt.loadNpmTasks('grunt-contrib-watch');
 
 
-gulp.task('copy', function() {
+gulp.task('copy', function gulpCopy() {
   return gulp.src([
     'bower_components/requirejs/require.js',
     'bower_components/underscore/underscore.js',
@@ -19,7 +19,7 @@ gulp.task('copy', function() {
    .pipe(gulp.dest('src/js/lib/'));
 });
 
-gulp.task('eslint', function () {
+gulp.task('eslint', function gulpEslint() {
   gulp.src([
         'Gruntfile.js',
         'src/js/main.js'
@@ -28,7 +28,7 @@ gulp.task('eslint', function () {
     .pipe(eslint.format('compact'));
 });
 
-gulp.task('qunit', function() {
+gulp.task('qunit', function gulpQunit() {
   gulp.src(['bower_components/qunit/qunit/*.*'])
    .pipe(gulp.dest('test/qunit'));
   
@@ -40,13 +40,13 @@ gulp.task('qunit', function() {
       .pipe(qunit());
 });
 
-gulp.task('less', function() {
+gulp.task('less', function gulpLess() {
   return gulp.src('css/app.less')
     .pipe(less())
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('test', function() {
+gulp.task('test', function gulpTest() {
   gulp.run('eslint');
   gulp.run('qunit');
 });
@@ -55,6 +55,6 @@ gulp.task('default', function() {
   gulp.run('test');
 });
 
-gulp.task('watch', ['less'], function() {
+gulp.task('watch', ['less'], function gulpWatch() {
   gulp.watch('css/**/*.less', ['less']);
 });
