@@ -29,6 +29,7 @@
     "gulp-connect": "^2.0",
     "gulp-requirejs": "^0.1",
     "gulp-qunit": "^0.3",
+    "gulp-less": "^1.2.3",
     "jit-grunt": "^0.5",
     "time-grunt": "^0.3"
   }

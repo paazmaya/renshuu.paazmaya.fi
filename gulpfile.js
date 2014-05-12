@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var eslint = require('gulp-eslint');
 var connect = require('gulp-connect');
 var qunit = require('gulp-qunit');
+var less = require('gulp-less');
 //var requirejs = require('gulp-requirejs');
 
 // How to?  grunt.loadNpmTasks('grunt-contrib-watch');
@@ -39,6 +40,12 @@ gulp.task('qunit', function() {
       .pipe(qunit());
 });
 
+gulp.task('less', function() {
+  return gulp.src('css/app.less')
+    .pipe(less())
+    .pipe(gulp.dest('dist'));
+});
+
 gulp.task('test', function() {
   gulp.run('eslint');
   gulp.run('qunit');
@@ -46,4 +53,8 @@ gulp.task('test', function() {
 
 gulp.task('default', function() {
   gulp.run('test');
+});
+
+gulp.task('watch', ['less'], function() {
+  gulp.watch('css/**/*.less', ['less']);
 });
