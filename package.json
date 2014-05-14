@@ -30,7 +30,7 @@
     "gulp-requirejs": "^0.1",
     "gulp-qunit": "^0.3",
     "gulp-less": "^1.2.3",
-    "jit-grunt": "^0.5",
+    "jit-grunt": "^0.6",
     "time-grunt": "^0.3"
   }
 }
