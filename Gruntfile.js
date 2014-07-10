@@ -7,7 +7,7 @@
  */
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function gruntConf(grunt) {
   require('time-grunt')(grunt); // Must be first item
 
   grunt.initConfig({
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
         'src/js/main.js'
       ]
     },
-    
+
     connect: {
       qunit: {
         options: {
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
         }
       }
     },
-  
+
     qunit: {
       all: {
         options: {
