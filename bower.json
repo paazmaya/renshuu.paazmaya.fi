@@ -16,11 +16,11 @@
   "dependencies": {
     "jquery": "^2.1",
     "backbone": "^1.1",
-    "underscore": "^1.5",
+    "underscore": "^1.6",
     "requirejs": "^2.1",
     "leaflet": "^0.7"
   },
   "devDependencies": {
-    "qunit": "^1.12"
+    "qunit": "^1.15"
   }
 }
