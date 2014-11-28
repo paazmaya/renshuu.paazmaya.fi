@@ -5,4 +5,4 @@ renshuu.*.log
 bower_components
 node_modules
 src/js/lib
-test/qunit
+test/qunitnpm-debug.log
