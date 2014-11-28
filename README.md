@@ -2,27 +2,27 @@
 
 > Plan your training journey
 
-[![Dependency Status](https://www.versioneye.com/user/projects/526e500a632bac05a2000438/badge.png)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/paazmaya/renshuu.paazmaya.com/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Dependency Status](https://img.shields.io/versioneye/d/paazmaya/renshuu.paazmaya.com.svg?style=flat-square)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
+[![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/renshuu.paazmaya.com/index)](https://github.com/igrigorik/ga-beacon)
 
 ## A training timetable
 
 This code is used to run the site available at [`renshuu.paazmaya.com`](http://renshuu.paazmaya.com),
-which offers an easy way to build a training timetable within the 
-Japanese martial arts. 
+which offers an easy way to build a training timetable within the
+Japanese martial arts.
 
-The purpose of this project is to create a site that enables its users 
-to find and create martial art training sessions at different locations, 
-and then combine these as a training schedule. It will try to calculate 
-the time needed to travel in between each training location and finally 
-allow to print a list of them. 
+The purpose of this project is to create a site that enables its users
+to find and create martial art training sessions at different locations,
+and then combine these as a training schedule. It will try to calculate
+the time needed to travel in between each training location and finally
+allow to print a list of them.
 
-Initially I started to build this in the end of the Summer 2010, once I 
-had returned from my first training adventure in Japan that took for one 
-month. 
+Initially I started to build this in the end of the Summer 2010, once I
+had returned from my first training adventure in Japan that took for one
+month.
 
-Despite the fact that this project is incomplete, I have done already 
-another similar trip, for a bit over two months in the Summer 2011. 
+Despite the fact that this project is incomplete, I have done already
+another similar trip, for a bit over two months in the Summer 2011.
 
 
 ## Technical logic
@@ -48,7 +48,7 @@ Login page with three different icon sets.
 
 ## Code Structure
 
-JavaScript application logic files are all prefixed with `renshuu-`, 
+JavaScript application logic files are all prefixed with `renshuu-`,
 of which `main` contains all the settings.
 
 JavaScript libraries that are used in this project are:
