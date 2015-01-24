@@ -83,6 +83,10 @@ PHP libraries are:
 * Font-Embedding Icons: This Is a Big Deal (http://somerandomdude.com/articles/design-technology/font-embedding-icons/)
 * Google Maps API v3, Per-User Limit is 1.0 requests/second/user
 
+## Contributing
+
+[Please refer to a GitHub blog post on how to create somewhat perfect pull request.](https://github.com/blog/1943-how-to-write-the-perfect-pull-request "How to write the perfect pull request")
+
 
 ## License
 
