@@ -24,14 +24,14 @@ gulp.task('eslint', function gulpEslint() {
         'Gruntfile.js',
         'src/js/main.js'
       ])
-    .pipe(eslint({config: 'eslint.json'}))
+    .pipe(eslint({config: '.eslintrc'}))
     .pipe(eslint.format('compact'));
 });
 
 gulp.task('qunit', function gulpQunit() {
   gulp.src(['bower_components/qunit/qunit/*.*'])
    .pipe(gulp.dest('test/qunit'));
-  
+
   connect.server({
     root: ['app'],
     port: 9991
