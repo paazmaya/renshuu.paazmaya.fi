@@ -9,13 +9,12 @@
   "scripts": {
     "test": "grunt test"
   },
-  "author": "Juga Paazmaya",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/paazmaya/renshuu.paazmaya.com/blob/master/LICENSE-MIT"
-    }
-  ],
+  "author": {
+    "name": "Juga Paazmaya",
+    "email": "paazmaya@yahoo.com",
+    "url": "http://paazmaya.divshot.io"
+  },
+  "license": "MIT",
   "devDependencies": {
     "bower": "~1.5",
     "grunt": "~0.4",
@@ -23,7 +22,7 @@
     "grunt-contrib-copy": "~0.8",
     "grunt-contrib-qunit": "~0.7",
     "grunt-contrib-requirejs": "~0.4",
-    "grunt-eslint": "~17.1",
+    "grunt-eslint": "~17.2",
     "gulp": "~3.9",
     "gulp-eslint": "~1.0",
     "gulp-connect": "~2.2",
