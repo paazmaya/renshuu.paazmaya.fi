@@ -69,7 +69,7 @@ PHP libraries are:
 * Markup *should* be completely valid HTML5 and CSS3 for styling.
 * SQL table creation script is only compatible with MySQL...
 * Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable? http://www.developer.nokia.com/Community/Wiki/Converting_Google_Maps_for_JavaScript_to_HERE_Maps
-* Backbone.js
+* ~~Backbone.js~~ React.js
 * Leaflet
 * Bower
 * gulp tasks
@@ -87,9 +87,17 @@ PHP libraries are:
 
 [Please refer to a GitHub blog post on how to create somewhat perfect pull request.](https://github.com/blog/1943-how-to-write-the-perfect-pull-request "How to write the perfect pull request")
 
-
 ## License
 
-Available under http://creativecommons.org/licenses/by-nc-sa/3.0/ license.
+Available under the [Attribution-NonCommercial-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+
+You are free to:
+
+ * Share — copy and redistribute the material in any medium or format
+ * Adapt — remix, transform, and build upon the material
+
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+
 
 
