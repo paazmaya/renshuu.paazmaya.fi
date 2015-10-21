@@ -2,12 +2,12 @@
 
 > Plan your training journey
 
-[![Dependency Status](https://img.shields.io/versioneye/d/paazmaya/renshuu.paazmaya.com.svg?style=flat-square)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
-[![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/renshuu.paazmaya.com/index?flat)](https://github.com/igrigorik/ga-beacon)
+[![Dependency Status](https://img.shields.io/versioneye/d/paazmaya/renshuu.paazmaya.fi.svg?style=flat-square)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
+[![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/renshuu.paazmaya.fi/index?flat)](https://github.com/igrigorik/ga-beacon)
 
 ## A training timetable
 
-This code is used to run the site available at [`renshuu.paazmaya.com`](http://renshuu.paazmaya.com),
+This code is used to run the site available at [`renshuu.paazmaya.fi`](http://renshuu.paazmaya.fi),
 which offers an easy way to build a training timetable within the
 Japanese martial arts.
 
@@ -39,11 +39,11 @@ another similar trip, for a bit over two months in the Summer 2011.
 
 Login page with three different icon sets.
 
-![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.hand-drawn-social.jpg)
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.fi/raw/master/source/screenshot-2012-login.hand-drawn-social.jpg)
 
-![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.handycons2.jpg)
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.fi/raw/master/source/screenshot-2012-login.handycons2.jpg)
 
-![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.com/raw/master/source/screenshot-2012-login.social-icons-sketch-black.jpg)
+![Login page with icons from "Hand Drawn Social"](https://github.com/paazmaya/renshuu.paazmaya.fi/raw/master/source/screenshot-2012-login.social-icons-sketch-black.jpg)
 
 
 ## Code Structure

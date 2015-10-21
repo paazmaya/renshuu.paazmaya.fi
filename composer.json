@@ -1,5 +1,5 @@
 {
-    "name": "paazio/renshuu.paazmaya.com",
+    "name": "paazio/renshuu.paazmaya.fi",
     "description": "Training Planner",
     "require": {
         "phpmailer/phpmailer": "5.2.*",
