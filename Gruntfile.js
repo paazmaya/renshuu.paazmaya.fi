@@ -2,7 +2,7 @@
  * renshuu.paazmaya.com
  * https://github.com/paazmaya/renshuu.paazmaya.com
  *
- * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com>
+ * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (http://paazmaya.fi)
  * Licensed under the MIT license.
  */
 'use strict';

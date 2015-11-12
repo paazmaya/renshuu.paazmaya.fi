@@ -89,6 +89,8 @@ PHP libraries are:
 
 ## License
 
+Copyright (c) [Juga Paazmaya <paazmaya@yahoo.com>](http://paazmaya.fi)
+
 Available under the [Attribution-NonCommercial-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license.
 
 You are free to:

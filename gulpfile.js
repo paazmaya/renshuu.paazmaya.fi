@@ -1,8 +1,8 @@
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var connect = require('gulp-connect');
-var qunit = require('gulp-qunit');
-var less = require('gulp-less');
+const gulp = require('gulp'),
+  eslint = require('gulp-eslint'),
+  connect = require('gulp-connect'),
+  qunit = require('gulp-qunit'),
+  less = require('gulp-less');
 //var requirejs = require('gulp-requirejs');
 
 // How to?  grunt.loadNpmTasks('grunt-contrib-watch');
