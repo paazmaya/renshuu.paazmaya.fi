@@ -50,7 +50,7 @@ module.exports = function gruntConf(grunt) {
 
     eslint: {
       options: {
-        config: '.eslintrc',
+        config: '.eslintrc.json',
         format: 'stylish'
       },
       target: [
