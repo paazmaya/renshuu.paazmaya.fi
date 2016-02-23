@@ -89,7 +89,7 @@ PHP libraries are:
 
 ## License
 
-Copyright (c) [Juga Paazmaya <paazmaya@yahoo.com>](http://paazmaya.fi)
+Copyright (c) [Juga Paazmaya](http://www.paazmaya.fi) <paazmaya@yahoo.com>
 
 Available under the [Attribution-NonCommercial-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-nc-sa/4.0/) license.
 
