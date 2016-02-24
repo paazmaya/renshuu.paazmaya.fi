@@ -10,12 +10,12 @@ define([
   L
 ) {
   'use strict';
-  
+
   var TrainingList = Backbone.Model.extend({
     initialize: function (options) {
 
     }
   });
-  
+
   return TrainingList;
 });

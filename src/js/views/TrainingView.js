@@ -10,7 +10,7 @@ define([
   L
 ) {
   'use strict';
-  
+
   var TrainingView = Backbone.View.extend({
     initialize: function (options) {
 
@@ -21,6 +21,6 @@ define([
       return this;
     }
   });
-  
+
   return TrainingView;
 });

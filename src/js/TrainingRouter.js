@@ -10,9 +10,9 @@ define([
   L
 ) {
   'use strict';
-  
+
   var TrainingRouter = Backbone.Router.extend({
-  
+
     routes: {
       'training': 'index',
       'training/:id': 'training'
@@ -30,6 +30,6 @@ define([
 
     }
   });
-  
+
   return TrainingRouter;
 });

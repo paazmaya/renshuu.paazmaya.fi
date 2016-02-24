@@ -1,4 +1,4 @@
-# RENSHUU.PAAZMAYA.COM
+# RENSHUU.PAAZMAYA.FI
 
 > Plan your training journey
 
@@ -27,7 +27,7 @@ another similar trip, for a bit over two months in the Summer 2011.
 
 ## Technical logic
 
-* User logs in via OAuth provider
+* User logs in via OAuth provider, via Auth0
 * User searches for available trainings of the selected martial arts in the view area of the map
 * User can add new training location with training time table to the map
 * User can choose a training session to be added in users list of trainings
@@ -53,10 +53,8 @@ of which `main` contains all the settings.
 
 JavaScript libraries that are used in this project are:
 
-* Google Maps v3 (http://code.google.com/apis/maps/documentation/javascript/)
-* jQuery 1.9.1 (http://jquery.com)
-* jQuery blockUI 2.42 (http://malsup.com/jquery/block/)
-* JsRender recent GitHub version (https://github.com/BorisMoore/jsrender)
+* React.js
+* Redux
 
 PHP libraries are:
 
@@ -71,8 +69,6 @@ PHP libraries are:
 * Compare Nokia Maps (http://api.maps.nokia.com/) with Google Maps. Is it worth the effort to make them switchable? http://www.developer.nokia.com/Community/Wiki/Converting_Google_Maps_for_JavaScript_to_HERE_Maps
 * ~~Backbone.js~~ React.js
 * Leaflet
-* Bower
-* gulp tasks
 * Sinatra instead of PHP
 
 ## References
