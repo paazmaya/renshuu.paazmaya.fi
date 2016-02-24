@@ -18,6 +18,7 @@
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
+    "auth0-lock": "^8.2.3",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.4.0",
@@ -25,15 +26,18 @@
     "redux-thunk": "^1.0.3"
   },
   "devDependencies": {
-    "auth0-lock": "^8.2.3",
     "babel-core": "^6.5.2",
+    "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.3",
     "babel-plugin-react-transform": "^2.0.0",
+    "babel-plugin-transform-react-jsx": "^6.5.2",
+    "eslint": "^2.2.0",
     "express": "^4.13.4",
     "json-loader": "^0.5.4",
     "transform-loader": "^0.2.3",
     "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.5.1",
+    "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.7.1"
   }
 }

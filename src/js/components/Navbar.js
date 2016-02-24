@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react'
-import Login from './Login'
-import Logout from './Logout'
-import { loginUser, logoutUser } from '../actions'
+import React, {Component, PropTypes} from 'react';
+import Login from './Login';
+import Logout from './Logout';
+import {loginUser, logoutUser} from '../actions';
 
 
 /*
@@ -15,7 +15,7 @@ In order to use Auth0, replace loginUser with login
 export default class Navbar extends Component {
 
   render() {
-    const { dispatch, isAuthenticated, errorMessage } = this.props
+    const {dispatch, isAuthenticated, errorMessage} = this.props;
 
     return (
       <nav className='navbar navbar-default'>
@@ -37,7 +37,7 @@ export default class Navbar extends Component {
           </div>
         </div>
       </nav>
-    )
+    );
   }
 
 }
@@ -46,4 +46,4 @@ Navbar.propTypes = {
   dispatch: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string
-}
+};

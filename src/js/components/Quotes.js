@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React, {Component, PropTypes} from 'react';
 
 export default class Quotes extends Component {
 
   render() {
-    const { onQuoteClick, onSecretQuoteClick, isAuthenticated, quote, isSecretQuote } = this.props
+    const {onQuoteClick, onSecretQuoteClick, isAuthenticated, quote, isSecretQuote} = this.props;
 
     return (
       <div>
@@ -39,7 +39,7 @@ export default class Quotes extends Component {
           }
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -49,4 +49,4 @@ Quotes.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   quote: PropTypes.string,
   isSecretQuote: PropTypes.bool.isRequired
-}
+};
