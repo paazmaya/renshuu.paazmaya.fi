@@ -142,14 +142,5 @@
     "browser": true
   },
   "globals": {
-    "jQuery": false,
-    "$": false,
-    "require": false,
-    "module": false,
-    "location": false,
-    "document": false,
-    "window": false,
-    "process": false,
-    "Backbone": true
   }
 }
