@@ -22,7 +22,7 @@
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
-    "auth0-lock": "^8.2.3",
+    "auth0-lock": "^9.0.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.4.0",
