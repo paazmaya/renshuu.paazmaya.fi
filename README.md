@@ -2,7 +2,7 @@
 
 > Plan your training journey
 
-[![Dependency Status](https://img.shields.io/versioneye/d/paazmaya/renshuu.paazmaya.fi.svg?style=flat-square)](https://www.versioneye.com/user/projects/526e500a632bac05a2000438)
+[![Dependency Status](https://www.versioneye.com/user/projects/56e4828adf573d00495abc59/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e4828adf573d00495abc59)
 [![Analytics](https://ga-beacon.appspot.com/UA-2643697-15/renshuu.paazmaya.fi/index?flat)](https://github.com/igrigorik/ga-beacon)
 
 ## A training timetable
