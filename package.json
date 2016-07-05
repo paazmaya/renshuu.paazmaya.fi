@@ -37,7 +37,7 @@
     "babel-preset-react": "^6.11.1",
     "enzyme": "^2.3.0",
     "eslint": "^3.0.1",
-    "eslint-config-paazmaya": "^2.1.0",
+    "eslint-config-paazmaya": "^2.2.0",
     "express": "^4.14.0",
     "json-loader": "^0.5.4",
     "react-addons-test-utils": "^15.2.0",
