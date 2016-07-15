@@ -13,7 +13,9 @@ require([
   'use strict';
 
   var trainingList = new TrainingList();
-  var router = new TrainingRouter({trainingList: trainingList});
+  var router = new TrainingRouter({
+    trainingList: trainingList
+  });
 
   Backbone.history.start({
     pushState: true
