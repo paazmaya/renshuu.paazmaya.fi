@@ -1,0 +1,11 @@
+version: v1.5.0
+ignore: {}
+patch:
+  'npm:ms:20151024':
+    - auth0-lock > jsonp > debug > ms:
+        patched: '2016-08-11T18:10:41.365Z'
+  'npm:negotiator:20160616':
+    - auth0-lock > auth0-js > winchan > express > connect > compression > accepts > negotiator:
+        patched: '2016-08-11T18:10:41.365Z'
+    - auth0-lock > auth0-js > winchan > express > connect > serve-index > accepts > negotiator:
+        patched: '2016-08-11T18:10:41.365Z'
