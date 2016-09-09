@@ -1,4 +1,12 @@
-import React, {Component, PropTypes} from 'react';
+/**
+ * renshuu.paazmaya.fi
+ * https://github.com/paazmaya/renshuu.paazmaya.fi
+ * Plan your training journey
+ *
+ * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
+ * Licensed under the MIT license.
+ */
+ import React, {Component, PropTypes} from 'react';
 
 export default class Quotes extends Component {
 

@@ -1,3 +1,12 @@
+/**
+ * renshuu.paazmaya.fi
+ * https://github.com/paazmaya/renshuu.paazmaya.fi
+ * Plan your training journey
+ *
+ * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
+ * Licensed under the MIT license.
+ */
+ 
 import {combineReducers} from 'redux';
 
 import {

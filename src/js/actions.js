@@ -1,3 +1,11 @@
+/**
+ * renshuu.paazmaya.fi
+ * https://github.com/paazmaya/renshuu.paazmaya.fi
+ * Plan your training journey
+ *
+ * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
+ * Licensed under the MIT license.
+ */
 
 // The middleware to call the API for quotes
 import {CALL_API} from './middleware/api';
