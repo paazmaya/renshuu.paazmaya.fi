@@ -11,7 +11,7 @@ define([
 ) {
   'use strict';
 
-  var TrainingList = Backbone.Model.extend({
+  const TrainingList = Backbone.Model.extend({
     initialize: function (options) {
 
     }
