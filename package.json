@@ -8,6 +8,10 @@
     "lint": "eslint -c .eslintrc.json server.js src/js",
     "start": "webpack && webpack-dev-server --quiet --port 3000 --content-base static/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paazmaya/renshuu.paazmaya.fi.git"
+  },
   "files": [
     "LICENSE",
     "README.md"
