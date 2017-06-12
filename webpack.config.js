@@ -11,38 +11,36 @@ module.exports = {
     filename: 'bundle.js'
   },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
     loaders: [
       {
         test: /\.js$/,
-        loaders: ['babel'],
+        use: ['babel-loader'],
         exclude: /node_modules/
       },
       {
         test: /\.css?$/,
-        loaders: ['style', 'raw']
+        use: ['style-loader', 'raw-loader']
       },
       {
         test: /node_modules\/auth0-lock\/.*\.js$/,
-        loaders: [
+        use: [
           'transform-loader/cacheable?brfs',
           'transform-loader/cacheable?packageify'
         ]
       },
       {
         test: /node_modules\/auth0-lock\/.*\.ejs$/,
-        loader: 'transform-loader/cacheable?ejsify'
+        use: 'transform-loader/cacheable?ejsify'
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
+        use: 'json-loader'
       }
     ]
   }
 };
-
-
