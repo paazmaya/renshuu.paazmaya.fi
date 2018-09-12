@@ -40,4 +40,3 @@ node_modules
 .vscode
 .atom
 .idea
-package-lock.json
