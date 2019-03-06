@@ -47,7 +47,7 @@
     "json-loader": "0.5.7",
     "react-addons-test-utils": "15.6.2",
     "transform-loader": "0.2.4",
-    "webpack": "4.27.1",
+    "webpack": "4.29.6",
     "webpack-dev-middleware": "3.6.1",
     "webpack-hot-middleware": "2.24.3"
   }
