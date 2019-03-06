@@ -3,7 +3,7 @@
     "description": "Training Planner",
     "require": {
         "phpmailer/phpmailer": "6.0.*",
-        "mrclay/minify": "2.3.*"
+        "mrclay/minify": "3.0.*"
     },
     "license": "CreativeCommons Attribution-NonCommercial-ShareAlike 3.0 Unported",
     "authors": [
