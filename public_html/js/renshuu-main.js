@@ -25,7 +25,7 @@ var renshuuMain = {
 	keepAlive: 1000 * 60 * 5, // Every 5 minutes a keepalive call
 
 
-	
+
 	/**
 	 * Default filter settings. Make sure the values are always single strings.
 	 */
@@ -33,7 +33,7 @@ var renshuuMain = {
 		arts: [],
 		weekdays: ['0', '1', '2', '3', '4', '5', '6'] // all weekdays are selected by default
 	},
-	
+
 	/**
 	 * Should the training markers which are found via filtered search be shown?
 	 */
@@ -47,13 +47,13 @@ var renshuuMain = {
 		address: 'arrow3_s',
 		position: 'arrow3_n'
 	},
-	
+
 	/**
 	 * Which tabs are visible
 	 */
 	tabLeft: '',
 	tabForms: '',
-	
+
 	/**
 	 * List of trainings which are saved for the purpose of exporting them as a list later on.
 	 * Only the id of the training is saved, rest of the data is available in trainingMarkersData...
@@ -61,7 +61,7 @@ var renshuuMain = {
 	 */
 	savedList: [],
 	savedListData: [],
-	
+
 	/**
 	 * The current locale, filled from the bottom of index.php... Something like ja_JP or sl_SI
 	 */
@@ -97,13 +97,13 @@ var renshuuMain = {
 		renshuuMain.userEmail = data.email;
 		renshuuMain.userName = data.username;
 		renshuuMap.streetViewEnabled = data.streetViewEnabled;
-		
+
 		console.group('ready');
 		if (typeof(localStorage) == 'undefined' ) {
 			console.log('Your browser does not support HTML5 localStorage. Try upgrading. Your browser, that is.');
 		}
-		
-		
+
+
 		// Intiate Maps
 		renshuuMap.init();
 
@@ -113,7 +113,7 @@ var renshuuMain = {
 		var tabLeft = localStorage.getItem('tabLeft');
 		var tabForms = localStorage.getItem('tabForms');
 		var showTrainings = localStorage.getItem('showTrainings');
-		
+
 		if (typeof filterArts !== 'undefined') {
 			renshuuMain.filterSettings.arts = filterArts.split('.');
 			console.log('filterArts storage item existed. renshuuMain.filterSettings.arts: ' + renshuuMain.filterSettings.arts);
@@ -135,13 +135,13 @@ var renshuuMain = {
 			renshuuMain.showTrainings = parseInt(showTrainings) == 1 ? true : false;
 			$('#session input:checkbox').attr('checked', (renshuuMain.showTrainings ? 'checked' : null));
 		}
-		
+
 
 		$('#session input:checkbox').on('change', function () {
 			var name = $(this).attr('name');
 			var check = $(this).is(':checked');
 			console.log('change. name: ' + name + ', check: ' + check);
-			
+
 			renshuuMain.showTrainings = check;
 			localStorage.setItem('showTrainings', renshuuMain.showTrainings ? 1 : 0);
 
@@ -161,7 +161,7 @@ var renshuuMain = {
 		$('.shortcuts a').on('click', function (event) {
       event.preventDefault();
 			var action = $(this).attr('href').substr(1);
-			
+
 			var target = $(this).parent('p').attr('class').split(' ');
 			target = target.pop(); // assume the last class
 
@@ -193,7 +193,7 @@ var renshuuMain = {
 		});
 
 
-		
+
 		// Change tab content
 		$('.icon-list a').on('click', function (event) {
       event.preventDefault();
@@ -201,14 +201,14 @@ var renshuuMain = {
 		}).on('mouseover', function() {
 			var title = $(this).attr('title');
 			var $tab = $(this).parents('.bottom-tabs').find('.tab-title p');
-			$tab.data('title', $tab.text()).text(title);			
+			$tab.data('title', $tab.text()).text(title);
 		}).on('mouseout', function() {
 			var $tab = $(this).parents('.bottom-tabs').find('.tab-title p');
 			$tab.text($tab.data('title'));
 			$tab.data('title', null);
 		});
-		
-		
+
+
 
 
 		// Once a info windowfor a training is open, this handles the links on the bottom of it
@@ -229,7 +229,7 @@ var renshuuMain = {
 				$(this).hide();
 			}
 		});
-		
+
 		$(document).on('click', '#savedlist a[href|="#remove"]', function (event) {
       event.preventDefault();
 			var href = $(this).attr('href');
@@ -237,7 +237,7 @@ var renshuuMain = {
 			console.log('#savedlist a click. href: ' + href + ', id: ' + id);
 			renshuuMain.removeSavedList(id);
 		});
-	
+
 		// Get any possible existing data for saved list
 		$.post('/ajax/get/savelist', function (received, status) {
 			// data should be directly usable for the template...
@@ -258,20 +258,20 @@ var renshuuMain = {
 			renshuuMain.aliveKeeper();
 		}, renshuuMain.keepAlive);
 
-		
+
 		console.groupEnd();
-		
+
 		// Handlers for forms
 		renshuuForms.init();
-		
+
 		// Fetch trainings available for current settings. Uses map, thus after map init
 		var one = setInterval(function () {
 			renshuuMain.updateTrainings();
 			clearInterval(one);
 		}, 2200); // assume 2.2 sec is enough...
 	},
-	
-	/** 
+
+	/**
 	 * Keep alive call
 	 */
 	aliveKeeper: function () {
@@ -288,23 +288,23 @@ var renshuuMain = {
 	 */
 	showTabContent: function ($elem) {
 		var href = $elem.attr('href');
-		
+
 		// No point of continuing further...
 		if (typeof href === 'undefined' ) {
 			return false;
 		}
-		
+
 		var key = href.substr(1);
 		var title = $elem.attr('title');
 		var description = $elem.children('img').attr('alt');
 		console.log('key: ' + key + ', title: ' + title + ', description: ' + description);
-		
+
 		var $tabs = $elem.parents('.bottom-tabs');
 
 		// Remove and add "current" class
 		$tabs.find('.icon-list a').removeClass('current');
 		$elem.addClass('current');
-		
+
 		// Set title
 		var p = $tabs.find('.tab-title p');
 		p.text(title);
@@ -312,16 +312,16 @@ var renshuuMain = {
 
 		// Hide all that is visible
 		$tabs.find('.tab-content > div:visible').hide();
-		
+
 		// Show the requested one
 		$('#' + key).show();
-		
+
 		// Save current view
 		renshuuMain.tabLeft = $('#left .tab-content > div:visible').attr('id');
 		renshuuMain.tabForms = $('#forms .tab-content > div:visible').attr('id');
 		localStorage.setItem('tabForms', renshuuMain.tabForms);
 		localStorage.setItem('tabLeft', renshuuMain.tabLeft);
-		
+
 		// Now handle any special cases
 		if (typeof renshuuMarkers.locationMarker !== 'undefined') {
 			if (key == 'location') {
@@ -333,16 +333,16 @@ var renshuuMain = {
 			else {
 				renshuuMarkers.locationMarker.setVisible(false);
 			}
-			
+
 			console.log('locationMarker is now visible: ' + renshuuMarkers.locationMarker.getVisible());
 		}
 		if (key == 'street' && renshuuMap.streetViewEnabled) {
 			renshuuMap.streetView.setVisible(true);
 		}
 	},
-	
+
 	/**
-	 * 
+	 *
    * @param {string} key
 	 */
 	applyKey: function (key) {
@@ -385,7 +385,7 @@ var renshuuMain = {
 			if (typeof data !== 'undefined') {
 				data.weekDay = renshuuMain.weekdays[data.training.weekday];
 				$('#savedlist tbody').prepend($('#savedTemplate').render(data));
-				
+
 				// Finally send an update to the backend for saving this item
 				var post = {action: 'save', training: id};
 				$.post('/ajax/set/savelist', post, function (received, status) {
@@ -418,7 +418,7 @@ var renshuuMain = {
 
 			// Now remove it from DOM
 			$('#saved-' + id).remove();
-			
+
 			// Finally send an update to the backend for removing this item
 			var post = {action: 'delete', training: id};
 			$.post('/ajax/set/savelist', post, function (received, status) {
@@ -477,10 +477,10 @@ var renshuuMain = {
 	applyFiltersToHtml: function () {
 		console.group('applyFiltersToHtml');
 		for (var item in renshuuMain.filterSettings) {
-			if (renshuuMain.filterSettings.hasOwnProperty(item)) {
+			if (Reflect.has( renshuuMain.filterSettings, item)) {
 				var list = renshuuMain.filterSettings[item];
 				console.log('item: ' + item + ', list: ' + list);
-				
+
 				$('#filter_' + item + ' input:checkbox').each(function (i, elem) {
 					var rel = $(this).attr('name').split('_').pop();
 					var inx = list.indexOf(rel);

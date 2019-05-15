@@ -31,8 +31,8 @@ data: {
 }
 */
 var renshuuMarkers = {
-	
-	
+
+
 	/**
 	 * Store temporary geocoded location markers here.
 	 * { key:"address or lat/lng that was tried to be geocoded", markers: [] }
@@ -44,9 +44,9 @@ var renshuuMarkers = {
 	 */
 	locationMarkers: [],
 	locationMarkersData: [],
-	
+
 	/**
-	 * trainingMarkers and trainingMarkersData should share 
+	 * trainingMarkers and trainingMarkersData should share
 	 * a same index for data related to the other.
 	 */
 	trainingMarkers: [],
@@ -160,22 +160,22 @@ var renshuuMarkers = {
 		}
 		renshuuMarkers.geocodeMarkers = [];
 	},
-	
-	
+
+
 	/**
 	 * Create a marker for existing location.
 	 * Clicking will set it as selected option in training form, if it is visible.
 	 */
 	createLocationMarker: function (data) {
 		console.group('createLocationMarker');
-		
+
 		// http://chart.googleapis.com/chart?chst=d_bubble_text_small&chld=bbtl|Himeji%20shiritsu%20sogo%20sports%20kaigan|F9FBF7|5E0202
 		var icon = renshuuMarkers.getMarkerImage(
-			'd_bubble_text_small', 
+			'd_bubble_text_small',
 			'bbtl|' + data.location.title + '|F9FBF7|5E0202',
 			new google.maps.Point(0, 0)
 		);
-		
+
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.location.title, icon, false);
 
@@ -186,7 +186,7 @@ var renshuuMarkers = {
 			var data = renshuuMarkers.locationMarkersData[inx];
 			console.log('location marker. click - ' + marker.title + ', pos: ' + pos + ', inx: ' + inx);
 			console.dir(data);
-			
+
 			// This should now fill the address in the "training" form...
 			if (renshuuMain.tabForms == 'training') {
 				console.log('setting select location val to be data.location.id: ' + data.location.id);
@@ -198,8 +198,8 @@ var renshuuMarkers = {
 		renshuuMarkers.locationMarkersData[len - 1] = data;
 		console.groupEnd();
 	},
-	
-	
+
+
 
 	/**
 	 *
@@ -209,7 +209,7 @@ var renshuuMarkers = {
 		console.group('createGeocodeMarker');
 
 		for (var j in res) {
-			if (res.hasOwnProperty(j)) {
+			if (Reflect.has(res, j)) {
 				console.log('res[' + j + '] = ' + res[j]);
 			}
 		}
@@ -231,7 +231,7 @@ var renshuuMarkers = {
 			res.formatted_address,
 			renshuuMarkers.getMarkerImage(
 				'd_bubble_text_small',
-				'bbtr|' + (i + 1) + '|ADDE63|05050D', 
+				'bbtr|' + (i + 1) + '|ADDE63|05050D',
 				new google.maps.Point(42, 0)
 			),
 			false
@@ -245,11 +245,11 @@ var renshuuMarkers = {
 			var title = marker.getTitle();
 			var pos = marker.getPosition();
 			console.log('geocode marker click. title: ' + title + ', pos: ' + pos);
-			
+
 			$('#location_form input[name="address"]').val(title);
 			$('#location_form input[name="latitude"]').val(pos.lat());
 			$('#location_form input[name="longitude"]').val(pos.lng());
-			
+
 			if (renshuuMap.geocodeBasedOn == 'position') {
 			}
 			else if (renshuuMap.geocodeBasedOn == 'address') {
@@ -259,9 +259,9 @@ var renshuuMarkers = {
 		console.groupEnd();
 		return marker;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Create a simple marker with common settings and listeners.
 	 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
@@ -311,8 +311,8 @@ var renshuuMarkers = {
 		console.groupEnd();
 		return marker;
 	},
-	
-	
+
+
 	/**
 	 *
 	 * @see http://code.google.com/apis/maps/documentation/javascript/reference.html#Marker
@@ -334,17 +334,17 @@ var renshuuMarkers = {
 	 */
 	createTrainingMarker: function (data) {
 		console.group('createTrainingMarker');
-		
+
 		// http://chart.googleapis.com/chart?chst=d_bubble_icon_text_small&chld=glyphish_group|bb|Ryukyu Kobujutsu|129EF7|05050D
 		var icon = renshuuMarkers.getMarkerImage(
-			'd_bubble_icon_text_small', 
+			'd_bubble_icon_text_small',
 			'glyphish_group|bb|' + data.training.art.title + '|129EF7|05050D',
 			new google.maps.Point(0, 42)
 		);
-		
+
 		var pos = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 		var marker = renshuuMarkers.createMarker(pos, data.training.art.title + ' / ' + data.location.title, icon, false);
-		
+
 		// Visibility based on current checkbox state
 		marker.setVisible(renshuuMain.showTrainings);
 		console.log('visibility should be ' + renshuuMain.showTrainings + ', actual is ' + marker.getVisible());
@@ -361,7 +361,7 @@ var renshuuMarkers = {
 		renshuuMarkers.trainingMarkersData[len - 1] = data;
 		console.groupEnd();
 	},
-	
+
 
 	/**
 	 * Marker data from the backend.
@@ -408,13 +408,13 @@ var renshuuMarkers = {
         event.preventDefault();
 				$('#map').unblock();
 			});
-			
+
 			// Fill overlay with the data inserted to a template
 			$('div.blockMsg').html($('#trainingTemplate').render(data));
 		}
 		console.groupEnd();
 	},
-	
+
 	/**
 	 * Show or hide the training markerks based on renshuuMain.showTrainings.
 	 */
