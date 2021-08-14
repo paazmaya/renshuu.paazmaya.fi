@@ -8,7 +8,9 @@
  */
 
 // The middleware to call the API for quotes
-import {CALL_API} from './middleware/api';
+import {
+  CALL_API
+} from './middleware/api';
 
 // There are three possible states for our login
 // process and we need actions for each of them
@@ -48,32 +50,41 @@ function loginError(message) {
 // dispatches actions along the way
 export function loginUser(creds) {
 
-  let config = {
+  const config = {
     method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     body: `username=${creds.username}&password=${creds.password}`
   };
 
-  return dispatch => {
+  return (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
     dispatch(requestLogin(creds));
 
     return fetch('http://localhost:3001/sessions/create', config)
-      .then(response =>
-        response.json().then(user => ({user, response}))
-            ).then(({user, response}) => {
-              if (!response.ok) {
+      .then((response) =>
+        response.json().then((user) => ({
+          user,
+          response
+        }))
+      ).then(({
+        user, response
+      }) => {
+        if (!response.ok) {
           // If there was a problem, we want to
           // dispatch the error condition
-                dispatch(loginError(user.message));
-                return Promise.reject(user);
-              } else {
+          dispatch(loginError(user.message));
+
+          return Promise.reject(user);
+        }
+        else {
           // If login was successful, set the token in local storage
-                localStorage.setItem('id_token', user.id_token);
+          localStorage.setItem('id_token', user.id_token);
           // Dispatch the success action
-                dispatch(receiveLogin(user));
-              }
-            }).catch(err => console.log('Error: ', err));
+          dispatch(receiveLogin(user));
+        }
+      }).catch((err) => console.log('Error: ', err));
   };
 }
 
@@ -104,7 +115,7 @@ function receiveLogout() {
 
 // Logs the user out
 export function logoutUser() {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('id_token');
     dispatch(receiveLogout());
@@ -168,10 +179,12 @@ function lockError(err) {
 
 export function login() {
   const lock = new Auth0Lock('YOUR_CLIENT_ID', 'YOUR_CLIENT_DOMAIN');
-  return dispatch => {
+
+  return (dispatch) => {
     lock.show((err, profile, token) => {
       if (err) {
         dispatch(lockError(err));
+
         return;
       }
       localStorage.setItem('profile', JSON.stringify(profile));

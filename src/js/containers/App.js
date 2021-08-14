@@ -7,9 +7,15 @@
  * Licensed under the MIT license.
  */
 
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {loginUser, fetchQuote, fetchSecretQuote} from '../actions';
+import React, {
+  Component, PropTypes
+} from 'react';
+import {
+  connect
+} from 'react-redux';
+import {
+  loginUser, fetchQuote, fetchSecretQuote
+} from '../actions';
 import Login from '../components/Login';
 import Navbar from '../components/Navbar';
 import Quotes from '../components/Quotes';
@@ -24,7 +30,10 @@ With a successful login, we get the token saved in local storage.
 */
 class App extends Component {
   render() {
-    const {dispatch, quote, isAuthenticated, errorMessage, isSecretQuote} = this.props;
+    const {
+      dispatch, quote, isAuthenticated, errorMessage, isSecretQuote
+    } = this.props;
+
     return (
       <div>
         <Navbar
@@ -58,9 +67,15 @@ App.propTypes = {
 // state when it is started
 function mapStateToProps(state) {
 
-  const {quotes, auth} = state;
-  const {quote, authenticated} = quotes;
-  const {isAuthenticated, errorMessage} = auth;
+  const {
+    quotes, auth
+  } = state;
+  const {
+    quote, authenticated
+  } = quotes;
+  const {
+    isAuthenticated, errorMessage
+  } = auth;
 
   return {
     quote,

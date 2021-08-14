@@ -6,10 +6,14 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {
+  Component, PropTypes
+} from 'react';
 import Login from './Login';
 import Logout from './Logout';
-import {loginUser, logoutUser} from '../actions';
+import {
+  loginUser, logoutUser
+} from '../actions';
 
 
 /*
@@ -23,7 +27,9 @@ In order to use Auth0, replace loginUser with login
 export default class Navbar extends Component {
 
   render() {
-    const {dispatch, isAuthenticated, errorMessage} = this.props;
+    const {
+      dispatch, isAuthenticated, errorMessage
+    } = this.props;
 
     return (
       <nav className='navbar navbar-default'>
@@ -34,7 +40,7 @@ export default class Navbar extends Component {
             {!isAuthenticated &&
               <Login
                 errorMessage={errorMessage}
-                onLoginClick={ creds => dispatch(loginUser(creds)) }
+                onLoginClick={ (creds) => dispatch(loginUser(creds)) }
               />
             }
 

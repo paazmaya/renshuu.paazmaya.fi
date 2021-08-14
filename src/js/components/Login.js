@@ -6,12 +6,16 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {
+  Component, PropTypes
+} from 'react';
 
 export default class Login extends Component {
 
   render() {
-    const {errorMessage} = this.props;
+    const {
+      errorMessage
+    } = this.props;
 
     return (
       <div className="login-form">
@@ -29,9 +33,16 @@ export default class Login extends Component {
   }
 
   handleClick(event) {
-    const username = this.refs.username;
-    const password = this.refs.password;
-    const creds = {username: username.value.trim(), password: password.value.trim()};
+    const {
+      username
+    } = this.refs;
+    const {
+      password
+    } = this.refs;
+    const creds = {
+      username: username.value.trim(),
+      password: password.value.trim()
+    };
     this.props.onLoginClick(creds);
   }
 }

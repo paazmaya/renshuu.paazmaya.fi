@@ -6,12 +6,16 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {Component, PropTypes} from 'react';
+import React, {
+  Component, PropTypes
+} from 'react';
 
 export default class Logout extends Component {
 
   render() {
-    const {onLogoutClick} = this.props;
+    const {
+      onLogoutClick
+    } = this.props;
 
     return (
       <button onClick={() => onLogoutClick()} className="btn btn-primary">
