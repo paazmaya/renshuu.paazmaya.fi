@@ -7,9 +7,10 @@
  * Licensed under the MIT license.
  */
 
-import React, {
-  Component, PropTypes
+import {
+  Component
 } from 'react';
+import PropTypes from 'prop-types';
 import {
   connect
 } from 'react-redux';
@@ -28,31 +29,29 @@ we should be able to log in. There is a default user on the server with
 gonto as the username and password.
 With a successful login, we get the token saved in local storage.
 */
-class App extends Component {
-  render() {
-    const {
-      dispatch, quote, isAuthenticated, errorMessage, isSecretQuote
-    } = this.props;
+function App (props) {
+  const {
+    dispatch, quote, isAuthenticated, errorMessage, isSecretQuote
+  } = props;
 
-    return (
-      <div>
-        <Navbar
+  return (
+    <div>
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        errorMessage={errorMessage}
+        dispatch={dispatch}
+      />
+      <div className='container'>
+        <Quotes
+          onQuoteClick={() => dispatch(fetchQuote())}
+          onSecretQuoteClick={() => dispatch(fetchSecretQuote())}
           isAuthenticated={isAuthenticated}
-          errorMessage={errorMessage}
-          dispatch={dispatch}
+          quote={quote}
+          isSecretQuote={isSecretQuote}
         />
-        <div className='container'>
-          <Quotes
-            onQuoteClick={() => dispatch(fetchQuote())}
-            onSecretQuoteClick={() => dispatch(fetchSecretQuote())}
-            isAuthenticated={isAuthenticated}
-            quote={quote}
-            isSecretQuote={isSecretQuote}
-          />
-        </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 App.propTypes = {

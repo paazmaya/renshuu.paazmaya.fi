@@ -7,7 +7,6 @@
  * Licensed under the MIT license.
  */
 
-import React from 'react';
 import {
   render
 } from 'react-dom';

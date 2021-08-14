@@ -6,33 +6,15 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {
-  Component, PropTypes
-} from 'react';
+import PropTypes from 'prop-types';
 
-export default class Login extends Component {
+export default function Login (props) {
 
-  render() {
-    const {
-      errorMessage
-    } = this.props;
+  const {
+    errorMessage
+  } = props;
 
-    return (
-      <div className="login-form">
-        <input type='text' ref='username' className="form-control" placeholder='Username'/>
-        <input type='password' ref='password' className="form-control" placeholder='Password'/>
-        <button onClick={(event) => this.handleClick(event)} className="btn btn-primary">
-          Login
-        </button>
-
-        {errorMessage &&
-          <p className="error">{errorMessage}</p>
-        }
-      </div>
-    );
-  }
-
-  handleClick(event) {
+  const handleClick = (event) => {
     const {
       username
     } = this.refs;
@@ -44,7 +26,21 @@ export default class Login extends Component {
       password: password.value.trim()
     };
     this.props.onLoginClick(creds);
-  }
+  };
+
+  return (
+    <div className="login-form">
+      <input type='text' ref='username' className="form-control" placeholder='Username'/>
+      <input type='password' ref='password' className="form-control" placeholder='Password'/>
+      <button onClick={(event) => handleClick(event)} className="btn btn-primary">
+        Login
+      </button>
+
+      {errorMessage &&
+        <p className="error">{errorMessage}</p>
+      }
+    </div>
+  );
 }
 
 Login.propTypes = {

@@ -6,53 +6,49 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {
-  Component, PropTypes
-} from 'react';
+import PropTypes from 'prop-types';
 
-export default class Quotes extends Component {
+export default function Quotes (props) {
 
-  render() {
-    const {
-      onQuoteClick, onSecretQuoteClick, isAuthenticated, quote, isSecretQuote
-    } = this.props;
+  const {
+    onQuoteClick, onSecretQuoteClick, isAuthenticated, quote, isSecretQuote
+  } = props;
 
-    return (
-      <div>
+  return (
+    <div>
+      <div className='col-sm-3'>
+        <button onClick={onQuoteClick} className="btn btn-primary">
+          Get Quote
+        </button>
+      </div>
+
+      { isAuthenticated &&
         <div className='col-sm-3'>
-          <button onClick={onQuoteClick} className="btn btn-primary">
-            Get Quote
+          <button onClick={onSecretQuoteClick} className="btn btn-warning">
+            Get Secret Quote
           </button>
         </div>
+      }
 
-        { isAuthenticated &&
-          <div className='col-sm-3'>
-            <button onClick={onSecretQuoteClick} className="btn btn-warning">
-              Get Secret Quote
-            </button>
+      <div className='col-sm-6'>
+        { quote && !isSecretQuote &&
+          <div>
+            <blockquote>{quote}</blockquote>
           </div>
         }
 
-        <div className='col-sm-6'>
-          { quote && !isSecretQuote &&
-            <div>
-              <blockquote>{quote}</blockquote>
-            </div>
-          }
-
-          { quote && isAuthenticated && isSecretQuote &&
-            <div>
-              <span className="label label-danger">Secret Quote</span>
-              <hr/>
-              <blockquote>
-                {quote}
-              </blockquote>
-            </div>
-          }
-        </div>
+        { quote && isAuthenticated && isSecretQuote &&
+          <div>
+            <span className="label label-danger">Secret Quote</span>
+            <hr/>
+            <blockquote>
+              {quote}
+            </blockquote>
+          </div>
+        }
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 Quotes.propTypes = {

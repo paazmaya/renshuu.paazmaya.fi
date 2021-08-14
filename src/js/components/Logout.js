@@ -6,24 +6,19 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {
-  Component, PropTypes
-} from 'react';
+import PropTypes from 'prop-types';
 
-export default class Logout extends Component {
+export default function Logout (props) {
 
-  render() {
-    const {
-      onLogoutClick
-    } = this.props;
+  const {
+    onLogoutClick
+  } = props;
 
-    return (
-      <button onClick={() => onLogoutClick()} className="btn btn-primary">
-        Logout
-      </button>
-    );
-  }
-
+  return (
+    <button onClick={() => onLogoutClick()} className="btn btn-primary">
+      Logout
+    </button>
+  );
 }
 
 Logout.propTypes = {

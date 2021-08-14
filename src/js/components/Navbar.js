@@ -6,9 +6,8 @@
  * Copyright (c) Juga Paazmaya <paazmaya@yahoo.com> (https://paazmaya.fi)
  * Licensed under the MIT license.
  */
-import React, {
-  Component, PropTypes
-} from 'react';
+import PropTypes from 'prop-types';
+
 import Login from './Login';
 import Logout from './Logout';
 import {
@@ -24,36 +23,33 @@ In order to use Auth0, replace loginUser with login
   onLoginClick={ creds => dispatch(login(creds)) }
 />
 */
-export default class Navbar extends Component {
+export default function Navbar (props) {
 
-  render() {
-    const {
-      dispatch, isAuthenticated, errorMessage
-    } = this.props;
+  const {
+    dispatch, isAuthenticated, errorMessage
+  } = props;
 
-    return (
-      <nav className='navbar navbar-default'>
-        <div className='container-fluid'>
-          <a className="navbar-brand" href="#">Quotes App</a>
-          <div className='navbar-form'>
+  return (
+    <nav className='navbar navbar-default'>
+      <div className='container-fluid'>
+        <a className="navbar-brand" href="#">Quotes App</a>
+        <div className='navbar-form'>
 
-            {!isAuthenticated &&
-              <Login
-                errorMessage={errorMessage}
-                onLoginClick={ (creds) => dispatch(loginUser(creds)) }
-              />
-            }
+          {!isAuthenticated &&
+            <Login
+              errorMessage={errorMessage}
+              onLoginClick={ (creds) => dispatch(loginUser(creds)) }
+            />
+          }
 
-            {isAuthenticated &&
-              <Logout onLogoutClick={() => dispatch(logoutUser())} />
-            }
+          {isAuthenticated &&
+            <Logout onLogoutClick={() => dispatch(logoutUser())} />
+          }
 
-          </div>
         </div>
-      </nav>
-    );
-  }
-
+      </div>
+    </nav>
+  );
 }
 
 Navbar.propTypes = {
