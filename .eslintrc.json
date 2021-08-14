@@ -1,5 +1,5 @@
 {
-  "extends": "paazmaya",
+  "extends": ["paazmaya"],
   "env": {
     "browser": true,
     "es6": true
