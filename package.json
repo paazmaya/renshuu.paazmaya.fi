@@ -50,6 +50,6 @@
     "transform-loader": "0.2.4",
     "webpack": "4.46.0",
     "webpack-dev-middleware": "3.7.3",
-    "webpack-hot-middleware": "2.25.0"
+    "webpack-hot-middleware": "^2.25.1"
   }
 }
