@@ -17,9 +17,9 @@ import {
 import {
   loginUser, fetchQuote, fetchSecretQuote
 } from '../actions';
-import Login from '../components/Login';
-import Navbar from '../components/Navbar';
-import Quotes from '../components/Quotes';
+import Login from '../components/Login.js';
+import Navbar from '../components/Navbar.js';
+import Quotes from '../components/Quotes.js';
 
 
 /*

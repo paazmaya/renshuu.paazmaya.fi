@@ -1,9 +1,9 @@
-const path = require('path');
-const webpack = require('webpack');
+import path from 'path';
+import webpack from 'webpack';
 
-const OUT_PATH = path.join(__dirname, 'static');
+const OUT_PATH = path.resolve('./static');
 
-module.exports = {
+export default {
   devtool: 'cheap-module-eval-source-map',
   entry: './src/js/index.js',
   mode: 'development',

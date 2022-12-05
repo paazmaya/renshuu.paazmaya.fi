@@ -16,10 +16,10 @@ import {
 import {
   Provider
 } from 'react-redux';
-import App from './containers/App';
-import quotesApp from './reducers';
+import App from './containers/App.js';
+import quotesApp from './reducers.js';
 import thunkMiddleware from 'redux-thunk';
-import api from './middleware/api';
+import api from './middleware/api.js';
 
 const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, api)(createStore);
 
