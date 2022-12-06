@@ -7,16 +7,18 @@
  * Licensed under the MIT license.
  */
 
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
-import Profile from './Profile'
-import Navbar from './NavBar'
-import Map from './Map'
+import {
+  useState
+} from 'react';
+import reactLogo from './assets/react.svg';
+import './App.css';
+import Profile from './Profile';
+import Navbar from './NavBar';
+import Map from './Map';
 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <div className="App">
@@ -38,7 +40,7 @@ function App() {
       </div>
       <Map />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
