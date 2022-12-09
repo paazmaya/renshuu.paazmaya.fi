@@ -7,22 +7,19 @@
  * Licensed under the MIT license.
  */
 
-import {
-  useState
-} from 'react';
 import reactLogo from './assets/react.svg';
-import './App.css';
 import Profile from './Profile';
-import Navbar from './NavBar';
+import Navbar from './Navbar';
 import Map from './Map';
 
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0);
+export default function App() {
 
   return (
     <div className="App">
       <Navbar />
+      <Map />
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
@@ -33,14 +30,6 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <Profile />
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-      <Map />
     </div>
   );
 }
-
-export default App;

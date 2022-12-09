@@ -5,26 +5,22 @@ import {
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 
+import './Navbar.css';
+
 export default function Navbar () {
   const {
     isAuthenticated
   } = useAuth0();
 
   return (
-    <nav className='navbar navbar-default'>
-      <div className='container-fluid'>
-        <div className='navbar-form'>
+    <nav className='Navbar navbar-default'>
+      {!isAuthenticated &&
+        <LoginButton />
+      }
 
-          {!isAuthenticated &&
-            <LoginButton />
-          }
-
-          {isAuthenticated &&
-            <LogoutButton />
-          }
-
-        </div>
-      </div>
+      {isAuthenticated &&
+        <LogoutButton />
+      }
     </nav>
   );
 }
