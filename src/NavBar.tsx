@@ -13,7 +13,7 @@ export default function Navbar () {
   } = useAuth0();
 
   return (
-    <nav className='Navbar navbar-default'>
+    <nav className='Navbar'>
       {!isAuthenticated &&
         <LoginButton />
       }
