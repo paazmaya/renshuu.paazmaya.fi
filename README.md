@@ -2,9 +2,6 @@
 
 > Plan your training journey
 
-[![Dependency Status](https://www.versioneye.com/user/projects/56e4828adf573d00495abc59/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56e4828adf573d00495abc59)
-[![Protected by TrackJS JavaScript Error Monitoring](https://trackjs.com/assets/external/badge.gif)](https://trackjs.com/?utm_source=badges)
-
 ## A training timetable
 
 This code is used to run the site available at [`renshuu.paazmaya.fi`](http://renshuu.paazmaya.fi),
