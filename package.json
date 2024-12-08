@@ -32,16 +32,16 @@
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
     "@auth0/auth0-react": "1.12.1",
-    "express": "4.21.1",
+    "express": "4.21.2",
     "leaflet": "1.9.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-leaflet": "4.2.1"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.14",
-    "@types/react": "18.3.12",
-    "@types/react-dom": "18.3.1",
+    "@types/leaflet": "1.9.15",
+    "@types/react": "18.3.14",
+    "@types/react-dom": "18.3.2",
     "@typescript-eslint/parser": "5.62.0",
     "@vitejs/plugin-react": "2.2.0",
     "@vitest/coverage-c8": "0.32.0",
