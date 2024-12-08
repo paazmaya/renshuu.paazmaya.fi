@@ -27,16 +27,16 @@
     "url": "https://paazmaya.fi"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=22.11.0"
   },
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
     "@auth0/auth0-react": "1.12.1",
     "express": "4.21.1",
-    "leaflet": "^1.9.4",
+    "leaflet": "1.9.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "4.2.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.14",
