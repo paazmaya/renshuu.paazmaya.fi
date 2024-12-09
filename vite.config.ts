@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     coverage: {
-      provider: 'c8'
+      provider: 'v8'
     },
   }
 })
