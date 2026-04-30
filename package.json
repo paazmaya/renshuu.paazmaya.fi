@@ -4,7 +4,7 @@
   "description": "Plan your training journey",
   "type": "module",
   "scripts": {
-    "lint": "eslint src",
+    "lint": "oxlint",
     "start": "node server.js",
     "dev": "vite",
     "typescheck": "tsc --noEmit",
@@ -42,14 +42,12 @@
     "@types/leaflet": "1.9.20",
     "@types/react": "19.1.16",
     "@types/react-dom": "19.1.9",
-    "@typescript-eslint/parser": "8.45.0",
     "@vitejs/plugin-react": "4.7.0",
     "@vitest/coverage-c8": "0.32.0",
-    "eslint": "9.36.0",
-    "eslint-config-paazmaya": "9.0.1",
     "globals": "16.4.0",
     "typescript": "^5.9.2",
     "vite": "7.1.7",
-    "vitest": "3.2.4"
+    "vitest": "3.2.4",
+    "oxlint": "0.7.2"
   }
 }
